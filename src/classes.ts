@@ -1,6 +1,8 @@
 import { random, shuffle } from 'lodash';
+import logger from 'node-color-log';
 import { sleep } from 'sleep-ts';
 import { v1 as uuidV1 } from 'uuid';
+import WebSocket, { ClientOptions } from 'ws';
 
 import { AesCrypt } from './aes';
 import { request } from './fetch';
@@ -81,5 +83,100 @@ export class DataTransmission {
 				await sleep(1000);
 			}
 		}
+	}
+}
+
+type eventCallback = (args?: any[], kwargs?: IDict<any>) => void | Promise<void>;
+
+export class WebsocketClient {
+	aes: AesCrypt;
+	checkInterval: number;
+	code: string;
+	connectionOptions: ClientOptions;
+	disconnecting: boolean;
+	eventHandlers: IDict<eventCallback>;
+	name: string;
+	url: string;
+	waitingEvents: IDict<IDict<Promise<any>>>;
+	ws?: WebSocket;
+
+	constructor(
+		aes: AesCrypt,
+		name: string,
+		url: string,
+		checkInterval = 3000,
+		extraData: IDict<any> = {},
+		connectionOptions: ClientOptions = {}
+	) {
+		this.aes = aes;
+		this.checkInterval = checkInterval;
+		this.code = randomStr();
+		this.connectionOptions = {
+			headers: {
+				'extra-info': this.aes.encrypt(extraData)
+			},
+			...connectionOptions
+		};
+
+		this.disconnecting = false;
+		this.eventHandlers = {}
+		this.name = name;
+		this.url = url;
+		this.waitingEvents = {};
+	}
+
+	protected async checkConnection() {
+		try {
+			this.ws?.ping();
+			if (this.ws?.readyState != 1) throw new Error();
+			setTimeout(() => this.checkConnection(), this.checkInterval);
+		} catch(_) {
+			logger.error('Websocket connection error.');
+			this.connect(true);
+		}
+	}
+
+	connect(waitForSuccess = false) {
+		if (this.disconnecting) return;
+		this.ws = new WebSocket(this.url, this.connectionOptions);
+
+		if (waitForSuccess) {
+			this.ws.onerror = () => {
+				logger.error('Connect websocket error.');
+				setTimeout(() => this.connect(true), 1000);
+			}
+		}
+
+		this.ws.onclose = () => {
+			this.disconnecting = false;
+		}
+
+		this.ws.onmessage = ({ data }) => {
+			const decryptedData = this.aes.decrypt(<string>data);
+			const eventName = decryptedData[0];
+
+			if (this.eventHandlers[eventName]) {
+				this.eventHandlers[eventName](decryptedData[1], decryptedData[2]);
+			}
+		}
+
+		this.ws.onopen = () => {
+			logger.success('Websocket success connected.');
+			this.emit('init', [], { code: this.code });
+			this.checkConnection();
+		}
+	}
+
+	disconnect() {
+		this.disconnecting = true;
+		this.ws?.close();
+	}
+
+	emit(event: string, args: any[] = [], kwargs: IDict<any> = {}) {
+		this.ws?.send(this.aes.encrypt([event, args, kwargs]));
+	}
+
+	registerEvent(eventName: string, callback: eventCallback) {
+		this.eventHandlers[eventName] = callback;
 	}
 }
