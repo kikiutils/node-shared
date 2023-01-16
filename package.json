@@ -1,6 +1,6 @@
 {
   "name": "kikiutils-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Utils classes and function for nodejs.",
   "main": "index.js",
   "type": "commonjs",
