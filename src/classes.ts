@@ -42,7 +42,7 @@ export class DataTransmission {
 		requestConfig: RequestInit = {}
 	) {
 		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
-		if (dataAddUUID) data['uuid'] = uuidV1();
+		if (dataAddUUID) data.uuid = uuidV1();
 
 		const formData = new FormData();
 		for (const f in files) formData.append(f, files[f]);

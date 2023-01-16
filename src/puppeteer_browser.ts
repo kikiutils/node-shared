@@ -26,7 +26,7 @@ export class PuppeteerBrowser {
 	}
 
 	_addPage(page: Page, cookieFileName: string, name: string) {
-		let puppeteerPage = new PuppeteerPage(page, cookieFileName, name, this);
+		const puppeteerPage = new PuppeteerPage(page, cookieFileName, name, this);
 		this.pages[name] = puppeteerPage;
 		return puppeteerPage;
 	}
@@ -51,9 +51,9 @@ export class PuppeteerBrowser {
 	 * Close the browser.
 	 */
 	async close(saveCookies: boolean = false) {
-		let tasks = [];
+		const tasks = [];
 
-		for (let pageName in this.pages) {
+		for (const pageName in this.pages) {
 			tasks.push(this.pages[pageName].close(saveCookies));
 		}
 
@@ -72,15 +72,15 @@ export class PuppeteerBrowser {
 	 * Get page by pages index.
 	 */
 	async getPageByIndex(index: number, cookieFileName: string = '') {
-		let page = (await this.b.pages())[index];
+		const page = (await this.b.pages())[index];
 
-		for (let pageName in this.pages) {
+		for (const pageName in this.pages) {
 			if (this.pages[pageName].p.url() === page.url()) {
 				return this.pages[pageName];
 			}
 		}
 
-		let pageName = this._getNewPageName();
+		const pageName = this._getNewPageName();
 		return this._addPage(page, cookieFileName, pageName);
 	}
 
@@ -99,7 +99,7 @@ export class PuppeteerBrowser {
 			throw new Error(`Page name: ${name} already exists!`);
 		}
 
-		let page = await this.b.newPage();
+		const page = await this.b.newPage();
 		await page.setExtraHTTPHeaders({
 			'Accept-Language': 'zh-TW'
 		});
@@ -137,7 +137,7 @@ export async function getPuppeteerBrowser(
 	extraOptions: PuppeteerLaunchOptions = {},
 	replaceArgs: boolean = false
 ) {
-	let options: PuppeteerLaunchOptions = {
+	const options: PuppeteerLaunchOptions = {
 		args: [
 			'--autoplay-policy=no-user-gesture-required',
 			'--disable-setuid-sandbox',
@@ -167,8 +167,8 @@ export async function getPuppeteerBrowser(
 	}
 
 	Object.assign(options, extraOptions);
-	let browser = await puppeteer.launch(options);
-	let puppeteerBrowser = new PuppeteerBrowser(browser);
+	const browser = await puppeteer.launch(options);
+	const puppeteerBrowser = new PuppeteerBrowser(browser);
 	await (await browser.pages())[0].setExtraHTTPHeaders({
 		'Accept-Language': 'zh-TW'
 	});
@@ -185,7 +185,7 @@ export async function getSelectorAttribute(
 	selector: string,
 	attributeName: string
 ) {
-	let element = await el.$(selector);
+	const element = await el.$(selector);
 	if (!element) return undefined;
 	return await getElementAttribute(element, attributeName);
 }

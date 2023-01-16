@@ -15,7 +15,7 @@ export async function request(
 	return await fetch(
 		urlObject.toString(),
 		{
-			body: <BodyInit>data,
+			body: data as BodyInit,
 			method,
 			...config
 		}
