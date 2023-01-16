@@ -1,0 +1,14 @@
+import random from 'lodash/random';
+
+const RANDOM_LETTERS = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789';
+const RANDOM_LETTERS_LENGTH = RANDOM_LETTERS.length;
+
+export const randomStr = (minLength = 8, maxLength = 8): string => {
+	let string = '';
+
+	for (let i = 0; i < random(minLength, maxLength); i++) {
+		string += RANDOM_LETTERS.charAt(Math.floor(Math.random() * RANDOM_LETTERS_LENGTH));
+	}
+
+	return string;
+}

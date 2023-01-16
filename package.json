@@ -1,0 +1,33 @@
+{
+  "name": "kikiutils-node",
+  "version": "1.0.0",
+  "description": "Utils classes and function for nodejs.",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiki-kanri/kikiutils-node.git"
+  },
+  "author": "kiki-kanri",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kiki-kanri/kikiutils-node/issues"
+  },
+  "homepage": "https://github.com/kiki-kanri/kikiutils-node#readme",
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "fs-extra": "^11.1.0",
+    "lodash": "^4.17.21",
+    "sleep-ts": "^0.1.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/fs-extra": "^11.0.1",
+    "@types/lodash": "^4.14.191",
+    "@types/uuid": "^9.0.0"
+  }
+}
