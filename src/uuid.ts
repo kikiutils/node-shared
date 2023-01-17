@@ -1,10 +1,14 @@
+import { readFileSync } from 'fs-extra';
 import { uuid } from 'short-uuid';
 
-import { readFileSync, saveFileSync } from './file';
+import { saveFileSync } from './file';
 
 export const getUUID = (path = './uuid.uuid') => {
-	const nowUUID = readFileSync(path);
-	if (nowUUID) return nowUUID.toString();
+	try {
+		const nowUUID = readFileSync(path).toString();
+		if (nowUUID) return nowUUID;
+	} catch (_) {}
+
 	const newUUID = uuid();
 	saveFileSync(path, newUUID);
 	return newUUID;
