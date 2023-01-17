@@ -1,11 +1,11 @@
 import { random, shuffle } from 'lodash';
 import { sleep } from 'sleep-ts';
-import { v1 as uuidV1 } from 'uuid';
 
 import { AesCrypt } from './aes';
 import { request } from './fetch';
 import { randomStr } from './string';
 import { IDict } from './typing';
+import { getUUID } from './uuid';
 
 export class DataTransmission {
 	aes?: AesCrypt;
@@ -42,7 +42,7 @@ export class DataTransmission {
 		requestConfig: RequestInit = {}
 	) {
 		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
-		if (dataAddUUID) data.uuid = uuidV1();
+		if (dataAddUUID) data.uuid = getUUID();
 
 		const formData = new FormData();
 		for (const f in files) formData.append(f, files[f]);
