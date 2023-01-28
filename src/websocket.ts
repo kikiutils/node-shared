@@ -3,9 +3,9 @@ import WebSocket, { ClientOptions } from 'ws';
 
 import { AesCrypt } from './aes';
 import { randomStr } from './string';
-import { IDict } from './typing';
+import { Dict } from './typing';
 
-type eventCallback = (args?: any[], kwargs?: IDict<any>) => void | Promise<void>;
+type eventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
 
 export class WebsocketClient {
 	aes: AesCrypt;
@@ -13,10 +13,10 @@ export class WebsocketClient {
 	code: string;
 	connectionOptions: ClientOptions;
 	disconnecting: boolean;
-	eventHandlers: IDict<eventCallback>;
+	eventHandlers: Dict<eventCallback>;
 	name: string;
 	url: string;
-	waitingEvents: IDict<IDict<Promise<any>>>;
+	waitingEvents: Dict<Dict<Promise<any>>>;
 	ws?: WebSocket;
 
 	constructor(
@@ -24,7 +24,7 @@ export class WebsocketClient {
 		name: string,
 		url: string,
 		checkInterval = 3000,
-		extraData: IDict<any> = {},
+		extraData: Dict<any> = {},
 		connectionOptions: ClientOptions = {}
 	) {
 		this.aes = aes;
@@ -91,7 +91,7 @@ export class WebsocketClient {
 		this.ws?.close();
 	}
 
-	emit(event: string, args: any[] = [], kwargs: IDict<any> = {}) {
+	emit(event: string, args: any[] = [], kwargs: Dict<any> = {}) {
 		this.ws?.send(this.aes.encrypt([event, args, kwargs]));
 	}
 

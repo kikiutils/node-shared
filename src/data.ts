@@ -4,14 +4,14 @@ import { sleep } from 'sleep-ts';
 import { AesCrypt } from './aes';
 import { request } from './fetch';
 import { randomStr } from './string';
-import { IDict } from './typing';
+import { Dict } from './typing';
 import { getUUID } from './uuid';
 
 export class DataTransmission {
 	aes?: AesCrypt;
 	apiBaseUrl?: string;
 
-	hashData(data: IDict<any>) {
+	hashData(data: Dict<any>) {
 		const randomCount = random(random(2, 5), random(6, 16));
 
 		for (let i = 1; i < randomCount; i++) {
@@ -26,7 +26,7 @@ export class DataTransmission {
 	}
 
 	processHashData(hashText: string) {
-		const data: IDict<any> = {};
+		const data: Dict<any> = {};
 		const decryptedData: [string, any][] = this.aes?.decrypt(hashText);
 		for(const d of decryptedData) data[d[0]] = d[1];
 		return data;
@@ -34,8 +34,8 @@ export class DataTransmission {
 
 	async request(
 		url: string,
-		data: IDict<any> = {},
-		files: IDict<Blob | File> = {},
+		data: Dict<any> = {},
+		files: Dict<Blob | File> = {},
 		method = 'post',
 		dataAddUUID = false,
 		waitForSuccess = true,
@@ -59,7 +59,7 @@ export class DataTransmission {
 					requestConfig
 				);
 
-				let result: Blob | IDict<any> | null = null;
+				let result: Blob | Dict<any> | null = null;
 				if (response.status > 210) throw new Error();
 				const contentType = response.headers.get('content-type');
 

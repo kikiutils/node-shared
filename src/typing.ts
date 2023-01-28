@@ -1,3 +1,3 @@
-export interface IDict<T> {
+export interface Dict<T> {
 	[key: string]: T
 }

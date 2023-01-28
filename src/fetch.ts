@@ -1,11 +1,11 @@
-import { IDict } from './typing';
+import { Dict } from './typing';
 
-type RequestData = FormData | IDict<any>;
+type RequestData = FormData | Dict<any>;
 
 export async function request(
 	url: string,
 	method: string,
-	params: IDict<any> = {},
+	params: Dict<any> = {},
 	data: RequestData = {},
 	config: RequestInit = {}
 ) {
@@ -23,56 +23,71 @@ export async function request(
 }
 
 /**
- * 使用Delete請求
+ * Use delete method request.
  */
-export const useDelete = async (url: string, params: IDict<any> = {}, config: RequestInit = {}) => {
+export const useDelete = async (url: string, params: Dict<any> = {}, config: RequestInit = {}) => {
 	return await request(url, 'delete', params, {}, config);
 }
 
-export const $useDelete = async (url: string, params: IDict<any> = {}, config: RequestInit = {}) => {
+/**
+ * Use delete method request (return text).
+ */
+export const $useDelete = async (url: string, params: Dict<any> = {}, config: RequestInit = {}) => {
 	return await (await useDelete(url, params, config)).text();
 }
 
 /**
- * 使用Get請求
+ * Use get method request.
  */
-export const useGet = async (url: string, params: IDict<any> = {}, config: RequestInit = {}) => {
+export const useGet = async (url: string, params: Dict<any> = {}, config: RequestInit = {}) => {
 	return await request(url, 'get', params, {}, config);
 }
 
-export const $useGet = async (url: string, params: IDict<any> = {}, config: RequestInit = {}) => {
+/**
+ * Use get method request (return text).
+ */
+export const $useGet = async (url: string, params: Dict<any> = {}, config: RequestInit = {}) => {
 	return await (await useGet(url, params, config)).text();
 }
 
 /**
- * 使用Patch請求
+ * Use patch method request.
  */
 export const usePatch = async (url: string, data: RequestData = {}, config: RequestInit = {}) => {
 	return await request(url, 'patch', {}, data, config);
 }
 
+/**
+ * Use patch method request (return text).
+ */
 export const $usePatch = async (url: string, data: RequestData = {}, config: RequestInit = {}) => {
 	return await (await usePatch(url, data, config)).text();
 }
 
 /**
- * 使用Post請求
+ * Use post method request.
  */
 export const usePost = async (url: string, data: RequestData = {}, config: RequestInit = {}) => {
 	return await request(url, 'post', {}, data, config);
 }
 
+/**
+ * Use post method request (return text).
+ */
 export const $usePost = async (url: string, data: RequestData = {}, config: RequestInit = {}) => {
 	return await (await usePost(url, data, config)).text();
 }
 
 /**
- * 使用Put請求
+ * Use put method request.
  */
 export const usePut = async (url: string, data: RequestData = {}, config: RequestInit = {}) => {
 	return await request(url, 'put', {}, data, config);
 }
 
+/**
+ * Use put method request (return text).
+ */
 export const $usePut = async (url: string, data: RequestData = {}, config: RequestInit = {}) => {
 	return await (await usePut(url, data, config)).text();
 }
