@@ -11,15 +11,13 @@ export async function request(
 ) {
 	const urlObject = new URL(url);
 	for (const name in params) urlObject.searchParams.append(name, params[name]);
+	const options: RequestInit = {
+		method,
+		...config
+	};
 
-	return await fetch(
-		urlObject.toString(),
-		{
-			body: data as BodyInit,
-			method,
-			...config
-		}
-	);
+	if (!['get', 'head'].includes(method.toLowerCase())) options.body = data as BodyInit;
+	return await fetch(urlObject.toString(), options);
 }
 
 /**
