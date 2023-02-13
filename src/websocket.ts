@@ -1,4 +1,5 @@
 import logger from 'node-color-log';
+import { sleep } from 'sleep-ts';
 import WebSocket, { ClientOptions } from 'ws';
 
 import { AesCrypt } from './aes';
@@ -55,28 +56,23 @@ export class WebsocketClient {
 		}
 	}
 
-	connect(waitForSuccess = false) {
+	async connect(waitForSuccess = false) {
 		if (this.disconnecting) return;
 		this.ws = new WebSocket(this.url, this.connectionOptions);
-
-		if (waitForSuccess) {
-			this.ws.onerror = () => {
-				logger.error('Connect websocket error.');
-				setTimeout(() => this.connect(true), 1000);
-			}
-		}
 
 		this.ws.onclose = () => {
 			this.disconnecting = false;
 		}
 
+		this.ws.onerror = async () => {
+			logger.error('Websocket connect error.');
+			this.connect();
+		}
+
 		this.ws.onmessage = ({ data }) => {
 			const decryptedData = this.aes.decrypt(data as string);
 			const eventName = decryptedData[0];
-
-			if (this.eventHandlers[eventName]) {
-				this.eventHandlers[eventName](decryptedData[1], decryptedData[2]);
-			}
+			if (this.eventHandlers[eventName]) this.eventHandlers[eventName](decryptedData[1], decryptedData[2]);
 		}
 
 		this.ws.onopen = () => {
@@ -84,6 +80,8 @@ export class WebsocketClient {
 			this.emit('init', [], { code: this.code });
 			this.checkConnection();
 		}
+
+		while (waitForSuccess && this.ws.readyState !== 1) await sleep(50);
 	}
 
 	disconnect() {
