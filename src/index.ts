@@ -2,6 +2,7 @@ export * from './aes';
 export * from './data';
 export * from './fetch';
 export * from './file';
+export * from './hash';
 export * from './puppeteer';
 export { default as PuppeteerBrowser } from './puppeteer/browser';
 export { default as PuppeteerPage } from './puppeteer/page';
