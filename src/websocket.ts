@@ -45,12 +45,12 @@ export class WebsocketClient {
 		this.waitingEvents = {};
 	}
 
-	protected async checkConnection() {
+	private async checkConnection() {
 		try {
 			this.ws?.ping();
 			if (this.ws?.readyState !== 1) throw new Error();
 			setTimeout(() => this.checkConnection(), this.checkInterval);
-		} catch(_) {
+		} catch (_) {
 			logger.error('Websocket connection error.');
 			this.connect(true);
 		}
@@ -90,7 +90,10 @@ export class WebsocketClient {
 	}
 
 	emit(event: string, args: any[] = [], kwargs: Dict<any> = {}) {
-		this.ws?.send(this.aes.encrypt([event, args, kwargs]));
+		try {
+			return this.ws?.send(this.aes.encrypt([event, args, kwargs]));
+		} catch (error) { }
+		return false;
 	}
 
 	registerEvent(eventName: string, callback: eventCallback) {
