@@ -1,7 +1,7 @@
 import { readFile, readFileSync } from 'fs-extra';
 import { uuid } from 'short-uuid';
 
-import { saveFile, saveFileSync } from '@/file';
+import { saveFile, saveFileSync } from './file';
 
 export const getUUID = async (path = './uuid.uuid') => {
 	try {

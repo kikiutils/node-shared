@@ -1,11 +1,11 @@
 import { random, shuffle } from 'lodash';
 import { sleep } from 'sleep-ts';
 
-import { AesCrypt } from '@/aes';
-import { request } from '@/fetch';
-import { randomStr } from '@/string';
-import { Dict, Nullable } from '@/typing';
-import { getUUID } from '@/uuid';
+import { AesCrypt } from './aes';
+import { request } from './fetch';
+import { randomStr } from './string';
+import { Dict, Nullable } from './typing';
+import { getUUID } from './uuid';
 
 export class DataTransmission {
 	aes?: AesCrypt;
