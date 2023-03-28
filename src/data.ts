@@ -1,11 +1,11 @@
 import { random, shuffle } from 'lodash';
 import { sleep } from 'sleep-ts';
 
-import { AesCrypt } from './aes';
-import { request } from './fetch';
-import { randomStr } from './string';
-import { Dict } from './typing';
-import { getUUID } from './uuid';
+import { AesCrypt } from '@/aes';
+import { request } from '@/fetch';
+import { randomStr } from '@/string';
+import { Dict, Nullable } from '@/typing';
+import { getUUID } from '@/uuid';
 
 export class DataTransmission {
 	aes?: AesCrypt;
@@ -28,7 +28,7 @@ export class DataTransmission {
 	processHashData(hashText: string) {
 		const data: Dict<any> = {};
 		const decryptedData: [string, any][] = this.aes?.decrypt(hashText);
-		for(const d of decryptedData) data[d[0]] = d[1];
+		decryptedData.forEach(([k, v]) => data[k] = v);
 		return data;
 	}
 
@@ -43,7 +43,6 @@ export class DataTransmission {
 	) {
 		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
 		if (dataAddUUID) data.uuid = getUUID();
-
 		const formData = new FormData();
 		for (const f in files) formData.append(f, files[f]);
 		const hashFile = new Blob([this.hashData(data)]);
@@ -59,7 +58,7 @@ export class DataTransmission {
 					requestConfig
 				);
 
-				let result: Blob | Dict<any> | null = null;
+				let result: Nullable<Blob | Dict<any>> = null;
 				if (response.status > 210) throw new Error();
 				const contentType = response.headers.get('content-type');
 
