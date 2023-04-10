@@ -4,8 +4,16 @@ import { sleep } from 'sleep-ts';
 import { AesCrypt } from './aes';
 import { request } from './fetch';
 import { randomStr } from './string';
-import { Dict, Nullable } from './typing';
+import { Dict } from './typing';
 import { getUUID } from './uuid';
+
+interface RequestOptions {
+	dataAddUUID?: boolean;
+	files?: Dict<Blob | File>;
+	method?: 'delete' | 'get' | 'patch' | 'post' | 'put';
+	requestConfig?: RequestInit;
+	waitForSuccess?: boolean;
+}
 
 export class DataTransmission {
 	aes?: AesCrypt;
@@ -32,19 +40,12 @@ export class DataTransmission {
 		return data;
 	}
 
-	async request(
-		url: string,
-		data: Dict<any> = {},
-		files: Dict<Blob | File> = {},
-		method = 'post',
-		dataAddUUID = false,
-		waitForSuccess = true,
-		requestConfig: RequestInit = {}
-	) {
+	async request(url: string, data: Dict<any> = {}, options: RequestOptions = {}) {
+		if (options.waitForSuccess === undefined) options.waitForSuccess = true;
 		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
-		if (dataAddUUID) data.uuid = getUUID();
+		if (options.dataAddUUID) data.uuid = await getUUID();
 		const formData = new FormData();
-		for (const f in files) formData.append(f, files[f]);
+		if (options.files) for (const f in options.files) formData.append(f, options.files[f]);
 		const hashFile = new Blob([this.hashData(data)]);
 		formData.append('hash_file', hashFile, 'hash_file');
 
@@ -52,31 +53,19 @@ export class DataTransmission {
 			try {
 				const response = await request(
 					url,
-					method,
+					options?.method || 'post',
 					{},
 					formData,
-					requestConfig
+					options?.requestConfig
 				);
 
-				let result: Nullable<Blob | Dict<any>> = null;
 				if (response.status > 210) throw new Error();
-				const contentType = response.headers.get('content-type');
-
-				if (contentType?.includes('text/')) {
-					result = this.processHashData(await response.text());
-				} else {
-					result = await response.blob();
-				}
-
-				if (result?.constructor === Object) {
-					if (!result.success && waitForSuccess) throw new Error();
-				} else if (result === null && waitForSuccess) {
-					throw new Error();
-				}
-
+				const rpIsText = response.headers.get('content-type')?.includes('text/');
+				const result = rpIsText ? this.processHashData(await response.text()) : await response.blob();
+				if (options.waitForSuccess && (result === null || (result?.constructor === Object && !result.success))) throw new Error();
 				return result;
 			} catch(_) {
-				if (!waitForSuccess) return null;
+				if (!options.waitForSuccess) return null;
 				await sleep(1000);
 			}
 		}

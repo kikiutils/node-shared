@@ -4,5 +4,6 @@ export * from './fetch';
 export * from './file';
 export * from './hash';
 export * from './string';
+export * from './time';
 export * from './typing';
 export * from './websocket';
