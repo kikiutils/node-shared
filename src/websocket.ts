@@ -71,8 +71,7 @@ export class WebsocketClient {
 
 		this.ws.onmessage = ({ data }) => {
 			const decryptedData = this.aes.decrypt(data as string);
-			const eventName = decryptedData[0];
-			if (this.eventHandlers[eventName]) this.eventHandlers[eventName](decryptedData[1], decryptedData[2]);
+			this.eventHandlers[decryptedData[0]]?.(decryptedData[1], decryptedData[2]);
 		}
 
 		this.ws.onopen = () => {
