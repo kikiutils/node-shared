@@ -1,6 +1,6 @@
 {
   "name": "kikiutils-node",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Utils classes and function for nodejs.",
   "main": "lib/index.js",
   "type": "commonjs",
@@ -26,7 +26,6 @@
     "fs-extra": "^11.1.0",
     "lodash": "^4.17.21",
     "node-color-log": "^10.0.2",
-    "node-fetch-cjs": "^3.2.10",
     "short-uuid": "^4.2.2",
     "sleep-ts": "^0.1.1",
     "ws": "^8.12.0"
