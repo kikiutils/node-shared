@@ -1,4 +1,5 @@
 import { random, shuffle } from 'lodash';
+import { RequestInit as NodeRequestInit } from 'node-fetch-cjs';
 import { sleep } from 'sleep-ts';
 
 import { AesCrypt } from './aes';
@@ -11,7 +12,7 @@ interface RequestOptions {
 	dataAddUUID?: boolean;
 	files?: Dict<Blob | File>;
 	method?: 'delete' | 'get' | 'patch' | 'post' | 'put';
-	requestConfig?: RequestInit;
+	requestConfig?: NodeRequestInit;
 	waitForSuccess?: boolean;
 }
 
