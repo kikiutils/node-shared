@@ -3,6 +3,7 @@ export * from './data';
 export * from './fetch';
 export * from './file';
 export * from './hash';
+export * from './machine';
 export * from './string';
 export * from './time';
 export * from './typing';
