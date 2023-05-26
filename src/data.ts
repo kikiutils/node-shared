@@ -53,7 +53,7 @@ export class DataTransmission {
 				if (response.status > 210) throw new Error();
 				const rpIsText = response.headers.get('content-type')?.includes('text/');
 				const result = rpIsText ? this.processHashData(await response.text()) : await response.blob();
-				if (options.waitForSuccess && (result === null || (result?.constructor === Object && !result.success))) throw new Error();
+				if (options.waitForSuccess && (result === null || !(result instanceof Blob || result.success))) throw new Error();
 				return result;
 			} catch (_) {
 				if (!options.waitForSuccess) return null;
