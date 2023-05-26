@@ -6,4 +6,5 @@ export * from './hash';
 export * from './string';
 export * from './time';
 export * from './typing';
+export * from './uuid';
 export * from './websocket';

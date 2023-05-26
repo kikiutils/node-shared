@@ -12,7 +12,7 @@ export const isDir = async (path: string) => {
 	try {
 		const stats = await _stat(path);
 		return stats.isDirectory();
-	} catch(error) { }
+	} catch (error) { }
 	return false;
 }
 
@@ -20,7 +20,7 @@ export const isDirSync = (path: string) => {
 	try {
 		const stats = _statSync(path);
 		return stats.isDirectory();
-	} catch(error) { }
+	} catch (error) { }
 	return false;
 }
 
@@ -28,7 +28,7 @@ export const isFile = async (path: string) => {
 	try {
 		const stats = await _stat(path);
 		return stats.isFile();
-	} catch(error) { }
+	} catch (error) { }
 	return false;
 }
 
@@ -36,7 +36,7 @@ export const isFileSync = (path: string) => {
 	try {
 		const stats = _statSync(path);
 		return stats.isFile();
-	} catch(error) { }
+	} catch (error) { }
 	return false;
 }
 

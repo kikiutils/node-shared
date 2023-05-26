@@ -9,7 +9,7 @@ import { Dict } from './typing';
 type eventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
 
 export class WebsocketClient {
-	aes: AesCrypt;
+	private aes: AesCrypt;
 	checkInterval: number;
 	code: string;
 	connectionOptions: ClientOptions;

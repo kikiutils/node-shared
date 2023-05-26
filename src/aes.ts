@@ -1,18 +1,18 @@
 import cryptoJs from 'crypto-js';
 
+export type BlockCipherMode = typeof cryptoJs.mode.ECB | typeof cryptoJs.mode.CBC;
+
 export class AesCrypt {
-	config: {
-		[key: string]: any;
-	}
+	private config: {
+		iv: cryptoJs.lib.WordArray,
+		mode: BlockCipherMode,
+		padding: typeof cryptoJs.pad.Pkcs7
+	};
 
-	format: typeof cryptoJs.format.Hex;
-	key: cryptoJs.lib.WordArray;
+	private format: typeof cryptoJs.format.Hex;
+	private key: cryptoJs.lib.WordArray;
 
-	constructor(
-		key: string,
-		iv: string,
-		mode: typeof cryptoJs.mode.ECB | typeof cryptoJs.mode.CBC = cryptoJs.mode.CBC
-	) {
+	constructor(key: string, iv: string, mode: BlockCipherMode = cryptoJs.mode.CBC) {
 		this.config = {
 			iv: cryptoJs.enc.Utf8.parse(iv),
 			mode,
@@ -24,7 +24,7 @@ export class AesCrypt {
 	}
 
 	encrypt(data: any) {
-		if (typeof(data) !== 'string') data = JSON.stringify(data);
+		if (typeof data !== 'string') data = JSON.stringify(data);
 		return cryptoJs.AES.encrypt(data, this.key, this.config).toString(this.format);
 	}
 
@@ -34,7 +34,7 @@ export class AesCrypt {
 
 		try {
 			return JSON.parse(decryptedData);
-		} catch(_) {
+		} catch (_) {
 			return decryptedData;
 		}
 	}

@@ -1,4 +1,4 @@
-import { random, shuffle } from 'lodash';
+import { random as r, shuffle } from 'lodash';
 import { sleep } from 'sleep-ts';
 
 import { AesCrypt } from './aes';
@@ -7,7 +7,7 @@ import { randomStr } from './string';
 import { Dict } from './typing';
 import { getUUID } from './uuid';
 
-interface RequestOptions {
+export interface RequestOptions {
 	dataAddUUID?: boolean;
 	files?: Dict<Blob | File>;
 	method?: 'delete' | 'get' | 'patch' | 'post' | 'put';
@@ -16,26 +16,24 @@ interface RequestOptions {
 }
 
 export class DataTransmission {
-	aes?: AesCrypt;
-	apiBaseUrl?: string;
+	private aes: AesCrypt;
+	private apiBaseUrl: string;
 
-	hashData(data: Dict<any>) {
-		const randomCount = random(random(2, 5), random(6, 16));
-
-		for (let i = 1; i < randomCount; i++) {
-			data[randomStr(random(8, 16), random(17, 128))] = randomStr(
-				random(8, 32),
-				random(33, 256)
-			);
-		}
-
-		const dataList = Object.entries(data);
-		return this.aes?.encrypt(shuffle(dataList)) || '';
+	constructor(aes: AesCrypt, apiBaseUrl: string) {
+		this.aes = aes;
+		this.apiBaseUrl = apiBaseUrl;
 	}
 
-	processHashData(hashText: string) {
+	private hashData(data: Dict<any>) {
+		const randomCount = r(r(2, 5), r(6, 16));
+		for (let i = 1; i < randomCount; i++) data[randomStr(r(8, 16), r(17, 128))] = randomStr(r(8, 32), r(33, 256));
+		const dataList = Object.entries(data);
+		return this.aes.encrypt(shuffle(dataList)) || '';
+	}
+
+	private processHashData(hashText: string) {
 		const data: Dict<any> = {};
-		const decryptedData: [string, any][] = this.aes?.decrypt(hashText);
+		const decryptedData: [string, any][] = this.aes.decrypt(hashText);
 		decryptedData.forEach(([k, v]) => data[k] = v);
 		return data;
 	}
@@ -51,20 +49,13 @@ export class DataTransmission {
 
 		while (true) {
 			try {
-				const response = await request(
-					url,
-					options?.method || 'post',
-					{},
-					formData,
-					options?.requestConfig
-				);
-
+				const response = await request(url, options?.method || 'post', {}, formData, options?.requestConfig);
 				if (response.status > 210) throw new Error();
 				const rpIsText = response.headers.get('content-type')?.includes('text/');
 				const result = rpIsText ? this.processHashData(await response.text()) : await response.blob();
 				if (options.waitForSuccess && (result === null || (result?.constructor === Object && !result.success))) throw new Error();
 				return result;
-			} catch(_) {
+			} catch (_) {
 				if (!options.waitForSuccess) return null;
 				await sleep(1000);
 			}

@@ -1,5 +1,5 @@
 export interface Dict<T> {
-	[key: string]: T
+	[key: string]: T;
 }
 
 export type Nullable<T> = null | T;
