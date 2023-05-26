@@ -38,6 +38,8 @@ export class DataTransmission {
 		return data;
 	}
 
+	async request(url: string, data: Dict<any>, options: Omit<RequestOptions, 'waitForSuccess'> & { waitForSuccess: false }): Promise<Dict<any> | Blob | null>;
+	async request(url: string, data?: Dict<any>, options?: RequestOptions): Promise<Dict<any> | Blob>;
 	async request(url: string, data: Dict<any> = {}, options: RequestOptions = {}) {
 		if (options.waitForSuccess === undefined) options.waitForSuccess = true;
 		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
