@@ -3,7 +3,7 @@ export * from './data';
 export * from './fetch';
 export * from './file';
 export * from './hash';
-export * from './string';
+export * from './random';
 export * from './time';
 export * from './typing';
 export * from './uuid';
