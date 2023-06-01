@@ -1,8 +1,9 @@
 import { random } from 'lodash';
-export { random as randomNum } from 'lodash';
 
 const RANDOM_LETTERS = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789';
 const RANDOM_LETTERS_LENGTH = RANDOM_LETTERS.length;
+
+export const randomNum: typeof random = random;
 
 export const randomStr = (minLength = 8, maxLength = 8): string => {
 	let s = '';

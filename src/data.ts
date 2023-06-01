@@ -3,7 +3,7 @@ import { sleep } from 'sleep-ts';
 
 import { AesCrypt } from './aes';
 import { request } from './fetch';
-import { randomStr } from './string';
+import { randomStr } from './random';
 import { Dict } from './typing';
 import { getUUID } from './uuid';
 
