@@ -1,5 +1,4 @@
-import r from 'lodash/random';
-import shuffle from 'lodash/shuffle';
+import { random as r, shuffle } from 'lodash-es';
 import { sleep } from 'sleep-ts';
 
 import { AesCrypt } from './aes';
