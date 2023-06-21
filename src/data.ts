@@ -1,10 +1,8 @@
-import r from 'lodash/random';
 import shuffle from 'lodash/shuffle';
 import { sleep } from 'sleep-ts';
 
 import { AesCrypt } from './aes';
 import { request } from './fetch';
-import { randomStr } from './random';
 import { Dict } from './typing';
 import { getUUID } from './uuid';
 
@@ -26,8 +24,6 @@ export class DataTransmission {
 	}
 
 	private hashData(data: Dict<any>) {
-		const randomCount = r(r(2, 5), r(6, 16));
-		for (let i = 1; i < randomCount; i++) data[randomStr(r(8, 16), r(17, 128))] = randomStr(r(8, 32), r(33, 256));
 		const dataList = Object.entries(data);
 		return this.aes.encrypt(shuffle(dataList)) || '';
 	}

@@ -6,7 +6,7 @@ import { AesCrypt } from './aes';
 import { randomStr } from './random';
 import { Dict } from './typing';
 
-type eventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
+type EventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
 
 export class WebsocketClient {
 	private aes: AesCrypt;
@@ -14,7 +14,7 @@ export class WebsocketClient {
 	code: string;
 	connectionOptions: ClientOptions;
 	disconnecting: boolean;
-	eventHandlers: Dict<eventCallback>;
+	eventHandlers: Dict<EventCallback>;
 	name: string;
 	url: string;
 	waitingEvents: Dict<Dict<Promise<any>>>;
@@ -95,7 +95,7 @@ export class WebsocketClient {
 		return false;
 	}
 
-	registerEvent(eventName: string, callback: eventCallback) {
+	registerEvent(eventName: string, callback: EventCallback) {
 		this.eventHandlers[eventName] = callback;
 	}
 }
