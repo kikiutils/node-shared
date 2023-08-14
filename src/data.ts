@@ -45,7 +45,6 @@ export class DataTransmission {
 		if (options.files) for (const f in options.files) formData.append(f, options.files[f]);
 		const hashFile = new Blob([this.hashData(data)]);
 		formData.append('hash_file', hashFile, 'hash_file');
-
 		while (true) {
 			try {
 				const response = await request(url, options?.method || 'post', {}, formData, options?.requestConfig);
@@ -54,7 +53,7 @@ export class DataTransmission {
 				const result = rpIsText ? this.processHashData(await response.text()) : await response.blob();
 				if (options.waitForSuccess && (result === null || !(result instanceof Blob || result.success))) throw new Error();
 				return result;
-			} catch (_) {
+			} catch (error) {
 				if (!options.waitForSuccess) return null;
 				await sleep(1000);
 			}
