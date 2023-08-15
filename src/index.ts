@@ -5,6 +5,6 @@ export * from './file';
 export * from './hash';
 export * from './random';
 export * from './time';
-export * from './typing';
+export * from './types';
 export * from './uuid';
 export * from './websocket';

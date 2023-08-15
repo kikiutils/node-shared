@@ -4,7 +4,7 @@ import WebSocket, { ClientOptions } from 'ws';
 
 import { AesCrypt } from './aes';
 import { randomStr } from './random';
-import { Dict } from './typing';
+import { Dict } from './types';
 
 type EventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
 

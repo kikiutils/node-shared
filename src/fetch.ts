@@ -1,4 +1,4 @@
-import { Dict } from './typing';
+import { Dict } from './types';
 
 type RequestData = FormData | Dict<any>;
 
