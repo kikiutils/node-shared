@@ -39,3 +39,5 @@ export class AesCrypt {
 		}
 	}
 }
+
+export default AesCrypt;

@@ -2,7 +2,7 @@ import logger from 'node-color-log';
 import { sleep } from 'sleep-ts';
 import WebSocket, { ClientOptions } from 'ws';
 
-import { AesCrypt } from './aes';
+import AesCrypt from './aes';
 import { randomStr } from './random';
 import { Dict } from './types';
 
@@ -99,3 +99,5 @@ export class WebsocketClient {
 		this.eventHandlers[eventName] = callback;
 	}
 }
+
+export default WebsocketClient;

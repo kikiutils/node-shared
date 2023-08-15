@@ -1,7 +1,7 @@
 import shuffle from 'lodash/shuffle';
 import { sleep } from 'sleep-ts';
 
-import { AesCrypt } from './aes';
+import AesCrypt from './aes';
 import { request } from './fetch';
 import { Dict } from './types';
 import { getUUID } from './uuid';
@@ -60,3 +60,5 @@ export class DataTransmission {
 		}
 	}
 }
+
+export default DataTransmission;
