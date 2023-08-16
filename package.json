@@ -1,6 +1,6 @@
 {
-  "name": "kikiutils-node",
-  "version": "1.3.9",
+  "name": "@kikiutils/node",
+  "version": "1.0.0",
   "description": "Utils classes and function for nodejs.",
   "license": "MIT",
   "author": {
