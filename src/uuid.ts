@@ -1,26 +1,20 @@
-import { readFile, readFileSync } from 'fs-extra';
+import { readFile, readFileSync, writeFile, writeFileSync } from '@kikiutils/fs-extra';
+import { PathLike, PathOrFileDescriptor } from 'fs';
+import { FileHandle } from 'fs/promises';
 import { uuid } from 'short-uuid';
 
-import { saveFile, saveFileSync } from './file';
-
-export const getUUID = async (path = './uuid.uuid') => {
-	try {
-		const nowUUID = (await readFile(path)).toString();
-		if (nowUUID) return nowUUID;
-	} catch (_) { }
-
+export const getUUID = async (path: FileHandle | PathLike = './uuid.uuid') => {
+	const nowUUIDFile = await readFile(path);
+	if (nowUUIDFile) return nowUUIDFile.toString();
 	const newUUID = uuid();
-	await saveFile(path, newUUID);
+	await writeFile(path, newUUID);
 	return newUUID;
 }
 
-export const getUUIDSync = (path = './uuid.uuid') => {
-	try {
-		const nowUUID = readFileSync(path).toString();
-		if (nowUUID) return nowUUID;
-	} catch (_) { }
-
+export const getUUIDSync = (path: PathOrFileDescriptor = './uuid.uuid') => {
+	const nowUUIDFile = readFileSync(path);
+	if (nowUUIDFile) return nowUUIDFile.toString();
 	const newUUID = uuid();
-	saveFileSync(path, newUUID);
+	writeFileSync(path, newUUID);
 	return newUUID;
 }

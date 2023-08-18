@@ -1,4 +1,5 @@
 export * from './aes';
+export * from './check';
 export * from './data';
 export * from './fetch';
 export * from './file';
