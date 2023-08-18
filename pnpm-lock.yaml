@@ -5,12 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@kikiutils/fs-extra':
+    specifier: ^1.1.2
+    version: 1.1.2
   '@noble/hashes':
     specifier: ^1.3.1
     version: 1.3.1
-  '@types/lodash':
-    specifier: ^4.14.197
-    version: 4.14.197
   crypto-js:
     specifier: ^4.1.1
     version: 4.1.1
@@ -40,6 +40,9 @@ devDependencies:
   '@types/fs-extra':
     specifier: ^11.0.1
     version: 11.0.1
+  '@types/lodash':
+    specifier: ^4.14.197
+    version: 4.14.197
   '@types/ws':
     specifier: ^8.5.5
     version: 8.5.5
@@ -48,6 +51,19 @@ devDependencies:
     version: 5.1.6
 
 packages:
+
+  /@kikiutils/fs-extra@1.1.2:
+    resolution: {integrity: sha512-+5MM2zQw3IRUla4cBxI8qQjEUi6Vb1iZ3FFjZE6wSw20cjP4DMnIVU+4TV+OxdzYfBAXGkDUcy2XnqWBOZN5uQ==}
+    engines: {node: '>= 16.0.0'}
+    dependencies:
+      '@kikiutils/wrappers': 1.0.3
+      fs-extra: 11.1.1
+    dev: false
+
+  /@kikiutils/wrappers@1.0.3:
+    resolution: {integrity: sha512-+iMcEPM7K9eo6QSA83EVPEqclwDPexaTPfzwO+4DMrevzvF1TxO9Gj+4JhA36cg/771fy59CbCXP0sE6v9nfsg==}
+    engines: {node: '>= 16.0.0'}
+    dev: false
 
   /@noble/hashes@1.3.1:
     resolution: {integrity: sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==}
@@ -73,7 +89,7 @@ packages:
 
   /@types/lodash@4.14.197:
     resolution: {integrity: sha512-BMVOiWs0uNxHVlHBgzTIqJYmj+PgCo4euloGF+5m4okL3rEYzM2EEv78mw8zWSMM57dM7kVIgJ2QDvwHSoCI5g==}
-    dev: false
+    dev: true
 
   /@types/node@20.5.0:
     resolution: {integrity: sha512-Mgq7eCtoTjT89FqNoTzzXg2XvCi5VMhRV6+I2aYanc6kQCBImeNaAYRs/DyoVqk1YEUJK5gN9VO7HRIdz4Wo3Q==}
