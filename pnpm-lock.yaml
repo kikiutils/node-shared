@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@kikiutils/fs-extra':
-    specifier: ^1.2.3
-    version: 1.2.3
+    specifier: ^1.2.5
+    version: 1.2.5
   '@noble/hashes':
     specifier: ^1.3.1
     version: 1.3.1
@@ -257,16 +257,16 @@ packages:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
     dev: true
 
-  /@kikiutils/fs-extra@1.2.3:
-    resolution: {integrity: sha512-TlAiH4osY2OSINssF9hOPc1cuPl2522jEuGTpdykqp9ZH1TsP8EihgY4jhDVssW+S+NlpbtmEPtWUqsrclRyPQ==}
+  /@kikiutils/fs-extra@1.2.5:
+    resolution: {integrity: sha512-XrYjBAnDsCErojxiekxYRHtw46HEDYJcnn8vaKhi9gD0hZq2dVIwGz1qNm1mTdu/NeQNBesuIm2dByIZt35xsg==}
     engines: {node: '>= 16.0.0'}
     dependencies:
-      '@kikiutils/wrappers': 1.0.4
+      '@kikiutils/wrappers': 1.0.5
       fs-extra: 11.1.1
     dev: false
 
-  /@kikiutils/wrappers@1.0.4:
-    resolution: {integrity: sha512-6rd2oMtAOyePWjRK5VnGC+t/Rh5xhNo5ZUzdWC/nmw5/3RE8g9/eu9qNrY/nPUbP6Ih5qaMqEKsK5z4u+tVqjw==}
+  /@kikiutils/wrappers@1.0.5:
+    resolution: {integrity: sha512-nFkecRBUw12VXZZ1sQeFDzHta0zSvQraB6Cho3JA5Cxx+va5wrgLKUXZZ99TQPWJTrZ8IWLecboSMqPGxc7I+Q==}
     engines: {node: '>= 16.0.0'}
     dev: false
 
