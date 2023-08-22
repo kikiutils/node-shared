@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@kikiutils/fs-extra':
-    specifier: ^1.2.5
-    version: 1.2.5
+    specifier: ^1.2.6
+    version: 1.2.6
   '@noble/hashes':
     specifier: ^1.3.1
     version: 1.3.1
@@ -257,8 +257,8 @@ packages:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
     dev: true
 
-  /@kikiutils/fs-extra@1.2.5:
-    resolution: {integrity: sha512-XrYjBAnDsCErojxiekxYRHtw46HEDYJcnn8vaKhi9gD0hZq2dVIwGz1qNm1mTdu/NeQNBesuIm2dByIZt35xsg==}
+  /@kikiutils/fs-extra@1.2.6:
+    resolution: {integrity: sha512-+PBYiJTC9dZVgYVQz2bvWbnhDZaoD2HO76nQPd2ToVrgUW5AFkcY52ifEMBGQrDChqSbplssSCafWf4XBW7iNQ==}
     engines: {node: '>= 16.0.0'}
     dependencies:
       '@kikiutils/wrappers': 1.0.5
@@ -499,8 +499,8 @@ packages:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
 
-  /fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+  /fsevents@2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -586,8 +586,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /magic-string@0.30.2:
-    resolution: {integrity: sha512-lNZdu7pewtq/ZvWUp9Wpf/x7WzMTsR26TWV03BRZrXFsv+BI6dy8RAiKgm1uM/kyR0rCfUcqvOlXKG66KhIGug==}
+  /magic-string@0.30.3:
+    resolution: {integrity: sha512-B7xGbll2fG/VjP+SWg4sX3JynwIU0mjoTc6MPpKNuIvftk6u6vqhDnk1R80b8C2GBR6ywqy+1DcKBrevBg+bmw==}
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -640,7 +640,7 @@ packages:
       '@rollup/plugin-replace': 5.0.2(rollup@2.79.1)
       '@rollup/pluginutils': 5.0.3(rollup@2.79.1)
       esbuild: 0.18.20
-      magic-string: 0.30.2
+      magic-string: 0.30.3
       rollup: 2.79.1
       typescript: 5.1.6
     dev: true
@@ -659,7 +659,7 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /short-uuid@4.2.2:
