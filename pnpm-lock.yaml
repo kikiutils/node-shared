@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@kikiutils/fs-extra':
-    specifier: ^1.2.6
-    version: 1.2.6
+    specifier: ^1.2.7
+    version: 1.2.7
   '@noble/hashes':
     specifier: ^1.3.1
     version: 1.3.1
@@ -41,8 +41,8 @@ devDependencies:
     specifier: ^4.14.197
     version: 4.14.197
   '@types/node':
-    specifier: ^20.5.1
-    version: 20.5.1
+    specifier: ^20.5.3
+    version: 20.5.3
   '@types/ws':
     specifier: ^8.5.5
     version: 8.5.5
@@ -68,16 +68,16 @@ packages:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
     dev: true
 
-  /@kikiutils/fs-extra@1.2.6:
-    resolution: {integrity: sha512-+PBYiJTC9dZVgYVQz2bvWbnhDZaoD2HO76nQPd2ToVrgUW5AFkcY52ifEMBGQrDChqSbplssSCafWf4XBW7iNQ==}
+  /@kikiutils/fs-extra@1.2.7:
+    resolution: {integrity: sha512-kyw4/VV9QLaqeZlj0oZCGJdsystkHocMsk8sRXiP4m0YymsMGipRVv8/g0mk2Lp3tG69QHZJVpSKWdXu71sy9A==}
     engines: {node: '>= 16.0.0'}
     dependencies:
-      '@kikiutils/wrappers': 1.0.5
+      '@kikiutils/wrappers': 1.0.6
       fs-extra: 11.1.1
     dev: false
 
-  /@kikiutils/wrappers@1.0.5:
-    resolution: {integrity: sha512-nFkecRBUw12VXZZ1sQeFDzHta0zSvQraB6Cho3JA5Cxx+va5wrgLKUXZZ99TQPWJTrZ8IWLecboSMqPGxc7I+Q==}
+  /@kikiutils/wrappers@1.0.6:
+    resolution: {integrity: sha512-V50z61Jl6OcTvKI3I2w+UyqVaBqHjPmrj1bQmp1kH9Sim66DofoKqN0N7ciWK28qTgiIcF06+Of7M3DKpZbdBg==}
     engines: {node: '>= 16.0.0'}
     dev: false
 
@@ -138,20 +138,20 @@ packages:
     resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
     dependencies:
       '@types/jsonfile': 6.1.1
-      '@types/node': 20.5.1
+      '@types/node': 20.5.3
     dev: true
 
   /@types/glob@7.2.0:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.5.1
+      '@types/node': 20.5.3
     dev: true
 
   /@types/jsonfile@6.1.1:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
-      '@types/node': 20.5.1
+      '@types/node': 20.5.3
     dev: true
 
   /@types/lodash@4.14.197:
@@ -166,8 +166,8 @@ packages:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
     dev: true
 
-  /@types/node@20.5.1:
-    resolution: {integrity: sha512-4tT2UrL5LBqDwoed9wZ6N3umC4Yhz3W3FloMmiiG4JwmUJWpie0c7lcnUNd4gtMKuDEO4wRVS8B6Xa0uMRsMKg==}
+  /@types/node@20.5.3:
+    resolution: {integrity: sha512-ITI7rbWczR8a/S6qjAW7DMqxqFMjjTo61qZVWJ1ubPvbIQsL5D/TvwjYEalM8Kthpe3hTzOGrF2TGbAu2uyqeA==}
     dev: true
 
   /@types/object-path@0.11.1:
@@ -185,7 +185,7 @@ packages:
   /@types/ws@8.5.5:
     resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
     dependencies:
-      '@types/node': 20.5.1
+      '@types/node': 20.5.3
     dev: true
 
   /@wessberg/stringutil@1.0.19:
