@@ -23,7 +23,7 @@ export default defineConfig({
 		validate: true
 	},
 	plugins: [
-		del({ target: './dist' }),
+		del({ targets: './dist' }),
 		externals(),
 		ts()
 	]
