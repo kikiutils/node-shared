@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@kikiutils/fs-extra':
-    specifier: ^1.2.7
-    version: 1.2.7
+    specifier: ^1.2.8
+    version: 1.2.8
   '@noble/hashes':
     specifier: ^1.3.1
     version: 1.3.1
@@ -68,8 +68,8 @@ packages:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
     dev: true
 
-  /@kikiutils/fs-extra@1.2.7:
-    resolution: {integrity: sha512-kyw4/VV9QLaqeZlj0oZCGJdsystkHocMsk8sRXiP4m0YymsMGipRVv8/g0mk2Lp3tG69QHZJVpSKWdXu71sy9A==}
+  /@kikiutils/fs-extra@1.2.8:
+    resolution: {integrity: sha512-IzHWB+n4xuH1itqhNj5khnEgngOYfdSJlleMVOwMr0ZclBbWu8gfT7jDXdkkS7QFj1syndeCOTqX6rFj3O80Mw==}
     engines: {node: '>= 16.0.0'}
     dependencies:
       '@kikiutils/wrappers': 1.0.6
