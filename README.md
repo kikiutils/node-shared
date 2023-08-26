@@ -1,7 +1,7 @@
-# kikiutils-node
+# @kikiutils/node
 
 For node utils classes and functions.
 
-There may be major changes in the future.
+**Detailed documentation will be added in future releases.**
 
-The readme will be improved in future versions.
+**There may be major changes in the future.**
