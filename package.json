@@ -41,5 +41,10 @@
     "@types/ws": "^8.5.5",
     "ts-project-builder": "^0.3.0",
     "typescript": "^5.2.2"
-  }
+  },
+  "keywords": [
+    "classes",
+    "functions",
+    "utils"
+  ]
 }
