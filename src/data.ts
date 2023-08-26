@@ -42,7 +42,7 @@ export class DataTransmission {
 		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
 		if (options.dataAddUUID) data.uuid = await getUUID();
 		const formData = new FormData();
-		if (options.files) for (const f in options.files) formData.append(f, options.files[f]);
+		if (options.files) Object.entries(options.files).forEach(([k, f]) => formData.append(k, f));
 		const hashFile = new Blob([this.hashData(data)]);
 		formData.append('hash_file', hashFile, 'hash_file');
 		while (true) {
