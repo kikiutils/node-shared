@@ -31,6 +31,9 @@ dependencies:
     version: 8.13.0
 
 devDependencies:
+  '@kikiutils/tsconfigs':
+    specifier: ^0.1.0
+    version: 0.1.0
   '@types/crypto-js':
     specifier: ^4.1.1
     version: 4.1.1
@@ -75,6 +78,10 @@ packages:
       '@kikiutils/wrappers': 1.0.6
       fs-extra: 11.1.1
     dev: false
+
+  /@kikiutils/tsconfigs@0.1.0:
+    resolution: {integrity: sha512-FuT7VtxDeEu23gKH2O6EKIvPMXZ0Q1x3LPHSO38aXZMibrxnemqigScVzrkE3V+yfLkIEBuAsHvv1j1EM3LHzw==}
+    dev: true
 
   /@kikiutils/wrappers@1.0.6:
     resolution: {integrity: sha512-V50z61Jl6OcTvKI3I2w+UyqVaBqHjPmrj1bQmp1kH9Sim66DofoKqN0N7ciWK28qTgiIcF06+Of7M3DKpZbdBg==}
