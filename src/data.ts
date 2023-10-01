@@ -15,22 +15,22 @@ export interface RequestOptions {
 }
 
 export class DataTransmission {
-	private aes: AesCrypt;
-	private apiBaseUrl: string;
+	#aes: AesCrypt;
+	#apiBaseUrl: string;
 
 	constructor(aes: AesCrypt, apiBaseUrl: string) {
-		this.aes = aes;
-		this.apiBaseUrl = apiBaseUrl;
+		this.#aes = aes;
+		this.#apiBaseUrl = apiBaseUrl;
 	}
 
-	private hashData(data: Dict<any>) {
+	#hashData(data: Dict<any>) {
 		const dataList = Object.entries(data);
-		return this.aes.encrypt(shuffle(dataList)) || '';
+		return this.#aes.encrypt(shuffle(dataList)) || '';
 	}
 
-	private processHashData(hashText: string) {
+	#processHashData(hashText: string) {
 		const data: Dict<any> = {};
-		const decryptedData: [string, any][] = this.aes.decrypt(hashText);
+		const decryptedData: [string, any][] = this.#aes.decrypt(hashText);
 		decryptedData.forEach(([k, v]) => data[k] = v);
 		return data;
 	}
@@ -39,18 +39,18 @@ export class DataTransmission {
 	async request(url: string, data?: Dict<any>, options?: RequestOptions): Promise<Dict<any> | Blob>;
 	async request(url: string, data: Dict<any> = {}, options: RequestOptions = {}) {
 		if (options.waitForSuccess === undefined) options.waitForSuccess = true;
-		if (!url.match(/https?:\/\//)) url = `${this.apiBaseUrl}${url}`;
+		if (!url.match(/https?:\/\//)) url = `${this.#apiBaseUrl}${url}`;
 		if (options.dataAddUUID) data.uuid = await getUUID();
 		const formData = new FormData();
 		if (options.files) Object.entries(options.files).forEach(([k, f]) => formData.append(k, f));
-		const hashFile = new Blob([this.hashData(data)]);
+		const hashFile = new Blob([this.#hashData(data)]);
 		formData.append('hash_file', hashFile, 'hash_file');
 		while (true) {
 			try {
 				const response = await request(url, options?.method || 'post', {}, formData, options?.requestConfig);
 				if (response.status > 210) throw new Error();
 				const rpIsText = response.headers.get('content-type')?.includes('text/');
-				const result = rpIsText ? this.processHashData(await response.text()) : await response.blob();
+				const result = rpIsText ? this.#processHashData(await response.text()) : await response.blob();
 				if (options.waitForSuccess && (result === null || !(result instanceof Blob || result.success))) throw new Error();
 				return result;
 			} catch (error) {

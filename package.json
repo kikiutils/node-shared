@@ -31,6 +31,7 @@
     "node-color-log": "^10.0.2",
     "short-uuid": "^4.2.2",
     "sleep-ts": "^0.1.1",
+    "tslib": "^2.6.2",
     "ws": "^8.14.2"
   },
   "devDependencies": {

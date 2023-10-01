@@ -9,7 +9,7 @@ import { Dict } from './types';
 type EventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
 
 export class WebsocketClient {
-	private aes: AesCrypt;
+	#aes: AesCrypt;
 	checkInterval: number;
 	code: string;
 	connectionOptions: ClientOptions;
@@ -28,12 +28,12 @@ export class WebsocketClient {
 		extraData: Dict<any> = {},
 		connectionOptions: ClientOptions = {}
 	) {
-		this.aes = aes;
+		this.#aes = aes;
 		this.checkInterval = checkInterval;
 		this.code = randomStr();
 		this.connectionOptions = {
 			headers: {
-				'extra-info': this.aes.encrypt(extraData)
+				'extra-info': this.#aes.encrypt(extraData)
 			},
 			...connectionOptions
 		};
@@ -45,11 +45,11 @@ export class WebsocketClient {
 		this.waitingEvents = {};
 	}
 
-	private async checkConnection() {
+	async #checkConnection() {
 		try {
 			this.ws?.ping();
 			if (this.ws?.readyState !== 1) throw new Error();
-			setTimeout(() => this.checkConnection(), this.checkInterval);
+			setTimeout(() => this.#checkConnection(), this.checkInterval);
 		} catch (_) {
 			logger.error('Websocket connection error.');
 			this.connect(true);
@@ -70,14 +70,14 @@ export class WebsocketClient {
 		}
 
 		this.ws.onmessage = ({ data }) => {
-			const decryptedData = this.aes.decrypt(data as string);
+			const decryptedData = this.#aes.decrypt(data as string);
 			this.eventHandlers[decryptedData[0]]?.(decryptedData[1], decryptedData[2]);
 		}
 
 		this.ws.onopen = () => {
 			logger.success('Websocket success connected.');
 			this.emit('init', [], { code: this.code });
-			this.checkConnection();
+			this.#checkConnection();
 		}
 
 		while (waitForSuccess && this.ws.readyState !== 1) await sleep(50);
@@ -90,7 +90,7 @@ export class WebsocketClient {
 
 	emit(event: string, args: any[] = [], kwargs: Dict<any> = {}) {
 		try {
-			return this.ws?.send(this.aes.encrypt([event, args, kwargs]));
+			return this.ws?.send(this.#aes.encrypt([event, args, kwargs]));
 		} catch (error) { }
 		return false;
 	}
