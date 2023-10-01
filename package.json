@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/node",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Utils classes and function for nodejs.",
   "license": "MIT",
   "author": {
@@ -20,7 +20,7 @@
     "./dist/**/*"
   ],
   "scripts": {
-    "build": "ts-project-builder -c --build-type package"
+    "build": "ts-project-builder -c --type package"
   },
   "dependencies": {
     "@kikiutils/fs-extra": "^1.2.11",
