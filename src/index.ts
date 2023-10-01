@@ -4,6 +4,7 @@ export * from './data';
 export * from './fetch';
 export * from './file';
 export * from './hash';
+export * from './logger';
 export * from './random';
 export * from './time';
 export * from './types';
