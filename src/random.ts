@@ -9,4 +9,4 @@ export const randomStr = (minLength = 8, maxLength = 8): string => {
 	let s = '';
 	for (let i = 0; i < random(minLength, maxLength); i++) s += RANDOM_LETTERS.charAt(Math.floor(Math.random() * RANDOM_LETTERS_LENGTH));
 	return s;
-}
+};

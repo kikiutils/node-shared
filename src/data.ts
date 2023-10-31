@@ -31,7 +31,7 @@ export class DataTransmission {
 	#processHashData(hashText: string) {
 		const data: Dict<any> = {};
 		const decryptedData: [string, any][] = this.#aes.decrypt(hashText);
-		decryptedData.forEach(([k, v]) => data[k] = v);
+		decryptedData.forEach(([k, v]) => (data[k] = v));
 		return data;
 	}
 

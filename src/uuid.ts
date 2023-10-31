@@ -9,7 +9,7 @@ export const getUUID = async (path: FileHandle | PathLike = './uuid.uuid') => {
 	const newUUID = uuid();
 	await writeFile(path, newUUID);
 	return newUUID;
-}
+};
 
 export const getUUIDSync = (path: PathOrFileDescriptor = './uuid.uuid') => {
 	const nowUUIDFile = readFileSync(path);
@@ -17,4 +17,4 @@ export const getUUIDSync = (path: PathOrFileDescriptor = './uuid.uuid') => {
 	const newUUID = uuid();
 	writeFileSync(path, newUUID);
 	return newUUID;
-}
+};

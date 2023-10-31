@@ -20,14 +20,7 @@ export class WebsocketClient {
 	waitingEvents: Dict<Dict<Promise<any>>>;
 	ws?: WebSocket;
 
-	constructor(
-		aes: AesCrypt,
-		name: string,
-		url: string,
-		checkInterval = 3000,
-		extraData: Dict<any> = {},
-		connectionOptions: ClientOptions = {}
-	) {
+	constructor(aes: AesCrypt, name: string, url: string, checkInterval = 3000, extraData: Dict<any> = {}, connectionOptions: ClientOptions = {}) {
 		this.#aes = aes;
 		this.checkInterval = checkInterval;
 		this.code = randomStr();
@@ -39,7 +32,7 @@ export class WebsocketClient {
 		};
 
 		this.disconnecting = false;
-		this.eventHandlers = {}
+		this.eventHandlers = {};
 		this.name = name;
 		this.url = url;
 		this.waitingEvents = {};
@@ -62,23 +55,23 @@ export class WebsocketClient {
 
 		this.ws.onclose = () => {
 			this.disconnecting = false;
-		}
+		};
 
 		this.ws.onerror = async () => {
 			logger.error('Websocket connect error.');
 			this.connect();
-		}
+		};
 
 		this.ws.onmessage = ({ data }) => {
 			const decryptedData = this.#aes.decrypt(data as string);
 			this.eventHandlers[decryptedData[0]]?.(decryptedData[1], decryptedData[2]);
-		}
+		};
 
 		this.ws.onopen = () => {
 			logger.success('Websocket success connected.');
 			this.emit('init', [], { code: this.code });
 			this.#checkConnection();
-		}
+		};
 
 		while (waitForSuccess && this.ws.readyState !== 1) await sleep(50);
 	}
@@ -91,7 +84,7 @@ export class WebsocketClient {
 	emit(event: string, args: any[] = [], kwargs: Dict<any> = {}) {
 		try {
 			return this.ws?.send(this.#aes.encrypt([event, args, kwargs]));
-		} catch (error) { }
+		} catch (error) {}
 		return false;
 	}
 

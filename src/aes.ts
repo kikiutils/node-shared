@@ -4,10 +4,10 @@ export type BlockCipherMode = typeof cryptoJs.mode.ECB | typeof cryptoJs.mode.CB
 
 export class AesCrypt {
 	#config: {
-		iv: cryptoJs.lib.WordArray,
-		mode: BlockCipherMode,
-		padding: typeof cryptoJs.pad.Pkcs7
-	}
+		iv: cryptoJs.lib.WordArray;
+		mode: BlockCipherMode;
+		padding: typeof cryptoJs.pad.Pkcs7;
+	};
 
 	#format: typeof cryptoJs.format.Hex;
 	#key: cryptoJs.lib.WordArray;
