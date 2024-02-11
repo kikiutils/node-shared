@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.0.0-alpha.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.0...v2.0.0-alpha.1)
+
+### 🚀 Enhancements
+
+- Add exports configuration to package.json ([832d106](https://github.com/kiki-kanri/kikiutils-node/commit/832d106))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-alpha.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v1.1.3...v2.0.0-alpha.0)
