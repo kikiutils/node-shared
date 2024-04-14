@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.0.0-alpha.2
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.1...v2.0.0-alpha.2)
+
+### 🚀 Enhancements
+
+- Add cjs format to build output files ([3c9edaa](https://github.com/kiki-kanri/kikiutils-node/commit/3c9edaa))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([467cf12](https://github.com/kiki-kanri/kikiutils-node/commit/467cf12))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-alpha.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.0...v2.0.0-alpha.1)
