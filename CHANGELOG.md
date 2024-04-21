@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.0.0-alpha.3
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.2...v2.0.0-alpha.3)
+
+### 💅 Refactors
+
+- Switch package to ESM and set 'type' to 'module' in package.json ([66f3ee3](https://github.com/kiki-kanri/kikiutils-node/commit/66f3ee3))
+
+### 🏡 Chore
+
+- Rename script file and format tsc-multi.json ([dbbb34e](https://github.com/kiki-kanri/kikiutils-node/commit/dbbb34e))
+- Upgrade dependencies ([cdfd392](https://github.com/kiki-kanri/kikiutils-node/commit/cdfd392))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-alpha.2
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.1...v2.0.0-alpha.2)
