@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.0.0-rc.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.0...v2.0.0-rc.1)
+
+### 🚀 Enhancements
+
+- Add `useHonoLogger` utils ([7e7e829](https://github.com/kiki-kanri/kikiutils-node/commit/7e7e829))
+
+### 💅 Refactors
+
+- Modify build and packaging process ([6253743](https://github.com/kiki-kanri/kikiutils-node/commit/6253743))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-rc.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.3...v2.0.0-rc.0)
