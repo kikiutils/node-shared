@@ -1,5 +1,26 @@
 # Changelog
 
+## v2.0.0-rc.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.3...v2.0.0-rc.0)
+
+### 🚀 Enhancements
+
+- Copy README into dist folder during build ([bbefce5](https://github.com/kiki-kanri/kikiutils-node/commit/bbefce5))
+- Set pino logger level using env value ([23185fd](https://github.com/kiki-kanri/kikiutils-node/commit/23185fd))
+
+### 📖 Documentation
+
+- Edit README ([66912af](https://github.com/kiki-kanri/kikiutils-node/commit/66912af))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([18bf489](https://github.com/kiki-kanri/kikiutils-node/commit/18bf489))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-alpha.3
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-alpha.2...v2.0.0-alpha.3)
