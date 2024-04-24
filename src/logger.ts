@@ -8,5 +8,6 @@ const stream = pinoPretty({
 });
 
 const logger = pino({}, stream);
+logger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : logger.level);
 export { logger };
 export default logger;
