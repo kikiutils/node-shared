@@ -8,9 +8,13 @@
     "url": "git+https://github.com/kiki-kanri/kikiutils-node.git"
   },
   "type": "module",
+  "files": [
+    "./dist"
+  ],
   "scripts": {
     "build": "rm -rf ./dist && tsc-multi",
-    "bumplog": "changelogen --bump"
+    "bumplog": "changelogen --bump",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@noble/hashes": "^1.4.0",
@@ -35,8 +39,8 @@
   },
   "exports": {
     "./*": {
-      "default": "./*.mjs",
-      "types": "./*.d.ts"
+      "default": "./dist/*.mjs",
+      "types": "./dist/*.d.ts"
     }
   },
   "prettier": "@kikiutils/prettierrc"
