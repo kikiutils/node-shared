@@ -25,6 +25,7 @@
     "@kikiutils/tsconfigs": "^2.2.0",
     "@types/node": "^20.12.7",
     "changelogen": "^0.5.5",
+    "hono": "^4.2.7",
     "tsc-multi": "^1.1.0",
     "typescript": "^5.4.5"
   },
