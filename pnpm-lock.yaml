@@ -21,8 +21,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       pino:
-        specifier: ^8.20.0
-        version: 8.20.0
+        specifier: ^9.0.0
+        version: 9.0.0
       pino-pretty:
         specifier: ^11.0.0
         version: 11.0.0
@@ -577,8 +577,8 @@ packages:
   pino-std-serializers@6.2.2:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
 
-  pino@8.20.0:
-    resolution: {integrity: sha512-uhIfMj5TVp+WynVASaVEJFTncTUe4dHBq6CWplu/vBgvGHhvBvQfxz+vcOrnnBQdORH3izaGEurLfNlq3YxdFQ==}
+  pino@9.0.0:
+    resolution: {integrity: sha512-uI1ThkzTShNSwvsUM6b4ND8ANzWURk9zTELMztFkmnCQeR/4wkomJ+echHee5GMWGovoSfjwdeu80DsFIt7mbA==}
     hasBin: true
 
   pkg-types@1.1.0:
@@ -730,8 +730,8 @@ packages:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
 
-  thread-stream@2.6.0:
-    resolution: {integrity: sha512-t4eNiKdGwd1EV6tx76mRbrOqwvkxz+ssOiQXEXw88m4p/Xp6679vg16sf39BAstRjHOiWIqp5+J2ylHk3pU30g==}
+  thread-stream@2.7.0:
+    resolution: {integrity: sha512-qQiRWsU/wvNolI6tbbCKd9iKaTnCXsTwVxhhKM6nctPdujTyztjlbUkUTUymidWcMnZ5pWR0ej4a0tjsW021vw==}
 
   titleize@3.0.0:
     resolution: {integrity: sha512-KxVu8EYHDPBdUYdKZdKtU2aj2XfEx9AfjXxE/Aj0vT06w2icA09Vus1rh6eSu1y01akYg6BjIK/hxyLJINoMLQ==}
@@ -1324,7 +1324,7 @@ snapshots:
 
   pino-std-serializers@6.2.2: {}
 
-  pino@8.20.0:
+  pino@9.0.0:
     dependencies:
       atomic-sleep: 1.0.0
       fast-redact: 3.5.0
@@ -1336,7 +1336,7 @@ snapshots:
       real-require: 0.2.0
       safe-stable-stringify: 2.4.3
       sonic-boom: 3.8.1
-      thread-stream: 2.6.0
+      thread-stream: 2.7.0
 
   pkg-types@1.1.0:
     dependencies:
@@ -1479,7 +1479,7 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  thread-stream@2.6.0:
+  thread-stream@2.7.0:
     dependencies:
       real-require: 0.2.0
 
