@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.0.0-rc.2
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.1...v2.0.0-rc.2)
+
+### 🚀 Enhancements
+
+- Add enum utils ([8c6f177](https://github.com/kiki-kanri/kikiutils-node/commit/8c6f177))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([8a10efb](https://github.com/kiki-kanri/kikiutils-node/commit/8a10efb))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-rc.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.0...v2.0.0-rc.1)
