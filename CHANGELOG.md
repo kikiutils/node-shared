@@ -1,5 +1,26 @@
 # Changelog
 
+## v2.0.0-rc.4
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.3...v2.0.0-rc.4)
+
+### 🚀 Enhancements
+
+- Add functions for SHA3 hashing with crypto ([089fc8e](https://github.com/kiki-kanri/kikiutils-node/commit/089fc8e))
+- Add Uint8Array as an input type for SHA3 related functions ([350907c](https://github.com/kiki-kanri/kikiutils-node/commit/350907c))
+
+### 🩹 Fixes
+
+- Correct return type error in enum utils ([0ae2262](https://github.com/kiki-kanri/kikiutils-node/commit/0ae2262))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([49999da](https://github.com/kiki-kanri/kikiutils-node/commit/49999da))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-rc.3
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.2...v2.0.0-rc.3)
