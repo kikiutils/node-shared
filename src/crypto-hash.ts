@@ -1,3 +1,16 @@
+/**
+ * This file provides a set of functions for creating SHA-3 hash digests using different bit lengths (224, 256, 384, 512).
+ * These functions use the Node.js crypto module to generate the hashes.
+ * Recommended for pure Node.js/Deno/Bun applications.
+ *
+ * @example
+ * ```typescript
+ * import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
+ *
+ * console.log(cryptoSha3256('test')); // Output: '36f028580bb02cc8272a9a020f4200e346e276ae664e45ee80745574e2f5ab80'
+ * ```
+ */
+
 import { createHash } from 'crypto';
 import type { BinaryLike, BinaryToTextEncoding } from 'crypto';
 

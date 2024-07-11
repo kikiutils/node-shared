@@ -1,3 +1,13 @@
+/**
+ * This file provides utility functions for making HTTP requests using Axios.
+ * It includes types and helper methods to facilitate various HTTP methods (GET, POST, PUT, PATCH, DELETE).
+ * The main functions are:
+ * - `axiosRequest`: A generic function to make a customizable Axios request.
+ * - Specific methods for each HTTP verb (`axiosGet`, `axiosPost`, `axiosPut`, `axiosPatch`, `axiosDelete`),
+ *   and their shorthand variants (`$axiosGet`, `$axiosPost`, `$axiosPut`, `$axiosPatch`, `$axiosDelete`),
+ *   which directly return the `data` property from the response.
+ */
+
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 

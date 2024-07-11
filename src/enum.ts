@@ -1,2 +1,43 @@
+/**
+ * Extracts the numeric values from an enumeration-like object.
+ *
+ * @param {Record<number | string, number | string>} data - The enumeration-like object to extract numeric values from. The keys can be numbers or strings, and the values can be numbers or strings.
+ * @returns {number[]} An array of numeric values extracted from the object.
+ *
+ * @example
+ * ```typescript
+ * import { getEnumNumberValues } from '@kikiutils/node/enum';
+ *
+ * enum RecordType {
+ *   Receive = 0,
+ *   Send = 1,
+ *   Unknown = 'unknown'
+ * }
+ *
+ * const numericValues = getEnumNumberValues(RecordType);
+ * console.log(numericValues); // Output: [0, 1]
+ * ```
+ */
 export const getEnumNumberValues = (data: Record<number | string, number | string>) => Object.values(data).filter((value) => typeof value === 'number') as number[];
+
+/**
+ * Extracts the string values from an enumeration-like object.
+ *
+ * @param {Record<number | string, number | string>} data - The enumeration-like object to extract string values from. The keys can be numbers or strings, and the values can be numbers or strings.
+ * @returns {string[]} An array of string values extracted from the object.
+ *
+ * @example
+ * ```typescript
+ * import { getEnumStringValues } from '@kikiutils/node/enum';
+ *
+ * enum RecordType {
+ *   Receive = 0,
+ *   Send = 1,
+ *   Unknown = 'unknown'
+ * }
+ *
+ * const stringValues = getEnumStringValues(RecordType);
+ * console.log(stringValues); // Output: ['unknown']
+ * ```
+ */
 export const getEnumStringValues = (data: Record<number | string, number | string>) => Object.values(data).filter((value) => typeof value === 'string') as string[];
