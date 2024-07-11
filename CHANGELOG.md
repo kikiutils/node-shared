@@ -1,5 +1,38 @@
 # Changelog
 
+## v2.0.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.4...v2.0.0)
+
+### 🚀 Enhancements
+
+- Add ksort function ([0f6571e](https://github.com/kiki-kanri/kikiutils-node/commit/0f6571e))
+- **number:** Add options parameter to `prettyNumberToString` function ([fd7374d](https://github.com/kiki-kanri/kikiutils-node/commit/fd7374d))
+- **hono:** Add generic type parameter to `useHonoLogger` function ([43a355b](https://github.com/kiki-kanri/kikiutils-node/commit/43a355b))
+
+### 💅 Refactors
+
+- **number:** ⚠️ Rename `toPercentString` to `calculateToPercentageString` and rewrite calculations using decimal.js ([17a4053](https://github.com/kiki-kanri/kikiutils-node/commit/17a4053))
+- ⚠️ Move calculateToPercentageString to math.ts file ([e1686c2](https://github.com/kiki-kanri/kikiutils-node/commit/e1686c2))
+
+### 📖 Documentation
+
+- Add comments and examples ([3e72bec](https://github.com/kiki-kanri/kikiutils-node/commit/3e72bec))
+- Update README and modify description field in package.json ([fcec53e](https://github.com/kiki-kanri/kikiutils-node/commit/fcec53e))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([646da01](https://github.com/kiki-kanri/kikiutils-node/commit/646da01))
+
+#### ⚠️ Breaking Changes
+
+- **number:** ⚠️ Rename `toPercentString` to `calculateToPercentageString` and rewrite calculations using decimal.js ([17a4053](https://github.com/kiki-kanri/kikiutils-node/commit/17a4053))
+- ⚠️ Move calculateToPercentageString to math.ts file ([e1686c2](https://github.com/kiki-kanri/kikiutils-node/commit/e1686c2))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0-rc.4
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.3...v2.0.0-rc.4)
