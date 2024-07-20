@@ -29,5 +29,5 @@ const logger = pino({}, stream);
  * Otherwise, use the current logger level.
  */
 logger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : logger.level);
-export { logger };
+
 export default logger;
