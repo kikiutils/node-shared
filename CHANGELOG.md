@@ -1,5 +1,35 @@
 # Changelog
 
+## v3.0.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0...v3.0.0)
+
+### 💅 Refactors
+
+- ⚠️ Remove named exports in logger file ([0a01d4a](https://github.com/kiki-kanri/kikiutils-node/commit/0a01d4a))
+
+### 📖 Documentation
+
+- Update README and description in package.json ([8a24ff0](https://github.com/kiki-kanri/kikiutils-node/commit/8a24ff0))
+
+### 📦 Build
+
+- Switch build process to Rollup ([0869dee](https://github.com/kiki-kanri/kikiutils-node/commit/0869dee))
+
+### 🏡 Chore
+
+- Update .gitignore ([a5a97e4](https://github.com/kiki-kanri/kikiutils-node/commit/a5a97e4))
+- Upgrade dependencies ([ccf5f5c](https://github.com/kiki-kanri/kikiutils-node/commit/ccf5f5c))
+- Update exports in package.json ([d147783](https://github.com/kiki-kanri/kikiutils-node/commit/d147783))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove named exports in logger file ([0a01d4a](https://github.com/kiki-kanri/kikiutils-node/commit/0a01d4a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v2.0.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0-rc.4...v2.0.0)
