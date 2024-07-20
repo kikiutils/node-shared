@@ -16,8 +16,7 @@ const generateOutputOptions = (format: 'cjs' | 'esm'): OutputOptions => ({
 		constBindings: true,
 		objectShorthand: true
 	},
-	preserveModules: true,
-	preserveModulesRoot: './src'
+	interop: 'compat'
 });
 
 export default defineConfig({
