@@ -4,34 +4,34 @@
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 
-Utility functions, constants, tools, etc.
+Useful functions, constants, etc.
 
 - [✨ Release Notes](./CHANGELOG.md)
 
+## Features
+
+- ✔️ Provides SHA-3 related hash functions, date formatting handling, and more
+- ✔️ TypeScript support
+
+## Environment Requirements
+
+- Node.js version 18 or higher
+
 ## Installation
 
+Add dependency (example using pnpm).
+
 ```bash
-# Using pnpm
 pnpm add @kikiutils/node
-
-# Using yarn
-yarn add @kikiutils/node
-
-# Using npm
-npm i @kikiutils/node
-
-# Using bun
-bun add @kikiutils/node
 ```
 
-## Environmental Requirements
+You can also use yarn, npm, or bun to add the dependency.
 
-- ESM only
-- Node.js 18 or higher
+That's it! You're ready to use this package in your project. Check out the instructions for [functions](#functions) below. ✨
 
 ## Functions
 
-The relevant comments are at the top of the file or on functions and constants.
+Some functions or the top of files will have related comments and examples.
 
 - [crypto-hash](./src/crypto-hash.ts)
   - cryptoSha3224

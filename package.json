@@ -1,7 +1,7 @@
 {
   "name": "@kikiutils/node",
   "version": "2.0.0",
-  "description": "Utility functions, constants, tools, etc.",
+  "description": "Useful functions, constants, etc.",
   "license": "MIT",
   "author": "kiki-kanri",
   "repository": {
