@@ -40,7 +40,8 @@
   },
   "exports": {
     "./*": {
-      "default": "./*.mjs",
+      "import": "./*.mjs",
+      "require": "./*.cjs",
       "types": "./*.d.ts"
     }
   },
