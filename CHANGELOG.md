@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.0.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v3.0.0...v3.0.1)
+
+### 🏡 Chore
+
+- Update Rollup config ([f516126](https://github.com/kiki-kanri/kikiutils-node/commit/f516126))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v3.0.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v2.0.0...v3.0.0)
