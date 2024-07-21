@@ -34,8 +34,8 @@ importers:
         specifier: ^1.3.2
         version: 1.3.2
       '@kikiutils/tsconfigs':
-        specifier: ^2.2.0
-        version: 2.2.0
+        specifier: ^3.0.1
+        version: 3.0.1
       '@rollup/plugin-node-resolve':
         specifier: ^15.2.3
         version: 15.2.3(rollup@4.19.0)
@@ -52,8 +52,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       hono:
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.5.1
+        version: 4.5.1
       rollup:
         specifier: ^4.19.0
         version: 4.19.0
@@ -82,8 +82,8 @@ packages:
   '@kikiutils/prettierrc@1.3.2':
     resolution: {integrity: sha512-swvPqAf5VmXAKjngFywFw+ibsnwrkP1WJ9egH9ZAjjPNxZrBhVKCmk/X4a1baKUXXgSB3aMmsx0InqP3+pV2qQ==}
 
-  '@kikiutils/tsconfigs@2.2.0':
-    resolution: {integrity: sha512-wkDajUES8NTX/VR8KEwiedBvNxivVWQ8wJYG+zUQT5Ge6c/LXDEWlAPrE3B7tWrnXOOiApg1hytEyR+Cx1w1Sg==}
+  '@kikiutils/tsconfigs@3.0.1':
+    resolution: {integrity: sha512-euNfmx2S5chW92H7CMUWANerj7feZXs1ZMuNs4hZiOLxn/XSq46g1DcWEY7QnpbesURYQtPAQDGtkkzJzcLQtg==}
 
   '@noble/hashes@1.4.0':
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
@@ -570,8 +570,8 @@ packages:
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
-  hono@4.5.0:
-    resolution: {integrity: sha512-ZbezypZfn4odyApjCCv+Fw5OgweBqRLA/EsMyc4FUknFvBJcBIKhHy4sqmD1rWpBc/3wUlaQ6tqOPjk36R1ckg==}
+  hono@4.5.1:
+    resolution: {integrity: sha512-6q8AugoWG5wlrjdGG8OFFiqEsPlPGjODjUik48sEJeko4Tae1UsLS2vUiYHLEJx1gJvOZa4BWkQC+urwDmkEvQ==}
     engines: {node: '>=16.0.0'}
 
   human-signals@2.1.0:
@@ -1138,7 +1138,7 @@ snapshots:
       prettier: 3.3.3
       prettier-plugin-multiline-arrays: 3.0.6(prettier@3.3.3)
 
-  '@kikiutils/tsconfigs@2.2.0': {}
+  '@kikiutils/tsconfigs@3.0.1': {}
 
   '@noble/hashes@1.4.0': {}
 
@@ -1620,7 +1620,7 @@ snapshots:
 
   help-me@5.0.0: {}
 
-  hono@4.5.0: {}
+  hono@4.5.1: {}
 
   human-signals@2.1.0: {}
 
