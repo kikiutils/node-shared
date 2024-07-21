@@ -1,7 +1,9 @@
 /**
- * This file provides a set of functions for creating SHA-3 hash digests using different bit lengths (224, 256, 384, 512).
+ * This file provides a set of functions for creating hash digests using different algorithms and bit lengths.
+ * It includes functions for generating SHA-3 hash digests with bit lengths of 224, 256, 384, and 512,
+ * as well as a function for generating MD5 hash digests.
  * These functions use the Node.js crypto module to generate the hashes.
- * Recommended for pure Node.js/Deno/Bun applications.
+ * Can only be used in Node.js/Deno/Bun runtimes.
  *
  * @example
  * ```typescript
@@ -14,6 +16,8 @@
 import { createHash } from 'crypto';
 import type { BinaryLike, BinaryToTextEncoding } from 'crypto';
 
+export const cryptoMd5 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('md5').update(data).digest(outputEncoding);
+export const cryptoMd5ToBuffer = (data: BinaryLike) => createHash('md5').update(data).digest();
 export const cryptoSha3224 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('sha3-224').update(data).digest(outputEncoding);
 export const cryptoSha3224ToBuffer = (data: BinaryLike) => createHash('sha3-224').update(data).digest();
 export const cryptoSha3256 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('sha3-256').update(data).digest(outputEncoding);
