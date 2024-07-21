@@ -17,9 +17,11 @@ const stream = pinoPretty({
  *
  * To manually change the level, assign the desired level to `logger.level`.
  *
+ * See available levels [here](https://getpino.io/#/docs/api?id=level-string).
+ *
  * @example
  * ```typescript
- * import logger from '@kikiutils/node/logger';
+ * import logger from '@kikiutils/node/pino';
  *
  * logger.info('test'); // Output: '[2024-07-11 12:12:30.085] INFO: test'
  *

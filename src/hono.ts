@@ -2,7 +2,7 @@ import type { HonoBase } from 'hono/hono-base';
 import { logger as honoLogger } from 'hono/logger';
 import type { Env, Schema } from 'hono/types';
 
-import logger from './logger';
+import logger from './pino';
 
 /**
  * Sets up logging for a Hono application. Logs incoming requests based on the `logIncoming` parameter.
