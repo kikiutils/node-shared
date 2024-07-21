@@ -13,21 +13,21 @@ const stream = pinoPretty({
 /**
  * A pino logger instance with the configured stream.
  *
+ * The logger's level is determined based on the `PINO_LOGGER_LEVEL` and `NODE_ENV` environment variables. If `PINO_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`, the level will be set to `error`.
+ *
+ * To manually change the level, assign the desired level to `logger.level`.
+ *
  * @example
  * ```typescript
  * import logger from '@kikiutils/node/logger';
  *
  * logger.info('test'); // Output: '[2024-07-11 12:12:30.085] INFO: test'
+ *
+ * // Manually change the level
+ * logger.level = 'info';
  * ```
  */
-const logger = pino({}, stream);
+const pinoLogger = pino({}, stream);
+pinoLogger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
 
-/**
- * Set the logger level based on environment variables.
- * If PINO_LOGGER_LEVEL is set, use that level.
- * If NODE_ENV is 'production', default to 'error' level.
- * Otherwise, use the current logger level.
- */
-logger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : logger.level);
-
-export default logger;
+export default pinoLogger;
