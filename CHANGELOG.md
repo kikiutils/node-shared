@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.1.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v3.0.1...v3.1.0)
+
+### 🚀 Enhancements
+
+- Add `cryptoMd5` and `cryptoMd5ToBuffer` functions ([10458b1](https://github.com/kiki-kanri/kikiutils-node/commit/10458b1))
+
+### 📖 Documentation
+
+- Update README and keywords in package.json ([9d144eb](https://github.com/kiki-kanri/kikiutils-node/commit/9d144eb))
+
+### 🏡 Chore
+
+- Update Rollup config ([195f323](https://github.com/kiki-kanri/kikiutils-node/commit/195f323))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v3.0.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v3.0.0...v3.0.1)
