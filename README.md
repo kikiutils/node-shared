@@ -27,13 +27,15 @@ pnpm add @kikiutils/node
 
 You can also use yarn, npm, or bun to add the dependency.
 
-That's it! You're ready to use this package in your project. Check out the instructions for [functions](#functions) below. ✨
+That's it! You're ready to use this package in your project. Check out the instructions for [functions](#functions) below ✨.
 
 ## Functions
 
 Some functions or the top of files will have related comments and examples.
 
 - [crypto-hash](./src/crypto-hash.ts)
+  - cryptoMd5
+  - cryptoMd5ToBuffer
   - cryptoSha3224
   - cryptoSha3224ToBuffer
   - cryptoSha3256

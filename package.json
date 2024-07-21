@@ -35,6 +35,20 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-node-externals": "^7.1.2"
   },
+  "keywords": [
+    "axios",
+    "datetime",
+    "hash",
+    "hono",
+    "logger",
+    "math",
+    "md5",
+    "object",
+    "pino",
+    "pretty-number",
+    "sha3",
+    "string"
+  ],
   "engines": {
     "node": ">=18"
   },
