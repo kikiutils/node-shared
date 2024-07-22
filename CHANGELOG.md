@@ -1,5 +1,40 @@
 # Changelog
 
+## v4.0.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v3.1.0...v4.0.0)
+
+### 🚀 Enhancements
+
+- Add consola logger and related files ([c2fb81c](https://github.com/kiki-kanri/kikiutils-node/commit/c2fb81c))
+
+### 💅 Refactors
+
+- ⚠️ Rename request.ts to axios.ts ([f9179fd](https://github.com/kiki-kanri/kikiutils-node/commit/f9179fd))
+- ⚠️ Rename logger.ts to pino.ts ([2d3ec0e](https://github.com/kiki-kanri/kikiutils-node/commit/2d3ec0e))
+
+### 📖 Documentation
+
+- Update comments for pino logger ([897570b](https://github.com/kiki-kanri/kikiutils-node/commit/897570b))
+- Update README and package.json ([b8025db](https://github.com/kiki-kanri/kikiutils-node/commit/b8025db))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([e8209f4](https://github.com/kiki-kanri/kikiutils-node/commit/e8209f4))
+- Remove type field from package.json ([ed68274](https://github.com/kiki-kanri/kikiutils-node/commit/ed68274))
+- Update rollup.config.ts and tsconfig.json ([f366dda](https://github.com/kiki-kanri/kikiutils-node/commit/f366dda))
+- ⚠️ Remove object.ts file ([9068d40](https://github.com/kiki-kanri/kikiutils-node/commit/9068d40))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename request.ts to axios.ts ([f9179fd](https://github.com/kiki-kanri/kikiutils-node/commit/f9179fd))
+- ⚠️ Rename logger.ts to pino.ts ([2d3ec0e](https://github.com/kiki-kanri/kikiutils-node/commit/2d3ec0e))
+- ⚠️ Remove object.ts file ([9068d40](https://github.com/kiki-kanri/kikiutils-node/commit/9068d40))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v3.1.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v3.0.1...v3.1.0)
