@@ -4,14 +4,23 @@
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 
-Useful functions, constants, etc.
+A utility library offering easy-to-use HTTP request wrappers, secure hash functions, flexible logging, datetime utilities, and more to simplify Node.js development.
 
 - [✨ Release Notes](./CHANGELOG.md)
 
 ## Features
 
-- ✔️ Provides SHA-3 related hash functions, date formatting handling, and more
-- ✔️ TypeScript support
+- ✔️ Easy-to-use Axios wrappers for common HTTP methods
+- 📜 Flexible and efficient console logging with Consola
+- 🔒 Secure hash functions including MD5, SHA3-224, SHA3-256, SHA3-384, and SHA3-512
+- 📅 Handy datetime utilities for formatting and manipulation
+- 🔢 Enum helpers for extracting string and number values
+- 🌱 Environment variable checker to ensure required values are set
+- 🛡️ Middleware for logging in Hono framework
+- 📈 Simple math utility for percentage calculations
+- 💎 Utility for formatting numbers prettily
+- 📜 Pino logging integration for enhanced log management
+- 🔤 String utilities for generating random alphabetic strings
 
 ## Environment Requirements
 
@@ -33,6 +42,21 @@ That's it! You're ready to use this package in your project. Check out the instr
 
 Some functions or the top of files will have related comments and examples.
 
+- [axios](./src/axios.ts)
+  - axiosInstance
+  - axiosRequest
+  - axiosDelete
+  - $axiosDelete
+  - axiosGet
+  - $axiosGet
+  - axiosPatch
+  - $axiosPatch
+  - axiosPost
+  - $axiosPost
+  - axiosPut
+  - $axiosPut
+
+- [consola](./src/consola.ts)
 - [crypto-hash](./src/crypto-hash.ts)
   - cryptoMd5
   - cryptoMd5ToBuffer
@@ -65,30 +89,13 @@ Some functions or the top of files will have related comments and examples.
 - [hono](./src/hono.ts)
   - useHonoLogger
 
-- [logger](./src/logger.ts)
 - [math](./src/math.ts)
   - calculateToPercentageString
 
 - [number](./src/number.ts)
   - prettyNumberToString
 
-- [object](./src/object.ts)
-  - ksort
-
-- [request](./src/request.ts)
-  - axiosInstance
-  - axiosRequest
-  - axiosDelete
-  - $axiosDelete
-  - axiosGet
-  - $axiosGet
-  - axiosPatch
-  - $axiosPatch
-  - axiosPost
-  - $axiosPost
-  - axiosPut
-  - $axiosPut
-
+- [pino](./src/pino.ts)
 - [string](./src/string.ts)
   - randomAlphabeticString
   - randomLowerCaseAlphabeticString
