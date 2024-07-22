@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.1.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.0.0...v4.1.0)
+
+### 🚀 Enhancements
+
+- Add named exports to consola and pino files ([131a03c](https://github.com/kiki-kanri/kikiutils-node/commit/131a03c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.0.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v3.1.0...v4.0.0)
