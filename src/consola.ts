@@ -11,7 +11,8 @@ import { createConsola } from 'consola';
  *
  * @example
  * ```typescript
- * import logger from '@kikiutils/node/consola';
+ * import logger from '@kikiutils/node/consola'; // ESM
+ * const { logger } = require('@kikiutils/node/consola'); // CJS
  *
  * logger.info('test'); // Output: 'ℹ test 3:56:30 AM'
  *
@@ -19,7 +20,8 @@ import { createConsola } from 'consola';
  * logger.level = 3;
  * ```
  */
-const consolaLogger = createConsola();
+export const consolaLogger = createConsola();
+export const logger = consolaLogger;
 if (process.env.CONSOLA_LOGGER_LEVEL !== undefined) consolaLogger.level = +process.env.CONSOLA_LOGGER_LEVEL;
 else consolaLogger.level = process.env.NODE_ENV === 'production' ? 0 : consolaLogger.level;
 

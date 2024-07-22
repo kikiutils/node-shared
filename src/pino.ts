@@ -21,7 +21,8 @@ const stream = pinoPretty({
  *
  * @example
  * ```typescript
- * import logger from '@kikiutils/node/pino';
+ * import logger from '@kikiutils/node/pino'; // ESM
+ * const { logger } = require('@kikiutils/node/pino'); // CJS
  *
  * logger.info('test'); // Output: '[2024-07-11 12:12:30.085] INFO: test'
  *
@@ -29,7 +30,8 @@ const stream = pinoPretty({
  * logger.level = 'info';
  * ```
  */
-const pinoLogger = pino({}, stream);
+export const pinoLogger = pino({}, stream);
+export const logger = pinoLogger;
 pinoLogger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
 
 export default pinoLogger;
