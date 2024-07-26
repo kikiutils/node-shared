@@ -36,7 +36,7 @@ pnpm add @kikiutils/node
 
 You can also use yarn, npm, or bun to add the dependency.
 
-That's it! You're ready to use this package in your project. Check out the instructions for [functions](#functions) below ✨.
+That's it! You're ready to use this package in your project. Check out the [function instructions](#functions) below ✨.
 
 ## Functions
 
