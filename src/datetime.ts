@@ -36,7 +36,7 @@ export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, f
  * @param {Date} date - The reference date to calculate the date range.
  * @param {DateRangeType} type - The type of date range to calculate. Valid types are 'lastMonth', 'lastWeek', 'thisMonth', 'thisWeek', 'today', and 'yesterday'.
  * @param {Object} [options] - Optional settings.
- * @param {boolean} [options.setEndDateToNextDate=false] - If true, set the end date to the next day at 00:00.
+ * @param {boolean} [options.setEndDateToNextDayStart=false] - If true, set the end date to the next day at 00:00:00.000.
  * @param {Day} [options.weekStartsOn=1] - The day the week starts on, with 0 being Sunday and 6 being Saturday. Defaults to 1 (Monday).
  *
  * @returns {Object} An object containing the start date and end date.
@@ -58,7 +58,7 @@ export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, f
  * // Output: { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
  * ```
  */
-export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: { setEndDateToNextDate?: boolean; weekStartsOn?: Day }) => {
+export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean; weekStartsOn?: Day }) => {
 	let endDate: Date;
 	let startDate: Date;
 	if (type === 'lastMonth') {
@@ -84,7 +84,7 @@ export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: 
 		startDate = startOfDay(yesterday);
 	}
 
-	if (options?.setEndDateToNextDate) endDate.setHours(24, 0, 0, 0);
+	if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
 	return { endDate, startDate };
 };
 
