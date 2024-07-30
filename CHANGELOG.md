@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.2.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.0...v4.2.1)
+
+### 🩹 Fixes
+
+- Correct options property name in getDateRangeFromDate ([e48375c](https://github.com/kiki-kanri/kikiutils-node/commit/e48375c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.2.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.1.0...v4.2.0)
