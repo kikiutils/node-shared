@@ -71,6 +71,7 @@ Some functions or the top of files will have related comments and examples.
 
 - [datetime](./src/datetime.ts)
   - formatDateOrTimestamp
+  - getDateRangeFromDate
   - getMidnightDateFromToday
 
 - [enum](./src/enum.ts)

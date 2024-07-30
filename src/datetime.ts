@@ -1,5 +1,7 @@
-import { format as dateFnsFormat } from 'date-fns';
-import type { FormatOptions } from 'date-fns';
+import { endOfDay, endOfMonth, endOfWeek, format as dateFnsFormat, startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subWeeks } from 'date-fns';
+import type { Day, FormatOptions } from 'date-fns';
+
+export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' | 'today' | 'yesterday';
 
 /**
  * Formats a given date, timestamp, or string into the specified format.
@@ -27,6 +29,64 @@ import type { FormatOptions } from 'date-fns';
  * ```
  */
 export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) => dateFnsFormat(dateOrTimestamp, format, options);
+
+/**
+ * Get the date range (start date and end date) based on the specified date and range type.
+ *
+ * @param {Date} date - The reference date to calculate the date range.
+ * @param {DateRangeType} type - The type of date range to calculate. Valid types are 'lastMonth', 'lastWeek', 'thisMonth', 'thisWeek', 'today', and 'yesterday'.
+ * @param {Object} [options] - Optional settings.
+ * @param {boolean} [options.setEndDateToNextDate=false] - If true, set the end date to the next day at 00:00.
+ * @param {Day} [options.weekStartsOn=1] - The day the week starts on, with 0 being Sunday and 6 being Saturday. Defaults to 1 (Monday).
+ *
+ * @returns {Object} An object containing the start date and end date.
+ *
+ * @example
+ * ```typescript
+ * import { getDateRangeFromDate } from '@kikiutils/node/datetime';
+ *
+ * // Get the date range for the last month from a given date
+ * const date = new Date('2023-07-01');
+ * const range = getDateRangeFromDate(date, 'lastMonth');
+ * console.log(range);
+ * // Output: { startDate: 2023-06-01T00:00:00.000Z, endDate: 2023-06-30T23:59:59.999Z }
+ *
+ * // Get the date range for this week from a given date, with the week starting on Sunday
+ * const date = new Date('2023-07-01');
+ * const range = getDateRangeFromDate(date, 'thisWeek', { weekStartsOn: 0 });
+ * console.log(range);
+ * // Output: { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
+ * ```
+ */
+export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: { setEndDateToNextDate?: boolean; weekStartsOn?: Day }) => {
+	let endDate: Date;
+	let startDate: Date;
+	if (type === 'lastMonth') {
+		const lastMonth = subMonths(date, 1);
+		endDate = endOfMonth(lastMonth);
+		startDate = startOfMonth(lastMonth);
+	} else if (type === 'lastWeek') {
+		const lastWeek = subWeeks(date, 1);
+		endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn || 1 });
+		startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn || 1 });
+	} else if (type === 'thisMonth') {
+		endDate = endOfMonth(date);
+		startDate = startOfMonth(date);
+	} else if (type === 'thisWeek') {
+		endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn || 1 });
+		startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn || 1 });
+	} else if (type === 'today') {
+		endDate = endOfDay(date);
+		startDate = startOfDay(date);
+	} else {
+		const yesterday = subDays(date, 1);
+		endDate = endOfDay(yesterday);
+		startDate = startOfDay(yesterday);
+	}
+
+	if (options?.setEndDateToNextDate) endDate.setHours(24, 0, 0, 0);
+	return { endDate, startDate };
+};
 
 /**
  * Returns a Date object set to midnight (00:00:00) of today or with an offset of the specified number of days.
