@@ -1,5 +1,26 @@
 # Changelog
 
+## v4.2.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.1.0...v4.2.0)
+
+### 🚀 Enhancements
+
+- Add `getDateRangeFromDate` function ([cf9d212](https://github.com/kiki-kanri/kikiutils-node/commit/cf9d212))
+
+### 📖 Documentation
+
+- Update README ([8419a5e](https://github.com/kiki-kanri/kikiutils-node/commit/8419a5e))
+
+### 🏡 Chore
+
+- Remove rollup files and dependencies and switch to builder build ([1aca08a](https://github.com/kiki-kanri/kikiutils-node/commit/1aca08a))
+- Upgrade dependencies ([37ecc2e](https://github.com/kiki-kanri/kikiutils-node/commit/37ecc2e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.1.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.0.0...v4.1.0)
