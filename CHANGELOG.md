@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.2.2
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.1...v4.2.2)
+
+### 🩹 Fixes
+
+- Prevent default value handling from overwriting non-null/undefined falsy values ([a7b9c6e](https://github.com/kiki-kanri/kikiutils-node/commit/a7b9c6e))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([4185969](https://github.com/kiki-kanri/kikiutils-node/commit/4185969))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.2.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.0...v4.2.1)
