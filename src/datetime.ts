@@ -67,14 +67,14 @@ export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: 
 		startDate = startOfMonth(lastMonth);
 	} else if (type === 'lastWeek') {
 		const lastWeek = subWeeks(date, 1);
-		endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn || 1 });
-		startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn || 1 });
+		endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
+		startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
 	} else if (type === 'thisMonth') {
 		endDate = endOfMonth(date);
 		startDate = startOfMonth(date);
 	} else if (type === 'thisWeek') {
-		endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn || 1 });
-		startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn || 1 });
+		endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
+		startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
 	} else if (type === 'today') {
 		endDate = endOfDay(date);
 		startDate = startOfDay(date);
