@@ -1,5 +1,26 @@
 # Changelog
 
+## v4.2.3
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.2...v4.2.3)
+
+### 🩹 Fixes
+
+- Handle mixed number and string enum values in `getEnumStringValues` ([57b6ae9](https://github.com/kiki-kanri/kikiutils-node/commit/57b6ae9))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([ba15c66](https://github.com/kiki-kanri/kikiutils-node/commit/ba15c66))
+- Add jest dependency and related files ([49f84e4](https://github.com/kiki-kanri/kikiutils-node/commit/49f84e4))
+
+### ✅ Tests
+
+- Add test cases ([86ca8db](https://github.com/kiki-kanri/kikiutils-node/commit/86ca8db))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.2.2
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.1...v4.2.2)
