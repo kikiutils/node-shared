@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.2.4
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.3...v4.2.4)
+
+### 🏡 Chore
+
+- Upgrade dependencies ([59f187b](https://github.com/kiki-kanri/kikiutils-node/commit/59f187b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.2.3
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.2...v4.2.3)
