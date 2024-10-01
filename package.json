@@ -55,6 +55,11 @@
     "node": ">=18"
   },
   "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.cjs",
+      "types": "./index.d.ts"
+    },
     "./*": {
       "import": "./*.mjs",
       "require": "./*.cjs",
