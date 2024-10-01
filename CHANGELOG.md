@@ -1,5 +1,28 @@
 # Changelog
 
+## v4.3.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.4...v4.3.0)
+
+### 🚀 Enhancements
+
+- Add `flattenToSingleValue` function ([89077cb](https://github.com/kiki-kanri/kikiutils-node/commit/89077cb))
+
+### 🏡 Chore
+
+- Update script ([ca98dac](https://github.com/kiki-kanri/kikiutils-node/commit/ca98dac))
+- Upgrade dependencies ([4a3ac53](https://github.com/kiki-kanri/kikiutils-node/commit/4a3ac53))
+- Add index export to package.json exports ([e017218](https://github.com/kiki-kanri/kikiutils-node/commit/e017218))
+- Add tslib to devDependencies ([08fffce](https://github.com/kiki-kanri/kikiutils-node/commit/08fffce))
+
+### ✅ Tests
+
+- Add unit tests for `flattenToSingleValue` function ([338c475](https://github.com/kiki-kanri/kikiutils-node/commit/338c475))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.2.4
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.3...v4.2.4)
