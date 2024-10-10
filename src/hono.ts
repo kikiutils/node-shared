@@ -21,6 +21,6 @@ import logger from './pino';
  */
 export const useHonoLogger = <E extends Env = Env, S extends Schema = {}, BasePath extends string = '/'>(honoApp: HonoBase<E, S, BasePath>, logIncoming: boolean = false) => {
 	if (process.env.NODE_ENV === 'production') return;
-	const logFunction = logIncoming ? (text: string) => logger.info(text.slice(6)) : (text: string) => !text.startsWith('  <--') && logger.info(text.slice(6));
+	const logFunction = logIncoming ? (text: string) => logger.info(text) : (text: string) => !text.startsWith('<--') && logger.info(text.slice(4));
 	honoApp.use(honoLogger(logFunction));
 };
