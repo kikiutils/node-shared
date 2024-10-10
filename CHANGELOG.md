@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.3.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.3.0...v4.3.1)
+
+### 🩹 Fixes
+
+- **hono:** Resolve issue with logger message handling ([bdb8d4d](https://github.com/kiki-kanri/kikiutils-node/commit/bdb8d4d))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.3.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.2.4...v4.3.0)
