@@ -1,5 +1,21 @@
 # Changelog
 
+## v4.4.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.3.1...v4.4.0)
+
+### 🚀 Enhancements
+
+- Add `setReadonlyConstantToGlobalThis` function ([115c6b7](https://github.com/kiki-kanri/kikiutils-node/commit/115c6b7))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([7fdda21](https://github.com/kiki-kanri/kikiutils-node/commit/7fdda21))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.3.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.3.0...v4.3.1)
