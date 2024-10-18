@@ -12,7 +12,7 @@
     "build": "ts-project-builder './src/**/*.ts' --clean",
     "bumplog": "changelogen --bump",
     "release": "pnpm run build && pnpm run test && changelogen --push --release && sh ./build-and-publish.sh",
-    "test": "jest --coverage"
+    "test": "cross-env TZ=UTC jest --coverage"
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.7.0",
@@ -23,6 +23,7 @@
     "@types/node": "^22.7.6",
     "axios": "^1.7.7",
     "consola": "^3.2.3",
+    "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
     "decimal.js": "^10.4.3",
     "hono": "^4.6.5",
