@@ -11,8 +11,8 @@ describe('formatDateOrTimestamp', () => {
 
 	it('should format a numeric timestamp', () => {
 		const timestamp = 1657814400000;
-		const formattedTimestamp = formatDateOrTimestamp(timestamp, 'yyyy-MM-dd');
-		expect(formattedTimestamp).toBe('2022-07-15');
+		const formattedTimestamp = formatDateOrTimestamp(timestamp, 'yyyy-MM-dd HH:mm');
+		expect(formattedTimestamp).toBe('2022-07-14 16:00');
 	});
 
 	it('should format a date string', () => {
