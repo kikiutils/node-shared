@@ -1,13 +1,3 @@
 import { defineConfig } from 'ts-project-builder';
 
-export default defineConfig({
-	builtInInputPluginOptions: {
-		nodeExternal: {
-			include: [
-				'hono/hono-base',
-				'hono/logger',
-				'hono/types'
-			]
-		}
-	}
-});
+export default defineConfig({ builtInInputPluginOptions: { nodeExternal: { devDeps: true } } });
