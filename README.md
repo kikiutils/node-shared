@@ -38,6 +38,11 @@ You can also use yarn, npm, or bun to add the dependency.
 
 That's it! You're ready to use this package in your project. Check out the [function instructions](#functions) below ✨.
 
+> [!NOTE]
+> When installing this package, not all required dependencies will be installed. If a function uses specific functionalities, you will need to install the corresponding dependencies manually.
+>
+> For example, if there is a file that uses axios, you will need to manually install axios.
+
 ## Functions
 
 Some functions or the top of files will have related comments and examples.
@@ -58,16 +63,16 @@ Some functions or the top of files will have related comments and examples.
 
 - [consola](./src/consola.ts)
 - [crypto-hash](./src/crypto-hash.ts)
-  - cryptoMd5
-  - cryptoMd5ToBuffer
-  - cryptoSha3224
-  - cryptoSha3224ToBuffer
-  - cryptoSha3256
-  - cryptoSha3256ToBuffer
-  - cryptoSha3384
-  - cryptoSha3384ToBuffer
-  - cryptoSha3512
-  - cryptoSha3512ToBuffer
+  - cryptoMD5
+  - cryptoMD5ToBuffer
+  - cryptoSHA3224
+  - cryptoSHA3224ToBuffer
+  - cryptoSHA3256
+  - cryptoSHA3256ToBuffer
+  - cryptoSHA3384
+  - cryptoSHA3384ToBuffer
+  - cryptoSHA3512
+  - cryptoSHA3512ToBuffer
 
 - [datetime](./src/datetime.ts)
   - formatDateOrTimestamp
@@ -89,6 +94,10 @@ Some functions or the top of files will have related comments and examples.
 
 - [hono](./src/hono.ts)
   - useHonoLogger
+
+- [index](./src/index.ts)
+  - flattenToSingleValue
+  - setReadonlyConstantToGlobalThis
 
 - [math](./src/math.ts)
   - calculateToPercentageString
