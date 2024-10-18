@@ -9,7 +9,7 @@
     "url": "git+https://github.com/kiki-kanri/kikiutils-node.git"
   },
   "scripts": {
-    "build": "ts-project-builder ./src/**/*.ts --clean",
+    "build": "ts-project-builder './src/**/*.ts' --clean",
     "bumplog": "changelogen --bump",
     "test": "jest --coverage"
   },
