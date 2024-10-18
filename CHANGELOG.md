@@ -1,5 +1,52 @@
 # Changelog
 
+## v5.0.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.4.0...v5.0.0)
+
+### Migration Notes
+
+- Changed the "Sha" abbreviation in `cryptoMD5` related functions to uppercase ("SHA").
+- The package will no longer install accompanying dependencies automatically. If you need to use related functionalities, you must manually install the corresponding dependencies.
+
+### 🚀 Enhancements
+
+- Add release script to package.json ([4541063](https://github.com/kiki-kanri/kikiutils-node/commit/4541063))
+
+### 🩹 Fixes
+
+- Resolve issue with unquoted glob path in build script for specified imports ([4831bb6](https://github.com/kiki-kanri/kikiutils-node/commit/4831bb6))
+
+### 💅 Refactors
+
+- ⚠️ Merge functions from object.ts into index.ts ([da29903](https://github.com/kiki-kanri/kikiutils-node/commit/da29903))
+- ⚠️ Change function shorthand names in crypto-hash.ts ([64dad0d](https://github.com/kiki-kanri/kikiutils-node/commit/64dad0d))
+
+### 📖 Documentation
+
+- Update README ([c297a79](https://github.com/kiki-kanri/kikiutils-node/commit/c297a79))
+
+### 🏡 Chore
+
+- Switch changelog generation package and upgrade dependencies ([a47afd6](https://github.com/kiki-kanri/kikiutils-node/commit/a47afd6))
+- ⚠️ Change all dependencies to devDependencies ([9f92be7](https://github.com/kiki-kanri/kikiutils-node/commit/9f92be7))
+- Update release script ([b13bdcd](https://github.com/kiki-kanri/kikiutils-node/commit/b13bdcd))
+
+### ✅ Tests
+
+- Add unit tests for `setReadonlyConstantToGlobalThis` ([aafe978](https://github.com/kiki-kanri/kikiutils-node/commit/aafe978))
+- Modify unit tests ([ec85e0c](https://github.com/kiki-kanri/kikiutils-node/commit/ec85e0c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Merge functions from object.ts into index.ts ([da29903](https://github.com/kiki-kanri/kikiutils-node/commit/da29903))
+- ⚠️ Change function shorthand names in crypto-hash.ts ([64dad0d](https://github.com/kiki-kanri/kikiutils-node/commit/64dad0d))
+- ⚠️ Change all dependencies to devDependencies ([9f92be7](https://github.com/kiki-kanri/kikiutils-node/commit/9f92be7))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v4.4.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.3.1...v4.4.0)
