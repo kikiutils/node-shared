@@ -1,5 +1,33 @@
 # Changelog
 
+## v5.0.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.0.0...v5.0.1)
+
+### 📖 Documentation
+
+- Add codecov badge to README ([b19566b](https://github.com/kiki-kanri/kikiutils-node/commit/b19566b))
+
+### 🏡 Chore
+
+- Upgrade dependencies and remove tslib ([7923643](https://github.com/kiki-kanri/kikiutils-node/commit/7923643))
+- Modify tsconfig.json ([754d072](https://github.com/kiki-kanri/kikiutils-node/commit/754d072))
+- Upgrade dependencies and modify release script ([de51810](https://github.com/kiki-kanri/kikiutils-node/commit/de51810))
+
+### ✅ Tests
+
+- Set timezone to UTC during tests ([637c47a](https://github.com/kiki-kanri/kikiutils-node/commit/637c47a))
+- Update datetime unit tests ([b2987e0](https://github.com/kiki-kanri/kikiutils-node/commit/b2987e0))
+- Add unit tests for number.ts and string.ts ([4ad7142](https://github.com/kiki-kanri/kikiutils-node/commit/4ad7142))
+
+### 🤖 CI
+
+- Add new test CI configuration file ([84450b3](https://github.com/kiki-kanri/kikiutils-node/commit/84450b3))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.0.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v4.4.0...v5.0.0)

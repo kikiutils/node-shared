@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/node",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "A utility library offering easy-to-use HTTP request wrappers, secure hash functions, flexible logging, datetime utilities, and more to simplify Node.js development.",
   "license": "MIT",
   "author": "kiki-kanri",
