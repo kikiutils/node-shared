@@ -4,7 +4,7 @@ export function flattenToSingleValue<T, D>(value: T | T[], defaultValue?: D) {
 	return (Array.isArray(value) ? value[0] : value) ?? defaultValue;
 }
 
-export const setReadonlyConstantToGlobalThis = (name: string, value: any, attributes?: PropertyDescriptor & ThisType<any>) => {
+export const setReadonlyConstantToGlobalThis = <T>(name: string, value: T, attributes?: PropertyDescriptor & ThisType<any>) => {
 	Object.defineProperty(globalThis, name, {
 		...attributes,
 		configurable: false,
