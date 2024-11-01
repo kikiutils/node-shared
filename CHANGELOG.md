@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.1.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.0.1...v5.1.0)
+
+### 🚀 Enhancements
+
+- Set value parameter type of setReadonlyConstantToGlobalThis as generic ([cbcf336](https://github.com/kiki-kanri/kikiutils-node/commit/cbcf336))
+
+### 🏡 Chore
+
+- Update minimum Node.js version and version list in CI file ([d5d261a](https://github.com/kiki-kanri/kikiutils-node/commit/d5d261a))
+- Upgrade dependencies ([1f4659f](https://github.com/kiki-kanri/kikiutils-node/commit/1f4659f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.0.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.0.0...v5.0.1)
