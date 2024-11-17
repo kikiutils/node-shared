@@ -1,5 +1,18 @@
 # Changelog
 
+## v5.1.1
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.0...v5.1.1)
+
+### 🏡 Chore
+
+- Upgrade dependencies ([57c452c](https://github.com/kiki-kanri/kikiutils-node/commit/57c452c))
+- Add `tslib` to devDependencies ([f93d4cc](https://github.com/kiki-kanri/kikiutils-node/commit/f93d4cc))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.1.0
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.0.1...v5.1.0)
