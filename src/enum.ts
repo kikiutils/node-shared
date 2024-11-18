@@ -18,7 +18,7 @@
  * console.log(numericValues); // Output: [0, 1]
  * ```
  */
-export const getEnumNumberValues = (data: Record<number | string, number | string>) => Object.values(data).filter(value => typeof value === 'number') as number[];
+export const getEnumNumberValues = (data: Record<number | string, number | string>) => Object.values(data).filter((value) => typeof value === 'number') as number[];
 
 /**
  * Extracts the string values from an enumeration-like object.
@@ -52,5 +52,5 @@ export function getEnumStringValues(data: Record<number | string, number | strin
 		keysCount[value] = (keysCount[value] ?? 0) + 1;
 	});
 
-	return values.filter(value => typeof value === 'string' && (!keys.includes(value) || (keysCount[value] && keysCount[value] > 1)));
+	return values.filter((value) => typeof value === 'string' && (!keys.includes(value) || (keysCount[value] && keysCount[value] > 1)));
 }

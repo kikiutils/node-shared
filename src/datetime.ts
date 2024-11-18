@@ -58,7 +58,7 @@ export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, f
  * // Output: { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
  * ```
  */
-export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean, weekStartsOn?: Day }) {
+export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean; weekStartsOn?: Day }) {
 	let endDate: Date;
 	let startDate: Date;
 	if (type === 'lastMonth') {

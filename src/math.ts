@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 
-type CalculableValue = Decimal.Value | { toString: () => string };
+type CalculableValue = { toString: () => string } | Decimal.Value;
 
 /**
  * Options for configuring the output of the `calculateToPercentageString` function.
@@ -10,13 +10,13 @@ export interface CalculateToPercentageStringOptions {
 	 * The number of decimal places to include in the result.
 	 * @default 2
 	 */
-	decimalPlaces?: number
+	decimalPlaces?: number;
 
 	/**
 	 * Whether to include the '%' symbol in the result.
 	 * @default true
 	 */
-	withSymbol?: boolean
+	withSymbol?: boolean;
 }
 
 /**

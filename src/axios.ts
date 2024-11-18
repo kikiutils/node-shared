@@ -13,7 +13,7 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'a
 
 export { AxiosError } from 'axios';
 
-export type AxiosRequestData = FormData | AxiosRequestParams;
+export type AxiosRequestData = AxiosRequestParams | FormData;
 export type AxiosRequestParams = Record<number | string, any>;
 
 export const axiosInstance: AxiosInstance = axios.create({});
