@@ -1,4 +1,4 @@
-import { endOfDay, endOfMonth, endOfWeek, format as dateFnsFormat, startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subWeeks } from 'date-fns';
+import { format as dateFnsFormat, endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subWeeks } from 'date-fns';
 import type { Day, FormatOptions } from 'date-fns';
 
 export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' | 'today' | 'yesterday';
@@ -7,7 +7,7 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  * Formats a given date, timestamp, or string into the specified format.
  *
  * @param {Date | number | string} dateOrTimestamp - The date or timestamp to be formatted. Can be a Date object, a numeric timestamp, or a date string.
- * @param {string} [format='yyyy-MM-dd HH:mm:ss'] - The desired date format. Defaults to 'yyyy-MM-dd HH:mm:ss'.
+ * @param {string} [format] - The desired date format. Defaults to 'yyyy-MM-dd HH:mm:ss'.
  * @param {FormatOptions} [options] - Optional configuration for formatting.
  * @returns {string} The formatted date string.
  *
@@ -35,11 +35,11 @@ export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, f
  *
  * @param {Date} date - The reference date to calculate the date range.
  * @param {DateRangeType} type - The type of date range to calculate. Valid types are 'lastMonth', 'lastWeek', 'thisMonth', 'thisWeek', 'today', and 'yesterday'.
- * @param {Object} [options] - Optional settings.
- * @param {boolean} [options.setEndDateToNextDayStart=false] - If true, set the end date to the next day at 00:00:00.000.
- * @param {Day} [options.weekStartsOn=1] - The day the week starts on, with 0 being Sunday and 6 being Saturday. Defaults to 1 (Monday).
+ * @param {object} [options] - Optional settings.
+ * @param {boolean} [options.setEndDateToNextDayStart] - If true, set the end date to the next day at 00:00:00.000.
+ * @param {Day} [options.weekStartsOn] - The day the week starts on, with 0 being Sunday and 6 being Saturday. Defaults to 1 (Monday).
  *
- * @returns {Object} An object containing the start date and end date.
+ * @returns {object} An object containing the start date and end date.
  *
  * @example
  * ```typescript
@@ -58,7 +58,7 @@ export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, f
  * // Output: { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
  * ```
  */
-export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean; weekStartsOn?: Day }) => {
+export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean, weekStartsOn?: Day }) {
 	let endDate: Date;
 	let startDate: Date;
 	if (type === 'lastMonth') {
@@ -86,12 +86,12 @@ export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: 
 
 	if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
 	return { endDate, startDate };
-};
+}
 
 /**
  * Returns a Date object set to midnight (00:00:00) of today or with an offset of the specified number of days.
  *
- * @param {number} [offsetDays=0] - The number of days to offset from today. Defaults to 0.
+ * @param {number} [offsetDays] - The number of days to offset from today. Defaults to 0.
  * @returns {Date} The Date object set to midnight of the offset date.
  *
  * @example
@@ -107,9 +107,9 @@ export const getDateRangeFromDate = (date: Date, type: DateRangeType, options?: 
  * console.log(midnightIn3Days); // Output: Date object representing the date 3 days from today at 00:00:00
  * ```
  */
-export const getMidnightDateFromToday = (offsetDays: number = 0) => {
+export function getMidnightDateFromToday(offsetDays: number = 0) {
 	const date = new Date();
 	date.setDate(date.getDate() + offsetDays);
 	date.setHours(0, 0, 0, 0);
 	return date;
-};
+}

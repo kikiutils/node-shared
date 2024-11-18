@@ -1,6 +1,6 @@
-import { EnvironmentNotFoundError, checkAndGetEnvValue } from '../src/env';
+import { checkAndGetEnvValue, EnvironmentNotFoundError } from '../src/env';
 
-describe('EnvironmentNotFoundError', () => {
+describe('environmentNotFoundError', () => {
 	it('should create an error with the correct message and key', () => {
 		const key = 'TEST_KEY';
 		const error = new EnvironmentNotFoundError(key);

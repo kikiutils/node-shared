@@ -1,7 +1,7 @@
 /**
  * Generates a random alphabetic string of the specified length, with both upper and lower case letters.
  *
- * @param {number} [length=8] - The length of the generated string. Defaults to 8.
+ * @param {number} [length] - The length of the generated string. Defaults to 8.
  * @returns {string} The generated random alphabetic string.
  *
  * @example
@@ -17,7 +17,7 @@ export const randomAlphabeticString = (length: number = 8) => Array.from({ lengt
 /**
  * Generates a random lower case alphabetic string of the specified length.
  *
- * @param {number} [length=8] - The length of the generated string. Defaults to 8.
+ * @param {number} [length] - The length of the generated string. Defaults to 8.
  * @returns {string} The generated random lower case alphabetic string.
  *
  * @example

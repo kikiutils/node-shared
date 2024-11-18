@@ -1,4 +1,5 @@
 import { createConsola } from 'consola';
+import { env } from 'node:process';
 
 /**
  * A consola logger instance.
@@ -22,7 +23,7 @@ import { createConsola } from 'consola';
  */
 export const consolaLogger = createConsola();
 export const logger = consolaLogger;
-if (process.env.CONSOLA_LOGGER_LEVEL !== undefined) consolaLogger.level = +process.env.CONSOLA_LOGGER_LEVEL;
-else consolaLogger.level = process.env.NODE_ENV === 'production' ? 0 : consolaLogger.level;
+if (env.CONSOLA_LOGGER_LEVEL !== undefined) consolaLogger.level = +env.CONSOLA_LOGGER_LEVEL;
+else consolaLogger.level = env.NODE_ENV === 'production' ? 0 : consolaLogger.level;
 
 export default consolaLogger;

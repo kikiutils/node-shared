@@ -1,3 +1,4 @@
+import { env } from 'node:process';
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
 
@@ -7,7 +8,7 @@ import pinoPretty from 'pino-pretty';
 const stream = pinoPretty({
 	colorize: true, // Enable colored output for better readability
 	ignore: 'hostname,pid', // Exclude 'hostname' and 'pid' fields from the logs
-	translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l' // Format the timestamp in 'yyyy-mm-dd HH:MM:ss.l' format
+	translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l', // Format the timestamp in 'yyyy-mm-dd HH:MM:ss.l' format
 });
 
 /**
@@ -32,6 +33,6 @@ const stream = pinoPretty({
  */
 export const pinoLogger = pino({}, stream);
 export const logger = pinoLogger;
-pinoLogger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
+pinoLogger.level = env.PINO_LOGGER_LEVEL || (env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
 
 export default pinoLogger;

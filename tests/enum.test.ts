@@ -1,11 +1,11 @@
 import { getEnumNumberValues, getEnumStringValues } from '../src/enum';
 
-describe('Enum Value Extraction Functions', () => {
+describe('enum value extraction functions', () => {
 	enum RecordType {
 		Receive = 0,
 		Same = 'Same',
 		Send = 1,
-		Unknown = 'unknown'
+		Unknown = 'unknown',
 	}
 
 	it('should extract numeric values from the enumeration', () => {
@@ -21,8 +21,8 @@ describe('Enum Value Extraction Functions', () => {
 	it('should return an empty array if no numeric values are present', () => {
 		const EnumWithoutNumbers = {
 			One: 'one',
+			Three: 'three',
 			Two: 'two',
-			Three: 'three'
 		};
 
 		const result = getEnumNumberValues(EnumWithoutNumbers);
@@ -31,9 +31,9 @@ describe('Enum Value Extraction Functions', () => {
 
 	it('should return an empty array if no string values are present', () => {
 		const EnumWithoutStrings = {
-			Zero: 0,
 			One: 1,
-			Two: 2
+			Two: 2,
+			Zero: 0,
 		};
 
 		const result = getEnumStringValues(EnumWithoutStrings);
@@ -45,7 +45,7 @@ describe('Enum Value Extraction Functions', () => {
 			A: 0,
 			B: 'string',
 			C: 1,
-			D: 'anotherString'
+			D: 'anotherString',
 		};
 
 		const numericResult = getEnumNumberValues(MixedEnum);

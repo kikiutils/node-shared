@@ -1,6 +1,8 @@
+import { Buffer } from 'node:buffer';
+
 import * as cryptoHash from '../src/crypto-hash';
 
-describe('Crypto Hash Functions', () => {
+describe('crypto hash functions', () => {
 	const testData = 'test';
 	it('should generate correct MD5 hash', () => {
 		expect(cryptoHash.cryptoMD5(testData)).toBe('098f6bcd4621d373cade4e832627b4f6');

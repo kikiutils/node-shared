@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 
-type CalculableValue = Decimal.Value | { toString(): string };
+type CalculableValue = Decimal.Value | { toString: () => string };
 
 /**
  * Options for configuring the output of the `calculateToPercentageString` function.
@@ -10,13 +10,13 @@ export interface CalculateToPercentageStringOptions {
 	 * The number of decimal places to include in the result.
 	 * @default 2
 	 */
-	decimalPlaces?: number;
+	decimalPlaces?: number
 
 	/**
 	 * Whether to include the '%' symbol in the result.
 	 * @default true
 	 */
-	withSymbol?: boolean;
+	withSymbol?: boolean
 }
 
 /**
@@ -44,10 +44,10 @@ export interface CalculateToPercentageStringOptions {
  * console.log(percentCustomDecimal); // Output: '25.0%'
  * ```
  */
-export const calculateToPercentageString = (molecular: CalculableValue, denominator: CalculableValue, options?: CalculateToPercentageStringOptions) => {
+export function calculateToPercentageString(molecular: CalculableValue, denominator: CalculableValue, options?: CalculateToPercentageStringOptions) {
 	const molecularDecimal = new Decimal(molecular.toString());
 	const denominatorDecimal = new Decimal(denominator.toString());
 	const calculationResult = molecularDecimal.div(denominatorDecimal);
 	const result = calculationResult.isNaN() ? '0.00' : calculationResult.times(100).toFixed(options?.decimalPlaces ?? 2);
 	return (options?.withSymbol ?? true) ? `${result}%` : result;
-};
+}

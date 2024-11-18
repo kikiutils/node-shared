@@ -6,7 +6,7 @@ const mockParams = { param1: 'value1' };
 const mockResponse = { data: 'mocked data' };
 const mockUrl = '/mock-url';
 
-describe('HTTP Utility Functions', () => {
+describe('http utility functions', () => {
 	beforeEach(() => (axiosInstance.request = jest.fn().mockResolvedValue(mockResponse)));
 	// DELETE
 	it('should make a DELETE request using axiosDelete', async () => {
@@ -16,7 +16,7 @@ describe('HTTP Utility Functions', () => {
 			data: {},
 			method: 'delete',
 			params: mockParams,
-			url: mockUrl
+			url: mockUrl,
 		});
 	});
 
@@ -33,7 +33,7 @@ describe('HTTP Utility Functions', () => {
 			data: {},
 			method: 'get',
 			params: mockParams,
-			url: mockUrl
+			url: mockUrl,
 		});
 	});
 
@@ -50,7 +50,7 @@ describe('HTTP Utility Functions', () => {
 			data: mockData,
 			method: 'patch',
 			params: {},
-			url: mockUrl
+			url: mockUrl,
 		});
 	});
 
@@ -67,7 +67,7 @@ describe('HTTP Utility Functions', () => {
 			data: mockData,
 			method: 'post',
 			params: {},
-			url: mockUrl
+			url: mockUrl,
 		});
 	});
 
@@ -84,7 +84,7 @@ describe('HTTP Utility Functions', () => {
 			data: mockData,
 			method: 'put',
 			params: {},
-			url: mockUrl
+			url: mockUrl,
 		});
 	});
 
@@ -101,7 +101,7 @@ describe('HTTP Utility Functions', () => {
 			data: mockData,
 			method: 'put',
 			params: mockParams,
-			url: mockUrl
+			url: mockUrl,
 		});
 	});
 });

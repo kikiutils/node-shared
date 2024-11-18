@@ -1,6 +1,6 @@
 import * as hash from '../src/hash';
 
-describe('Hash Functions', () => {
+describe('hash functions', () => {
 	const testData = 'test';
 	it('should generate correct SHA-3-224 hash', () => {
 		expect(hash.sha3224(testData)).toBe('3797bf0afbbfca4a7bbba7602a2b552746876517a7f9b7ce2db0ae7b');
