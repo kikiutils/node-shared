@@ -1,5 +1,29 @@
 # Changelog
 
+## v5.1.2
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.1...v5.1.2)
+
+### 💅 Refactors
+
+- Simplify wrapper functions by removing async/await ([09af6a0](https://github.com/kiki-kanri/kikiutils-node/commit/09af6a0))
+
+### 🏡 Chore
+
+- Replace Prettier with ESLint, add related files, and update VSCode settings ([ab526fe](https://github.com/kiki-kanri/kikiutils-node/commit/ab526fe))
+- Modify scripts in package.json ([0bd0a63](https://github.com/kiki-kanri/kikiutils-node/commit/0bd0a63))
+- Update eslint-config and format codes ([e56c18c](https://github.com/kiki-kanri/kikiutils-node/commit/e56c18c))
+- Upgrade dependencies ([38923a3](https://github.com/kiki-kanri/kikiutils-node/commit/38923a3))
+
+### 🎨 Styles
+
+- Format and lint all files ([9ec40d6](https://github.com/kiki-kanri/kikiutils-node/commit/9ec40d6))
+- Change all indentation to 4 spaces ([f65d19a](https://github.com/kiki-kanri/kikiutils-node/commit/f65d19a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.1.1
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.0...v5.1.1)
