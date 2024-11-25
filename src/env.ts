@@ -6,19 +6,19 @@ import { env } from 'node:process';
  * @extends {Error}
  */
 export class EnvironmentNotFoundError extends Error {
-	readonly key: string;
+    readonly key: string;
 
-	/**
-	 * Creates an instance of EnvironmentNotFoundError.
-	 *
-	 * @param {string} key - The key of the missing environment variable.
-	 */
-	constructor(key: string) {
-		super(`Missing environment variable: ${key}`);
-		this.key = key;
-		this.name = this.constructor.name;
-		Error.captureStackTrace?.(this, this.constructor);
-	}
+    /**
+     * Creates an instance of EnvironmentNotFoundError.
+     *
+     * @param {string} key - The key of the missing environment variable.
+     */
+    constructor(key: string) {
+        super(`Missing environment variable: ${key}`);
+        this.key = key;
+        this.name = this.constructor.name;
+        Error.captureStackTrace?.(this, this.constructor);
+    }
 }
 
 /**
@@ -45,6 +45,6 @@ export class EnvironmentNotFoundError extends Error {
  * ```
  */
 export function checkAndGetEnvValue(key: string) {
-	if (!env[key]) throw new EnvironmentNotFoundError(key);
-	return env[key] as string;
+    if (!env[key]) throw new EnvironmentNotFoundError(key);
+    return env[key] as string;
 }

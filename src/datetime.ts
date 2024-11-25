@@ -59,33 +59,33 @@ export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, f
  * ```
  */
 export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean; weekStartsOn?: Day }) {
-	let endDate: Date;
-	let startDate: Date;
-	if (type === 'lastMonth') {
-		const lastMonth = subMonths(date, 1);
-		endDate = endOfMonth(lastMonth);
-		startDate = startOfMonth(lastMonth);
-	} else if (type === 'lastWeek') {
-		const lastWeek = subWeeks(date, 1);
-		endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
-		startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
-	} else if (type === 'thisMonth') {
-		endDate = endOfMonth(date);
-		startDate = startOfMonth(date);
-	} else if (type === 'thisWeek') {
-		endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
-		startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
-	} else if (type === 'today') {
-		endDate = endOfDay(date);
-		startDate = startOfDay(date);
-	} else {
-		const yesterday = subDays(date, 1);
-		endDate = endOfDay(yesterday);
-		startDate = startOfDay(yesterday);
-	}
+    let endDate: Date;
+    let startDate: Date;
+    if (type === 'lastMonth') {
+        const lastMonth = subMonths(date, 1);
+        endDate = endOfMonth(lastMonth);
+        startDate = startOfMonth(lastMonth);
+    } else if (type === 'lastWeek') {
+        const lastWeek = subWeeks(date, 1);
+        endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
+        startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
+    } else if (type === 'thisMonth') {
+        endDate = endOfMonth(date);
+        startDate = startOfMonth(date);
+    } else if (type === 'thisWeek') {
+        endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
+        startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
+    } else if (type === 'today') {
+        endDate = endOfDay(date);
+        startDate = startOfDay(date);
+    } else {
+        const yesterday = subDays(date, 1);
+        endDate = endOfDay(yesterday);
+        startDate = startOfDay(yesterday);
+    }
 
-	if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
-	return { endDate, startDate };
+    if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
+    return { endDate, startDate };
 }
 
 /**
@@ -108,8 +108,8 @@ export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: 
  * ```
  */
 export function getMidnightDateFromToday(offsetDays: number = 0) {
-	const date = new Date();
-	date.setDate(date.getDate() + offsetDays);
-	date.setHours(0, 0, 0, 0);
-	return date;
+    const date = new Date();
+    date.setDate(date.getDate() + offsetDays);
+    date.setHours(0, 0, 0, 0);
+    return date;
 }

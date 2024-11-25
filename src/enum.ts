@@ -41,16 +41,16 @@ export const getEnumNumberValues = (data: Record<number | string, number | strin
  * ```
  */
 export function getEnumStringValues(data: Record<number | string, number | string>) {
-	const keys: string[] = [];
-	const keysCount: Record<string, number> = {};
-	const values: any[] = [];
-	Object.entries(data).forEach(([key, value]) => {
-		keys.push(key);
-		values.push(value);
-		if (typeof value !== 'string') return;
-		keysCount[key] = (keysCount[key] ?? 0) + 1;
-		keysCount[value] = (keysCount[value] ?? 0) + 1;
-	});
+    const keys: string[] = [];
+    const keysCount: Record<string, number> = {};
+    const values: any[] = [];
+    Object.entries(data).forEach(([key, value]) => {
+        keys.push(key);
+        values.push(value);
+        if (typeof value !== 'string') return;
+        keysCount[key] = (keysCount[key] ?? 0) + 1;
+        keysCount[value] = (keysCount[value] ?? 0) + 1;
+    });
 
-	return values.filter((value) => typeof value === 'string' && (!keys.includes(value) || (keysCount[value] && keysCount[value] > 1)));
+    return values.filter((value) => typeof value === 'string' && (!keys.includes(value) || (keysCount[value] && keysCount[value] > 1)));
 }

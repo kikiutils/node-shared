@@ -6,9 +6,9 @@ import pinoPretty from 'pino-pretty';
  * Configure pinoPretty to enhance the log output.
  */
 const stream = pinoPretty({
-	colorize: true, // Enable colored output for better readability
-	ignore: 'hostname,pid', // Exclude 'hostname' and 'pid' fields from the logs
-	translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l', // Format the timestamp in 'yyyy-mm-dd HH:MM:ss.l' format
+    colorize: true, // Enable colored output for better readability
+    ignore: 'hostname,pid', // Exclude 'hostname' and 'pid' fields from the logs
+    translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l', // Format the timestamp in 'yyyy-mm-dd HH:MM:ss.l' format
 });
 
 /**
