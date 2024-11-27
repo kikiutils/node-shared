@@ -47,7 +47,7 @@ describe('setReadonlyConstantToGlobalThis', () => {
         const constantName = Math.random().toString(36).substring(2, 15);
         setReadonlyConstantToGlobalThis(constantName, constantValue);
         expect((globalThis as any)[constantName]).toBe(constantValue);
-        expect(() => ((globalThis as any)[constantName] = 'newValue')).toThrow(TypeError);
+        expect(() => (globalThis as any)[constantName] = 'newValue').toThrow(TypeError);
         expect((globalThis as any)[constantName]).toBe(constantValue);
     });
 

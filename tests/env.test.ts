@@ -19,8 +19,8 @@ describe('environmentNotFoundError', () => {
 
 describe('checkAndGetEnvValue', () => {
     const originalEnv = process.env;
-    beforeEach(() => (process.env = { ...originalEnv }));
-    afterEach(() => (process.env = originalEnv));
+    beforeEach(() => process.env = { ...originalEnv });
+    afterEach(() => process.env = originalEnv);
     it('should return the value of an existing environment variable', () => {
         const key = 'TEST_KEY';
         const value = 'test_value';

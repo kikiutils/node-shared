@@ -7,7 +7,7 @@ const mockResponse = { data: 'mocked data' };
 const mockUrl = '/mock-url';
 
 describe('http utility functions', () => {
-    beforeEach(() => (axiosInstance.request = jest.fn().mockResolvedValue(mockResponse)));
+    beforeEach(() => axiosInstance.request = jest.fn().mockResolvedValue(mockResponse));
     // DELETE
     it('should make a DELETE request using axiosDelete', async () => {
         await axiosDelete(mockUrl, mockParams, mockConfig);
