@@ -1,5 +1,25 @@
 # Changelog
 
+## v5.1.3
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.2...v5.1.3)
+
+### 🩹 Fixes
+
+- Resolve logger issue in browser due to process.env import method ([5622de5](https://github.com/kiki-kanri/kikiutils-node/commit/5622de5))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([71e77cd](https://github.com/kiki-kanri/kikiutils-node/commit/71e77cd))
+
+### 🎨 Styles
+
+- Format and lint codes ([62902ed](https://github.com/kiki-kanri/kikiutils-node/commit/62902ed))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.1.2
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.1...v5.1.2)
