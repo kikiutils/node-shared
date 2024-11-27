@@ -1,5 +1,6 @@
+/* eslint-disable node/prefer-global/process */
+
 import { createConsola } from 'consola';
-import { env } from 'node:process';
 
 /**
  * A consola logger instance.
@@ -23,7 +24,7 @@ import { env } from 'node:process';
  */
 export const consolaLogger = createConsola();
 export const logger = consolaLogger;
-if (env.CONSOLA_LOGGER_LEVEL !== undefined) consolaLogger.level = +env.CONSOLA_LOGGER_LEVEL;
-else consolaLogger.level = env.NODE_ENV === 'production' ? 0 : consolaLogger.level;
+if (process.env.CONSOLA_LOGGER_LEVEL !== undefined) consolaLogger.level = +process.env.CONSOLA_LOGGER_LEVEL;
+else consolaLogger.level = process.env.NODE_ENV === 'production' ? 0 : consolaLogger.level;
 
 export default consolaLogger;

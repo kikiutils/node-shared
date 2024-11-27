@@ -1,4 +1,5 @@
-import { env } from 'node:process';
+/* eslint-disable node/prefer-global/process */
+
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
 
@@ -33,6 +34,6 @@ const stream = pinoPretty({
  */
 export const pinoLogger = pino({}, stream);
 export const logger = pinoLogger;
-pinoLogger.level = env.PINO_LOGGER_LEVEL || (env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
+pinoLogger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
 
 export default pinoLogger;
