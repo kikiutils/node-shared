@@ -9,7 +9,12 @@
  */
 
 import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+import type {
+    AxiosInstance,
+    AxiosRequestConfig,
+    AxiosResponse,
+    Method,
+} from 'axios';
 
 export { AxiosError } from 'axios';
 
@@ -29,5 +34,11 @@ export const axiosPut = <T = string>(url: string, data?: AxiosRequestData, confi
 export const $axiosPut = async <T = string>(url: string, data?: AxiosRequestData, config?: AxiosRequestConfig<AxiosRequestData>) => (await axiosPut<T>(url, data, config)).data;
 
 export function axiosRequest<T = any, R extends AxiosResponse<T> = AxiosResponse<T>, D extends AxiosRequestData = any>(url: string, method: Method, params?: AxiosRequestData, data?: D, config?: AxiosRequestConfig) {
-    return axiosInstance.request<T, R, D>({ ...config, data, method, params, url });
+    return axiosInstance.request<T, R, D>({
+        ...config,
+        data,
+        method,
+        params,
+        url,
+    });
 }

@@ -11,7 +11,12 @@
  * ```
  */
 
-import { sha3_224, sha3_256, sha3_384, sha3_512 } from '@noble/hashes/sha3';
+import {
+    sha3_224,
+    sha3_256,
+    sha3_384,
+    sha3_512,
+} from '@noble/hashes/sha3';
 import { bytesToHex } from '@noble/hashes/utils';
 
 export const sha3224 = (data: string | Uint8Array) => bytesToHex(sha3_224(data));

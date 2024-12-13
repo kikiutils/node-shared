@@ -1,4 +1,7 @@
-import { checkAndGetEnvValue, EnvironmentNotFoundError } from '../src/env';
+import {
+    checkAndGetEnvValue,
+    EnvironmentNotFoundError,
+} from '../src/env';
 
 describe('environmentNotFoundError', () => {
     it('should create an error with the correct message and key', () => {

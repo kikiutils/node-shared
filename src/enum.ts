@@ -44,7 +44,10 @@ export function getEnumStringValues(data: Record<number | string, number | strin
     const keys: string[] = [];
     const keysCount: Record<string, number> = {};
     const values: any[] = [];
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data).forEach(([
+        key,
+        value,
+    ]) => {
         keys.push(key);
         values.push(value);
         if (typeof value !== 'string') return;

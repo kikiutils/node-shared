@@ -1,4 +1,7 @@
-import { randomAlphabeticString, randomLowerCaseAlphabeticString } from '../src/string';
+import {
+    randomAlphabeticString,
+    randomLowerCaseAlphabeticString,
+} from '../src/string';
 
 describe('randomAlphabeticString', () => {
     it('should generate a string of default length (8)', () => {

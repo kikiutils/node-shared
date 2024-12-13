@@ -1,4 +1,17 @@
-import { $axiosDelete, $axiosGet, $axiosPatch, $axiosPost, $axiosPut, axiosDelete, axiosGet, axiosInstance, axiosPatch, axiosPost, axiosPut, axiosRequest } from '../src/axios';
+import {
+    $axiosDelete,
+    $axiosGet,
+    $axiosPatch,
+    $axiosPost,
+    $axiosPut,
+    axiosDelete,
+    axiosGet,
+    axiosInstance,
+    axiosPatch,
+    axiosPost,
+    axiosPut,
+    axiosRequest,
+} from '../src/axios';
 
 const mockConfig = { headers: { 'Content-Type': 'application/json' } };
 const mockData = { key: 'value' };

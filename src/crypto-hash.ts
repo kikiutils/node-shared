@@ -14,7 +14,10 @@
  */
 
 import { createHash } from 'node:crypto';
-import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto';
+import type {
+    BinaryLike,
+    BinaryToTextEncoding,
+} from 'node:crypto';
 
 export const cryptoMD5 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('md5').update(data).digest(outputEncoding);
 export const cryptoMD5ToBuffer = (data: BinaryLike) => createHash('md5').update(data).digest();

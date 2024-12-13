@@ -1,5 +1,19 @@
-import { format as dateFnsFormat, endOfDay, endOfMonth, endOfWeek, startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subWeeks } from 'date-fns';
-import type { Day, FormatOptions } from 'date-fns';
+import {
+    format as dateFnsFormat,
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
+    startOfDay,
+    startOfMonth,
+    startOfWeek,
+    subDays,
+    subMonths,
+    subWeeks,
+} from 'date-fns';
+import type {
+    Day,
+    FormatOptions,
+} from 'date-fns';
 
 export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' | 'today' | 'yesterday';
 
@@ -85,7 +99,10 @@ export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: 
     }
 
     if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
-    return { endDate, startDate };
+    return {
+        endDate,
+        startDate,
+    };
 }
 
 /**

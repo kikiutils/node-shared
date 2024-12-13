@@ -19,4 +19,13 @@ import { millify } from 'millify';
  * console.log(prettyNumberWithOptions); // Output: '1.235m'
  * ```
  */
-export const prettyNumberToString = (value: number, options?: Parameters<typeof millify>[1]) => millify(value, { lowercase: true, precision: 2, ...options });
+export function prettyNumberToString(value: number, options?: Parameters<typeof millify>[1]) {
+    return millify(
+        value,
+        {
+            lowercase: true,
+            precision: 2,
+            ...options,
+        },
+    );
+}

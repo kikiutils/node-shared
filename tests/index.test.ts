@@ -1,8 +1,15 @@
-import { flattenToSingleValue, setReadonlyConstantToGlobalThis } from '../src';
+import {
+    flattenToSingleValue,
+    setReadonlyConstantToGlobalThis,
+} from '../src';
 
 describe('flattenToSingleValue', () => {
     it('should return the first element of an array', () => {
-        const value = [1, 2];
+        const value = [
+            1,
+            2,
+        ];
+
         expect(flattenToSingleValue(value)).toBe(1);
     });
 
@@ -23,7 +30,11 @@ describe('flattenToSingleValue', () => {
     });
 
     it('should return the first element if the array is non-empty, ignoring default value', () => {
-        const value = ['a', 'b'];
+        const value = [
+            'a',
+            'b',
+        ];
+
         const defaultValue = 'z';
         expect(flattenToSingleValue(value, defaultValue)).toBe('a');
     });

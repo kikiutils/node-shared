@@ -1,6 +1,13 @@
-import { addDays, format as dateFnsFormat } from 'date-fns';
+import {
+    addDays,
+    format as dateFnsFormat,
+} from 'date-fns';
 
-import { formatDateOrTimestamp, getDateRangeFromDate, getMidnightDateFromToday } from '../src/datetime';
+import {
+    formatDateOrTimestamp,
+    getDateRangeFromDate,
+    getMidnightDateFromToday,
+} from '../src/datetime';
 
 describe('formatDateOrTimestamp', () => {
     it('should format a Date object', () => {

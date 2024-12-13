@@ -1,4 +1,7 @@
-import { getEnumNumberValues, getEnumStringValues } from '../src/enum';
+import {
+    getEnumNumberValues,
+    getEnumStringValues,
+} from '../src/enum';
 
 describe('enum value extraction functions', () => {
     enum RecordType {
@@ -10,12 +13,18 @@ describe('enum value extraction functions', () => {
 
     it('should extract numeric values from the enumeration', () => {
         const result = getEnumNumberValues(RecordType);
-        expect(result).toEqual([0, 1]);
+        expect(result).toEqual([
+            0,
+            1,
+        ]);
     });
 
     it('should extract string values from the enumeration', () => {
         const result = getEnumStringValues(RecordType);
-        expect(result).toEqual(['Same', 'unknown']);
+        expect(result).toEqual([
+            'Same',
+            'unknown',
+        ]);
     });
 
     it('should return an empty array if no numeric values are present', () => {
@@ -50,8 +59,15 @@ describe('enum value extraction functions', () => {
 
         const numericResult = getEnumNumberValues(MixedEnum);
         const stringResult = getEnumStringValues(MixedEnum);
-        expect(numericResult).toEqual([0, 1]);
-        expect(stringResult).toEqual(['string', 'anotherString']);
+        expect(numericResult).toEqual([
+            0,
+            1,
+        ]);
+
+        expect(stringResult).toEqual([
+            'string',
+            'anotherString',
+        ]);
     });
 
     it('should handle empty enumeration objects', () => {

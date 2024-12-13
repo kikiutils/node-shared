@@ -1,6 +1,9 @@
 import type { HonoBase } from 'hono/hono-base';
 import { logger as honoLogger } from 'hono/logger';
-import type { Env, Schema } from 'hono/types';
+import type {
+    Env,
+    Schema,
+} from 'hono/types';
 import { env } from 'node:process';
 
 import logger from './pino';

@@ -5,10 +5,14 @@ export function flattenToSingleValue<T, D>(value: T | T[], defaultValue?: D) {
 }
 
 export function setReadonlyConstantToGlobalThis<T>(name: string, value: T, attributes?: PropertyDescriptor & ThisType<any>) {
-    Object.defineProperty(globalThis, name, {
-        ...attributes,
-        configurable: false,
-        value,
-        writable: false,
-    });
+    Object.defineProperty(
+        globalThis,
+        name,
+        {
+            ...attributes,
+            configurable: false,
+            value,
+            writable: false,
+        },
+    );
 }
