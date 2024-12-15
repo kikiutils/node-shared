@@ -1,5 +1,3 @@
-/* eslint-disable node/prefer-global/process */
-
 import { createConsola } from 'consola';
 
 /**

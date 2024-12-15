@@ -4,7 +4,6 @@ import type {
     Env,
     Schema,
 } from 'hono/types';
-import { env } from 'node:process';
 
 import logger from './pino';
 
@@ -24,7 +23,7 @@ import logger from './pino';
  * ```
  */
 export function useHonoLogger<E extends Env = Env, S extends Schema = Schema, BasePath extends string = '/'>(honoApp: HonoBase<E, S, BasePath>, logIncoming: boolean = false) {
-    if (env.NODE_ENV === 'production') return;
+    if (process.env.NODE_ENV === 'production') return;
     const logFunction = logIncoming ? (text: string) => logger.info(text) : (text: string) => !text.startsWith('<--') && logger.info(text.slice(4));
     honoApp.use(honoLogger(logFunction));
 }

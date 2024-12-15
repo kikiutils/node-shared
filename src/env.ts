@@ -1,5 +1,3 @@
-import { env } from 'node:process';
-
 /**
  * Custom error class for handling missing environment variables.
  *
@@ -45,6 +43,6 @@ export class EnvironmentNotFoundError extends Error {
  * ```
  */
 export function checkAndGetEnvValue(key: string) {
-    if (!env[key]) throw new EnvironmentNotFoundError(key);
-    return env[key] as string;
+    if (!process.env[key]) throw new EnvironmentNotFoundError(key);
+    return process.env[key] as string;
 }

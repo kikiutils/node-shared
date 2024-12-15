@@ -1,5 +1,3 @@
-/* eslint-disable node/prefer-global/process */
-
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
 
