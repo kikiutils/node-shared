@@ -1,5 +1,27 @@
 # Changelog
 
+## v5.1.4
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.3...v5.1.4)
+
+### 💅 Refactors
+
+- Change Url to URL ([844051b](https://github.com/kiki-kanri/kikiutils-node/commit/844051b))
+- Remove process import statement ([0209f3c](https://github.com/kiki-kanri/kikiutils-node/commit/0209f3c))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([125646f](https://github.com/kiki-kanri/kikiutils-node/commit/125646f))
+- Upgrade dependencies ([bfafc04](https://github.com/kiki-kanri/kikiutils-node/commit/bfafc04))
+
+### 🎨 Styles
+
+- Format and lint all files ([8670067](https://github.com/kiki-kanri/kikiutils-node/commit/8670067))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.1.3
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.2...v5.1.3)
