@@ -1,8 +1,9 @@
 import { readFile, readFileSync, writeFile, writeFileSync } from '@kikiutils/fs-extra';
 import type { PathLike, PathOrFileDescriptor } from 'fs';
 import type { FileHandle } from 'fs/promises';
-import { uuid } from 'short-uuid';
+import shortUUID from 'short-uuid';
 
+const { uuid } = shortUUID;
 export const getUUID = async (path: FileHandle | PathLike = './uuid.uuid') => {
 	const nowUUIDFile = await readFile(path);
 	if (nowUUIDFile) return nowUUIDFile.toString();
