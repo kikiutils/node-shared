@@ -14,14 +14,13 @@
   "bugs": {
     "url": "https://github.com/kiki-kanri/kikiutils-node/issues"
   },
-  "type": "commonjs",
-  "main": "./dist/index.js",
   "files": [
     "./dist/**/*"
   ],
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' --clean --preserve-modules"
   },
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "@kikiutils/fs-extra": "^2.3.10",
     "@noble/hashes": "^1.6.1",
@@ -50,5 +49,17 @@
     "functions",
     "utils"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.cjs"
+    }
+  },
   "prettier": "@kikiutils/prettierrc"
 }
