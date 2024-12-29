@@ -1,6 +1,6 @@
 import { readFile, readFileSync } from '@kikiutils/fs-extra';
-import { PathLike, PathOrFileDescriptor } from 'fs';
-import { FileHandle } from 'fs/promises';
+import type { PathLike, PathOrFileDescriptor } from 'fs';
+import type { FileHandle } from 'fs/promises';
 
 export const readFileToBlob = async (path: FileHandle | PathLike) => {
 	const file = await readFile(path);

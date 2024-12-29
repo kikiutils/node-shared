@@ -1,10 +1,11 @@
 import logger from 'node-color-log';
 import { sleep } from 'sleep-ts';
-import WebSocket, { ClientOptions } from 'ws';
+import WebSocket from 'ws';
+import type { ClientOptions } from 'ws';
 
 import AesCrypt from './aes';
 import { randomStr } from './random';
-import { Dict } from './types';
+import type { Dict } from './types';
 
 type EventCallback = (args?: any[], kwargs?: Dict<any>) => void | Promise<void>;
 

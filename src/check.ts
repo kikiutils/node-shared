@@ -1,5 +1,5 @@
 import { stat as _stat, statSync as _statSync } from '@kikiutils/fs-extra';
-import { PathLike } from 'fs';
+import type { PathLike } from 'fs';
 
 /**
  * Check path is a directory.

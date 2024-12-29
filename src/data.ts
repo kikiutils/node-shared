@@ -3,7 +3,7 @@ import { sleep } from 'sleep-ts';
 
 import AesCrypt from './aes';
 import { request } from './fetch';
-import { Dict } from './types';
+import type { Dict } from './types';
 import { getUUID } from './uuid';
 
 export interface RequestOptions {
