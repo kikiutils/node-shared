@@ -1,9 +1,9 @@
 {
-  "extends": "@kikiutils/tsconfigs/cjs/es2021.json",
+  "extends": "@kikiutils/tsconfigs/esnext/es2022.json",
   "compilerOptions": {
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["./*"]
-    }
-  }
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true
+  },
+  "include": ["./src"]
 }
