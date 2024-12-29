@@ -1,5 +1,6 @@
-import random from 'lodash/random';
+import lodash from 'lodash';
 
+const { random } = lodash;
 const RANDOM_LETTERS = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789';
 const RANDOM_LETTERS_LENGTH = RANDOM_LETTERS.length;
 

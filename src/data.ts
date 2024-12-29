@@ -1,4 +1,4 @@
-import shuffle from 'lodash/shuffle';
+import lodash from 'lodash';
 import { sleep } from 'sleep-ts';
 
 import AesCrypt from './aes';
@@ -13,6 +13,8 @@ export interface RequestOptions {
 	requestConfig?: RequestInit;
 	waitForSuccess?: boolean;
 }
+
+const { shuffle } = lodash;
 
 export class DataTransmission {
 	#aes: AesCrypt;
