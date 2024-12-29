@@ -20,7 +20,7 @@
     "./dist/**/*"
   ],
   "scripts": {
-    "build": "ts-project-builder -c --type package"
+    "build": "ts-project-builder './src/**/*.ts' --clean --preserve-modules"
   },
   "dependencies": {
     "@kikiutils/fs-extra": "^2.3.10",
