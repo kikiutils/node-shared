@@ -27,16 +27,20 @@
   ],
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "import": "./index.mjs",
-      "require": "./index.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     },
     "./*": {
-      "types": "./*.d.ts",
-      "import": "./*.mjs",
-      "require": "./*.cjs"
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.cjs"
     }
   },
+  "files": [
+    "./dist",
+    "./src"
+  ],
   "engines": {
     "node": ">=18.12.1"
   },
@@ -45,7 +49,7 @@
     "bumplog": "changelogen --bump",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "release": "pnpm run lint && pnpm run build && pnpm run test && changelogen --push --release && sh ./build-and-publish.sh",
+    "release": "pnpm run lint && pnpm run build && pnpm run test && changelogen --push --release && npm publish",
     "test": "cross-env TZ=UTC jest --coverage"
   },
   "devDependencies": {
