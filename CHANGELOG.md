@@ -1,5 +1,22 @@
 # Changelog
 
+## v5.1.5
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.4...v5.1.5)
+
+### 📦 Build
+
+- Enable sourcemap output in build process ([379ba75](https://github.com/kiki-kanri/kikiutils-node/commit/379ba75))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([d0943fa](https://github.com/kiki-kanri/kikiutils-node/commit/d0943fa))
+- Modify pack file structure and update package.json.exports configuration ([4429859](https://github.com/kiki-kanri/kikiutils-node/commit/4429859))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.1.4
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.3...v5.1.4)
