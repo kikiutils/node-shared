@@ -64,16 +64,16 @@ Some functions or the top of files will have related comments and examples.
 
 - [consola](./src/consola.ts)
 - [crypto-hash](./src/crypto-hash.ts)
-  - cryptoMD5
-  - cryptoMD5ToBuffer
-  - cryptoSHA3224
-  - cryptoSHA3224ToBuffer
-  - cryptoSHA3256
-  - cryptoSHA3256ToBuffer
-  - cryptoSHA3384
-  - cryptoSHA3384ToBuffer
-  - cryptoSHA3512
-  - cryptoSHA3512ToBuffer
+  - cryptoMd5
+  - cryptoMd5ToBuffer
+  - cryptoSha3224
+  - cryptoSha3224ToBuffer
+  - cryptoSha3256
+  - cryptoSha3256ToBuffer
+  - cryptoSha3384
+  - cryptoSha3384ToBuffer
+  - cryptoSha3512
+  - cryptoSha3512ToBuffer
 
 - [datetime](./src/datetime.ts)
   - formatDateOrTimestamp
