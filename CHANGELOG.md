@@ -1,5 +1,25 @@
 # Changelog
 
+## v6.0.0
+
+[compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.5...v6.0.0)
+
+### 💅 Refactors
+
+- ⚠️ Enforce camelCase naming for all variables, classes, methods, types, etc., ignoring abbreviations ([847b125](https://github.com/kiki-kanri/kikiutils-node/commit/847b125))
+
+### 🏡 Chore
+
+- Upgrade dependencies and add `pnpm.onlyBuiltDependencies` setting to package.json ([bf9ca52](https://github.com/kiki-kanri/kikiutils-node/commit/bf9ca52))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Enforce camelCase naming for all variables, classes, methods, types, etc., ignoring abbreviations ([847b125](https://github.com/kiki-kanri/kikiutils-node/commit/847b125))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v5.1.5
 
 [compare changes](https://github.com/kiki-kanri/kikiutils-node/compare/v5.1.4...v5.1.5)
