@@ -1,5 +1,18 @@
 # Changelog
 
+## v6.0.1
+
+[compare changes](https://github.com/kikiutils/node/compare/v6.0.0...v6.0.1)
+
+### 🏡 Chore
+
+- Update repository URL ([136c508](https://github.com/kikiutils/node/commit/136c508))
+- Upgrade dependencies ([071b573](https://github.com/kikiutils/node/commit/071b573))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v6.0.0
 
 [compare changes](https://github.com/kikiutils/node/compare/v5.1.5...v6.0.0)
