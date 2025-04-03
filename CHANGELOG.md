@@ -1,5 +1,59 @@
 # Changelog
 
+## v7.0.0
+
+[compare changes](https://github.com/kikiutils/node/compare/v6.0.1...v7.0.0)
+
+### 🚀 Enhancements
+
+- ⚠️ Remove `randomAlphabeticString` and `randomLowerCaseAlphabeticString`, then add `randomString` utils ([fe87907](https://github.com/kikiutils/node/commit/fe87907))
+
+### 💅 Refactors
+
+- ⚠️ Rename `flattenToSingleValue` to `extractFirstValue` ([cd5ad41](https://github.com/kikiutils/node/commit/cd5ad41))
+- ⚠️ Rename `formatDateOrTimestamp` to `formatDate` ([089b408](https://github.com/kikiutils/node/commit/089b408))
+- Remove unnecessary `as string` in `checkAndGetEnvValue` ([7430a1c](https://github.com/kikiutils/node/commit/7430a1c))
+- ⚠️ Rename `calculateToPercentageString` to `toPercentageString` ([cf37e26](https://github.com/kikiutils/node/commit/cf37e26))
+- ⚠️ Rename `prettyNumberToString` to `toCompactNumberString` ([d4730fa](https://github.com/kikiutils/node/commit/d4730fa))
+- Remove default value for `randomString` length and add validation ([817b00f](https://github.com/kikiutils/node/commit/817b00f))
+- Move `extractFirstValue` to `general` file ([343ee68](https://github.com/kikiutils/node/commit/343ee68))
+
+### 📖 Documentation
+
+- Update and clean up all function comments ([79881cf](https://github.com/kikiutils/node/commit/79881cf))
+- Update README and package description ([eba6bf2](https://github.com/kikiutils/node/commit/eba6bf2))
+
+### 🏡 Chore
+
+- ⚠️ Remove `useHonoLogger` lib ([24e39a2](https://github.com/kikiutils/node/commit/24e39a2))
+- ⚠️ Remove `setReadonlyConstantToGlobalThis` utils ([6ff6cb9](https://github.com/kikiutils/node/commit/6ff6cb9))
+- ⚠️ Remove `axios` utils ([756fd3e](https://github.com/kikiutils/node/commit/756fd3e))
+- Format code ([4a808da](https://github.com/kikiutils/node/commit/4a808da))
+- Upgrade dependencies ([8beaf82](https://github.com/kikiutils/node/commit/8beaf82))
+- Set `hideAuthorEmail` arg in changelogen command ([1ab74e2](https://github.com/kikiutils/node/commit/1ab74e2))
+- Remove unused dependencies and clean up package description and keywords ([624596a](https://github.com/kikiutils/node/commit/624596a))
+- Format and lint code ([fd22a1f](https://github.com/kikiutils/node/commit/fd22a1f))
+- Remove `tslib` devDependencies ([4132f47](https://github.com/kikiutils/node/commit/4132f47))
+
+### ✅ Tests
+
+- Update unit tests ([23c1d3e](https://github.com/kikiutils/node/commit/23c1d3e))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove `randomAlphabeticString` and `randomLowerCaseAlphabeticString`, then add `randomString` utils ([fe87907](https://github.com/kikiutils/node/commit/fe87907))
+- ⚠️ Rename `flattenToSingleValue` to `extractFirstValue` ([cd5ad41](https://github.com/kikiutils/node/commit/cd5ad41))
+- ⚠️ Rename `formatDateOrTimestamp` to `formatDate` ([089b408](https://github.com/kikiutils/node/commit/089b408))
+- ⚠️ Rename `calculateToPercentageString` to `toPercentageString` ([cf37e26](https://github.com/kikiutils/node/commit/cf37e26))
+- ⚠️ Rename `prettyNumberToString` to `toCompactNumberString` ([d4730fa](https://github.com/kikiutils/node/commit/d4730fa))
+- ⚠️ Remove `useHonoLogger` lib ([24e39a2](https://github.com/kikiutils/node/commit/24e39a2))
+- ⚠️ Remove `setReadonlyConstantToGlobalThis` utils ([6ff6cb9](https://github.com/kikiutils/node/commit/6ff6cb9))
+- ⚠️ Remove `axios` utils ([756fd3e](https://github.com/kikiutils/node/commit/756fd3e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v6.0.1
 
 [compare changes](https://github.com/kikiutils/node/compare/v6.0.0...v6.0.1)
