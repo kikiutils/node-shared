@@ -3,16 +3,3 @@ export function flattenToSingleValue<T, D>(value: T | T[], defaultValue: D): D |
 export function flattenToSingleValue<T, D>(value: T | T[], defaultValue?: D) {
     return (Array.isArray(value) ? value[0] : value) ?? defaultValue;
 }
-
-export function setReadonlyConstantToGlobalThis<T>(name: string, value: T, attributes?: PropertyDescriptor & ThisType<any>) {
-    Object.defineProperty(
-        globalThis,
-        name,
-        {
-            ...attributes,
-            configurable: false,
-            value,
-            writable: false,
-        },
-    );
-}
