@@ -40,10 +40,17 @@ export interface ToPercentageStringOptions {
  * console.log(toPercentageString(50, 200, { decimalPlaces: 1 })); // 25.0%
  * ```
  */
-export function toPercentageString(molecular: CalculableValue, denominator: CalculableValue, options?: ToPercentageStringOptions) {
+export function toPercentageString(
+    molecular: CalculableValue,
+    denominator: CalculableValue,
+    options?: ToPercentageStringOptions,
+) {
     const molecularDecimal = new Decimal(molecular.toString());
     const denominatorDecimal = new Decimal(denominator.toString());
     const calculationResult = molecularDecimal.div(denominatorDecimal);
-    const result = calculationResult.isNaN() ? '0.00' : calculationResult.times(100).toFixed(options?.decimalPlaces ?? 2);
+    const result = calculationResult.isNaN()
+        ? '0.00'
+        : calculationResult.times(100).toFixed(options?.decimalPlaces ?? 2);
+
     return options?.withSymbol ?? true ? `${result}%` : result;
 }

@@ -44,7 +44,9 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  *
  * @see https://date-fns.org/docs/format
  */
-export const formatDate = (date: DateArg<Date> & {}, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) => dateFnsFormat(date, format, options);
+export function formatDate(date: DateArg<Date> & {}, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) {
+    return dateFnsFormat(date, format, options);
+}
 
 /**
  * Get the date range (start and end) based on a given date and range type.
@@ -72,7 +74,14 @@ export const formatDate = (date: DateArg<Date> & {}, format: string = 'yyyy-MM-d
  * // { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
  * ```
  */
-export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean; weekStartsOn?: Day }) {
+export function getDateRangeFromDate(
+    date: Date,
+    type: DateRangeType,
+    options?: {
+        setEndDateToNextDayStart?: boolean;
+        weekStartsOn?: Day;
+    },
+) {
     let endDate: Date;
     let startDate: Date;
     if (type === 'lastMonth') {

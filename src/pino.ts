@@ -13,7 +13,9 @@ const stream = pinoPretty({
 /**
  * A pino logger instance with the configured stream.
  *
- * The logger's level is determined based on the `PINO_LOGGER_LEVEL` and `NODE_ENV` environment variables. If `PINO_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`, the level will be set to `error`.
+ * The logger's level is determined based on the `PINO_LOGGER_LEVEL` and `NODE_ENV` environment variables.
+ * If `PINO_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`,
+ * the level will be set to `error`.
  *
  * To manually change the level, assign the desired level to `logger.level`.
  *
@@ -31,6 +33,7 @@ const stream = pinoPretty({
  */
 export const pinoLogger = pino({}, stream);
 export const logger = pinoLogger;
+// eslint-disable-next-line style/max-len
 pinoLogger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
 
 export default pinoLogger;

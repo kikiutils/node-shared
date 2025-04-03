@@ -19,13 +19,42 @@ import type {
     BinaryToTextEncoding,
 } from 'node:crypto';
 
-export const cryptoMd5 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('md5').update(data).digest(outputEncoding);
-export const cryptoMd5ToBuffer = (data: BinaryLike) => createHash('md5').update(data).digest();
-export const cryptoSha3224 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('sha3-224').update(data).digest(outputEncoding);
-export const cryptoSha3224ToBuffer = (data: BinaryLike) => createHash('sha3-224').update(data).digest();
-export const cryptoSha3256 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('sha3-256').update(data).digest(outputEncoding);
-export const cryptoSha3256ToBuffer = (data: BinaryLike) => createHash('sha3-256').update(data).digest();
-export const cryptoSha3384 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('sha3-384').update(data).digest(outputEncoding);
-export const cryptoSha3384ToBuffer = (data: BinaryLike) => createHash('sha3-384').update(data).digest();
-export const cryptoSha3512 = (data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') => createHash('sha3-512').update(data).digest(outputEncoding);
-export const cryptoSha3512ToBuffer = (data: BinaryLike) => createHash('sha3-512').update(data).digest();
+export function cryptoMd5(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
+    return createHash('md5').update(data).digest(outputEncoding);
+}
+
+export function cryptoMd5ToBuffer(data: BinaryLike) {
+    return createHash('md5').update(data).digest();
+}
+
+export function cryptoSha3224(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
+    return createHash('sha3-224').update(data).digest(outputEncoding);
+}
+
+export function cryptoSha3224ToBuffer(data: BinaryLike) {
+    return createHash('sha3-224').update(data).digest();
+}
+
+export function cryptoSha3256(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
+    return createHash('sha3-256').update(data).digest(outputEncoding);
+}
+
+export function cryptoSha3256ToBuffer(data: BinaryLike) {
+    return createHash('sha3-256').update(data).digest();
+}
+
+export function cryptoSha3384(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
+    return createHash('sha3-384').update(data).digest(outputEncoding);
+}
+
+export function cryptoSha3384ToBuffer(data: BinaryLike) {
+    return createHash('sha3-384').update(data).digest();
+}
+
+export function cryptoSha3512(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
+    return createHash('sha3-512').update(data).digest(outputEncoding);
+}
+
+export function cryptoSha3512ToBuffer(data: BinaryLike) {
+    return createHash('sha3-512').update(data).digest();
+}

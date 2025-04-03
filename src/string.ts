@@ -39,7 +39,10 @@ const CHARSETS: Record<RandomStringMode, string> = {
  * ```
  */
 export function randomString(length: number, mode: RandomStringMode = 'alphabetic') {
-    if (!Number.isInteger(length) || length <= 0) throw new Error(`Invalid length: ${length}. Must be a positive integer.`);
+    if (!Number.isInteger(length) || length <= 0) {
+        throw new Error(`Invalid length: ${length}. Must be a positive integer.`);
+    }
+
     const charset = CHARSETS[mode];
     if (!charset) throw new Error(`Unsupported mode: ${mode}`);
     return Array.from({ length }, () => charset[Math.floor(Math.random() * charset.length)]).join('');

@@ -3,7 +3,9 @@ import { createConsola } from 'consola';
 /**
  * A consola logger instance.
  *
- * The logger's level is determined based on the `CONSOLA_LOGGER_LEVEL` and `NODE_ENV` environment variables. If `CONSOLA_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`, the level will be set to `0`.
+ * The logger's level is determined based on the `CONSOLA_LOGGER_LEVEL` and `NODE_ENV` environment variables.
+ * If `CONSOLA_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`,
+ * the level will be set to `0`.
  *
  * To manually change the level, assign the desired level to `logger.level`.
  *

@@ -1,7 +1,8 @@
 /**
  * Extracts the numeric values from an enumeration-like object.
  *
- * @param {Record<number | string, number | string>} data - The enumeration-like object to extract numeric values from. The keys can be numbers or strings, and the values can be numbers or strings.
+ * @param {Record<number | string, number | string>} data - The enumeration-like object to extract numeric values from.
+ * The keys can be numbers or strings, and the values can be numbers or strings.
  * @returns {number[]} An array of numeric values extracted from the object.
  *
  * @example
@@ -17,12 +18,15 @@
  * console.log(getEnumNumberValues(RecordType)); // [0, 1]
  * ```
  */
-export const getEnumNumberValues = (data: Record<number | string, number | string>) => Object.values(data).filter((value) => typeof value === 'number') as number[];
+export function getEnumNumberValues(data: Record<number | string, number | string>) {
+    return Object.values(data).filter((value) => typeof value === 'number') as number[];
+}
 
 /**
  * Extracts the string values from an enumeration-like object.
  *
- * @param {Record<number | string, number | string>} data - The enumeration-like object to extract string values from. The keys can be numbers or strings, and the values can be numbers or strings.
+ * @param {Record<number | string, number | string>} data - The enumeration-like object to extract string values from.
+ * The keys can be numbers or strings, and the values can be numbers or strings.
  * @returns {string[]} An array of string values extracted from the object.
  *
  * @example
@@ -51,5 +55,7 @@ export function getEnumStringValues(data: Record<number | string, number | strin
         keysCount[value] = (keysCount[value] ?? 0) + 1;
     });
 
-    return values.filter((value) => typeof value === 'string' && (!keys.includes(value) || (keysCount[value] && keysCount[value] > 1)));
+    return values.filter((value) => {
+        return typeof value === 'string' && (!keys.includes(value) || (keysCount[value] && keysCount[value] > 1));
+    });
 }
