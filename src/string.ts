@@ -1,31 +1,33 @@
-/**
- * Generates a random alphabetic string of the specified length, with both upper and lower case letters.
- *
- * @param {number} [length] - The length of the generated string. Defaults to 8.
- * @returns {string} The generated random alphabetic string.
- *
- * @example
- * ```typescript
- * import { randomAlphabeticString } from '@kikiutils/node/string';
- *
- * const randomString = randomAlphabeticString(10);
- * console.log(randomString); // Output: A random string of 10 alphabetic characters, e.g., 'aBcDeFgHiJ'
- * ```
- */
-export const randomAlphabeticString = (length: number = 8) => Array.from({ length }, () => String.fromCharCode((Math.random() > 0.5 ? 97 : 65) + Math.floor(Math.random() * 26))).join('');
+export type RandomStringMode = | 'alphabetic'
+  | 'alphanumeric'
+  | 'lowercase'
+  | 'lowercase-numeric'
+  | 'numeric'
+  | 'uppercase'
+  | 'uppercase-numeric';
+
+const DIGITS = '0123456789';
+const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const CHARSETS: Record<RandomStringMode, string> = {
+    'alphabetic': LOWERCASE + UPPERCASE,
+    'alphanumeric': DIGITS + LOWERCASE + UPPERCASE,
+    'lowercase': LOWERCASE,
+    'lowercase-numeric': DIGITS + LOWERCASE,
+    'numeric': DIGITS,
+    'uppercase': UPPERCASE,
+    'uppercase-numeric': DIGITS + UPPERCASE,
+};
 
 /**
- * Generates a random lower case alphabetic string of the specified length.
+ * Generates a random string of specified length and character type.
  *
- * @param {number} [length] - The length of the generated string. Defaults to 8.
- * @returns {string} The generated random lower case alphabetic string.
- *
- * @example
- * ```typescript
- * import { randomAlphabeticString } from '@kikiutils/node/string';
- *
- * const randomLowerString = randomLowerCaseAlphabeticString(10);
- * console.log(randomLowerString); // Output: A random string of 10 lower case alphabetic characters, e.g., 'abcdefghij'
- * ```
+ * @param {number} [length] - Length of the generated string.
+ * @param {RandomStringMode} [mode]
+ * @returns {string} The generated random string.
  */
-export const randomLowerCaseAlphabeticString = (length: number = 8) => Array.from({ length }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
+export function randomString(length: number = 8, mode: RandomStringMode = 'alphabetic') {
+    const charset = CHARSETS[mode];
+    if (!charset) throw new Error(`Unsupported mode: ${mode}`);
+    return Array.from({ length }, () => charset[Math.floor(Math.random() * charset.length)]).join('');
+}
