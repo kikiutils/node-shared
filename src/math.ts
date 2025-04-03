@@ -3,9 +3,9 @@ import Decimal from 'decimal.js';
 type CalculableValue = Decimal.Value | { toString: () => string };
 
 /**
- * Options for configuring the output of the `calculateToPercentageString` function.
+ * Options for configuring the output of the `toPercentageString` function.
  */
-export interface CalculateToPercentageStringOptions {
+export interface ToPercentageStringOptions {
     /**
      * The number of decimal places to include in the result.
      * @default 2
@@ -24,27 +24,27 @@ export interface CalculateToPercentageStringOptions {
  *
  * @param {CalculableValue} molecular - The numerator of the fraction.
  * @param {CalculableValue} denominator - The denominator of the fraction.
- * @param {CalculateToPercentageStringOptions} [options] - Optional configuration for the result.
+ * @param {ToPercentageStringOptions} [options] - Optional configuration for the result.
  * @returns {string} The percentage string.
  *
  * @example
  * ```typescript
- * import { calculateToPercentageString } from '@kikiutils/node/math';
+ * import { toPercentageString } from '@kikiutils/node/math';
  *
  * // With symbol
- * const percentWithSymbol = calculateToPercentageString(50, 200);
+ * const percentWithSymbol = toPercentageString(50, 200);
  * console.log(percentWithSymbol); // Output: '25.00%'
  *
  * // Without symbol
- * const percentWithoutSymbol = calculateToPercentageString(50, 200, { withSymbol: false });
+ * const percentWithoutSymbol = toPercentageString(50, 200, { withSymbol: false });
  * console.log(percentWithoutSymbol); // Output: '25.00'
  *
  * // With custom decimal places
- * const percentCustomDecimal = calculateToPercentageString(50, 200, { decimalPlaces: 1 });
+ * const percentCustomDecimal = toPercentageString(50, 200, { decimalPlaces: 1 });
  * console.log(percentCustomDecimal); // Output: '25.0%'
  * ```
  */
-export function calculateToPercentageString(molecular: CalculableValue, denominator: CalculableValue, options?: CalculateToPercentageStringOptions) {
+export function toPercentageString(molecular: CalculableValue, denominator: CalculableValue, options?: ToPercentageStringOptions) {
     const molecularDecimal = new Decimal(molecular.toString());
     const denominatorDecimal = new Decimal(denominator.toString());
     const calculationResult = molecularDecimal.div(denominatorDecimal);
