@@ -44,5 +44,5 @@ export class EnvironmentNotFoundError extends Error {
  */
 export function checkAndGetEnvValue(key: string) {
     if (!process.env[key]) throw new EnvironmentNotFoundError(key);
-    return process.env[key] as string;
+    return process.env[key];
 }
