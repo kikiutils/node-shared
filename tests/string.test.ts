@@ -1,46 +1,47 @@
-import {
-    randomAlphabeticString,
-    randomLowerCaseAlphabeticString,
-} from '../src/string';
+import { randomString } from '../src/string';
+import type { RandomStringMode } from '../src/string';
 
-describe('randomAlphabeticString', () => {
-    it('should generate a string of default length (8)', () => {
-        const result = randomAlphabeticString();
-        expect(result).toHaveLength(8);
-        expect(/^[a-z]+$/i.test(result)).toBe(true);
+describe('randomString', () => {
+    const DIGITS = '0123456789';
+    const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+    const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const CHARSETS: Record<RandomStringMode, string> = {
+        'alphabetic': LOWERCASE + UPPERCASE,
+        'alphanumeric': DIGITS + LOWERCASE + UPPERCASE,
+        'lowercase': LOWERCASE,
+        'lowercase-numeric': DIGITS + LOWERCASE,
+        'numeric': DIGITS,
+        'uppercase': UPPERCASE,
+        'uppercase-numeric': DIGITS + UPPERCASE,
+    };
+
+    it('should generate a string of the specified length', () => {
+        const result = randomString(10);
+        expect(result).toHaveLength(10);
     });
 
-    it('should generate a string of specified length', () => {
-        const length = 12;
-        const result = randomAlphabeticString(length);
-        expect(result).toHaveLength(length);
-        expect(/^[a-z]+$/i.test(result)).toBe(true);
+    // eslint-disable-next-line style/array-bracket-newline, style/array-element-newline
+    Object.entries(CHARSETS).forEach(([mode, charset]) => {
+        it(`should generate a valid ${mode} string of correct length`, () => {
+            const result = randomString(20, mode as RandomStringMode);
+            expect(result).toHaveLength(20);
+            for (const char of result) expect(charset).toContain(char);
+        });
     });
 
-    it('should generate different strings on subsequent calls', () => {
-        const result1 = randomAlphabeticString();
-        const result2 = randomAlphabeticString();
-        expect(result1).not.toBe(result2);
-    });
-});
-
-describe('randomLowerCaseAlphabeticString', () => {
-    it('should generate a string of default length (8)', () => {
-        const result = randomLowerCaseAlphabeticString();
-        expect(result).toHaveLength(8);
-        expect(/^[a-z]+$/.test(result)).toBe(true);
+    it('should throw if length is zero', () => {
+        expect(() => randomString(0)).toThrow('Invalid length: 0. Must be a positive integer.');
     });
 
-    it('should generate a string of specified length', () => {
-        const length = 15;
-        const result = randomLowerCaseAlphabeticString(length);
-        expect(result).toHaveLength(length);
-        expect(/^[a-z]+$/.test(result)).toBe(true);
+    it('should throw if length is negative', () => {
+        expect(() => randomString(-5)).toThrow('Invalid length: -5. Must be a positive integer.');
     });
 
-    it('should generate different strings on subsequent calls', () => {
-        const result1 = randomLowerCaseAlphabeticString();
-        const result2 = randomLowerCaseAlphabeticString();
-        expect(result1).not.toBe(result2);
+    it('should throw if length is not an integer', () => {
+        expect(() => randomString(4.5)).toThrow('Invalid length: 4.5. Must be a positive integer.');
+    });
+
+    it('should throw if mode is unsupported', () => {
+        expect(() => randomString(5, 'invalid-mode' as any)).toThrow('Unsupported mode: invalid-mode');
     });
 });

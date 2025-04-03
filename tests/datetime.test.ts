@@ -4,33 +4,33 @@ import {
 } from 'date-fns';
 
 import {
-    formatDateOrTimestamp,
+    formatDate,
     getDateRangeFromDate,
     getMidnightDateFromToday,
 } from '../src/datetime';
 
-describe('formatDateOrTimestamp', () => {
+describe('formatDate', () => {
     it('should format a Date object', () => {
         const date = new Date('2024-07-10T00:00:00Z');
-        const formattedDate = formatDateOrTimestamp(date, 'yyyy-MM-dd');
+        const formattedDate = formatDate(date, 'yyyy-MM-dd');
         expect(formattedDate).toBe('2024-07-10');
     });
 
     it('should format a numeric timestamp', () => {
         const timestamp = 1657814400000;
-        const formattedTimestamp = formatDateOrTimestamp(timestamp, 'yyyy-MM-dd HH:mm');
+        const formattedTimestamp = formatDate(timestamp, 'yyyy-MM-dd HH:mm');
         expect(formattedTimestamp).toBe('2022-07-14 16:00');
     });
 
     it('should format a date string', () => {
         const dateString = '2024-07-10T00:00:00Z';
-        const formattedString = formatDateOrTimestamp(dateString, 'yyyy-MM-dd');
+        const formattedString = formatDate(dateString, 'yyyy-MM-dd');
         expect(formattedString).toBe('2024-07-10');
     });
 
     it('should format with the default format', () => {
         const date = new Date('2024-07-10T00:00:00Z');
-        const formattedDate = formatDateOrTimestamp(date);
+        const formattedDate = formatDate(date);
         expect(formattedDate).toBe(dateFnsFormat(date, 'yyyy-MM-dd HH:mm:ss'));
     });
 });
