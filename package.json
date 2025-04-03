@@ -48,7 +48,7 @@
     "bumplog": "changelogen --bump",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "release": "pnpm run lint && pnpm run build && pnpm run test && changelogen --push --release && npm publish",
+    "release": "pnpm run lint && pnpm run build && pnpm run test && changelogen --hideAuthorEmail --push --release && npm publish",
     "test": "cross-env TZ=UTC jest --coverage"
   },
   "devDependencies": {
