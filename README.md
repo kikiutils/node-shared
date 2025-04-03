@@ -5,107 +5,99 @@
 [![codecov][codecov-src]][codecov-href]
 [![License][license-src]][license-href]
 
-A utility library offering easy-to-use HTTP request wrappers, secure hash functions, flexible logging, datetime utilities, and more to simplify Node.js development.
+A modular utility library for Node.js offering secure hashing, flexible logging, datetime manipulation, and more.
 
 - [✨ Release Notes](./CHANGELOG.md)
 
 ## Features
 
-- ✔️ Easy-to-use Axios wrappers for common HTTP methods
-- 📜 Flexible and efficient console logging with Consola
-- 🔒 Secure hash functions including MD5, SHA3-224, SHA3-256, SHA3-384, and SHA3-512
-- 📅 Handy datetime utilities for formatting and manipulation
-- 🔢 Enum helpers for extracting string and number values
-- 🌱 Environment variable checker to ensure required values are set
-- 📈 Simple math utility for percentage calculations
-- 💎 Utility for formatting numbers prettily
-- 📜 Pino logging integration for enhanced log management
-- 🔤 String utilities for generating random alphabetic strings
+- 📜 Simple and flexible logging with Consola and Pino
+- 🔒 Secure hash utilities: MD5, SHA3-224, SHA3-256, SHA3-384, SHA3-512
+- 📅 Datetime utilities for formatting, ranges, and offsets
+- 🔢 Enum helpers to extract values
+- 🌱 Environment variable checker with error handling
+- 📈 Math utilities like percentage formatting
+- 💎 Number formatting utilities (e.g. compact representation)
+- 🔤 String tools such as random string generation
+- ⚙️ General-purpose utilities like value extractors
+- 📦 Modular by design — import only what you need via `@kikiutils/node/<module>`
 
-## Environment Requirements
+## Requirements
 
-- Node.js version 18 or higher
+- **Node.js** `>= 18.12.1`
 
 ## Installation
 
-Add dependency (example using pnpm).
+Using [pnpm](https://pnpm.io):
 
 ```bash
 pnpm add @kikiutils/node
 ```
 
-You can also use yarn, npm, or bun to add the dependency.
-
-That's it! You're ready to use this package in your project. Check out the [function instructions](#functions) below ✨.
+You can also use `yarn`, `npm`, or `bun`.
 
 > [!NOTE]
-> When installing this package, not all required dependencies will be installed. If a function uses specific functionalities, you will need to install the corresponding dependencies manually.
+> This package is modular. It does not install all dependencies by default.
 >
-> For example, if there is a file that uses axios, you will need to manually install axios.
+> If a utility depends on a third-party package (e.g. `date-fns`), you must install it manually.
 
-## Functions
+## Modules & Functions
 
-Some functions or the top of files will have related comments and examples.
+Each module file includes function-level comments and usage examples.
 
-- [axios](./src/axios.ts)
-  - axiosInstance
-  - axiosRequest
-  - axiosDelete
-  - $axiosDelete
-  - axiosGet
-  - $axiosGet
-  - axiosPatch
-  - $axiosPatch
-  - axiosPost
-  - $axiosPost
-  - axiosPut
-  - $axiosPut
+### [consola](./src/consola.ts)
 
-- [consola](./src/consola.ts)
-- [crypto-hash](./src/crypto-hash.ts)
-  - cryptoMd5
-  - cryptoMd5ToBuffer
-  - cryptoSha3224
-  - cryptoSha3224ToBuffer
-  - cryptoSha3256
-  - cryptoSha3256ToBuffer
-  - cryptoSha3384
-  - cryptoSha3384ToBuffer
-  - cryptoSha3512
-  - cryptoSha3512ToBuffer
+- Console logger integration
 
-- [datetime](./src/datetime.ts)
-  - formatDateOrTimestamp
-  - getDateRangeFromDate
-  - getMidnightDateFromToday
+### [crypto-hash](./src/crypto-hash.ts)
 
-- [enum](./src/enum.ts)
-  - getEnumNumberValues
-  - getEnumStringValues
+- `cryptoMd5`, `cryptoMd5ToBuffer`
+- `cryptoSha3224`, `cryptoSha3224ToBuffer`
+- `cryptoSha3256`, `cryptoSha3256ToBuffer`
+- `cryptoSha3384`, `cryptoSha3384ToBuffer`
+- `cryptoSha3512`, `cryptoSha3512ToBuffer`
 
-- [env](./src/env.ts)
-  - checkAndGetEnvValue
+### [datetime](./src/datetime.ts)
 
-- [hash](./src/hash.ts)
-  - sha3224
-  - sha3256
-  - sha3384
-  - sha3512
+- `formatDate`
+- `getDateRangeFromDate`
+- `getMidnightDateFromToday`
 
-- [index](./src/index.ts)
-  - flattenToSingleValue
-  - setReadonlyConstantToGlobalThis
+### [enum](./src/enum.ts)
 
-- [math](./src/math.ts)
-  - calculateToPercentageString
+- `getEnumStringValues`
+- `getEnumNumberValues`
 
-- [number](./src/number.ts)
-  - prettyNumberToString
+### [env](./src/env.ts)
 
-- [pino](./src/pino.ts)
-- [string](./src/string.ts)
-  - randomAlphabeticString
-  - randomLowerCaseAlphabeticString
+- `checkAndGetEnvValue`
+
+### [general](./src/general.ts)
+
+- `extractFirstValue`
+
+### [hash](./src/hash.ts)
+
+- `sha3224`
+- `sha3256`
+- `sha3384`
+- `sha3512`
+
+### [math](./src/math.ts)
+
+- `toPercentageString`
+
+### [number](./src/number.ts)
+
+- `toCompactNumberString`
+
+### [pino](./src/pino.ts)
+
+- Pino logger integration
+
+### [string](./src/string.ts)
+
+- `randomString`
 
 ## License
 
