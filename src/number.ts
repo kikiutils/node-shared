@@ -9,17 +9,17 @@ import { millify } from 'millify';
  *
  * @example
  * ```typescript
- * import { prettyNumberToString } from '@kikiutils/node/number';
+ * import { toCompactNumberString } from '@kikiutils/node/number';
  *
- * const prettyNumber = prettyNumberToString(1234567);
+ * const prettyNumber = toCompactNumberString(1234567);
  * console.log(prettyNumber); // Output: '1.23m'
  *
  * // With custom options
- * const prettyNumberWithOptions = prettyNumberToString(1234567, { precision: 3 });
+ * const prettyNumberWithOptions = toCompactNumberString(1234567, { precision: 3 });
  * console.log(prettyNumberWithOptions); // Output: '1.235m'
  * ```
  */
-export function prettyNumberToString(value: number, options?: Parameters<typeof millify>[1]) {
+export function toCompactNumberString(value: number, options?: Parameters<typeof millify>[1]) {
     return millify(
         value,
         {
