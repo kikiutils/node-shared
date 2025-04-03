@@ -19,11 +19,13 @@ import type {
 export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' | 'today' | 'yesterday';
 
 /**
- * Formats a given date, timestamp, or string into the specified format.
+ * Formats a given date, timestamp, or date string into a specified format.
  *
- * @param {DateArg<Date>} date - The date or timestamp to be formatted. Can be a Date object, a numeric timestamp, or a date string.
- * @param {string} [format] - The desired date format. Defaults to 'yyyy-MM-dd HH:mm:ss'.
- * @param {FormatOptions} [options] - Optional configuration for formatting.
+ * This function is a wrapper around `date-fns/format`.
+ *
+ * @param {DateArg<Date>} date - The input date to format. Can be a Date object, a timestamp, or a string.
+ * @param {string} [format] - The target format string.
+ * @param {FormatOptions} [options] - Optional formatting options passed to `date-fns/format`.
  * @returns {string} The formatted date string.
  *
  * @example
@@ -31,46 +33,43 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  * import { formatDate } from '@kikiutils/node/datetime';
  *
  * // Format a Date object
- * const formattedDate = formatDate(new Date(), 'yyyy-MM-dd');
- * console.log(formattedDate); // Output: '2024-07-10'
+ * console.log(formatDate(new Date(), 'yyyy-MM-dd')); // 2024-07-10
  *
- * // Format a numeric timestamp
- * const formattedTimestamp = formatDate(1657814400000, 'yyyy-MM-dd');
- * console.log(formattedTimestamp); // Output: '2022-07-15'
+ * // Format a timestamp
+ * console.log(formatDate(1657814400000, 'yyyy-MM-dd')); // 2022-07-15
  *
  * // Format a date string
- * const formattedString = formatDate('2024-07-10T00:00:00Z', 'yyyy-MM-dd');
- * console.log(formattedString); // Output: '2024-07-10'
+ * console.log(formatDate('2024-07-10T00:00:00Z', 'yyyy-MM-dd')); // 2024-07-10
  * ```
+ *
+ * @see https://date-fns.org/docs/format
  */
 export const formatDate = (date: DateArg<Date> & {}, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) => dateFnsFormat(date, format, options);
 
 /**
- * Get the date range (start date and end date) based on the specified date and range type.
+ * Get the date range (start and end) based on a given date and range type.
  *
- * @param {Date} date - The reference date to calculate the date range.
- * @param {DateRangeType} type - The type of date range to calculate. Valid types are 'lastMonth', 'lastWeek', 'thisMonth', 'thisWeek', 'today', and 'yesterday'.
+ * Supports common range types like 'lastMonth', 'lastWeek', 'thisMonth', 'thisWeek', 'today', and 'yesterday'.
+ *
+ * @param {Date} date - The reference date.
+ * @param {DateRangeType} type - The range type to compute.
  * @param {object} [options] - Optional settings.
- * @param {boolean} [options.setEndDateToNextDayStart] - If true, set the end date to the next day at 00:00:00.000.
- * @param {Day} [options.weekStartsOn] - The day the week starts on, with 0 being Sunday and 6 being Saturday. Defaults to 1 (Monday).
- *
- * @returns {object} An object containing the start date and end date.
+ * @param {boolean} [options.setEndDateToNextDayStart] - If true, set `endDate` to 00:00:00.000 of the next day.
+ * @param {Day} [options.weekStartsOn] - The start day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday).
+ * @returns {{ startDate: Date, endDate: Date }} An object with `startDate` and `endDate`.
  *
  * @example
  * ```typescript
  * import { getDateRangeFromDate } from '@kikiutils/node/datetime';
  *
- * // Get the date range for the last month from a given date
+ * // Get the date range for last month
  * const date = new Date('2023-07-01');
- * const range = getDateRangeFromDate(date, 'lastMonth');
- * console.log(range);
- * // Output: { startDate: 2023-06-01T00:00:00.000Z, endDate: 2023-06-30T23:59:59.999Z }
+ * console.log(getDateRangeFromDate(date, 'lastMonth'));
+ * // { startDate: 2023-06-01T00:00:00.000Z, endDate: 2023-06-30T23:59:59.999Z }
  *
- * // Get the date range for this week from a given date, with the week starting on Sunday
- * const date = new Date('2023-07-01');
- * const range = getDateRangeFromDate(date, 'thisWeek', { weekStartsOn: 0 });
- * console.log(range);
- * // Output: { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
+ * // Get this week's range with Sunday as the first day
+ * console.log(getDateRangeFromDate(date, 'thisWeek', { weekStartsOn: 0 }));
+ * // { startDate: 2023-06-25T00:00:00.000Z, endDate: 2023-07-01T23:59:59.999Z }
  * ```
  */
 export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: { setEndDateToNextDayStart?: boolean; weekStartsOn?: Day }) {
@@ -107,22 +106,18 @@ export function getDateRangeFromDate(date: Date, type: DateRangeType, options?: 
 }
 
 /**
- * Returns a Date object set to midnight (00:00:00) of today or with an offset of the specified number of days.
+ * Returns a `Date` object set to midnight (00:00:00) of today, with an optional day offset.
  *
- * @param {number} [offsetDays] - The number of days to offset from today. Defaults to 0.
- * @returns {Date} The Date object set to midnight of the offset date.
+ * @param {number} [offsetDays] - Number of days to offset from today. Can be negative.
+ * @returns {Date} A `Date` object at 00:00:00 of the offset day.
  *
  * @example
  * ```typescript
  * import { getMidnightDateFromToday } from '@kikiutils/node/datetime';
  *
- * // Get today's midnight date
- * const midnightToday = getMidnightDateFromToday();
- * console.log(midnightToday); // Output: Date object representing today's date at 00:00:00
- *
- * // Get midnight date 3 days from today
- * const midnightIn3Days = getMidnightDateFromToday(3);
- * console.log(midnightIn3Days); // Output: Date object representing the date 3 days from today at 00:00:00
+ * console.log(getMidnightDateFromToday()); // today at 00:00:00
+ * console.log(getMidnightDateFromToday(3)); // 3 days from today at 00:00:00
+ * console.log(getMidnightDateFromToday(-1)); // yesterday at 00:00:00
  * ```
  */
 export function getMidnightDateFromToday(offsetDays: number = 0) {

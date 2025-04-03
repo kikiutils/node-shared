@@ -14,8 +14,7 @@
  *   Unknown = 'unknown'
  * }
  *
- * const numericValues = getEnumNumberValues(RecordType);
- * console.log(numericValues); // Output: [0, 1]
+ * console.log(getEnumNumberValues(RecordType)); // [0, 1]
  * ```
  */
 export const getEnumNumberValues = (data: Record<number | string, number | string>) => Object.values(data).filter((value) => typeof value === 'number') as number[];
@@ -36,8 +35,7 @@ export const getEnumNumberValues = (data: Record<number | string, number | strin
  *   Unknown = 'unknown'
  * }
  *
- * const stringValues = getEnumStringValues(RecordType);
- * console.log(stringValues); // Output: ['unknown']
+ * console.log(getEnumStringValues(RecordType)); // ['unknown']
  * ```
  */
 export function getEnumStringValues(data: Record<number | string, number | string>) {

@@ -11,10 +11,9 @@ import { createConsola } from 'consola';
  *
  * @example
  * ```typescript
- * import logger from '@kikiutils/node/consola'; // ESM
- * const { logger } = require('@kikiutils/node/consola'); // CJS
+ * import logger from '@kikiutils/node/consola';
  *
- * logger.info('test'); // Output: 'ℹ test 3:56:30 AM'
+ * logger.info('test'); // ℹ test 3:56:30 AM
  *
  * // Manually change the level
  * logger.level = 3;

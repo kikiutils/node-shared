@@ -3,11 +3,11 @@ import Decimal from 'decimal.js';
 type CalculableValue = Decimal.Value | { toString: () => string };
 
 /**
- * Options for configuring the output of the `toPercentageString` function.
+ * Options for configuring the output of `toPercentageString`.
  */
 export interface ToPercentageStringOptions {
     /**
-     * The number of decimal places to include in the result.
+     * Number of decimal places to include in the result.
      * @default 2
      */
     decimalPlaces?: number;
@@ -20,28 +20,24 @@ export interface ToPercentageStringOptions {
 }
 
 /**
- * Converts a fraction to a percentage string with optional configuration.
+ * Converts a fraction (numerator / denominator) into a percentage string.
+ *
+ * - Uses `decimal.js` for precise decimal calculations.
+ * - Supports custom decimal places and optional percentage symbol.
+ * - Returns `'0.00%'` if result is `NaN` or division is invalid.
  *
  * @param {CalculableValue} molecular - The numerator of the fraction.
  * @param {CalculableValue} denominator - The denominator of the fraction.
- * @param {ToPercentageStringOptions} [options] - Optional configuration for the result.
- * @returns {string} The percentage string.
+ * @param {ToPercentageStringOptions} [options] - Optional output settings.
+ * @returns {string} Formatted percentage string.
  *
  * @example
  * ```typescript
  * import { toPercentageString } from '@kikiutils/node/math';
  *
- * // With symbol
- * const percentWithSymbol = toPercentageString(50, 200);
- * console.log(percentWithSymbol); // Output: '25.00%'
- *
- * // Without symbol
- * const percentWithoutSymbol = toPercentageString(50, 200, { withSymbol: false });
- * console.log(percentWithoutSymbol); // Output: '25.00'
- *
- * // With custom decimal places
- * const percentCustomDecimal = toPercentageString(50, 200, { decimalPlaces: 1 });
- * console.log(percentCustomDecimal); // Output: '25.0%'
+ * console.log(toPercentageString(50, 200)); // 25.00%
+ * console.log(toPercentageString(50, 200, { withSymbol: false })); // 25.00
+ * console.log(toPercentageString(50, 200, { decimalPlaces: 1 })); // 25.0%
  * ```
  */
 export function toPercentageString(molecular: CalculableValue, denominator: CalculableValue, options?: ToPercentageStringOptions) {

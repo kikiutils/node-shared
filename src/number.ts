@@ -1,22 +1,20 @@
 import { millify } from 'millify';
 
 /**
- * Converts a large number to a more readable string format using millify.
+ * Converts a large number into a compact, human-readable string using `millify`.
  *
- * @param {number} value - The number to be converted.
- * @param {Parameters<typeof millify>[1]} [options] - Optional configuration for millify.
- * @returns {string} The formatted string.
+ * Applies lowercase units (e.g. 'k', 'm') and default precision of 2, unless overridden.
+ *
+ * @param {number} value - The number to format.
+ * @param {Parameters<typeof millify>[1]} [options] - Optional configuration passed to `millify`.
+ * @returns {string} The compact number string.
  *
  * @example
  * ```typescript
  * import { toCompactNumberString } from '@kikiutils/node/number';
  *
- * const prettyNumber = toCompactNumberString(1234567);
- * console.log(prettyNumber); // Output: '1.23m'
- *
- * // With custom options
- * const prettyNumberWithOptions = toCompactNumberString(1234567, { precision: 3 });
- * console.log(prettyNumberWithOptions); // Output: '1.235m'
+ * console.log(toCompactNumberString(1234567)); // 1.23m
+ * console.log(toCompactNumberString(1234567, { precision: 3 })); // 1.235m
  * ```
  */
 export function toCompactNumberString(value: number, options?: Parameters<typeof millify>[1]) {
