@@ -26,7 +26,8 @@ const CHARSETS: Record<RandomStringMode, string> = {
  * @param {RandomStringMode} [mode]
  * @returns {string} The generated random string.
  */
-export function randomString(length: number = 8, mode: RandomStringMode = 'alphabetic') {
+export function randomString(length: number, mode: RandomStringMode = 'alphabetic') {
+    if (!Number.isInteger(length) || length <= 0) throw new Error(`Invalid length: ${length}. Must be a positive integer.`);
     const charset = CHARSETS[mode];
     if (!charset) throw new Error(`Unsupported mode: ${mode}`);
     return Array.from({ length }, () => charset[Math.floor(Math.random() * charset.length)]).join('');
