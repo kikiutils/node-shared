@@ -11,6 +11,7 @@ import {
     subWeeks,
 } from 'date-fns';
 import type {
+    DateArg,
     Day,
     FormatOptions,
 } from 'date-fns';
@@ -20,29 +21,29 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
 /**
  * Formats a given date, timestamp, or string into the specified format.
  *
- * @param {Date | number | string} dateOrTimestamp - The date or timestamp to be formatted. Can be a Date object, a numeric timestamp, or a date string.
+ * @param {DateArg<Date>} date - The date or timestamp to be formatted. Can be a Date object, a numeric timestamp, or a date string.
  * @param {string} [format] - The desired date format. Defaults to 'yyyy-MM-dd HH:mm:ss'.
  * @param {FormatOptions} [options] - Optional configuration for formatting.
  * @returns {string} The formatted date string.
  *
  * @example
  * ```typescript
- * import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
+ * import { formatDate } from '@kikiutils/node/datetime';
  *
  * // Format a Date object
- * const formattedDate = formatDateOrTimestamp(new Date(), 'yyyy-MM-dd');
+ * const formattedDate = formatDate(new Date(), 'yyyy-MM-dd');
  * console.log(formattedDate); // Output: '2024-07-10'
  *
  * // Format a numeric timestamp
- * const formattedTimestamp = formatDateOrTimestamp(1657814400000, 'yyyy-MM-dd');
+ * const formattedTimestamp = formatDate(1657814400000, 'yyyy-MM-dd');
  * console.log(formattedTimestamp); // Output: '2022-07-15'
  *
  * // Format a date string
- * const formattedString = formatDateOrTimestamp('2024-07-10T00:00:00Z', 'yyyy-MM-dd');
+ * const formattedString = formatDate('2024-07-10T00:00:00Z', 'yyyy-MM-dd');
  * console.log(formattedString); // Output: '2024-07-10'
  * ```
  */
-export const formatDateOrTimestamp = (dateOrTimestamp: Date | number | string, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) => dateFnsFormat(dateOrTimestamp, format, options);
+export const formatDate = (date: DateArg<Date> & {}, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) => dateFnsFormat(date, format, options);
 
 /**
  * Get the date range (start date and end date) based on the specified date and range type.
