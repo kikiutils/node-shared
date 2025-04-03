@@ -1,4 +1,4 @@
-import { extractFirstValue } from '../src';
+import { extractFirstValue } from '../src/general';
 
 describe('extractFirstValue', () => {
     it('should return the first element of an array', () => {
