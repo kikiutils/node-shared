@@ -1,7 +1,7 @@
 {
   "name": "@kikiutils/node",
   "version": "6.0.1",
-  "description": "A utility library offering easy-to-use HTTP request wrappers, secure hash functions, flexible logging, datetime utilities, and more to simplify Node.js development.",
+  "description": "A utility library offering secure hash functions, flexible logging, datetime utilities, and more to simplify Node.js development.",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
@@ -9,14 +9,12 @@
     "url": "git+https://github.com/kikiutils/node.git"
   },
   "keywords": [
-    "axios",
     "consola",
     "crypto",
     "datetime",
     "enum",
     "environment",
     "hash",
-    "http",
     "logging",
     "math",
     "node",
@@ -58,7 +56,6 @@
     "@noble/hashes": "^1.7.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.0",
-    "axios": "^1.8.4",
     "consola": "^3.4.2",
     "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
