@@ -17,7 +17,6 @@ A utility library offering easy-to-use HTTP request wrappers, secure hash functi
 - 📅 Handy datetime utilities for formatting and manipulation
 - 🔢 Enum helpers for extracting string and number values
 - 🌱 Environment variable checker to ensure required values are set
-- 🛡️ Middleware for logging in Hono framework
 - 📈 Simple math utility for percentage calculations
 - 💎 Utility for formatting numbers prettily
 - 📜 Pino logging integration for enhanced log management
@@ -92,9 +91,6 @@ Some functions or the top of files will have related comments and examples.
   - sha3256
   - sha3384
   - sha3512
-
-- [hono](./src/hono.ts)
-  - useHonoLogger
 
 - [index](./src/index.ts)
   - flattenToSingleValue
