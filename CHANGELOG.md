@@ -1,5 +1,17 @@
 # Changelog
 
+## v7.1.0
+
+[compare changes](https://github.com/kikiutils/node/compare/v7.0.0...v7.1.0)
+
+### 🚀 Enhancements
+
+- Add `generateWithNestedRandomLength` utils and test unit ([39cd4eb](https://github.com/kikiutils/node/commit/39cd4eb))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v7.0.0
 
 [compare changes](https://github.com/kikiutils/node/compare/v6.0.1...v7.0.0)

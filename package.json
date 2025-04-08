@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/node",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "A modular utility library for Node.js offering secure hashing, flexible logging, datetime manipulation, and more.",
   "author": "kiki-kanri",
   "license": "MIT",
