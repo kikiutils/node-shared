@@ -95,6 +95,10 @@ Each module file includes function-level comments and usage examples.
 
 - Pino logger integration
 
+### [random](./src/random.ts)
+
+- `generateWithNestedRandomLength`
+
 ### [string](./src/string.ts)
 
 - `randomString`
