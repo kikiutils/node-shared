@@ -22,6 +22,7 @@
     "string",
     "utilities"
   ],
+  "sideEffects": false,
   "exports": {
     "./*": {
       "types": "./dist/*.d.ts",
