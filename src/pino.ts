@@ -35,5 +35,3 @@ export const pinoLogger = pino({}, stream);
 export const logger = pinoLogger;
 // eslint-disable-next-line style/max-len
 pinoLogger.level = process.env.PINO_LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'error' : pinoLogger.level);
-
-export default pinoLogger;

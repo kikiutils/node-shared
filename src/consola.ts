@@ -25,5 +25,3 @@ export const consolaLogger = createConsola();
 export const logger = consolaLogger;
 if (process.env.CONSOLA_LOGGER_LEVEL !== undefined) consolaLogger.level = +process.env.CONSOLA_LOGGER_LEVEL;
 else consolaLogger.level = process.env.NODE_ENV === 'production' ? 0 : consolaLogger.level;
-
-export default consolaLogger;
