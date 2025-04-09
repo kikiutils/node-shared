@@ -1,5 +1,26 @@
 # Changelog
 
+## v8.0.0
+
+[compare changes](https://github.com/kikiutils/node/compare/v7.1.0...v8.0.0)
+
+### 💅 Refactors
+
+- ⚠️ Remove all default export ([a6d6a54](https://github.com/kikiutils/node/commit/a6d6a54))
+- Update import style for some modules ([fa9947e](https://github.com/kikiutils/node/commit/fa9947e))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([bebb21b](https://github.com/kikiutils/node/commit/bebb21b))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove all default export ([a6d6a54](https://github.com/kikiutils/node/commit/a6d6a54))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v7.1.0
 
 [compare changes](https://github.com/kikiutils/node/compare/v7.0.0...v7.1.0)
