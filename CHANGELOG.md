@@ -1,5 +1,17 @@
 # Changelog
 
+## v8.0.1
+
+[compare changes](https://github.com/kikiutils/node/compare/v8.0.0...v8.0.1)
+
+### 🏡 Chore
+
+- Set `sideEffects` to false in package.json ([331c0d8](https://github.com/kikiutils/node/commit/331c0d8))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v8.0.0
 
 [compare changes](https://github.com/kikiutils/node/compare/v7.1.0...v8.0.0)
