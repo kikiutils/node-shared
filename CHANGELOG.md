@@ -1,5 +1,43 @@
 # Changelog
 
+## v8.0.2
+
+[compare changes](https://github.com/kikiutils/node/compare/v8.0.1...v8.0.2)
+
+### 💅 Refactors
+
+- Replace all import * as and default imports with named imports in test files ([7fc3210](https://github.com/kikiutils/node/commit/7fc3210))
+- Remove redundant type assertions ([ddf011c](https://github.com/kikiutils/node/commit/ddf011c))
+- Replace if-else chain with switch in `getDateRangeFromDate` ([72ba2e2](https://github.com/kikiutils/node/commit/72ba2e2))
+
+### 📖 Documentation
+
+- Update README ([1704ec7](https://github.com/kikiutils/node/commit/1704ec7))
+
+### 🏡 Chore
+
+- Format script ([16ca049](https://github.com/kikiutils/node/commit/16ca049))
+- Update file permissions after installing or updating dependencies ([d141f76](https://github.com/kikiutils/node/commit/d141f76))
+- Add `--hideAuthorEmail` flag to bumplog command ([382091b](https://github.com/kikiutils/node/commit/382091b))
+- Add typecheck command to package.json scripts ([2a1f7e0](https://github.com/kikiutils/node/commit/2a1f7e0))
+- Rename `jest.config.js` to `jest.config.mjs` ([76371a1](https://github.com/kikiutils/node/commit/76371a1))
+- Reorder lint, test, and build steps in release command ([b63dcb4](https://github.com/kikiutils/node/commit/b63dcb4))
+- Disable `isolatedDeclarations` in tsconfig ([ed1636f](https://github.com/kikiutils/node/commit/ed1636f))
+- Update `modify-files-permissions.sh` ([89f72e3](https://github.com/kikiutils/node/commit/89f72e3))
+
+### ✅ Tests
+
+- Add pass test unit ([d7b98bd](https://github.com/kikiutils/node/commit/d7b98bd))
+- Update datetime `getDateRangeFromDate` test unit ([f16130e](https://github.com/kikiutils/node/commit/f16130e))
+
+### 🤖 CI
+
+- Add test github workflow config file ([dd421d1](https://github.com/kikiutils/node/commit/dd421d1))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v8.0.1
 
 [compare changes](https://github.com/kikiutils/node/compare/v8.0.0...v8.0.1)
