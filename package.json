@@ -39,19 +39,21 @@
   },
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' --clean --sourcemaps",
-    "bumplog": "changelogen --bump",
+    "bumplog": "changelogen --bump --hideAuthorEmail",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "release": "pnpm run lint && pnpm run build && pnpm run test && changelogen --hideAuthorEmail --push --release && npm publish",
-    "test": "cross-env TZ=UTC jest --coverage"
+    "prepack": "pnpm run build",
+    "release": "pnpm run lint && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && npm publish",
+    "test": "tsc -p ./tsconfig.test-check.json && cross-env TZ=UTC jest --coverage",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.8.0",
-    "@kikiutils/eslint-config": "^0.12.0",
-    "@kikiutils/tsconfigs": "^4.0.0",
-    "@noble/hashes": "^1.7.1",
+    "@kikiutils/eslint-config": "^0.12.3",
+    "@kikiutils/tsconfigs": "^5.0.1",
+    "@noble/hashes": "^1.8.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "consola": "^3.4.2",
     "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
@@ -60,12 +62,14 @@
     "millify": "^6.1.0",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
-    "ts-jest": "^29.3.1",
-    "ts-project-builder": "4.0.0"
+    "ts-jest": "^29.3.2",
+    "ts-project-builder": "5.0.0",
+    "typescript": "^5.8.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "unrs-resolver"
     ]
   }
 }

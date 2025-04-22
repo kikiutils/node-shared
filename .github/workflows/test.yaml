@@ -13,7 +13,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [18.12.1, 20.0.0, 22.0.0]
+        node-version:
+          - 18.12.1
+          - 20.0.0
+          - 22.0.0
 
     steps:
       - name: Checkout code
@@ -33,7 +36,7 @@ jobs:
         run: pnpm i
 
       - name: Run tests with coverage
-        run: pnpm run test --coverage
+        run: pnpm run test
 
       - name: Upload coverage to Codecov
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.node-version == '22.0.0' }}
