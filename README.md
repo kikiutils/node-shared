@@ -41,6 +41,24 @@ You can also use `yarn`, `npm`, or `bun`.
 >
 > If a utility depends on a third-party package (e.g. `date-fns`), you must install it manually.
 
+## Usage
+
+Import the functions or modules you want to use:
+
+```typescript
+import { logger } from '@kikituils/node/consola';
+import { extractFirstValue } from '@kikituils/node/general';
+
+const data = [
+    0,
+    1
+];
+
+const value = extractFirstValue(data);
+console.log(value); // 0
+logger.info(value);
+```
+
 ## Modules & Functions
 
 Each module file includes function-level comments and usage examples.
