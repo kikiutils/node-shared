@@ -83,6 +83,11 @@ describe('getDateRangeFromDate', () => {
         const range = getDateRangeFromDate(referenceDate, 'today', { setEndDateToNextDayStart: true });
         expect(range.endDate).toEqual(new Date('2023-07-02 00:00:00.000 '));
     });
+
+    it('should throw an error for an invalid range type', () => {
+        expect(() => getDateRangeFromDate(referenceDate, 'invalidRangeType' as any))
+            .toThrow('Unsupported date range type: invalidRangeType.');
+    });
 });
 
 describe('getMidnightDateFromToday', () => {
