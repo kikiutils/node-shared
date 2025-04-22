@@ -84,27 +84,44 @@ export function getDateRangeFromDate(
 ) {
     let endDate: Date;
     let startDate: Date;
-    if (type === 'lastMonth') {
-        const lastMonth = subMonths(date, 1);
-        endDate = endOfMonth(lastMonth);
-        startDate = startOfMonth(lastMonth);
-    } else if (type === 'lastWeek') {
-        const lastWeek = subWeeks(date, 1);
-        endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
-        startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
-    } else if (type === 'thisMonth') {
-        endDate = endOfMonth(date);
-        startDate = startOfMonth(date);
-    } else if (type === 'thisWeek') {
-        endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
-        startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
-    } else if (type === 'today') {
-        endDate = endOfDay(date);
-        startDate = startOfDay(date);
-    } else {
-        const yesterday = subDays(date, 1);
-        endDate = endOfDay(yesterday);
-        startDate = startOfDay(yesterday);
+    switch (type) {
+        case 'lastMonth':
+            {
+                const lastMonth = subMonths(date, 1);
+                endDate = endOfMonth(lastMonth);
+                startDate = startOfMonth(lastMonth);
+            }
+
+            break;
+        case 'lastWeek':
+            {
+                const lastWeek = subWeeks(date, 1);
+                endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
+                startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
+            }
+
+            break;
+        case 'thisMonth':
+            endDate = endOfMonth(date);
+            startDate = startOfMonth(date);
+            break;
+        case 'thisWeek':
+            endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
+            startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
+            break;
+        case 'today':
+            endDate = endOfDay(date);
+            startDate = startOfDay(date);
+            break;
+        case 'yesterday':
+            {
+                const yesterday = subDays(date, 1);
+                endDate = endOfDay(yesterday);
+                startDate = startOfDay(yesterday);
+            }
+
+            break;
+        default: throw new Error(`Unsupported date range type: ${type}.`);
     }
 
     if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
