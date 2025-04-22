@@ -19,7 +19,7 @@
  * ```
  */
 export function getEnumNumberValues(data: Record<number | string, number | string>) {
-    return Object.values(data).filter((value) => typeof value === 'number') as number[];
+    return Object.values(data).filter((value) => typeof value === 'number');
 }
 
 /**
