@@ -124,6 +124,10 @@ Each module file includes function-level comments and usage examples.
 
 - `randomString`
 
+### [vue](./src/vue.ts)
+
+- `usePreserveScroll`
+
 ## License
 
 [MIT License](./LICENSE)
