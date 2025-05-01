@@ -1,5 +1,32 @@
 # Changelog
 
+## v9.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v8.0.2...v9.0.0)
+
+### 📖 Documentation
+
+- Update README badges urls ([499bc71](https://github.com/kikiutils/node-shared/commit/499bc71))
+- Replace `%2F` with `/` in badge URLs in README ([4aaf916](https://github.com/kikiutils/node-shared/commit/4aaf916))
+- Update README and package desc and keywords ([0d7f9b4](https://github.com/kikiutils/node-shared/commit/0d7f9b4))
+
+### 🏡 Chore
+
+- Add option to `upgrade-dependencies.sh` to clean `node_modules` and `pnpm-lock.yaml` before upgrading ([e542b14](https://github.com/kikiutils/node-shared/commit/e542b14))
+- Upgrade dependencies ([d3ee5a7](https://github.com/kikiutils/node-shared/commit/d3ee5a7))
+- Ensure all scripts change to their own directory before execution ([9be5fbf](https://github.com/kikiutils/node-shared/commit/9be5fbf))
+- Upgrade dependencies ([e0ae8a2](https://github.com/kikiutils/node-shared/commit/e0ae8a2))
+- Lint code ([bbe6990](https://github.com/kikiutils/node-shared/commit/bbe6990))
+- ⚠️ Update package name and repository URL ([b814a3b](https://github.com/kikiutils/node-shared/commit/b814a3b))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Update package name and repository URL ([b814a3b](https://github.com/kikiutils/node-shared/commit/b814a3b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v8.0.2
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v8.0.1...v8.0.2)
