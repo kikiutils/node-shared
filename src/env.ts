@@ -30,7 +30,7 @@ export class EnvironmentNotFoundError extends Error {
  *
  * @example
  * ```typescript
- * import { checkAndGetEnvValue } from '@kikiutils/node/env';
+ * import { checkAndGetEnvValue } from '@kikiutils/shared/env';
  *
  * // When the environment variable 'API_KEY' is set:
  * console.log(checkAndGetEnvValue('API_KEY')); // value of API_KEY

@@ -11,7 +11,7 @@ import { millify } from 'millify';
  *
  * @example
  * ```typescript
- * import { toCompactNumberString } from '@kikiutils/node/number';
+ * import { toCompactNumberString } from '@kikiutils/shared/number';
  *
  * console.log(toCompactNumberString(1234567)); // 1.23m
  * console.log(toCompactNumberString(1234567, { precision: 3 })); // 1.235m

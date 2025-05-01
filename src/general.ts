@@ -14,7 +14,7 @@
  *
  * @example
  * ```typescript
- * import { extractFirstValue } from '@kikiutils/node';
+ * import { extractFirstValue } from '@kikiutils/shared/general';
  *
  * console.log(extractFirstValue([1, 2, 3])); // 1
  * console.log(extractFirstValue('hello'));  // hello

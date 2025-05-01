@@ -13,7 +13,7 @@ import { createConsola } from 'consola';
  *
  * @example
  * ```typescript
- * import logger from '@kikiutils/node/consola';
+ * import logger from '@kikiutils/shared/consola';
  *
  * logger.info('test'); // ℹ test 3:56:30 AM
  *

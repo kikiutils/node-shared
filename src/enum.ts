@@ -7,7 +7,7 @@
  *
  * @example
  * ```typescript
- * import { getEnumNumberValues } from '@kikiutils/node/enum';
+ * import { getEnumNumberValues } from '@kikiutils/shared/enum';
  *
  * enum RecordType {
  *   Receive = 0,
@@ -31,7 +31,7 @@ export function getEnumNumberValues(data: Record<number | string, number | strin
  *
  * @example
  * ```typescript
- * import { getEnumStringValues } from '@kikiutils/node/enum';
+ * import { getEnumStringValues } from '@kikiutils/shared/enum';
  *
  * enum RecordType {
  *   Receive = 0,

@@ -5,7 +5,7 @@
  *
  * @example
  * ```typescript
- * import { sha3256 } from '@kikiutils/node/hash';
+ * import { sha3256 } from '@kikiutils/shared/hash';
  *
  * console.log(sha3256('test')); // 36f028580bb02cc8272a9a020f4200e346e276ae664e45ee80745574e2f5ab80
  * ```

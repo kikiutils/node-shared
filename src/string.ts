@@ -31,7 +31,7 @@ const CHARSETS: Record<RandomStringMode, string> = {
  *
  * @example
  * ```typescript
- * import { randomString } from '@kikiutils/node/string';
+ * import { randomString } from '@kikiutils/shared/string';
  *
  * console.log(randomString(8)); // e.g. 'aZbXwTyQ' (alphabetic)
  * console.log(randomString(6, 'numeric')); // e.g. '402398'

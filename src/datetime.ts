@@ -30,7 +30,7 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  *
  * @example
  * ```typescript
- * import { formatDate } from '@kikiutils/node/datetime';
+ * import { formatDate } from '@kikiutils/shared/datetime';
  *
  * // Format a Date object
  * console.log(formatDate(new Date(), 'yyyy-MM-dd')); // 2024-07-10
@@ -62,7 +62,7 @@ export function formatDate(date: DateArg<Date> & {}, format: string = 'yyyy-MM-d
  *
  * @example
  * ```typescript
- * import { getDateRangeFromDate } from '@kikiutils/node/datetime';
+ * import { getDateRangeFromDate } from '@kikiutils/shared/datetime';
  *
  * // Get the date range for last month
  * const date = new Date('2023-07-01');
@@ -139,7 +139,7 @@ export function getDateRangeFromDate(
  *
  * @example
  * ```typescript
- * import { getMidnightDateFromToday } from '@kikiutils/node/datetime';
+ * import { getMidnightDateFromToday } from '@kikiutils/shared/datetime';
  *
  * console.log(getMidnightDateFromToday()); // today at 00:00:00
  * console.log(getMidnightDateFromToday(3)); // 3 days from today at 00:00:00

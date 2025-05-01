@@ -1,12 +1,12 @@
 {
-  "name": "@kikiutils/node",
+  "name": "@kikiutils/shared",
   "version": "8.0.2",
   "description": "A modular utility library for Node.js offering secure hashing, flexible logging, datetime manipulation, and more.",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kikiutils/node.git"
+    "url": "git+https://github.com/kikiutils/node-shared.git"
   },
   "keywords": [
     "consola",

@@ -1,4 +1,4 @@
-# @kikiutils/node
+# @kikiutils/shared
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -20,7 +20,7 @@ A modular utility library for Node.js offering secure hashing, flexible logging,
 - 💎 Number formatting utilities (e.g. compact representation)
 - 🔤 String tools such as random string generation
 - ⚙️ General-purpose utilities like value extractors
-- 📦 Modular by design — import only what you need via `@kikiutils/node/<module>`
+- 📦 Modular by design — import only what you need via `@kikiutils/shared/<module>`
 
 ## Requirements
 
@@ -31,7 +31,7 @@ A modular utility library for Node.js offering secure hashing, flexible logging,
 Using [pnpm](https://pnpm.io):
 
 ```bash
-pnpm add @kikiutils/node
+pnpm add @kikiutils/shared
 ```
 
 You can also use `yarn`, `npm`, or `bun`.
@@ -46,8 +46,8 @@ You can also use `yarn`, `npm`, or `bun`.
 Import the functions or modules you want to use:
 
 ```typescript
-import { logger } from '@kikituils/node/consola';
-import { extractFirstValue } from '@kikituils/node/general';
+import { logger } from '@kikituils/shared/consola';
+import { extractFirstValue } from '@kikituils/shared/general';
 
 const data = [
     0,
@@ -126,14 +126,14 @@ Each module file includes function-level comments and usage examples.
 [MIT License](./LICENSE)
 
 <!-- Badges -->
-[npm-version-href]: https://npmjs.com/package/@kikiutils/node
-[npm-version-src]: https://img.shields.io/npm/v/@kikiutils/node/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
+[npm-version-href]: https://npmjs.com/package/@kikiutils/shared
+[npm-version-src]: https://img.shields.io/npm/v/@kikiutils/shared/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
 
-[npm-downloads-href]: https://npmjs.com/package/@kikiutils/node
-[npm-downloads-src]: https://img.shields.io/npm/dm/@kikiutils/node.svg?colorA=18181b&colorB=28cf8d&style=flat
+[npm-downloads-href]: https://npmjs.com/package/@kikiutils/shared
+[npm-downloads-src]: https://img.shields.io/npm/dm/@kikiutils/shared.svg?colorA=18181b&colorB=28cf8d&style=flat
 
-[codecov-href]: https://codecov.io/gh/kikiutils/node
-[codecov-src]: https://codecov.io/gh/kikiutils/node/graph/badge.svg?token=GRSQ7JO39E
+[codecov-href]: https://codecov.io/gh/kikiutils/node-shared
+[codecov-src]: https://codecov.io/gh/kikiutils/node-shared/graph/badge.svg?token=GRSQ7JO39E
 
-[license-href]: https://github.com/kikiutils/node/blob/main/LICENSE
-[license-src]: https://img.shields.io/github/license/kikiutils/node?colorA=18181b&colorB=28cf8d&style=flat
+[license-href]: https://github.com/kikiutils/node-shared/blob/main/LICENSE
+[license-src]: https://img.shields.io/github/license/kikiutils/node-shared?colorA=18181b&colorB=28cf8d&style=flat

@@ -33,7 +33,7 @@ export interface ToPercentageStringOptions {
  *
  * @example
  * ```typescript
- * import { toPercentageString } from '@kikiutils/node/math';
+ * import { toPercentageString } from '@kikiutils/shared/math';
  *
  * console.log(toPercentageString(50, 200)); // 25.00%
  * console.log(toPercentageString(50, 200, { withSymbol: false })); // 25.00
