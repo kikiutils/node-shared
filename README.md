@@ -126,6 +126,8 @@ Each module file includes function-level comments and usage examples.
 
 ### [vue](./src/vue.ts)
 
+- `clearIntervalRef`
+- `clearTimeoutRef`
 - `usePreserveScroll`
 
 ## License
