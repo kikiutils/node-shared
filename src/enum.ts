@@ -3,6 +3,7 @@
  *
  * @param {Record<number | string, number | string>} data - The enumeration-like object to extract numeric values from.
  * The keys can be numbers or strings, and the values can be numbers or strings.
+ *
  * @returns {number[]} An array of numeric values extracted from the object.
  *
  * @example
@@ -27,6 +28,7 @@ export function getEnumNumberValues(data: Record<number | string, number | strin
  *
  * @param {Record<number | string, number | string>} data - The enumeration-like object to extract string values from.
  * The keys can be numbers or strings, and the values can be numbers or strings.
+ *
  * @returns {string[]} An array of string values extracted from the object.
  *
  * @example

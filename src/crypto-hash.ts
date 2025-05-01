@@ -2,6 +2,7 @@
  * This file provides a set of functions for creating hash digests using different algorithms and bit lengths.
  * It includes functions for generating SHA-3 hash digests with bit lengths of 224, 256, 384, and 512,
  * as well as a function for generating MD5 hash digests.
+ *
  * These functions use the Node.js crypto module to generate the hashes.
  * Can only be used in Node.js/Deno/Bun runtimes.
  *

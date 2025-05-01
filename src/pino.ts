@@ -23,7 +23,7 @@ const stream = PinoPretty({
  *
  * @example
  * ```typescript
- * import logger from '@kikiutils/shared/pino';
+ * import { logger } from '@kikiutils/shared/pino';
  *
  * logger.info('test'); // [2024-07-11 12:12:30.085] INFO: test
  *

@@ -5,7 +5,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 /**
  * Clears an interval referenced by a Vue ref and sets it to null.
  *
- * @param intervalRef - A Vue ref holding a NodeJS.Timeout or null
+ * @param {Ref<null | ReturnType<typeof setInterval>>} intervalRef - A Vue ref holding a NodeJS.Timeout or null.
  */
 export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setInterval>>) {
     if (intervalRef.value) clearInterval(intervalRef.value);
@@ -15,7 +15,7 @@ export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setIn
 /**
  * Clears a timeout referenced by a Vue ref and sets it to null.
  *
- * @param timeoutRef - A Vue ref holding a NodeJS.Timeout or null
+ * @param {Ref<null | ReturnType<typeof setTimeout>>} timeoutRef - A Vue ref holding a NodeJS.Timeout or null.
  */
 export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTimeout>>) {
     if (timeoutRef.value) clearTimeout(timeoutRef.value);
@@ -26,7 +26,9 @@ export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTime
  * A Vue composition function that remembers and restores scroll position
  * of a scrollable container across route changes and keep-alive activation.
  *
- * @param containerRef - A ref to the scrollable HTML element
+ * @template T - The type of the scrollable element (defaults to HTMLElement).
+ *
+ * @param {Ref<null | T>} containerRef - A ref to the scrollable HTML element.
  */
 export function usePreserveScroll<T extends Element = HTMLElement>(containerRef: Ref<null | T>) {
     let scrollLeft = 0;

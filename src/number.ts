@@ -7,6 +7,7 @@ import { millify } from 'millify';
  *
  * @param {number} value - The number to format.
  * @param {Parameters<typeof millify>[1]} [options] - Optional configuration passed to `millify`.
+ *
  * @returns {string} The compact number string.
  *
  * @example

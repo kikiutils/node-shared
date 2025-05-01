@@ -25,7 +25,9 @@ export class EnvironmentNotFoundError extends Error {
  * Retrieves the value of an environment variable, or throws an error if not set.
  *
  * @param {string} key - The environment variable key to check.
+ *
  * @returns {string} The value of the environment variable.
+ *
  * @throws {EnvironmentNotFoundError} If the environment variable is not defined.
  *
  * @example

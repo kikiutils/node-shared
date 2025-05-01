@@ -10,6 +10,7 @@
  *
  * @param {T | T[]} value - A single value or an array of values.
  * @param {D} [defaultValue] - A fallback value if the result is `null` or `undefined`.
+ *
  * @returns {T | D | undefined} The first value or the fallback.
  *
  * @example

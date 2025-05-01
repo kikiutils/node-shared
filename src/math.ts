@@ -8,12 +8,14 @@ type CalculableValue = Decimal.Value | { toString: () => string };
 export interface ToPercentageStringOptions {
     /**
      * Number of decimal places to include in the result.
+     *
      * @default 2
      */
     decimalPlaces?: number;
 
     /**
      * Whether to include the '%' symbol in the result.
+     *
      * @default true
      */
     withSymbol?: boolean;
@@ -29,6 +31,7 @@ export interface ToPercentageStringOptions {
  * @param {CalculableValue} molecular - The numerator of the fraction.
  * @param {CalculableValue} denominator - The denominator of the fraction.
  * @param {ToPercentageStringOptions} [options] - Optional output settings.
+ *
  * @returns {string} Formatted percentage string.
  *
  * @example
