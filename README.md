@@ -124,11 +124,20 @@ Each module file includes function-level comments and usage examples.
 
 - `randomString`
 
+### [url](./src/url.ts)
+
+- `appendRedirectParamToUrl`
+
 ### [vue](./src/vue.ts)
 
+- `appendRedirectParamFromCurrentRouteToUrl`
 - `clearIntervalRef`
 - `clearTimeoutRef`
 - `usePreserveScroll`
+
+### [web](./src/web.ts)
+
+- `appendRedirectParamFromCurrentLocationToUrl`
 
 ## License
 
