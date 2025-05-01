@@ -20,7 +20,6 @@ describe('randomString', () => {
         expect(result).toHaveLength(10);
     });
 
-    // eslint-disable-next-line style/array-bracket-newline, style/array-element-newline
     Object.entries(CHARSETS).forEach(([mode, charset]) => {
         it(`should generate a valid ${mode} string of correct length`, () => {
             const result = randomString(20, mode as RandomStringMode);
