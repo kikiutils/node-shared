@@ -1,6 +1,22 @@
 import { onActivated } from 'vue';
 import type { Ref } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
+import {
+    onBeforeRouteLeave,
+    useRoute,
+} from 'vue-router';
+
+import { appendRedirectParamToUrl } from './url';
+
+/**
+ * Appends the current Vue Router route's fullPath as the `redirect` query parameter to the given URL.
+ *
+ * @param {string} url - The base URL to modify.
+ *
+ * @returns {string} A new URL with the current route fullPath as the `redirect` parameter.
+ */
+export function appendRedirectParamFromCurrentRouteToUrl(url: string) {
+    return appendRedirectParamToUrl(url, useRoute().fullPath);
+}
 
 /**
  * Clears an interval referenced by a Vue ref and sets it to null.
