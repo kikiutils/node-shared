@@ -127,13 +127,13 @@ Each module file includes function-level comments and usage examples.
 
 <!-- Badges -->
 [npm-version-href]: https://npmjs.com/package/@kikiutils/node
-[npm-version-src]: https://img.shields.io/npm/v/@kikiutils/node/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-src]: https://img.shields.io/npm/v/@kikiutils/node/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
 
 [npm-downloads-href]: https://npmjs.com/package/@kikiutils/node
-[npm-downloads-src]: https://img.shields.io/npm/dm/@kikiutils/node.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-src]: https://img.shields.io/npm/dm/@kikiutils/node.svg?colorA=18181b&colorB=28cf8d&style=flat
 
-[codecov-href]: https://codecov.io/github/kikiutils/node
-[codecov-src]: https://codecov.io/github/kikiutils/node/graph/badge.svg?token=GRSQ7JO39E
+[codecov-href]: https://codecov.io/gh/kikiutils/node
+[codecov-src]: https://codecov.io/gh/kikiutils/node/graph/badge.svg?token=GRSQ7JO39E
 
 [license-href]: https://github.com/kikiutils/node/blob/main/LICENSE
-[license-src]: https://img.shields.io/npm/l/@kikiutils/node.svg?style=flat&colorA=18181B&colorB=28CF8D
+[license-src]: https://img.shields.io/github/license/kikiutils/node?colorA=18181b&colorB=28cf8d&style=flat
