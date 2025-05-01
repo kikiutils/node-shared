@@ -1,7 +1,7 @@
 {
   "name": "@kikiutils/shared",
   "version": "8.0.2",
-  "description": "A modular utility library for Node.js offering secure hashing, flexible logging, datetime manipulation, and more.",
+  "description": "A lightweight modular utility library for JavaScript and TypeScript, offering secure hashing, flexible logging, date utilities, Vue/web helpers, and more.",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
@@ -9,18 +9,25 @@
     "url": "git+https://github.com/kikiutils/node-shared.git"
   },
   "keywords": [
+    "browser",
     "consola",
     "crypto",
     "datetime",
     "enum",
-    "environment",
-    "hash",
+    "env",
+    "hashing",
+    "javascript",
     "logging",
     "math",
     "node",
     "pino",
     "string",
-    "utilities"
+    "typescript",
+    "url",
+    "utilities",
+    "utils",
+    "vue",
+    "web"
   ],
   "sideEffects": false,
   "exports": {

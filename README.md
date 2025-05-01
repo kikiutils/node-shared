@@ -5,21 +5,24 @@
 [![codecov][codecov-src]][codecov-href]
 [![License][license-src]][license-href]
 
-A modular utility library for Node.js offering secure hashing, flexible logging, datetime manipulation, and more.
+A lightweight modular utility library for JavaScript and TypeScript, offering secure hashing, flexible logging, date utilities, Vue/web helpers, and more.
 
 - [✨ Release Notes](./CHANGELOG.md)
 
 ## Features
 
 - 📜 Simple and flexible logging with Consola and Pino
-- 🔒 Secure hash utilities: MD5, SHA3-224, SHA3-256, SHA3-384, SHA3-512
+- 🔒 Secure hash utilities: MD5, SHA3-224/256/384/512
 - 📅 Datetime utilities for formatting, ranges, and offsets
-- 🔢 Enum helpers to extract values
-- 🌱 Environment variable checker with error handling
-- 📈 Math utilities like percentage formatting
-- 💎 Number formatting utilities (e.g. compact representation)
-- 🔤 String tools such as random string generation
-- ⚙️ General-purpose utilities like value extractors
+- 🔢 Enum helpers to extract values and keys
+- 🌱 Environment variable checker with error handling (Node only)
+- 📈 Math utilities like percentage formatting and rounding
+- 💎 Number formatting (e.g. compact, currency, padding)
+- 🔤 String tools such as random string generation and casing helpers
+- 🌐 URL utilities for parsing and building query strings
+- 🖥️ Web utilities using DOM APIs (e.g. `scrollToTop`) (Browser only)
+- 🧩 Vue 3 utilities
+- ⚙️ General-purpose utilities like value extractors and type guards
 - 📦 Modular by design — import only what you need via `@kikiutils/shared/<module>`
 
 ## Requirements
