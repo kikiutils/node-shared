@@ -1,5 +1,25 @@
 # Changelog
 
+## v9.2.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v9.1.0...v9.2.0)
+
+### 🚀 Enhancements
+
+- Add `copyBlobToClipboard`  and `copyTextToClipboard` utils ([9a355aa](https://github.com/kikiutils/node-shared/commit/9a355aa))
+
+### 📖 Documentation
+
+- Update README ([a182292](https://github.com/kikiutils/node-shared/commit/a182292))
+
+### ✅ Tests
+
+- Add empty clipboard test unit ([172cb3d](https://github.com/kikiutils/node-shared/commit/172cb3d))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v9.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v9.0.0...v9.1.0)
