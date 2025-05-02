@@ -70,6 +70,11 @@ Each module file includes function-level comments and usage examples.
 
 - Console logger integration
 
+### [clipboard](./src/clipboard.ts)
+
+- `copyBlobToClipboard`
+- `copyTextToClipboard`
+
 ### [crypto-hash](./src/crypto-hash.ts)
 
 - `cryptoMd5`, `cryptoMd5ToBuffer`
