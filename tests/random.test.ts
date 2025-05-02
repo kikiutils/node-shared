@@ -1,6 +1,6 @@
 import { generateWithNestedRandomLength } from '../src/random';
 
-describe('generateWithNestedRandomLength (generic)', () => {
+describe('generateWithNestedRandomLength', () => {
     it('should work with string generator', () => {
         const generator = (len: number) => 'x'.repeat(len);
         for (let i = 0; i < 20; i++) {
