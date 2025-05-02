@@ -1,5 +1,31 @@
 # Changelog
 
+## v9.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v9.0.0...v9.1.0)
+
+### 🚀 Enhancements
+
+- Add vue `usePreserveScroll` composition ([f45136f](https://github.com/kikiutils/node-shared/commit/f45136f))
+- Add vue `clearIntervalRef` and `clearTimeoutRef` utils ([2b92f27](https://github.com/kikiutils/node-shared/commit/2b92f27))
+- Add `appendRedirectParamToUrl`, `appendRedirectParamFromCurrentRouteToUrl` and `appendRedirectParamFromCurrentLocationToUrl` utils ([0d78efa](https://github.com/kikiutils/node-shared/commit/0d78efa))
+
+### 📖 Documentation
+
+- Update jsdoc in all files ([3efe598](https://github.com/kikiutils/node-shared/commit/3efe598))
+- Update README ([3e5d64c](https://github.com/kikiutils/node-shared/commit/3e5d64c))
+
+### ✅ Tests
+
+- Organize and split all test suites ([9695a3a](https://github.com/kikiutils/node-shared/commit/9695a3a))
+- Add url test unit ([3f7bc75](https://github.com/kikiutils/node-shared/commit/3f7bc75))
+- Add web test unit ([8c855bc](https://github.com/kikiutils/node-shared/commit/8c855bc))
+- Add vue test unit ([0e6461a](https://github.com/kikiutils/node-shared/commit/0e6461a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v9.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v8.0.2...v9.0.0)
