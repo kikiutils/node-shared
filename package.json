@@ -70,6 +70,7 @@
     "millify": "^6.1.0",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
+    "superjson": "^2.2.2",
     "ts-jest": "^29.3.2",
     "ts-project-builder": "5.0.1",
     "typescript": "^5.8.3",
