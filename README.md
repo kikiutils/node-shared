@@ -11,6 +11,7 @@ A lightweight modular utility library for JavaScript and TypeScript, offering se
 
 ## Features
 
+- 📋 Clipboard utilities for copying text and blobs to the clipboard (Browser only)
 - 📜 Simple and flexible logging with Consola and Pino
 - 🔒 Secure hash utilities: MD5, SHA3-224/256/384/512
 - 📅 Datetime utilities for formatting, ranges, and offsets
@@ -20,7 +21,6 @@ A lightweight modular utility library for JavaScript and TypeScript, offering se
 - 💎 Number formatting (e.g. compact, currency, padding)
 - 🔤 String tools such as random string generation and casing helpers
 - 🌐 URL utilities for parsing and building query strings
-- 🖥️ Web utilities using DOM APIs (e.g. `scrollToTop`) (Browser only)
 - 🧩 Vue 3 utilities
 - ⚙️ General-purpose utilities like value extractors and type guards
 - 📦 Modular by design — import only what you need via `@kikiutils/shared/<module>`
@@ -68,7 +68,7 @@ Each module file includes function-level comments and usage examples.
 
 ### [consola](./src/consola.ts)
 
-- Console logger integration
+Console logger integration.
 
 ### [clipboard](./src/clipboard.ts)
 
@@ -119,7 +119,7 @@ Each module file includes function-level comments and usage examples.
 
 ### [pino](./src/pino.ts)
 
-- Pino logger integration
+Pino logger integration.
 
 ### [random](./src/random.ts)
 
