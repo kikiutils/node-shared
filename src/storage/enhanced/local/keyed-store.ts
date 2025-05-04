@@ -20,7 +20,7 @@ import { enhancedLocalStorage } from './core';
  * ```
  */
 export function createKeyedEnhancedLocalStore<D = unknown>() {
-    return <P extends any[]>(getKeyFunction: (...args: P) => string) => ({
+    return <P extends any[]>(getKeyFunction: (...args: P) => string) => Object.freeze({
         getItem: (...args: P) => enhancedLocalStorage.getItem<D>(getKeyFunction(...args)),
         hasItem: (...args: P) => enhancedLocalStorage.hasItem(getKeyFunction(...args)),
         removeItem: (...args: P) => enhancedLocalStorage.removeItem(getKeyFunction(...args)),
