@@ -1,16 +1,15 @@
 import { enhancedLocalStorage } from './core';
 
 /**
- * Creates a keyed storage interface that wraps `enhancedLocalStorage` operations
- * using a dynamic key-generation function.
+ * Creates a reusable, type-safe storage interface based on `enhancedLocalStorage`
+ * and a dynamic key-generation function.
  *
- * This allows you to define reusable, type-safe storage handlers
- * without repeating key construction logic.
+ * This utility allows you to abstract away key construction logic and work directly
+ * with scoped key-value operations like `getItem`, `setItem`, and `removeItem`.
  *
- * @template D - The value type stored for each key.
+ * @template D - The value type to store.
  *
- * @returns A factory that accepts a key generator function and returns
- * a scoped storage API with `getItem`, `setItem`, `hasItem`, and `removeItem`.
+ * @returns A factory that accepts a key generator function and returns a scoped storage interface.
  *
  * @example
  * ```typescript
