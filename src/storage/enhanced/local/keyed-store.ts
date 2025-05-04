@@ -24,6 +24,12 @@ export function createKeyedEnhancedLocalStore<D = unknown>() {
         getItem: (...args: P) => enhancedLocalStorage.getItem<D>(getKeyFunction(...args)),
         hasItem: (...args: P) => enhancedLocalStorage.hasItem(getKeyFunction(...args)),
         removeItem: (...args: P) => enhancedLocalStorage.removeItem(getKeyFunction(...args)),
+        /**
+         * Resolves the storage key from the given arguments.
+         *
+         * @returns {string} The final string key used internally.
+         */
+        resolveKey: (...args: P) => getKeyFunction(...args),
         setItem: (value: D, ...args: P) => enhancedLocalStorage.setItem(getKeyFunction(...args), value),
     });
 }
