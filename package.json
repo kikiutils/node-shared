@@ -36,6 +36,16 @@
       "types": "./dist/*.d.ts",
       "import": "./dist/*.mjs",
       "require": "./dist/*.cjs"
+    },
+    "./dist/storage/enhanced/local": {
+      "types": "./dist/storage/enhanced/local/index.d.ts",
+      "import": "./dist/storage/enhanced/local/index.mjs",
+      "require": "./dist/storage/enhanced/local/index.cjs"
+    },
+    "./dist/storage/enhanced/redis": {
+      "types": "./dist/storage/enhanced/redis/index.d.ts",
+      "import": "./dist/storage/enhanced/redis/index.mjs",
+      "require": "./dist/storage/enhanced/redis/index.cjs"
     }
   },
   "files": [
@@ -46,7 +56,7 @@
     "node": ">=18.12.1"
   },
   "scripts": {
-    "build": "ts-project-builder './src/**/*.ts' --clean --sourcemaps",
+    "build": "ts-project-builder './src/**/*.ts' --clean --preserve-modules --sourcemaps",
     "bumplog": "changelogen --bump --hideAuthorEmail",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
