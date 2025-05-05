@@ -32,7 +32,28 @@ describe('checkAndGetEnvValue', () => {
         expect(result).toBe(value);
     });
 
-    it('should throw an EnvironmentNotFoundError if the environment variable is not set', () => {
+    it('should return empty string if the environment variable is set to an empty string', () => {
+        const key = 'EMPTY_KEY';
+        process.env[key] = '';
+        const result = checkAndGetEnvValue(key);
+        expect(result).toBe('');
+    });
+
+    it('should return "0" if the environment variable is set to "0"', () => {
+        const key = 'ZERO_KEY';
+        process.env[key] = '0';
+        const result = checkAndGetEnvValue(key);
+        expect(result).toBe('0');
+    });
+
+    it('should return "false" if the environment variable is set to "false"', () => {
+        const key = 'FALSE_KEY';
+        process.env[key] = 'false';
+        const result = checkAndGetEnvValue(key);
+        expect(result).toBe('false');
+    });
+
+    it('should throw an EnvironmentNotFoundError if the environment variable is not defined', () => {
         const key = 'MISSING_KEY';
         expect(() => checkAndGetEnvValue(key)).toThrow(EnvironmentNotFoundError);
         expect(() => checkAndGetEnvValue(key)).toThrow(`Missing environment variable: ${key}`);

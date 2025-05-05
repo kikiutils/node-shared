@@ -22,9 +22,12 @@ export class EnvironmentNotFoundError extends Error {
 }
 
 /**
- * Retrieves the value of an environment variable, or throws an error if not set.
+ * Retrieves the value of an environment variable, or throws an error if it is not defined.
  *
- * @param {string} key - The environment variable key to check.
+ * Only checks for `process.env[key] === undefined`. An empty string (e.g. '') or any falsy string
+ * value like `'0'` or `'false'` is considered a valid (defined) value.
+ *
+ * @param {string} key - The environment variable key to retrieve.
  *
  * @returns {string} The value of the environment variable.
  *
@@ -32,20 +35,14 @@ export class EnvironmentNotFoundError extends Error {
  *
  * @example
  * ```typescript
- * import { checkAndGetEnvValue } from '@kikiutils/shared/env';
+ * process.env.API_KEY = '';
+ * checkAndGetEnvValue('API_KEY'); // ✅ Returns '' (still considered "defined")
  *
- * // When the environment variable 'API_KEY' is set:
- * console.log(checkAndGetEnvValue('API_KEY')); // value of API_KEY
- *
- * // When the environment variable 'API_KEY' is not set:
- * try {
- *   const apiKey = checkAndGetEnvValue('API_KEY');
- * } catch (error) {
- *   console.error(error); // Missing environment variable: API_KEY
- * }
+ * delete process.env.API_KEY;
+ * checkAndGetEnvValue('API_KEY'); // ❌ Throws EnvironmentNotFoundError
  * ```
  */
 export function checkAndGetEnvValue(key: string): string {
-    if (!process.env[key]) throw new EnvironmentNotFoundError(key);
+    if (process.env[key] === undefined) throw new EnvironmentNotFoundError(key);
     return process.env[key];
 }
