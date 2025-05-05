@@ -1,5 +1,39 @@
 # Changelog
 
+## v9.3.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v9.2.0...v9.3.0)
+
+### 🚀 Enhancements
+
+- Add `enhancedLocalStorage`, `createKeyedEnhancedLocalStore` and related files and dependencies ([67dcb21](https://github.com/kikiutils/node-shared/commit/67dcb21))
+- `createKeyedEnhancedLocalStore` return object add `resolveKey` method ([c11ffb0](https://github.com/kikiutils/node-shared/commit/c11ffb0))
+- Add `createEnhancedRedisStorage`, `createKeyedEnhancedRedisStore` and related files and dependencies ([2c1cbb5](https://github.com/kikiutils/node-shared/commit/2c1cbb5))
+- Add `createKeyedLruStore` and related files and dependencies ([b34b852](https://github.com/kikiutils/node-shared/commit/b34b852))
+
+### 🩹 Fixes
+
+- Update `checkAndGetEnvValue` to only treat `undefined` as unset, not other falsy values ([c3c054b](https://github.com/kikiutils/node-shared/commit/c3c054b))
+
+### 📖 Documentation
+
+- Tidy up `createKeyedEnhancedLocalStore` jsdoc ([f508402](https://github.com/kikiutils/node-shared/commit/f508402))
+- Update README, package description and keywords ([92ea06e](https://github.com/kikiutils/node-shared/commit/92ea06e))
+
+### 🏡 Chore
+
+- Move `src/storage/enhanced-local` to `src/storage/enhanced/` ([314d152](https://github.com/kikiutils/node-shared/commit/314d152))
+- Make `createKeyedEnhancedLocalStore` return object is freezed ([4ccf950](https://github.com/kikiutils/node-shared/commit/4ccf950))
+- Update package exports config and build command ([195e225](https://github.com/kikiutils/node-shared/commit/195e225))
+
+### ✅ Tests
+
+- Add empty `createKeyedLruStore` test unit ([1ec7494](https://github.com/kikiutils/node-shared/commit/1ec7494))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v9.2.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v9.1.0...v9.2.0)
