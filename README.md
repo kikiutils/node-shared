@@ -5,24 +5,25 @@
 [![codecov][codecov-src]][codecov-href]
 [![License][license-src]][license-href]
 
-A lightweight modular utility library for JavaScript and TypeScript, offering secure hashing, flexible logging, date utilities, Vue/web helpers, and more.
+A lightweight and modular utility library for modern JavaScript and TypeScript — includes secure hashing, flexible logging, datetime tools, Vue/web helpers, storage abstraction, and more.
 
 - [✨ Release Notes](./CHANGELOG.md)
 
 ## Features
 
-- 📋 Clipboard utilities for copying text and blobs to the clipboard (Browser only)
-- 📜 Simple and flexible logging with Consola and Pino
-- 🔒 Secure hash utilities: MD5, SHA3-224/256/384/512
-- 📅 Datetime utilities for formatting, ranges, and offsets
-- 🔢 Enum helpers to extract values and keys
-- 🌱 Environment variable checker with error handling (Node only)
-- 📈 Math utilities like percentage formatting and rounding
-- 💎 Number formatting (e.g. compact, currency, padding)
-- 🔤 String tools such as random string generation and casing helpers
-- 🌐 URL utilities for parsing and building query strings
-- 🧩 Vue 3 utilities
-- ⚙️ General-purpose utilities like value extractors and type guards
+- 📋 Clipboard utilities — copy text and blobs using the modern Clipboard API (Browser only)
+- 📜 Logging utilities — simple and extensible logging via Consola and Pino
+- 🔒 Crypto utilities — secure hashing functions: MD5, SHA3-224/256/384/512
+- 📅 Datetime utilities — manipulate, format, and offset dates and ranges
+- 🔢 Enum utilities — extract enum keys and values (number or string)
+- 🌱 Environment helpers — safe env var access with error handling (Node only)
+- 📈 Math utilities — rounding, formatting percentages, and ratios
+- 💎 Number utilities — number padding, compact display, currency formatting
+- 🔤 String utilities — casing, trimming, random string generation, etc.
+- 🌐 URL utilities — parse and construct query strings and redirect URLs
+- 🧩 Vue 3 utilities — composables like scroll preservation and key handling
+- 🖥️ Web utilities — browser DOM helpers (e.g. scroll to top, key matching)
+- 🗄️ Storage utilities — enhanced localStorage, Redis, and LRU abstractions
 - 📦 Modular by design — import only what you need via `@kikiutils/shared/<module>`
 
 ## Requirements
@@ -66,14 +67,14 @@ logger.info(value);
 
 Each module file includes function-level comments and usage examples.
 
-### [consola](./src/consola.ts)
-
-Console logger integration.
-
 ### [clipboard](./src/clipboard.ts)
 
 - `copyBlobToClipboard`
 - `copyTextToClipboard`
+
+### [consola](./src/consola.ts)
+
+Console logger integration.
 
 ### [crypto-hash](./src/crypto-hash.ts)
 
@@ -124,6 +125,22 @@ Pino logger integration.
 ### [random](./src/random.ts)
 
 - `generateWithNestedRandomLength`
+
+### storage
+
+#### [enhanced-local](./src/storage/enhanced/local/index.ts)
+
+- `createKeyedEnhancedLocalStore`
+- `enhancedLocalStorage`
+
+#### [enhanced-redis](./src/storage/enhanced/redis/index.ts)
+
+- `createEnhancedRedisStorage`
+- `createKeyedEnhancedRedisStore`
+
+#### [lru/keyed-store](./src/storage/lru/keyed-store.ts)
+
+- `createKeyedLruStore`
 
 ### [string](./src/string.ts)
 
