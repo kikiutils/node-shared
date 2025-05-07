@@ -37,12 +37,12 @@
       "import": "./dist/*.mjs",
       "require": "./dist/*.cjs"
     },
-    "./dist/storage/enhanced/local": {
+    "./storage/enhanced/local": {
       "types": "./dist/storage/enhanced/local/index.d.ts",
       "import": "./dist/storage/enhanced/local/index.mjs",
       "require": "./dist/storage/enhanced/local/index.cjs"
     },
-    "./dist/storage/enhanced/redis": {
+    "./storage/enhanced/redis": {
       "types": "./dist/storage/enhanced/redis/index.d.ts",
       "import": "./dist/storage/enhanced/redis/index.mjs",
       "require": "./dist/storage/enhanced/redis/index.cjs"
