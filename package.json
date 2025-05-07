@@ -67,11 +67,11 @@
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.8.0",
-    "@kikiutils/eslint-config": "^1.0.1",
+    "@kikiutils/eslint-config": "^1.0.2",
     "@kikiutils/tsconfigs": "^5.0.1",
     "@noble/hashes": "^1.8.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.14",
     "consola": "^3.4.2",
     "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
