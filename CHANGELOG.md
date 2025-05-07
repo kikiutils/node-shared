@@ -1,5 +1,21 @@
 # Changelog
 
+## v9.3.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v9.3.0...v9.3.1)
+
+### 🩹 Fixes
+
+- Correct `exports` field in package.json ([aea4514](https://github.com/kikiutils/node-shared/commit/aea4514))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([b8a5b21](https://github.com/kikiutils/node-shared/commit/b8a5b21))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v9.3.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v9.2.0...v9.3.0)
