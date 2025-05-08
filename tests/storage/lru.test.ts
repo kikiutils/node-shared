@@ -1,5 +1,75 @@
-import '../../src/storage/lru/keyed-store';
+import { LRUCache } from 'lru-cache';
+
+import { createKeyedLruStore } from '../../src/storage/lru/keyed-store';
+
+interface User {
+    id: number;
+    name: string;
+}
 
 describe('createKeyedLruStore', () => {
-    it('pass', () => {});
+    const lru = new LRUCache({ max: 100 });
+    const userStore = createKeyedLruStore<User>(lru)((id: number) => `user:${id}`);
+    it('should set and get an item correctly', () => {
+        const user = {
+            id: 1,
+            name: 'Alice',
+        };
+
+        userStore.setItem(user, 1);
+        expect(userStore.getItem(1)).toEqual(user);
+    });
+
+    it('should return null for missing items', () => expect(userStore.getItem(999)).toBeNull());
+    it('should confirm existence of a cached item with hasItem', () => {
+        userStore.setItem(
+            {
+                id: 2,
+                name: 'Bob',
+            },
+            2,
+        );
+
+        expect(userStore.hasItem(2)).toBe(true);
+        expect(userStore.hasItem(999)).toBe(false);
+    });
+
+    it('should remove an item correctly', () => {
+        userStore.setItem(
+            {
+                id: 3,
+                name: 'Charlie',
+            },
+            3,
+        );
+
+        expect(userStore.getItem(3)).not.toBeNull();
+        userStore.removeItem(3);
+        expect(userStore.getItem(3)).toBeNull();
+    });
+
+    it('should resolve key using resolveKey()', () => {
+        const key = userStore.resolveKey(123);
+        expect(key).toBe('user:123');
+    });
+
+    it('should get correct TTL if set', () => {
+        const ttlStore = new LRUCache({
+            max: 100,
+            ttl: 1000,
+        });
+
+        const store = createKeyedLruStore<User>(ttlStore)((id: number) => `user:${id}`);
+        store.setItem(
+            {
+                id: 4,
+                name: 'Dave',
+            },
+            4,
+        );
+
+        const ttl = store.getItemTtl(4);
+        expect(typeof ttl).toBe('number');
+        expect(ttl).toBeGreaterThan(990);
+    });
 });
