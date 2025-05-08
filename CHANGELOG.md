@@ -1,5 +1,30 @@
 # Changelog
 
+## v10.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.0.0...v10.1.0)
+
+### 🚀 Enhancements
+
+- Add `assignUrlWithRedirectParamFromCurrentLocation` ([039bb57](https://github.com/kikiutils/node-shared/commit/039bb57))
+
+### 📖 Documentation
+
+- Update README ([b876c85](https://github.com/kikiutils/node-shared/commit/b876c85))
+
+### 🏡 Chore
+
+- Update ignore files ([c81c294](https://github.com/kikiutils/node-shared/commit/c81c294))
+
+### 🤖 CI
+
+- Update test workflow ([1519e46](https://github.com/kikiutils/node-shared/commit/1519e46))
+- Update condition for uploading to Codecov in workflow job ([39851ac](https://github.com/kikiutils/node-shared/commit/39851ac))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v9.3.1...v10.0.0)
