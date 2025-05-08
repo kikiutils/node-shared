@@ -32,6 +32,8 @@ const customValueHeaderLength = customValueHeader.byteLength + 1;
  *
  * @example
  * ```typescript
+ * import { createEnhancedRedisStorage } from '@kikiutils/shared/storage/enhanced/redis';
+ *
  * const redisStorage = createEnhancedRedisStorage('redis://localhost');
  * await redisStorage.setItem('user:1', { name: 'user' });
  * const user = await redisStorage.getItem<{ name: string }>('user:1');

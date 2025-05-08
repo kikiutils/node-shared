@@ -16,6 +16,8 @@ import type { createEnhancedRedisStorage } from './core';
  *
  * @example
  * ```typescript
+ * import { createKeyedEnhancedRedisStore } from '@kikiutils/shared/storage/enhanced/redis';
+ *
  * const userStore = createKeyedEnhancedRedisStore<User>(redisStorage)((id: number) => `user:${id}`);
  * await userStore.setItem({ id: 123, name: 'user' }, 123);
  * const user = await userStore.getItem(123);

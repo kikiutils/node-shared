@@ -20,6 +20,8 @@ export type DoNotRemoveOrUseThisType = RuleType;
  *
  * @example
  * ```typescript
+ * import { createElFormItemRuleWithDefaults } from '@kikiutils/shared/element-plus';
+ *
  * const rule = createElFormItemRuleWithDefaults('This field is required');
  * const optionalRule = createElFormItemRuleWithDefaults('Optional field', { required: false });
  * ```

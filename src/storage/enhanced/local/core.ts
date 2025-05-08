@@ -20,6 +20,8 @@ const toCustomValue = (type: StorageValueEncodingType, payload: string) => `${cu
  *
  * @example
  * ```typescript
+ * import { enhancedLocalStorage } from '@kikiutils/shared/storage/enhanced/local';
+ *
  * enhancedLocalStorage.setItem('user', { name: 'user', createdAt: new Date() });
  * const user = enhancedLocalStorage.getItem<{ name: string, createdAt: Date }>('user');
  * ```

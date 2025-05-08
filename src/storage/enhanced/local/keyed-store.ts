@@ -13,6 +13,8 @@ import { enhancedLocalStorage } from './core';
  *
  * @example
  * ```typescript
+ * import { createKeyedEnhancedLocalStore } from '@kikiutils/shared/storage/enhanced/local';
+ *
  * const userStore = createKeyedEnhancedLocalStore<User>()((id: number) => `user:${id}`);
  * userStore.setItem({ id: 123, name: 'user' }, 123);
  * const user = userStore.getItem(123);

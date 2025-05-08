@@ -19,6 +19,8 @@ type CopyResult =
  *
  * @example
  * ```typescript
+ * import { copyBlobToClipboard } from '@kikiutils/shared/clipboard';
+ *
  * const blob = new Blob(['Hello world'], { type: 'text/plain' });
  * const result = await copyBlobToClipboard(blob);
  * if (result.ok) {
@@ -64,6 +66,8 @@ export async function copyBlobToClipboard(blob: Blob, options?: ClipboardItemOpt
  *
  * @example
  * ```typescript
+ * import { copyTextToClipboard } from '@kikiutils/shared/clipboard';
+ *
  * const result = await copyTextToClipboard('Hello!');
  * if (result.ok) {
  *     console.log('Copied!');

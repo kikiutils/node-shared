@@ -13,6 +13,8 @@ import type { LRUCache } from 'lru-cache';
  *
  * @example
  * ```typescript
+ * import { createKeyedLruStore } from '@kikiutils/shared/storage/lru/keyed-store';
+ *
  * const lruCache = new LRUCache({ max: 5000 });
  * const userStore = createKeyedLruStore<User>(lruCache)((id: number) => `user:${id}`);
  * userStore.setItem({ id: 1 }, 1);
