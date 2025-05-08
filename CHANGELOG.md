@@ -1,5 +1,38 @@
 # Changelog
 
+## v10.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v9.3.1...v10.0.0)
+
+### 🚀 Enhancements
+
+- ⚠️ Simplify `createKeyedLruStore` typing and drop type constraints on LRUCache instance ([955e944](https://github.com/kikiutils/node-shared/commit/955e944))
+- Add `createElFormItemRuleWithDefaults` and test unit ([ee871e4](https://github.com/kikiutils/node-shared/commit/ee871e4))
+
+### 💅 Refactors
+
+- Make `store.setItem` from `createKeyedLruStore` return void ([104a4d7](https://github.com/kikiutils/node-shared/commit/104a4d7))
+
+### 📖 Documentation
+
+- Update JSDoc comments ([8eea7cc](https://github.com/kikiutils/node-shared/commit/8eea7cc))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([23d3692](https://github.com/kikiutils/node-shared/commit/23d3692))
+
+### ✅ Tests
+
+- Add unit tests for `lru storage` ([c651559](https://github.com/kikiutils/node-shared/commit/c651559))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Simplify `createKeyedLruStore` typing and drop type constraints on LRUCache instance ([955e944](https://github.com/kikiutils/node-shared/commit/955e944))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v9.3.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v9.3.0...v9.3.1)
