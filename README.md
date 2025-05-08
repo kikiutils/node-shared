@@ -164,6 +164,7 @@ Pino logger integration.
 ### [web](./src/web.ts)
 
 - `appendRedirectParamFromCurrentLocationToUrl`
+- `assignUrlWithRedirectParamFromCurrentLocation`
 
 ## License
 
