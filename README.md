@@ -90,6 +90,10 @@ Console logger integration.
 - `getDateRangeFromDate`
 - `getMidnightDateFromToday`
 
+### [element-plus](./src/element-plus.ts)
+
+- `createElFormItemRuleWithDefaults`
+
 ### [enum](./src/enum.ts)
 
 - `getEnumStringValues`
