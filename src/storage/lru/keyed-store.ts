@@ -37,6 +37,8 @@ export function createKeyedLruStore<D = unknown>(lruInstance: LRUCache<any, any,
          * Resolves the full cache key from the given arguments.
          */
         resolveKey: (...args: P) => getKeyFunction(...args),
-        setItem: (value: D, ...args: P) => lruInstance.set(getKeyFunction(...args), value),
+        setItem(value: D, ...args: P) {
+            lruInstance.set(getKeyFunction(...args), value);
+        },
     });
 }
