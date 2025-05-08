@@ -71,7 +71,7 @@
     "@kikiutils/tsconfigs": "^5.0.1",
     "@noble/hashes": "^1.8.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.14",
+    "@types/node": "^22.15.15",
     "async-validator": "^4.2.5",
     "consola": "^3.4.2",
     "cross-env": "^7.0.3",
