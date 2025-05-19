@@ -1,5 +1,34 @@
 # Changelog
 
+## v10.1.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.1.0...v10.1.1)
+
+### 🩹 Fixes
+
+- Resolve eslint reported warnings ([569f9e4](https://github.com/kikiutils/node-shared/commit/569f9e4))
+
+### 📖 Documentation
+
+- Update README ([d35c1ad](https://github.com/kikiutils/node-shared/commit/d35c1ad))
+
+### 🏡 Chore
+
+- **scripts:** Ensure all scripts `cd` to their current directory correctly ([5362c3b](https://github.com/kikiutils/node-shared/commit/5362c3b))
+- Set `--max-warnings=0` for `lint` and `lint:fix` ([bffe476](https://github.com/kikiutils/node-shared/commit/bffe476))
+- Set eslint config to enable `lib` mode ([59e03e4](https://github.com/kikiutils/node-shared/commit/59e03e4))
+- Disable `ts/explicit-function-return-type` eslint rule ([5190f6b](https://github.com/kikiutils/node-shared/commit/5190f6b))
+- Lint code ([f8f0974](https://github.com/kikiutils/node-shared/commit/f8f0974))
+- **test:** Migrate from `jest` to `vitest` ([9a9d869](https://github.com/kikiutils/node-shared/commit/9a9d869))
+
+### ✅ Tests
+
+- Migrate to vitest and remove `consola` and `pino` units ([06180f2](https://github.com/kikiutils/node-shared/commit/06180f2))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.0.0...v10.1.0)
