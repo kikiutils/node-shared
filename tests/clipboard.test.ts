@@ -1,9 +1,14 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import '../src/clipboard';
 
-describe('copyTextToClipboard', () => {
+import {
+    describe,
+    it,
+} from 'vitest';
+
+describe.concurrent('copyTextToClipboard', () => {
     it('pass', () => {});
 });

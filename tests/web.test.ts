@@ -1,13 +1,21 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+
+import {
+    afterAll,
+    beforeAll,
+    describe,
+    it,
+    vi,
+} from 'vitest';
 
 import { appendRedirectParamToUrl } from '../src/url';
 import { appendRedirectParamFromCurrentLocationToUrl } from '../src/web';
 
-jest.mock('../src/url', () => ({ appendRedirectParamToUrl: jest.fn(() => 'mocked-result') }));
+vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
-describe('appendRedirectParamFromCurrentLocationToUrl', () => {
+describe.concurrent('appendRedirectParamFromCurrentLocationToUrl', () => {
     const originalLocation = window.location;
     beforeAll(() => {
         delete (window as any).location;
@@ -18,10 +26,12 @@ describe('appendRedirectParamFromCurrentLocationToUrl', () => {
         };
     });
 
-    // @ts-expect-error Ignore this error.
-    afterAll(() => window.location = originalLocation);
+    afterAll(() => {
+        // @ts-expect-error Ignore this error.
+        window.location = originalLocation;
+    });
 
-    it('should append current location as redirect param to the given URL', () => {
+    it('should append current location as redirect param to the given URL', ({ expect }) => {
         const result = appendRedirectParamFromCurrentLocationToUrl('/login');
         expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
         expect(result).toBe('mocked-result');

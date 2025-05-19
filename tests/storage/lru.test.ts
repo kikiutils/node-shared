@@ -1,4 +1,8 @@
 import { LRUCache } from 'lru-cache';
+import {
+    describe,
+    it,
+} from 'vitest';
 
 import { createKeyedLruStore } from '../../src/storage/lru/keyed-store';
 
@@ -7,10 +11,10 @@ interface User {
     name: string;
 }
 
-describe('createKeyedLruStore', () => {
+describe.concurrent('createKeyedLruStore', () => {
     const lru = new LRUCache({ max: 100 });
     const userStore = createKeyedLruStore<User>(lru)((id: number) => `user:${id}`);
-    it('should set and get an item correctly', () => {
+    it('should set and get an item correctly', ({ expect }) => {
         const user = {
             id: 1,
             name: 'Alice',
@@ -20,8 +24,8 @@ describe('createKeyedLruStore', () => {
         expect(userStore.getItem(1)).toEqual(user);
     });
 
-    it('should return null for missing items', () => expect(userStore.getItem(999)).toBeNull());
-    it('should confirm existence of a cached item with hasItem', () => {
+    it('should return null for missing items', ({ expect }) => expect(userStore.getItem(999)).toBeNull());
+    it('should confirm existence of a cached item with hasItem', ({ expect }) => {
         userStore.setItem(
             {
                 id: 2,
@@ -34,7 +38,7 @@ describe('createKeyedLruStore', () => {
         expect(userStore.hasItem(999)).toBe(false);
     });
 
-    it('should remove an item correctly', () => {
+    it('should remove an item correctly', ({ expect }) => {
         userStore.setItem(
             {
                 id: 3,
@@ -48,12 +52,12 @@ describe('createKeyedLruStore', () => {
         expect(userStore.getItem(3)).toBeNull();
     });
 
-    it('should resolve key using resolveKey()', () => {
+    it('should resolve key using resolveKey()', ({ expect }) => {
         const key = userStore.resolveKey(123);
         expect(key).toBe('user:123');
     });
 
-    it('should get correct TTL if set', () => {
+    it('should get correct TTL if set', ({ expect }) => {
         const ttlStore = new LRUCache({
             max: 100,
             ttl: 1000,

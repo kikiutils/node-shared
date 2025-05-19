@@ -1,4 +1,9 @@
 import {
+    describe,
+    it,
+} from 'vitest';
+
+import {
     getEnumNumberValues,
     getEnumStringValues,
 } from '../src/enum';
@@ -10,15 +15,15 @@ enum MixedEnum {
     Unknown = 'unknown',
 }
 
-describe('getEnumNumberValues', () => {
-    it('should extract numeric values from an enum', () => {
+describe.concurrent('getEnumNumberValues', () => {
+    it('should extract numeric values from an enum', ({ expect }) => {
         expect(getEnumNumberValues(MixedEnum)).toEqual([
             0,
             1,
         ]);
     });
 
-    it('should return an empty array if no numeric values are present', () => {
+    it('should return an empty array if no numeric values are present', ({ expect }) => {
         enum EnumWithoutNumbers {
             One = 'one',
             Three = 'three',
@@ -28,7 +33,7 @@ describe('getEnumNumberValues', () => {
         expect(getEnumNumberValues(EnumWithoutNumbers)).toEqual([]);
     });
 
-    it('should extract numeric values from mixed object', () => {
+    it('should extract numeric values from mixed object', ({ expect }) => {
         const Mixed = {
             A: 0,
             B: 'string',
@@ -42,18 +47,18 @@ describe('getEnumNumberValues', () => {
         ]);
     });
 
-    it('should return empty array for empty object', () => expect(getEnumNumberValues({})).toEqual([]));
+    it('should return empty array for empty object', ({ expect }) => expect(getEnumNumberValues({})).toEqual([]));
 });
 
-describe('getEnumStringValues', () => {
-    it('should extract string values from an enum', () => {
+describe.concurrent('getEnumStringValues', () => {
+    it('should extract string values from an enum', ({ expect }) => {
         expect(getEnumStringValues(MixedEnum)).toEqual([
             'Same',
             'unknown',
         ]);
     });
 
-    it('should return an empty array if no string values are present', () => {
+    it('should return an empty array if no string values are present', ({ expect }) => {
         enum EnumWithoutStrings {
             One = 1,
             Two = 2,
@@ -63,7 +68,7 @@ describe('getEnumStringValues', () => {
         expect(getEnumStringValues(EnumWithoutStrings)).toEqual([]);
     });
 
-    it('should extract string values from mixed object', () => {
+    it('should extract string values from mixed object', ({ expect }) => {
         const Mixed = {
             A: 0,
             B: 'string',
@@ -77,5 +82,5 @@ describe('getEnumStringValues', () => {
         ]);
     });
 
-    it('should return empty array for empty object', () => expect(getEnumStringValues({})).toEqual([]));
+    it('should return empty array for empty object', ({ expect }) => expect(getEnumStringValues({})).toEqual([]));
 });

@@ -1,10 +1,15 @@
 import type { RuleType } from 'async-validator';
 import type { FormItemRule } from 'element-plus';
+import {
+    describe,
+    it,
+    vi,
+} from 'vitest';
 
 import { createElFormItemRuleWithDefaults } from '../src/element-plus';
 
-describe('createElFormItemRuleWithDefaults', () => {
-    it('should create a rule with default values', () => {
+describe.concurrent('createElFormItemRuleWithDefaults', () => {
+    it('should create a rule with default values', ({ expect }) => {
         const rule = createElFormItemRuleWithDefaults('This field is required');
         expect(rule).toEqual<FormItemRule>({
             message: 'This field is required',
@@ -14,7 +19,7 @@ describe('createElFormItemRuleWithDefaults', () => {
         });
     });
 
-    it('should allow overriding required', () => {
+    it('should allow overriding required', ({ expect }) => {
         const rule = createElFormItemRuleWithDefaults('Optional field', { required: false });
         expect(rule.required).toBe(false);
         expect(rule.message).toBe('Optional field');
@@ -22,7 +27,7 @@ describe('createElFormItemRuleWithDefaults', () => {
         expect(rule.type).toBe('string');
     });
 
-    it('should allow overriding trigger and type', () => {
+    it('should allow overriding trigger and type', ({ expect }) => {
         const rule = createElFormItemRuleWithDefaults(
             'Enter a number',
             {
@@ -41,19 +46,22 @@ describe('createElFormItemRuleWithDefaults', () => {
         ]);
     });
 
-    it('should preserve extra fields from options', () => {
-        const customValidator = jest.fn();
-        const rule = createElFormItemRuleWithDefaults('With validator', {
-            required: false,
-            validator: customValidator,
-        });
+    it('should preserve extra fields from options', ({ expect }) => {
+        const customValidator = vi.fn();
+        const rule = createElFormItemRuleWithDefaults(
+            'With validator',
+            {
+                required: false,
+                validator: customValidator,
+            },
+        );
 
         expect(rule.validator).toBe(customValidator);
         expect(rule.required).toBe(false);
         expect(rule.message).toBe('With validator');
     });
 
-    it('should preserve explicitly set falsy values because ?? is used', () => {
+    it('should preserve explicitly set falsy values because ?? is used', ({ expect }) => {
         const rule = createElFormItemRuleWithDefaults(
             'Custom trigger and type',
             {

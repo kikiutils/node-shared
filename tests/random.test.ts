@@ -1,7 +1,12 @@
+import {
+    describe,
+    it,
+} from 'vitest';
+
 import { generateWithNestedRandomLength } from '../src/random';
 
-describe('generateWithNestedRandomLength', () => {
-    it('should work with string generator', () => {
+describe.concurrent('generateWithNestedRandomLength', () => {
+    it('should work with string generator', ({ expect }) => {
         const generator = (len: number) => 'x'.repeat(len);
         for (let i = 0; i < 20; i++) {
             const result = generateWithNestedRandomLength(generator, 10, 20, 30, 40);
@@ -11,7 +16,7 @@ describe('generateWithNestedRandomLength', () => {
         }
     });
 
-    it('should work with number[] generator', () => {
+    it('should work with number[] generator', ({ expect }) => {
         const generator = (len: number) => Array.from({ length: len }, (_, i) => i);
         const result = generateWithNestedRandomLength<number[]>(generator, 5, 5, 10, 10);
         expect(Array.isArray(result)).toBe(true);
@@ -30,7 +35,7 @@ describe('generateWithNestedRandomLength', () => {
         ]);
     });
 
-    it('should work with object generator (returning typed object)', () => {
+    it('should work with object generator (returning typed object)', ({ expect }) => {
         const generator = (len: number) => ({
             code: '*'.repeat(len),
             size: len,
@@ -42,7 +47,7 @@ describe('generateWithNestedRandomLength', () => {
         expect(result.code.length).toBe(12);
     });
 
-    it('should handle equal bounds correctly', () => {
+    it('should handle equal bounds correctly', ({ expect }) => {
         const generator = (len: number) => len;
         const result = generateWithNestedRandomLength(generator, 10, 10, 10, 10);
         expect(result).toBe(10);
