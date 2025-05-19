@@ -1,5 +1,18 @@
 # Changelog
 
+## v10.1.2
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.1.1...v10.1.2)
+
+### 🏡 Chore
+
+- Split `tsconfig` and create build-specific config for production builds ([564b6d2](https://github.com/kikiutils/node-shared/commit/564b6d2))
+- **vitest:** Configure coverage to collect files only under `src/` ([e2c7f65](https://github.com/kikiutils/node-shared/commit/e2c7f65))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.1.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.1.0...v10.1.1)
