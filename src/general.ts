@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 /**
  * Extracts the first value from an array or returns the value itself if it's not an array.
  *
@@ -28,3 +30,5 @@ export function extractFirstValue<T, D>(value: T | T[], defaultValue: D): D | No
 export function extractFirstValue<T, D>(value: T | T[], defaultValue?: D) {
     return (Array.isArray(value) ? value[0] : value) ?? defaultValue;
 }
+
+/* eslint-enable jsdoc/check-param-names */

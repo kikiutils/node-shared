@@ -1,5 +1,6 @@
 /**
- * This file provides a set of functions for creating SHA-3 hash digests using different bit lengths (224, 256, 384, 512).
+ * This file provides a set of functions for creating SHA-3 hash digests
+ * using different bit lengths (224, 256, 384, 512).
  * These functions use the [@noble/hashes](https://github.com/paulmillr/noble-hashes) library to generate the hashes.
  * Can be used in the browser, mainly for Nuxt/Vue and other frameworks compiled and executed in the browser.
  *
