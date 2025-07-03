@@ -1,5 +1,17 @@
 # Changelog
 
+## v10.2.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.2.0...v10.2.1)
+
+### ✅ Tests
+
+- Change vitest config file to mjs ([90c1428](https://github.com/kikiutils/node-shared/commit/90c1428))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.2.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.1.2...v10.2.0)
