@@ -10,8 +10,8 @@ import { createElFormItemRuleWithDefaults } from '../src/element-plus';
 
 describe.concurrent('createElFormItemRuleWithDefaults', () => {
     it('should create a rule with default values', ({ expect }) => {
-        const rule = createElFormItemRuleWithDefaults('This field is required');
-        expect(rule).toEqual<FormItemRule>({
+        const result = createElFormItemRuleWithDefaults('This field is required');
+        expect(result).toEqual<FormItemRule>({
             message: 'This field is required',
             required: true,
             trigger: 'blur',
@@ -20,15 +20,15 @@ describe.concurrent('createElFormItemRuleWithDefaults', () => {
     });
 
     it('should allow overriding required', ({ expect }) => {
-        const rule = createElFormItemRuleWithDefaults('Optional field', { required: false });
-        expect(rule.required).toBe(false);
-        expect(rule.message).toBe('Optional field');
-        expect(rule.trigger).toBe('blur');
-        expect(rule.type).toBe('string');
+        const result = createElFormItemRuleWithDefaults('Optional field', { required: false });
+        expect(result.required).toBe(false);
+        expect(result.message).toBe('Optional field');
+        expect(result.trigger).toBe('blur');
+        expect(result.type).toBe('string');
     });
 
     it('should allow overriding trigger and type', ({ expect }) => {
-        const rule = createElFormItemRuleWithDefaults(
+        const result = createElFormItemRuleWithDefaults(
             'Enter a number',
             {
                 trigger: [
@@ -39,8 +39,8 @@ describe.concurrent('createElFormItemRuleWithDefaults', () => {
             },
         );
 
-        expect(rule.type).toBe('number');
-        expect(rule.trigger).toEqual([
+        expect(result.type).toBe('number');
+        expect(result.trigger).toEqual([
             'change',
             'blur',
         ]);
@@ -48,7 +48,7 @@ describe.concurrent('createElFormItemRuleWithDefaults', () => {
 
     it('should preserve extra fields from options', ({ expect }) => {
         const customValidator = vi.fn();
-        const rule = createElFormItemRuleWithDefaults(
+        const result = createElFormItemRuleWithDefaults(
             'With validator',
             {
                 required: false,
@@ -56,13 +56,13 @@ describe.concurrent('createElFormItemRuleWithDefaults', () => {
             },
         );
 
-        expect(rule.validator).toBe(customValidator);
-        expect(rule.required).toBe(false);
-        expect(rule.message).toBe('With validator');
+        expect(result.validator).toBe(customValidator);
+        expect(result.required).toBe(false);
+        expect(result.message).toBe('With validator');
     });
 
     it('should preserve explicitly set falsy values because ?? is used', ({ expect }) => {
-        const rule = createElFormItemRuleWithDefaults(
+        const result = createElFormItemRuleWithDefaults(
             'Custom trigger and type',
             {
                 required: false,
@@ -71,8 +71,8 @@ describe.concurrent('createElFormItemRuleWithDefaults', () => {
             },
         );
 
-        expect(rule.required).toBe(false);
-        expect(rule.trigger).toBe('');
-        expect(rule.type).toBe('');
+        expect(result.required).toBe(false);
+        expect(result.trigger).toBe('');
+        expect(result.type).toBe('');
     });
 });

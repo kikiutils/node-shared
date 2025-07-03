@@ -17,7 +17,8 @@ enum MixedEnum {
 
 describe.concurrent('getEnumNumberValues', () => {
     it('should extract numeric values from an enum', ({ expect }) => {
-        expect(getEnumNumberValues(MixedEnum)).toEqual([
+        const result = getEnumNumberValues(MixedEnum);
+        expect(result).toEqual([
             0,
             1,
         ]);
@@ -30,7 +31,8 @@ describe.concurrent('getEnumNumberValues', () => {
             Two = 'two',
         }
 
-        expect(getEnumNumberValues(EnumWithoutNumbers)).toEqual([]);
+        const result = getEnumNumberValues(EnumWithoutNumbers);
+        expect(result).toEqual([]);
     });
 
     it('should extract numeric values from mixed object', ({ expect }) => {
@@ -41,7 +43,8 @@ describe.concurrent('getEnumNumberValues', () => {
             D: 'anotherString',
         };
 
-        expect(getEnumNumberValues(Mixed)).toEqual([
+        const result = getEnumNumberValues(Mixed);
+        expect(result).toEqual([
             0,
             1,
         ]);
@@ -52,7 +55,8 @@ describe.concurrent('getEnumNumberValues', () => {
 
 describe.concurrent('getEnumStringValues', () => {
     it('should extract string values from an enum', ({ expect }) => {
-        expect(getEnumStringValues(MixedEnum)).toEqual([
+        const result = getEnumStringValues(MixedEnum);
+        expect(result).toEqual([
             'Same',
             'unknown',
         ]);
@@ -65,7 +69,8 @@ describe.concurrent('getEnumStringValues', () => {
             Zero = 0,
         }
 
-        expect(getEnumStringValues(EnumWithoutStrings)).toEqual([]);
+        const result = getEnumStringValues(EnumWithoutStrings);
+        expect(result).toEqual([]);
     });
 
     it('should extract string values from mixed object', ({ expect }) => {
@@ -76,11 +81,15 @@ describe.concurrent('getEnumStringValues', () => {
             D: 'anotherString',
         };
 
-        expect(getEnumStringValues(Mixed)).toEqual([
+        const result = getEnumStringValues(Mixed);
+        expect(result).toEqual([
             'string',
             'anotherString',
         ]);
     });
 
-    it('should return empty array for empty object', ({ expect }) => expect(getEnumStringValues({})).toEqual([]));
+    it('should return empty array for empty object', ({ expect }) => {
+        const result = getEnumStringValues({});
+        expect(result).toEqual([]);
+    });
 });
