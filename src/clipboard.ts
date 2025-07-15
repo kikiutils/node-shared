@@ -33,7 +33,7 @@ type CopyResult =
 export async function copyBlobToClipboard(blob: Blob, options?: ClipboardItemOptions): Promise<CopyResult> {
     if (!navigator.clipboard?.write) {
         return {
-            error: new Error('Clipboard.write is not supported in this browser.'),
+            error: new Error('Clipboard.write is not supported in this browser'),
             ok: false,
         };
     }

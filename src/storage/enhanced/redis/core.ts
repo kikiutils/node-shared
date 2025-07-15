@@ -119,11 +119,11 @@ function decodeStorageValue(data: Buffer) {
             try {
                 return deserialize(JSON.parse(payload.toString()));
             } catch {
-                throw new Error('[RedisStorage] Failed to parse JSON payload.');
+                throw new Error('[RedisStorage] Failed to parse JSON payload');
             }
         case StorageValueEncodingType.String: return payload.toString();
         default:
-            throw new Error(`[RedisStorage] Unknown encoding type: ${type}.`);
+            throw new Error(`[RedisStorage] Unknown encoding type: ${type}`);
     }
 }
 

@@ -84,11 +84,11 @@ function decodeStorageValue(data: string) {
             try {
                 return deserialize(JSON.parse(payload));
             } catch {
-                throw new Error('[EnhancedLocalStorage] Failed to parse JSON payload.');
+                throw new Error('[EnhancedLocalStorage] Failed to parse JSON payload');
             }
         case StorageValueEncodingType.String: return payload;
         default:
-            throw new Error(`[EnhancedLocalStorage] Unknown encoding type: ${type}.`);
+            throw new Error(`[EnhancedLocalStorage] Unknown encoding type: ${type}`);
     }
 }
 

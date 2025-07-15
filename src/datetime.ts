@@ -123,7 +123,7 @@ export function getDateRangeFromDate(
             }
 
             break;
-        default: throw new Error(`Unsupported date range type: ${type}.`);
+        default: throw new Error(`Unsupported date range type: ${type}`);
     }
 
     if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
