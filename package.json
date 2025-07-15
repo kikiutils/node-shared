@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/shared",
-  "version": "10.2.1",
+  "version": "10.3.0",
   "description": "A lightweight and modular utility library for modern JavaScript and TypeScript — includes secure hashing, flexible logging, datetime tools, Vue/web helpers, storage abstraction, and more.",
   "author": "kiki-kanri",
   "license": "MIT",

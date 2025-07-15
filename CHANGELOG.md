@@ -1,5 +1,26 @@
 # Changelog
 
+## v10.3.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.2.1...v10.3.0)
+
+### 🚀 Enhancements
+
+- **enum:** Update `src/enum.ts` ([dbe65d4](https://github.com/kikiutils/node-shared/commit/dbe65d4))
+
+### 🏡 Chore
+
+- Update dependencies and modify scripts ([374cc56](https://github.com/kikiutils/node-shared/commit/374cc56))
+- Upgrade dependencies ([6f7e3bf](https://github.com/kikiutils/node-shared/commit/6f7e3bf))
+
+### ✅ Tests
+
+- Change vitest config file to mjs ([5c3bc1f](https://github.com/kikiutils/node-shared/commit/5c3bc1f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.2.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.2.0...v10.2.1)
