@@ -1,5 +1,21 @@
 # Changelog
 
+## v11.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.4.1...v11.0.0)
+
+### 🏡 Chore
+
+- ⚠️ Drop support for Node.js 18.12.1, set minimum supported version to 20 ([32c6ad3](https://github.com/kikiutils/node-shared/commit/32c6ad3))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Drop support for Node.js 18.12.1, set minimum supported version to 20 ([32c6ad3](https://github.com/kikiutils/node-shared/commit/32c6ad3))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.4.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.4.0...v10.4.1)
