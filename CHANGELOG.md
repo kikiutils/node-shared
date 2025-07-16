@@ -1,5 +1,17 @@
 # Changelog
 
+## v10.4.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.4.0...v10.4.1)
+
+### 🩹 Fixes
+
+- Expand accepted input types for `toBuffer` function ([d883771](https://github.com/kikiutils/node-shared/commit/d883771))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.4.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.3.0...v10.4.0)

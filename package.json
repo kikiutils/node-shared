@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/shared",
-  "version": "10.4.0",
+  "version": "10.4.1",
   "description": "A lightweight and modular utility library for modern JavaScript and TypeScript — includes secure hashing, flexible logging, datetime tools, Vue/web helpers, storage abstraction, and more.",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -69,7 +69,7 @@
     "unused-exports": "ts-unused-exports ./tsconfig.json"
   },
   "devDependencies": {
-    "@kikiutils/changelogen": "^0.8.0",
+    "@kikiutils/changelogen": "^0.8.1",
     "@kikiutils/eslint-config": "^1.2.7",
     "@kikiutils/tsconfigs": "^5.0.4",
     "@noble/hashes": "^1.8.0",
