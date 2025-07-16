@@ -1,5 +1,28 @@
 # Changelog
 
+## v10.4.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v10.3.0...v10.4.0)
+
+### 🚀 Enhancements
+
+- Add `toBuffer` utils ([a197e76](https://github.com/kikiutils/node-shared/commit/a197e76))
+
+### 🏡 Chore
+
+- Clean up logger and error messages by removing periods and other punctuation ([ae2f3e9](https://github.com/kikiutils/node-shared/commit/ae2f3e9))
+- Remove trailing periods from some JSDoc descriptions ([be7484c](https://github.com/kikiutils/node-shared/commit/be7484c))
+
+### ✅ Tests
+
+- Add buffer unit ([fdb30f5](https://github.com/kikiutils/node-shared/commit/fdb30f5))
+- Tidy up units ([3c18721](https://github.com/kikiutils/node-shared/commit/3c18721))
+- Increase buffer unit time threshold to 10ms for `should not create unnecessary copies for Buffer input` ([f362f15](https://github.com/kikiutils/node-shared/commit/f362f15))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v10.3.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.2.1...v10.3.0)
