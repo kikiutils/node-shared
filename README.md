@@ -67,6 +67,10 @@ logger.info(value);
 
 Each module file includes function-level comments and usage examples.
 
+### [buffer](./src/buffer.ts)
+
+- `toBuffer`
+
 ### [clipboard](./src/clipboard.ts)
 
 - `copyBlobToClipboard`
@@ -98,6 +102,7 @@ Console logger integration.
 
 - `getEnumStringValues`
 - `getEnumNumberValues`
+- `getEnumValues`
 
 ### [env](./src/env.ts)
 
@@ -121,6 +126,10 @@ Console logger integration.
 ### [number](./src/number.ts)
 
 - `toCompactNumberString`
+
+### [object](./src/object.ts)
+
+- `stringifyObjectDeterministically`
 
 ### [pino](./src/pino.ts)
 
