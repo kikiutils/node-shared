@@ -10,8 +10,8 @@ type CopyResult =
  * - Must be called **in response to a user interaction** (e.g. click, input).
  * - Not supported in Safari and some older browsers.
  *
- * @param {Blob} blob - The Blob object to copy (e.g. from a File, image, or text content).
- * @param {ClipboardItemOptions} [options] - Optional options passed to the ClipboardItem constructor.
+ * @param {Blob} blob - The Blob object to copy (e.g. from a File, image, or text content)
+ * @param {ClipboardItemOptions} [options] - Optional options passed to the ClipboardItem constructor
  *
  * @returns {Promise<CopyResult>} A promise resolving to a `CopyResult`:
  *   - `{ ok: true }` if the copy succeeded
@@ -58,7 +58,7 @@ export async function copyBlobToClipboard(blob: Blob, options?: ClipboardItemOpt
  * - Must be called **in response to a user interaction** (e.g. click, input).
  * - Not supported in some older browsers (especially legacy Safari).
  *
- * @param {string} text - The string to be copied to the clipboard.
+ * @param {string} text - The string to be copied to the clipboard
  *
  * @returns {Promise<CopyResult>} A promise resolving to a `CopyResult`:
  *   - `{ ok: true }` if the copy succeeded

@@ -1,12 +1,12 @@
 /**
  * Extracts only the numeric values from an enumeration-like object.
  *
- * @template T - The type of the enum object.
+ * @template T - The type of the enum object
  *
- * @param {T} enumObject - The enumeration-like object to extract numeric values from.
- * The object can contain numeric values, string values, or both.
+ * @param {T} enumObject - The enumeration-like object to extract numeric values from,
+ * the object can contain numeric values, string values, or both.
  *
- * @returns {Extract<T[keyof T], number>[]} An array of numeric values extracted from the enum object.
+ * @returns {Extract<T[keyof T], number>[]} An array of numeric values extracted from the enum object
  *
  * @example
  * ```typescript
@@ -28,12 +28,12 @@ export function getEnumNumberValues<T extends Record<string, any>>(enumObject: T
 /**
  * Extracts only the string values from an enumeration-like object.
  *
- * @template T - The type of the enum object.
+ * @template T - The type of the enum object
  *
- * @param {T} enumObject - The enumeration-like object to extract string values from.
- * The object can contain numeric values, string values, or both.
+ * @param {T} enumObject - The enumeration-like object to extract string values from,
+ * the object can contain numeric values, string values, or both.
  *
- * @returns {Extract<T[keyof T], string>[]} An array of string values extracted from the enum object.
+ * @returns {Extract<T[keyof T], string>[]} An array of string values extracted from the enum object
  *
  * @example
  * ```typescript
@@ -59,12 +59,12 @@ export function getEnumStringValues<T extends Record<string, any>>(enumObject: T
  * that occurs with numeric enums. It works with pure numeric enums, pure string enums,
  * and mixed enums.
  *
- * @template T - The type of the enum object.
+ * @template T - The type of the enum object
  *
- * @param {T} enumObject - The enumeration-like object to extract values from.
- * The object can contain numeric values, string values, or both.
+ * @param {T} enumObject - The enumeration-like object to extract values from,
+ * the object can contain numeric values, string values, or both.
  *
- * @returns {(T[keyof T])[]} An array containing all the values from the enum object.
+ * @returns {(T[keyof T])[]} An array containing all the values from the enum object
  *
  * @example
  * ```typescript

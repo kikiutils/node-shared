@@ -5,11 +5,11 @@ import type { LRUCache } from 'lru-cache';
  *
  * This utility allows structured access to cache entries using a dynamic key-generation function.
  *
- * @template D - The specific value type exposed by this store (must extend `V`).
+ * @template D - The specific value type exposed by this store (must extend `V`)
  *
- * @param {LRUCache<any, any, any>} lruInstance - An instance of `lru-cache`.
+ * @param {LRUCache<any, any, any>} lruInstance - An instance of `lru-cache`
  *
- * @returns A factory that accepts a key generator and returns a scoped, type-safe LRU-based store.
+ * @returns A factory that accepts a key generator and returns a scoped, type-safe LRU-based store
  *
  * @example
  * ```typescript

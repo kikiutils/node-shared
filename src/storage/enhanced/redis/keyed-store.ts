@@ -8,11 +8,11 @@ import type { createEnhancedRedisStorage } from './core';
  * to Redis operations such as `getItem`, `setItem`, `setItemWithTtl`, and `getItemTtl`.
  * It is ideal for namespaced data, caching, and session handling.
  *
- * @template D - The value type to store.
+ * @template D - The value type to store
  *
- * @param {ReturnType<typeof createEnhancedRedisStorage>} storage - The enhanced Redis storage instance.
+ * @param {ReturnType<typeof createEnhancedRedisStorage>} storage - The enhanced Redis storage instance
  *
- * @returns A factory that accepts a key generator function and returns a scoped Redis storage interface.
+ * @returns A factory that accepts a key generator function and returns a scoped Redis storage interface
  *
  * @example
  * ```typescript
@@ -32,7 +32,7 @@ export function createKeyedEnhancedRedisStore<D = unknown>(storage: ReturnType<t
         /**
          * Resolves the storage key from the given arguments.
          *
-         * @returns {string} The final string key used internally.
+         * @returns {string} The final string key used internally
          */
         resolveKey: (...args: P) => getKeyFunction(...args),
         setItem: (value: D, ...args: P) => storage.setItem(getKeyFunction(...args), value),

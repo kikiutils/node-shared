@@ -8,15 +8,15 @@
  *
  * This function supports any return type by using a generic type parameter.
  *
- * @template T - The return type of the generator function.
+ * @template T - The return type of the generator function
  *
- * @param {(length: number) => T} generator - A function that accepts a length and returns a value of type T.
- * @param {number} minMin - Lower bound of the first random range.
- * @param {number} minMax - Upper bound of the first random range.
- * @param {number} maxMin - Lower bound of the second random range.
- * @param {number} maxMax - Upper bound of the second random range.
+ * @param {(length: number) => T} generator - A function that accepts a length and returns a value of type T
+ * @param {number} minMin - Lower bound of the first random range
+ * @param {number} minMax - Upper bound of the first random range
+ * @param {number} maxMin - Lower bound of the second random range
+ * @param {number} maxMax - Upper bound of the second random range
  *
- * @returns {T} The result of the generator function using the computed final length.
+ * @returns {T} The result of the generator function using the computed final length
  */
 export function generateWithNestedRandomLength<T = string>(
     generator: (length: number) => T,

@@ -10,9 +10,9 @@ import { appendRedirectParamToUrl } from './url';
 /**
  * Appends the current Vue Router route's fullPath as the `redirect` query parameter to the given URL.
  *
- * @param {string} url - The base URL to modify.
+ * @param {string} url - The base URL to modify
  *
- * @returns {string} A new URL with the current route fullPath as the `redirect` parameter.
+ * @returns {string} A new URL with the current route fullPath as the `redirect` parameter
  */
 export function appendRedirectParamFromCurrentRouteToUrl(url: string) {
     return appendRedirectParamToUrl(url, useRoute().fullPath);
@@ -21,7 +21,7 @@ export function appendRedirectParamFromCurrentRouteToUrl(url: string) {
 /**
  * Clears an interval referenced by a Vue ref and sets it to null.
  *
- * @param {Ref<null | ReturnType<typeof setInterval>>} intervalRef - A Vue ref holding a NodeJS.Timeout or null.
+ * @param {Ref<null | ReturnType<typeof setInterval>>} intervalRef - A Vue ref holding a NodeJS.Timeout or null
  */
 export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setInterval>>) {
     if (intervalRef.value) clearInterval(intervalRef.value);
@@ -31,7 +31,7 @@ export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setIn
 /**
  * Clears a timeout referenced by a Vue ref and sets it to null.
  *
- * @param {Ref<null | ReturnType<typeof setTimeout>>} timeoutRef - A Vue ref holding a NodeJS.Timeout or null.
+ * @param {Ref<null | ReturnType<typeof setTimeout>>} timeoutRef - A Vue ref holding a NodeJS.Timeout or null
  */
 export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTimeout>>) {
     if (timeoutRef.value) clearTimeout(timeoutRef.value);
@@ -42,9 +42,9 @@ export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTime
  * A Vue composition function that remembers and restores scroll position
  * of a scrollable container across route changes and keep-alive activation.
  *
- * @template T - The type of the scrollable element (defaults to HTMLElement).
+ * @template T - The type of the scrollable element (defaults to HTMLElement)
  *
- * @param {Ref<null | T>} containerRef - A ref to the scrollable HTML element.
+ * @param {Ref<null | T>} containerRef - A ref to the scrollable HTML element
  */
 export function usePreserveScroll<T extends Element = HTMLElement>(containerRef: Ref<null | T>) {
     let scrollLeft = 0;

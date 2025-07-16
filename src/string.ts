@@ -23,12 +23,12 @@ const CHARSETS: Record<RandomStringMode, string> = {
 /**
  * Generates a random string of a given length using a specified character set.
  *
- * @param {number} length - The length of the string to generate. Must be a positive integer.
- * @param {RandomStringMode} [mode] - The character set to use.
+ * @param {number} length - The length of the string to generate. Must be a positive integer
+ * @param {RandomStringMode} [mode] - The character set to use
  *
- * @returns {string} The generated random string.
+ * @returns {string} The generated random string
  *
- * @throws {Error} If the length is not a positive integer or the mode is unsupported.
+ * @throws {Error} If the length is not a positive integer or the mode is unsupported
  *
  * @example
  * ```typescript

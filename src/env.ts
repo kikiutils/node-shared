@@ -11,7 +11,7 @@ export class EnvironmentNotFoundError extends Error {
     /**
      * Creates a new EnvironmentNotFoundError.
      *
-     * @param {string} key - The missing environment variable key.
+     * @param {string} key - The missing environment variable key
      */
     constructor(key: string) {
         super(`Missing environment variable: ${key}`);
@@ -27,11 +27,11 @@ export class EnvironmentNotFoundError extends Error {
  * Only checks for `process.env[key] === undefined`. An empty string (e.g. '') or any falsy string
  * value like `'0'` or `'false'` is considered a valid (defined) value.
  *
- * @param {string} key - The environment variable key to retrieve.
+ * @param {string} key - The environment variable key to retrieve
  *
- * @returns {string} The value of the environment variable.
+ * @returns {string} The value of the environment variable
  *
- * @throws {EnvironmentNotFoundError} If the environment variable is not defined.
+ * @throws {EnvironmentNotFoundError} If the environment variable is not defined
  *
  * @example
  * ```typescript

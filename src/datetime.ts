@@ -23,11 +23,11 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  *
  * This function is a wrapper around `date-fns/format`.
  *
- * @param {DateArg<Date>} date - The input date to format. Can be a Date object, a timestamp, or a string.
- * @param {string} [format] - The target format string.
- * @param {FormatOptions} [options] - Optional formatting options passed to `date-fns/format`.
+ * @param {DateArg<Date>} date - The input date to format. Can be a Date object, a timestamp, or a string
+ * @param {string} [format] - The target format string
+ * @param {FormatOptions} [options] - Optional formatting options passed to `date-fns/format`
  *
- * @returns {string} The formatted date string.
+ * @returns {string} The formatted date string
  *
  * @example
  * ```typescript
@@ -54,13 +54,13 @@ export function formatDate(date: DateArg<Date> & {}, format: string = 'yyyy-MM-d
  *
  * Supports common range types like 'lastMonth', 'lastWeek', 'thisMonth', 'thisWeek', 'today', and 'yesterday'.
  *
- * @param {Date} date - The reference date.
- * @param {DateRangeType} type - The range type to compute.
- * @param {object} [options] - Optional settings.
- * @param {boolean} [options.setEndDateToNextDayStart] - If true, set `endDate` to 00:00:00.000 of the next day.
- * @param {Day} [options.weekStartsOn] - The start day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday).
+ * @param {Date} date - The reference date
+ * @param {DateRangeType} type - The range type to compute
+ * @param {object} [options] - Optional settings
+ * @param {boolean} [options.setEndDateToNextDayStart] - If true, set `endDate` to 00:00:00.000 of the next day
+ * @param {Day} [options.weekStartsOn] - The start day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
  *
- * @returns {{ startDate: Date, endDate: Date }} An object with `startDate` and `endDate`.
+ * @returns {{ startDate: Date, endDate: Date }} An object with `startDate` and `endDate`
  *
  * @example
  * ```typescript
@@ -136,9 +136,9 @@ export function getDateRangeFromDate(
 /**
  * Returns a `Date` object set to midnight (00:00:00) of today, with an optional day offset.
  *
- * @param {number} [offsetDays] - Number of days to offset from today. Can be negative.
+ * @param {number} [offsetDays] - Number of days to offset from today. Can be negative
  *
- * @returns {Date} A `Date` object at 00:00:00 of the offset day.
+ * @returns {Date} A `Date` object at 00:00:00 of the offset day
  *
  * @example
  * ```typescript

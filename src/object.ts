@@ -8,10 +8,10 @@
  * It is designed for use cases such as signature generation, cache key construction,
  * or any context requiring consistent and predictable object serialization.
  *
- * @param {Record<string, any>} input - The object to serialize. Can contain nested objects and arrays.
- * @param {string} kvSeparator - The string used to separate each key from its value (default: '=').
- * @param {string} pairSeparator - The string used to separate each key-value pair (default: '&').
- * @returns {string} A deterministic string representation of the input object.
+ * @param {Record<string, any>} input - The object to serialize. Can contain nested objects and arrays
+ * @param {string} kvSeparator - The string used to separate each key from its value (default: '=')
+ * @param {string} pairSeparator - The string used to separate each key-value pair (default: '&')
+ * @returns {string} A deterministic string representation of the input object
  *
  * @example
  * ```typescript

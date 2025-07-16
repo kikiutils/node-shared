@@ -28,11 +28,11 @@ export interface ToPercentageStringOptions {
  * - Supports custom decimal places and optional percentage symbol.
  * - Returns `'0.00%'` if result is `NaN` or division is invalid.
  *
- * @param {CalculableValue} molecular - The numerator of the fraction.
- * @param {CalculableValue} denominator - The denominator of the fraction.
- * @param {ToPercentageStringOptions} [options] - Optional output settings.
+ * @param {CalculableValue} molecular - The numerator of the fraction
+ * @param {CalculableValue} denominator - The denominator of the fraction
+ * @param {ToPercentageStringOptions} [options] - Optional output settings
  *
- * @returns {string} Formatted percentage string.
+ * @returns {string} Formatted percentage string
  *
  * @example
  * ```typescript

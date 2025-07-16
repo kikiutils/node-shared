@@ -5,10 +5,10 @@ import { millify } from 'millify';
  *
  * Applies lowercase units (e.g. 'k', 'm') and default precision of 2, unless overridden.
  *
- * @param {number} value - The number to format.
- * @param {Parameters<typeof millify>[1]} [options] - Optional configuration passed to `millify`.
+ * @param {number} value - The number to format
+ * @param {Parameters<typeof millify>[1]} [options] - Optional configuration passed to `millify`
  *
- * @returns {string} The compact number string.
+ * @returns {string} The compact number string
  *
  * @example
  * ```typescript

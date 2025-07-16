@@ -34,11 +34,11 @@ export const enhancedLocalStorage = Object.freeze({
     /**
      * Retrieves a value by key and decodes it using SuperJSON or raw string.
      *
-     * @template T - The expected type of the value.
+     * @template T - The expected type of the value
      *
-     * @param {string} key - The key of the value to retrieve.
+     * @param {string} key - The key of the value to retrieve
      *
-     * @returns {null | T} The decoded value or null if not found.
+     * @returns {null | T} The decoded value or null if not found
      */
     getItem<T = unknown>(key: string) {
         const rawValue = window.localStorage.getItem(key);
@@ -47,15 +47,15 @@ export const enhancedLocalStorage = Object.freeze({
     /**
      * Checks whether a key exists in localStorage.
      *
-     * @param {string} key - The key to check.
+     * @param {string} key - The key to check
      *
-     * @returns {boolean} True if the key exists, false otherwise.
+     * @returns {boolean} True if the key exists, false otherwise
      */
     hasItem: (key: string) => window.localStorage.getItem(key) !== null,
     /**
      * Returns the number of items stored in localStorage.
      *
-     * @returns {number} The number of items stored in localStorage.
+     * @returns {number} The number of items stored in localStorage
      */
     get length() {
         return window.localStorage.length;
@@ -63,14 +63,14 @@ export const enhancedLocalStorage = Object.freeze({
     /**
      * Removes a specific key from localStorage.
      *
-     * @param {string} key - The key to remove.
+     * @param {string} key - The key to remove
      */
     removeItem: (key: string) => window.localStorage.removeItem(key),
     /**
      * Stores a value in localStorage with automatic serialization.
      *
-     * @param {string} key - The key to store the value under.
-     * @param {any} value - The value to store.
+     * @param {string} key - The key to store the value under
+     * @param {any} value - The value to store
      */
     setItem: (key: string, value: any) => window.localStorage.setItem(key, encodeToStorageValue(value)),
 });

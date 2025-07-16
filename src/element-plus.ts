@@ -10,13 +10,13 @@ export type DoNotRemoveOrUseThisType = RuleType;
  * while allowing overrides via the `options` parameter. It simplifies common
  * form validation rule creation and ensures consistency across forms.
  *
- * @param {string} message - The validation message to display when the rule fails.
- * @param {FormItemRule} [options] - Optional overrides for the rule fields.
- * @param {boolean} [options.required] - Whether the field is required (default: `true`).
- * @param {string | string[]} [options.trigger] - The event(s) that trigger validation (default: `'blur'`).
- * @param {RuleType} [options.type] - The expected type of the field (default: `'string'`).
+ * @param {string} message - The validation message to display when the rule fails
+ * @param {FormItemRule} [options] - Optional overrides for the rule fields
+ * @param {boolean} [options.required] - Whether the field is required (default: `true`)
+ * @param {string | string[]} [options.trigger] - The event(s) that trigger validation (default: `'blur'`)
+ * @param {RuleType} [options.type] - The expected type of the field (default: `'string'`)
  *
- * @returns A `FormItemRule` object that can be used in Element Plus form validation.
+ * @returns A `FormItemRule` object that can be used in Element Plus form validation
  *
  * @example
  * ```typescript

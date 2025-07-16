@@ -26,9 +26,9 @@ const customValueHeaderLength = customValueHeader.byteLength + 1;
  * This utility provides a typed, serializable key-value store backed by Redis,
  * supporting TTL operations and safe deserialization of complex types (e.g. Date, Map).
  *
- * @param {Redis | string} ioRedisInstanceOrUrl - Either an existing `ioredis` instance or a Redis connection string.
+ * @param {Redis | string} ioRedisInstanceOrUrl - Either an existing `ioredis` instance or a Redis connection string
  *
- * @returns A frozen object that wraps Redis commands with typed get/set logic and encoding.
+ * @returns A frozen object that wraps Redis commands with typed get/set logic and encoding
  *
  * @example
  * ```typescript
@@ -45,11 +45,11 @@ export function createEnhancedRedisStorage(ioRedisInstanceOrUrl: Redis | string)
         /**
          * Retrieves a value from Redis and decodes it.
          *
-         * @template T - The expected return type.
+         * @template T - The expected return type
          *
-         * @param {string} key - The Redis key.
+         * @param {string} key - The Redis key
          *
-         * @returns {Promise<null | T>} The decoded value or null if not found.
+         * @returns {Promise<null | T>} The decoded value or null if not found
          */
         async getItem<T = unknown>(key: string) {
             const rawValue = await instance.getBuffer(key);
@@ -58,24 +58,24 @@ export function createEnhancedRedisStorage(ioRedisInstanceOrUrl: Redis | string)
         /**
          * Gets the remaining TTL (in seconds) for a given key.
          *
-         * @param {string} key - The Redis key.
+         * @param {string} key - The Redis key
          *
-         * @returns {Promise<number>} The number of seconds until the key expires, or -1 if no expiration is set.
+         * @returns {Promise<number>} The number of seconds until the key expires, or -1 if no expiration is set
          */
         getItemTtl: (key: string) => instance.ttl(key),
         /**
          * Checks whether a key exists in Redis.
          *
-         * @param {string} key - The Redis key.
+         * @param {string} key - The Redis key
          *
-         * @returns {Promise<boolean>} True if the key exists, false otherwise.
+         * @returns {Promise<boolean>} True if the key exists, false otherwise
          */
         hasItem: async (key: string) => await instance.exists(key) === 1,
         /**
          * The underlying Redis instance, exposed for advanced operations.
          * Use with caution; most use cases should rely on the wrapper methods.
          *
-         * @returns {Redis} The underlying Redis instance.
+         * @returns {Redis} The underlying Redis instance
          */
         get instance() {
             return instance;
@@ -83,7 +83,7 @@ export function createEnhancedRedisStorage(ioRedisInstanceOrUrl: Redis | string)
         /**
          * Removes a key from Redis.
          *
-         * @param {string} key - The Redis key to delete.
+         * @param {string} key - The Redis key to delete
          *
          * @returns {Promise<boolean>} A Promise that resolves to `true` if the key was removed,
          * or `false` if it did not exist.
@@ -92,16 +92,16 @@ export function createEnhancedRedisStorage(ioRedisInstanceOrUrl: Redis | string)
         /**
          * Stores a value in Redis without expiration.
          *
-         * @param {string} key - The Redis key.
-         * @param {any} value - The value to store. Will be serialized.
+         * @param {string} key - The Redis key
+         * @param {any} value - The value to store. Will be serialized
          */
         setItem: (key: string, value: any) => instance.set(key, encodeToStorageValue(value)),
         /**
          * Stores a value in Redis with a time-to-live (TTL).
          *
-         * @param {string} key - The Redis key.
-         * @param {number} seconds - Expiration time in seconds.
-         * @param {any} value - The value to store. Will be serialized.
+         * @param {string} key - The Redis key
+         * @param {number} seconds - Expiration time in seconds
+         * @param {any} value - The value to store. Will be serialized
          */
         setItemWithTtl(key: string, seconds: number, value: any) {
             return instance.setex(key, seconds, encodeToStorageValue(value));
