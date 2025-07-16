@@ -33,6 +33,7 @@ describe.concurrent('appendRedirectParamFromCurrentLocationToUrl', () => {
 
     it('should append current location as redirect param to the given URL', ({ expect }) => {
         const result = appendRedirectParamFromCurrentLocationToUrl('/login');
+
         expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
         expect(result).toBe('mocked-result');
     });

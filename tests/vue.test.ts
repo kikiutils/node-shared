@@ -19,6 +19,7 @@ vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-res
 describe.concurrent('appendRedirectParamFromCurrentRouteToUrl', () => {
     it('should append route fullPath as redirect param', ({ expect }) => {
         const result = appendRedirectParamFromCurrentRouteToUrl('/login');
+
         expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
         expect(result).toBe('mocked-result');
     });
@@ -30,13 +31,16 @@ describe.concurrent('clearIntervalRef', () => {
         const intervalRef = ref<null | ReturnType<typeof setInterval>>(setInterval(() => {}, 1000));
         const interval = intervalRef.value;
         clearIntervalRef(intervalRef);
+
         expect(clearSpy).toHaveBeenCalledWith(interval);
         expect(intervalRef.value).toBeNull();
+
         clearSpy.mockRestore();
     });
 
     it('should not throw if ref is already null', ({ expect }) => {
         const intervalRef = ref<null | ReturnType<typeof setInterval>>(null);
+
         expect(() => clearIntervalRef(intervalRef)).not.toThrow();
         expect(intervalRef.value).toBeNull();
     });
@@ -48,13 +52,16 @@ describe.concurrent('clearTimeoutRef', () => {
         const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(setTimeout(() => {}, 1000));
         const timeout = timeoutRef.value;
         clearTimeoutRef(timeoutRef);
+
         expect(clearSpy).toHaveBeenCalledWith(timeout);
         expect(timeoutRef.value).toBeNull();
+
         clearSpy.mockRestore();
     });
 
     it('should not throw if ref is already null', ({ expect }) => {
         const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(null);
+
         expect(() => clearTimeoutRef(timeoutRef)).not.toThrow();
         expect(timeoutRef.value).toBeNull();
     });

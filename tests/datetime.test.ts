@@ -95,8 +95,9 @@ describe.concurrent('getDateRangeFromDate', () => {
     });
 
     it('should throw an error for an invalid range type', ({ expect }) => {
-        expect(() => getDateRangeFromDate(input, 'invalidRangeType' as any))
-            .toThrow('Unsupported date range type: invalidRangeType.');
+        expect(() => getDateRangeFromDate(input, 'invalidRangeType' as any)).toThrow(
+            'Unsupported date range type: invalidRangeType',
+        );
     });
 });
 

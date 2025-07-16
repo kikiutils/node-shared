@@ -22,27 +22,29 @@ describe.concurrent('randomString', () => {
 
     it('should generate a string of the specified length', ({ expect }) => {
         const result = randomString(10);
+
         expect(result).toHaveLength(10);
     });
 
     Object.entries(CHARSETS).forEach(([mode, charset]) => {
         it(`should generate a valid ${mode} string of correct length`, ({ expect }) => {
             const result = randomString(20, mode as RandomStringMode);
+
             expect(result).toHaveLength(20);
             for (const char of result) expect(charset).toContain(char);
         });
     });
 
     it('should throw if length is zero', ({ expect }) => {
-        expect(() => randomString(0)).toThrow('Invalid length: 0. Must be a positive integer.');
+        expect(() => randomString(0)).toThrow('Invalid length: 0. Must be a positive integer');
     });
 
     it('should throw if length is negative', ({ expect }) => {
-        expect(() => randomString(-5)).toThrow('Invalid length: -5. Must be a positive integer.');
+        expect(() => randomString(-5)).toThrow('Invalid length: -5. Must be a positive integer');
     });
 
     it('should throw if length is not an integer', ({ expect }) => {
-        expect(() => randomString(4.5)).toThrow('Invalid length: 4.5. Must be a positive integer.');
+        expect(() => randomString(4.5)).toThrow('Invalid length: 4.5. Must be a positive integer');
     });
 
     it('should throw if mode is unsupported', ({ expect }) => {

@@ -17,6 +17,7 @@ describe.concurrent('toCompactNumberString', () => {
     it('should convert a large number to a readable string using millify with default options', ({ expect }) => {
         millify.mockReturnValue('1.23m');
         const result = toCompactNumberString(1234567);
+
         expect(result).toBe('1.23m');
         expect(millify).toHaveBeenCalledWith(
             1234567,
@@ -30,6 +31,7 @@ describe.concurrent('toCompactNumberString', () => {
     it('should apply custom options to millify', ({ expect }) => {
         millify.mockReturnValue('1.235m');
         const result = toCompactNumberString(1234567, { precision: 3 });
+
         expect(result).toBe('1.235m');
         expect(millify).toHaveBeenCalledWith(
             1234567,
@@ -43,6 +45,7 @@ describe.concurrent('toCompactNumberString', () => {
     it('should handle smaller numbers correctly', ({ expect }) => {
         millify.mockReturnValue('123');
         const result = toCompactNumberString(123);
+
         expect(result).toBe('123');
         expect(millify).toHaveBeenCalledWith(
             123,
@@ -56,6 +59,7 @@ describe.concurrent('toCompactNumberString', () => {
     it('should handle large numbers with custom options', ({ expect }) => {
         millify.mockReturnValue('1.235B');
         const result = toCompactNumberString(1234567890, { precision: 3 });
+
         expect(result).toBe('1.235B');
         expect(millify).toHaveBeenCalledWith(
             1234567890,

@@ -7,49 +7,63 @@ import { extractFirstValue } from '../src/general';
 
 describe.concurrent('extractFirstValue', () => {
     it('should return the first element of an array', ({ expect }) => {
-        const value = [
+        const input = [
             1,
             2,
         ];
 
-        expect(extractFirstValue(value)).toBe(1);
+        const result = extractFirstValue(input);
+
+        expect(result).toBe(1);
     });
 
     it('should return the value itself if it is not an array', ({ expect }) => {
-        const value = 42;
-        expect(extractFirstValue(value)).toBe(42);
+        const input = 42;
+        const result = extractFirstValue(input);
+
+        expect(result).toBe(42);
     });
 
     it('should return undefined if the array is empty and no default value is provided', ({ expect }) => {
-        const value: number[] = [];
-        expect(extractFirstValue(value)).toBeUndefined();
+        const input: number[] = [];
+        const result = extractFirstValue(input);
+
+        expect(result).toBeUndefined();
     });
 
     it('should return the default value if the array is empty and default value is provided', ({ expect }) => {
-        const value: number[] = [];
+        const input: number[] = [];
         const defaultValue = 100;
-        expect(extractFirstValue(value, defaultValue)).toBe(defaultValue);
+        const result = extractFirstValue(input, defaultValue);
+
+        expect(result).toBe(defaultValue);
     });
 
     it('should return the first element if the array is non-empty, ignoring default value', ({ expect }) => {
-        const value = [
+        const input = [
             'a',
             'b',
         ];
 
         const defaultValue = 'z';
-        expect(extractFirstValue(value, defaultValue)).toBe('a');
+        const result = extractFirstValue(input, defaultValue);
+
+        expect(result).toBe('a');
     });
 
     it('should return the value itself if it is not an array, even if default value is provided', ({ expect }) => {
-        const value = 'test';
+        const input = 'test';
         const defaultValue = 'default';
-        expect(extractFirstValue(value, defaultValue)).toBe('test');
+        const result = extractFirstValue(input, defaultValue);
+
+        expect(result).toBe('test');
     });
 
     it('should return default value if value is null or undefined', ({ expect }) => {
-        const value: undefined = undefined;
+        const input: undefined = undefined;
         const defaultValue = 'default';
-        expect(extractFirstValue(value, defaultValue)).toBe(defaultValue);
+        const result = extractFirstValue(input, defaultValue);
+
+        expect(result).toBe(defaultValue);
     });
 });
