@@ -1,4 +1,8 @@
 import { Buffer } from 'node:buffer';
+import type {
+    Blob as NodeBlob,
+    File as NodeFile,
+} from 'node:buffer';
 
 /**
  * Converts a Blob, Buffer, or File to a Buffer.
@@ -31,7 +35,7 @@ import { Buffer } from 'node:buffer';
  * console.log(result3.toString()); // 'File content'
  * ```
  */
-export async function toBuffer(input: Blob | Buffer | File) {
+export async function toBuffer(input: Blob | Buffer | File | NodeBlob | NodeFile) {
     if (Buffer.isBuffer(input)) return input;
     return Buffer.from(await input.arrayBuffer());
 }
