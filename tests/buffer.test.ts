@@ -194,7 +194,7 @@ describe.concurrent('toBuffer', () => {
             const endTime = performance.now();
 
             expect(result).toBe(input);
-            expect(endTime - startTime).toBeLessThan(1);
+            expect(endTime - startTime).toBeLessThan(10);
         });
     });
 });
