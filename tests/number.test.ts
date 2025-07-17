@@ -1,23 +1,27 @@
-import { millify as _millify } from 'millify';
 import {
     beforeEach,
     describe,
     it,
     vi,
 } from 'vitest';
-import type { Mock } from 'vitest';
 
 import { toCompactNumberString } from '../src/number';
 
 // Mocks
 vi.mock('millify');
-const millify = _millify as Mock;
+
+// Functions
+async function getMockedMillify() {
+    const { millify } = await import('millify');
+    return vi.mocked(millify);
+}
 
 // Tests
 describe('toCompactNumberString', () => {
     beforeEach(() => vi.clearAllMocks());
 
-    it('should convert a large number to a readable string using millify with default options', ({ expect }) => {
+    it('should convert a large number to a readable string using millify with default options', async ({ expect }) => {
+        const millify = await getMockedMillify();
         millify.mockReturnValue('1.23m');
 
         const result = toCompactNumberString(1234567);
@@ -31,7 +35,8 @@ describe('toCompactNumberString', () => {
         );
     });
 
-    it('should apply custom options to millify', ({ expect }) => {
+    it('should apply custom options to millify', async ({ expect }) => {
+        const millify = await getMockedMillify();
         millify.mockReturnValue('1.235m');
 
         const result = toCompactNumberString(1234567, { precision: 3 });
@@ -45,7 +50,8 @@ describe('toCompactNumberString', () => {
         );
     });
 
-    it('should handle smaller numbers correctly', ({ expect }) => {
+    it('should handle smaller numbers correctly', async ({ expect }) => {
+        const millify = await getMockedMillify();
         millify.mockReturnValue('123');
 
         const result = toCompactNumberString(123);
@@ -59,7 +65,8 @@ describe('toCompactNumberString', () => {
         );
     });
 
-    it('should handle large numbers with custom options', ({ expect }) => {
+    it('should handle large numbers with custom options', async ({ expect }) => {
+        const millify = await getMockedMillify();
         millify.mockReturnValue('1.235B');
 
         const result = toCompactNumberString(1234567890, { precision: 3 });
