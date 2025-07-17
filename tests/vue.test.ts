@@ -12,14 +12,14 @@ import {
     clearTimeoutRef,
 } from '../src/vue';
 
+// Mocks
 vi.mock('vue-router', () => ({ useRoute: vi.fn(() => ({ fullPath: '/profile?tab=settings#section' })) }));
-
 vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
-describe.concurrent('appendRedirectParamFromCurrentRouteToUrl', () => {
+// Tests
+describe('appendRedirectParamFromCurrentRouteToUrl', () => {
     it('should append route fullPath as redirect param', ({ expect }) => {
         const result = appendRedirectParamFromCurrentRouteToUrl('/login');
-
         expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
         expect(result).toBe('mocked-result');
     });
@@ -30,6 +30,7 @@ describe.concurrent('clearIntervalRef', () => {
         const clearSpy = vi.spyOn(globalThis, 'clearInterval');
         const intervalRef = ref<null | ReturnType<typeof setInterval>>(setInterval(() => {}, 1000));
         const interval = intervalRef.value;
+
         clearIntervalRef(intervalRef);
 
         expect(clearSpy).toHaveBeenCalledWith(interval);
@@ -51,6 +52,7 @@ describe.concurrent('clearTimeoutRef', () => {
         const clearSpy = vi.spyOn(globalThis, 'clearTimeout');
         const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(setTimeout(() => {}, 1000));
         const timeout = timeoutRef.value;
+
         clearTimeoutRef(timeoutRef);
 
         expect(clearSpy).toHaveBeenCalledWith(timeout);

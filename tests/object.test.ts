@@ -15,14 +15,13 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('a=1&b=2&c=3');
         });
 
         it('should serialize an empty object', ({ expect }) => {
             const input = {};
-            const result = stringifyObjectDeterministically(input);
 
+            const result = stringifyObjectDeterministically(input);
             expect(result).toBe('');
         });
 
@@ -33,7 +32,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('city=New York&name=John');
         });
 
@@ -44,7 +42,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('isActive=true&isDeleted=false');
         });
 
@@ -56,7 +53,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('a=null&b=undefined&c=value');
         });
 
@@ -69,7 +65,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('float=3.14&negative=-17&positive=42&zero=0');
         });
     });
@@ -85,14 +80,13 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('a.b=1&a.c=2&d=3');
         });
 
         it('should handle deeply nested objects', ({ expect }) => {
             const input = { a: { b: { c: { d: 'deep' } } } };
-            const result = stringifyObjectDeterministically(input);
 
+            const result = stringifyObjectDeterministically(input);
             expect(result).toBe('a.b.c.d=deep');
         });
 
@@ -109,7 +103,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('a.x=1&a.y.0=3&a.y.1=4&b=2');
         });
     });
@@ -125,14 +118,13 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('arr.0=1&arr.1=2&arr.2=3');
         });
 
         it('should handle empty arrays', ({ expect }) => {
             const input = { emptyArr: [] };
-            const result = stringifyObjectDeterministically(input);
 
+            const result = stringifyObjectDeterministically(input);
             expect(result).toBe('');
         });
 
@@ -147,7 +139,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('mixed.0=1&mixed.1=two&mixed.2=true&mixed.3=null');
         });
 
@@ -160,7 +151,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('items.0.id=1&items.1.id=2');
         });
 
@@ -179,7 +169,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('matrix.0.0=1&matrix.0.1=2&matrix.1.0=3&matrix.1.1=4');
         });
     });
@@ -250,7 +239,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input, ':', '&');
-
             expect(result).toBe('a:1&b:2');
         });
 
@@ -261,14 +249,13 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input, '=', '|');
-
             expect(result).toBe('a=1|b=2');
         });
 
         it('should use both custom separators as in documentation example', ({ expect }) => {
             const input = { foo: 'bar' };
-            const result = stringifyObjectDeterministically(input, ':', '|');
 
+            const result = stringifyObjectDeterministically(input, ':', '|');
             expect(result).toBe('foo:bar');
         });
 
@@ -279,7 +266,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input, '->', ', ');
-
             expect(result).toBe('a.b->1, c->2');
         });
     });
@@ -292,7 +278,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('=empty&a=1');
         });
 
@@ -303,7 +288,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toBe('key&with&amps=2&key.with.dots=1');
         });
 
@@ -315,7 +299,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toContain('date=');
             expect(result).toContain('regex=');
             expect(result).toContain('symbol=');
@@ -340,7 +323,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toContain('infinity=Infinity');
             expect(result).toContain('nan=NaN');
             expect(result).toContain('negInfinity=-Infinity');
@@ -373,7 +355,6 @@ describe.concurrent('stringifyObjectDeterministically', () => {
             };
 
             const result = stringifyObjectDeterministically(input);
-
             expect(result).toContain('metadata.timestamp=1234567890');
             expect(result).toContain('metadata.version=1.0.0');
             expect(result).toContain('user.id=123');

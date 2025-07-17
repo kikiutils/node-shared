@@ -16,24 +16,28 @@ import {
 describe.concurrent('formatDate', () => {
     it('should format a Date object', ({ expect }) => {
         const input = new Date('2024-07-10T00:00:00Z');
+
         const result = formatDate(input, 'yyyy-MM-dd');
         expect(result).toBe('2024-07-10');
     });
 
     it('should format a numeric timestamp', ({ expect }) => {
         const input = 1657814400000;
+
         const result = formatDate(input, 'yyyy-MM-dd HH:mm');
         expect(result).toBe('2022-07-14 16:00');
     });
 
     it('should format a date string', ({ expect }) => {
         const input = '2024-07-10T00:00:00Z';
+
         const result = formatDate(input, 'yyyy-MM-dd');
         expect(result).toBe('2024-07-10');
     });
 
     it('should format with the default format', ({ expect }) => {
         const input = new Date('2024-07-10T00:00:00Z');
+
         const result = formatDate(input);
         expect(result).toBe(dateFnsFormat(input, 'yyyy-MM-dd HH:mm:ss'));
     });
@@ -41,6 +45,7 @@ describe.concurrent('formatDate', () => {
 
 describe.concurrent('getDateRangeFromDate', () => {
     const input = new Date('2023-07-01T12:00:00Z');
+
     it('should return correct range for last month', ({ expect }) => {
         const result = getDateRangeFromDate(input, 'lastMonth');
         expect(result.startDate).toEqual(new Date('2023-06-01 00:00:00'));
@@ -105,6 +110,7 @@ describe.concurrent('getMidnightDateFromToday', () => {
     it(`should return today's midnight date`, ({ expect }) => {
         const expectedMidnight = new Date();
         expectedMidnight.setHours(0, 0, 0, 0);
+
         const result = getMidnightDateFromToday();
         expect(result).toEqual(expectedMidnight);
     });
@@ -113,6 +119,7 @@ describe.concurrent('getMidnightDateFromToday', () => {
         const offsetDays = 3;
         const expectedDate = addDays(new Date(), offsetDays);
         expectedDate.setHours(0, 0, 0, 0);
+
         const result = getMidnightDateFromToday(offsetDays);
         expect(result).toEqual(expectedDate);
     });
@@ -121,6 +128,7 @@ describe.concurrent('getMidnightDateFromToday', () => {
         const offsetDays = -3;
         const expectedDate = addDays(new Date(), offsetDays);
         expectedDate.setHours(0, 0, 0, 0);
+
         const result = getMidnightDateFromToday(offsetDays);
         expect(result).toEqual(expectedDate);
     });

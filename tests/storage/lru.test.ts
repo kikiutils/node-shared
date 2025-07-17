@@ -14,6 +14,7 @@ interface User {
 describe.concurrent('createKeyedLruStore', () => {
     const lru = new LRUCache({ max: 100 });
     const userStore = createKeyedLruStore<User>(lru)((id: number) => `user:${id}`);
+
     it('should set and get an item correctly', ({ expect }) => {
         const user = {
             id: 1,

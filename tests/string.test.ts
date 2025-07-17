@@ -22,14 +22,12 @@ describe.concurrent('randomString', () => {
 
     it('should generate a string of the specified length', ({ expect }) => {
         const result = randomString(10);
-
         expect(result).toHaveLength(10);
     });
 
     Object.entries(CHARSETS).forEach(([mode, charset]) => {
         it(`should generate a valid ${mode} string of correct length`, ({ expect }) => {
             const result = randomString(20, mode as RandomStringMode);
-
             expect(result).toHaveLength(20);
             for (const char of result) expect(charset).toContain(char);
         });

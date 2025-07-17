@@ -13,9 +13,11 @@ import {
 import { appendRedirectParamToUrl } from '../src/url';
 import { appendRedirectParamFromCurrentLocationToUrl } from '../src/web';
 
+// Mocks
 vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
-describe.concurrent('appendRedirectParamFromCurrentLocationToUrl', () => {
+// Tests
+describe('appendRedirectParamFromCurrentLocationToUrl', () => {
     const originalLocation = window.location;
     beforeAll(() => {
         delete (window as any).location;
@@ -33,7 +35,6 @@ describe.concurrent('appendRedirectParamFromCurrentLocationToUrl', () => {
 
     it('should append current location as redirect param to the given URL', ({ expect }) => {
         const result = appendRedirectParamFromCurrentLocationToUrl('/login');
-
         expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
         expect(result).toBe('mocked-result');
     });

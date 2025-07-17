@@ -48,6 +48,7 @@ describe.concurrent('createElFormItemRuleWithDefaults', () => {
 
     it('should preserve extra fields from options', ({ expect }) => {
         const customValidator = vi.fn();
+
         const result = createElFormItemRuleWithDefaults(
             'With validator',
             {
