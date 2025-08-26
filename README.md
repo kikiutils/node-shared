@@ -28,7 +28,7 @@ A lightweight and modular utility library for modern JavaScript and TypeScript â
 
 ## Requirements
 
-- **Node.js** `>= 20.0.0`
+- **Node.js** `>= 20.19.0`
 
 ## Installation
 
