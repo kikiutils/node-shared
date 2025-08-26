@@ -1,5 +1,37 @@
 # Changelog
 
+## v12.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v11.0.0...v12.0.0)
+
+### 📖 Documentation
+
+- Update README ([7a5271a](https://github.com/kikiutils/node-shared/commit/7a5271a))
+
+### 🏡 Chore
+
+- Bump tsconfig target to es2023 ([b9185b7](https://github.com/kikiutils/node-shared/commit/b9185b7))
+- Update `.gitignore` ([1465997](https://github.com/kikiutils/node-shared/commit/1465997))
+- Update dependencies ([ce82348](https://github.com/kikiutils/node-shared/commit/ce82348))
+- Update `hash.ts` to align with new package version ([6472b76](https://github.com/kikiutils/node-shared/commit/6472b76))
+- Set `peerDependencies` and `peerDependenciesMeta` in `package.json` ([bfe85cb](https://github.com/kikiutils/node-shared/commit/bfe85cb))
+- ⚠️ Set Node.js version requirement to >=20.19 ([a7c80ad](https://github.com/kikiutils/node-shared/commit/a7c80ad))
+- **ci:** Configure pnpm cache in workflow ([79e2264](https://github.com/kikiutils/node-shared/commit/79e2264))
+
+### ✅ Tests
+
+- Organize test units ([e8729df](https://github.com/kikiutils/node-shared/commit/e8729df))
+- Use `getMockedMillify` to fetch mocked `millify` in each it block ([5f80763](https://github.com/kikiutils/node-shared/commit/5f80763))
+- Tidy up `tests/general.test.ts` unit ([2424bc9](https://github.com/kikiutils/node-shared/commit/2424bc9))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Set Node.js version requirement to >=20.19 ([a7c80ad](https://github.com/kikiutils/node-shared/commit/a7c80ad))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v11.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v10.4.1...v11.0.0)

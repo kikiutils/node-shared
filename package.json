@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/shared",
-  "version": "11.0.0",
+  "version": "12.0.0",
   "description": "A lightweight and modular utility library for modern JavaScript and TypeScript — includes secure hashing, flexible logging, datetime tools, Vue/web helpers, storage abstraction, and more.",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -85,20 +85,48 @@
     "vue-router": "^4.5.1"
   },
   "peerDependenciesMeta": {
-    "@noble/hashes": { "optional": true },
-    "async-validator": { "optional": true },
-    "consola": { "optional": true },
-    "date-fns": { "optional": true },
-    "decimal.js": { "optional": true },
-    "element-plus": { "optional": true },
-    "ioredis": { "optional": true },
-    "lru-cache": { "optional": true },
-    "millify": { "optional": true },
-    "pino": { "optional": true },
-    "pino-pretty": { "optional": true },
-    "superjson": { "optional": true },
-    "vue": { "optional": true },
-    "vue-router": { "optional": true }
+    "@noble/hashes": {
+      "optional": true
+    },
+    "async-validator": {
+      "optional": true
+    },
+    "consola": {
+      "optional": true
+    },
+    "date-fns": {
+      "optional": true
+    },
+    "decimal.js": {
+      "optional": true
+    },
+    "element-plus": {
+      "optional": true
+    },
+    "ioredis": {
+      "optional": true
+    },
+    "lru-cache": {
+      "optional": true
+    },
+    "millify": {
+      "optional": true
+    },
+    "pino": {
+      "optional": true
+    },
+    "pino-pretty": {
+      "optional": true
+    },
+    "superjson": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "vue-router": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.9.0",
