@@ -1,5 +1,28 @@
 # Changelog
 
+## v13.0.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.0.0...v13.0.1)
+
+### 🩹 Fixes
+
+- Resolve alias configuration error in tsdown setup ([656e2e0](https://github.com/kikiutils/node-shared/commit/656e2e0))
+
+### 💅 Refactors
+
+- Remove unnecessary code ([60e1bed](https://github.com/kikiutils/node-shared/commit/60e1bed))
+
+### 🏡 Chore
+
+- Update eslint config ([99cd82e](https://github.com/kikiutils/node-shared/commit/99cd82e))
+- Update tsdown entry ([9cbb6bb](https://github.com/kikiutils/node-shared/commit/9cbb6bb))
+- Disable `isolatedDeclarations` ([85f066e](https://github.com/kikiutils/node-shared/commit/85f066e))
+- Update eslint config ([09d584b](https://github.com/kikiutils/node-shared/commit/09d584b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v12.0.0...v13.0.0)
