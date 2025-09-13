@@ -42,7 +42,7 @@ export class EnvironmentNotFoundError extends Error {
  * checkAndGetEnvValue('API_KEY'); // ❌ Throws EnvironmentNotFoundError
  * ```
  */
-export function checkAndGetEnvValue(key: string): string {
+export function checkAndGetEnvValue(key: string) {
     if (process.env[key] === undefined) throw new EnvironmentNotFoundError(key);
     return process.env[key];
 }
