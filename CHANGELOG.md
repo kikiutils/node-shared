@@ -1,5 +1,40 @@
 # Changelog
 
+## v13.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v12.0.0...v13.0.0)
+
+### 💅 Refactors
+
+- **tsconfig:** Separate references so src and tests use different settings ([df472e2](https://github.com/kikiutils/node-shared/commit/df472e2))
+
+### 📦 Build
+
+- ⚠️ Switch builder to tsdown and convert package to pure ESM ([d307be4](https://github.com/kikiutils/node-shared/commit/d307be4))
+
+### 🏡 Chore
+
+- **ci:** Remove pnpm cache configure in workflow ([abc0801](https://github.com/kikiutils/node-shared/commit/abc0801))
+- ⚠️ Drop support for Node.js 20, set minimum supported version to 22 ([3319820](https://github.com/kikiutils/node-shared/commit/3319820))
+- Upgrade devDependencies ([57244a0](https://github.com/kikiutils/node-shared/commit/57244a0))
+- Set tsdown alias and tsconfig paths ([be49779](https://github.com/kikiutils/node-shared/commit/be49779))
+- Update tsdown config ([fc9e7cb](https://github.com/kikiutils/node-shared/commit/fc9e7cb))
+- Change some file import path ([ccdbd7c](https://github.com/kikiutils/node-shared/commit/ccdbd7c))
+- Add `tsconfig.base.json` ([f6ba6dd](https://github.com/kikiutils/node-shared/commit/f6ba6dd))
+
+### ✅ Tests
+
+- Fix vitest config to correctly load tsconfig and aliases ([0522f79](https://github.com/kikiutils/node-shared/commit/0522f79))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Switch builder to tsdown and convert package to pure ESM ([d307be4](https://github.com/kikiutils/node-shared/commit/d307be4))
+- ⚠️ Drop support for Node.js 20, set minimum supported version to 22 ([3319820](https://github.com/kikiutils/node-shared/commit/3319820))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v12.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v11.0.0...v12.0.0)
