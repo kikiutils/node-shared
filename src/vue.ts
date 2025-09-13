@@ -5,7 +5,7 @@ import {
     useRoute,
 } from 'vue-router';
 
-import { appendRedirectParamToUrl } from './url';
+import { appendRedirectParamToUrl } from '@/url';
 
 /**
  * Appends the current Vue Router route's fullPath as the `redirect` query parameter to the given URL.
