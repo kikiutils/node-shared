@@ -33,21 +33,33 @@
   ],
   "sideEffects": false,
   "exports": {
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "import": "./dist/*.js",
-      "require": null
-    },
-    "./storage/enhanced/local": {
-      "types": "./dist/storage/enhanced/local/index.d.ts",
-      "import": "./dist/storage/enhanced/local/index.js",
-      "require": null
-    },
-    "./storage/enhanced/redis": {
-      "types": "./dist/storage/enhanced/redis/index.d.ts",
-      "import": "./dist/storage/enhanced/redis/index.js",
-      "require": null
-    }
+    "./buffer": "./dist/buffer.js",
+    "./clipboard": "./dist/clipboard.js",
+    "./consola": "./dist/consola.js",
+    "./crypto-hash": "./dist/crypto-hash.js",
+    "./datetime": "./dist/datetime.js",
+    "./element-plus": "./dist/element-plus.js",
+    "./enum": "./dist/enum.js",
+    "./env": "./dist/env.js",
+    "./general": "./dist/general.js",
+    "./hash": "./dist/hash.js",
+    "./math": "./dist/math.js",
+    "./number": "./dist/number.js",
+    "./object": "./dist/object.js",
+    "./pino": "./dist/pino.js",
+    "./random": "./dist/random.js",
+    "./storage/enhanced/local": "./dist/storage/enhanced/local/index.js",
+    "./storage/enhanced/local/core": "./dist/storage/enhanced/local/core.js",
+    "./storage/enhanced/local/keyed-store": "./dist/storage/enhanced/local/keyed-store.js",
+    "./storage/enhanced/redis": "./dist/storage/enhanced/redis/index.js",
+    "./storage/enhanced/redis/core": "./dist/storage/enhanced/redis/core.js",
+    "./storage/enhanced/redis/keyed-store": "./dist/storage/enhanced/redis/keyed-store.js",
+    "./storage/lru/keyed-store": "./dist/storage/lru/keyed-store.js",
+    "./string": "./dist/string.js",
+    "./url": "./dist/url.js",
+    "./vue": "./dist/vue.js",
+    "./web": "./dist/web.js",
+    "./package.json": "./package.json"
   },
   "files": [
     "./dist",
@@ -149,10 +161,12 @@
     "millify": "^6.1.0",
     "pino": "^9.9.5",
     "pino-pretty": "^13.1.1",
+    "publint": "^0.3.12",
     "superjson": "^2.2.2",
     "ts-unused-exports": "^11.0.1",
     "tsdown": "^0.15.1",
     "typescript": "^5.9.2",
+    "unplugin-unused": "^0.5.3",
     "vitest": "^3.2.4",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1"
