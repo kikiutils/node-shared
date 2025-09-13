@@ -1,5 +1,6 @@
 {
   "name": "@kikiutils/shared",
+  "type": "module",
   "version": "12.0.0",
   "description": "A lightweight and modular utility library for modern JavaScript and TypeScript — includes secure hashing, flexible logging, datetime tools, Vue/web helpers, storage abstraction, and more.",
   "author": "kiki-kanri",
@@ -34,18 +35,18 @@
   "exports": {
     "./*": {
       "types": "./dist/*.d.ts",
-      "import": "./dist/*.mjs",
-      "require": "./dist/*.cjs"
+      "import": "./dist/*.js",
+      "require": null
     },
     "./storage/enhanced/local": {
       "types": "./dist/storage/enhanced/local/index.d.ts",
-      "import": "./dist/storage/enhanced/local/index.mjs",
-      "require": "./dist/storage/enhanced/local/index.cjs"
+      "import": "./dist/storage/enhanced/local/index.js",
+      "require": null
     },
     "./storage/enhanced/redis": {
       "types": "./dist/storage/enhanced/redis/index.d.ts",
-      "import": "./dist/storage/enhanced/redis/index.mjs",
-      "require": "./dist/storage/enhanced/redis/index.cjs"
+      "import": "./dist/storage/enhanced/redis/index.js",
+      "require": null
     }
   },
   "files": [
@@ -53,10 +54,10 @@
     "./src"
   ],
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "ts-project-builder './src/**/*.ts' --clean --preserve-modules --sourcemaps",
+    "build": "tsdown",
     "bumplog": "changelogen --bump --hideAuthorEmail",
     "depcheck": "depcheck",
     "lint": "eslint --max-warnings 0",
@@ -130,10 +131,10 @@
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.9.0",
-    "@kikiutils/eslint-config": "^2.1.0",
+    "@kikiutils/eslint-config": "^2.1.1",
     "@kikiutils/tsconfigs": "^5.0.4",
     "@noble/hashes": "^2.0.0",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.3.3",
     "@vitest/coverage-v8": "^3.2.4",
     "async-validator": "^4.2.5",
     "consola": "^3.4.2",
@@ -141,19 +142,19 @@
     "date-fns": "^4.1.0",
     "decimal.js": "^10.6.0",
     "depcheck": "^1.4.7",
-    "element-plus": "^2.11.1",
+    "element-plus": "^2.11.2",
     "ioredis": "^5.7.0",
-    "jsdom": "^26.1.0",
-    "lru-cache": "^11.1.0",
+    "jsdom": "^27.0.0",
+    "lru-cache": "^11.2.1",
     "millify": "^6.1.0",
-    "pino": "^9.9.0",
+    "pino": "^9.9.5",
     "pino-pretty": "^13.1.1",
     "superjson": "^2.2.2",
-    "ts-project-builder": "^5.0.2",
     "ts-unused-exports": "^11.0.1",
+    "tsdown": "^0.15.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
-    "vue": "^3.5.20",
+    "vue": "^3.5.21",
     "vue-router": "^4.5.1"
   },
   "pnpm": {
