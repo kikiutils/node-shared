@@ -3,7 +3,7 @@ import {
     it,
 } from 'vitest';
 
-import { generateWithNestedRandomLength } from '../src/random';
+import { generateWithNestedRandomLength } from '@/random';
 
 describe.concurrent('generateWithNestedRandomLength', () => {
     it('should work with string generator', ({ expect }) => {

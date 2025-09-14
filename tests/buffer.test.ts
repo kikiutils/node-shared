@@ -5,7 +5,7 @@ import {
     it,
 } from 'vitest';
 
-import { toBuffer } from '../src/buffer';
+import { toBuffer } from '@/buffer';
 
 describe.concurrent('toBuffer', () => {
     describe.concurrent('buffer input', () => {

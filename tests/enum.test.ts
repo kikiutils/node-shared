@@ -6,7 +6,7 @@ import {
 import {
     getEnumNumberValues,
     getEnumStringValues,
-} from '../src/enum';
+} from '@/enum';
 
 enum MixedEnum {
     Receive = 0,

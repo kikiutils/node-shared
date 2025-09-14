@@ -11,7 +11,7 @@ import {
     formatDate,
     getDateRangeFromDate,
     getMidnightDateFromToday,
-} from '../src/datetime';
+} from '@/datetime';
 
 describe.concurrent('formatDate', () => {
     it('should format a Date object', ({ expect }) => {

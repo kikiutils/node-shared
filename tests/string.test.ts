@@ -3,8 +3,8 @@ import {
     it,
 } from 'vitest';
 
-import { randomString } from '../src/string';
-import type { RandomStringMode } from '../src/string';
+import { randomString } from '@/string';
+import type { RandomStringMode } from '@/string';
 
 describe.concurrent('randomString', () => {
     const DIGITS = '0123456789';
