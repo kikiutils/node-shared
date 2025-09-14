@@ -78,7 +78,7 @@
     "release": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && npm publish",
     "test": "cross-env TZ=UTC vitest run --coverage",
     "test:watch": "cross-env TZ=UTC vitest watch --coverage",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -b --noEmit",
     "unused-exports": "ts-unused-exports ./tsconfig.json"
   },
   "peerDependencies": {
