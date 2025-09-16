@@ -36,18 +36,34 @@ export class EventAwaiter<T> {
      *  - `trigger(key)` is called, in which case it resolves with the provided value.
      *  - The optional timeout is reached, in which case it resolves with `undefined`.
      *
-     * Multiple consumers can wait on the same key; all of them will be notified when triggered.
+     * Behavior when multiple waiters exist for the same key:
+     *  - Default (no mode): multiple waiters are allowed, all will be resolved when triggered.
+     *  - `strict` mode: throws an error if a waiter already exists for the given key.
+     *  - `override` mode: cancels all existing waiters (resolving them with `undefined`)
+     *    and only keeps the latest one.
      *
-     * @param {string} [key] - Identifier for the awaited event
+     * @param {string} key - Identifier for the awaited event
      * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
-     * If reached, the promise resolves with `undefined`
+     * If reached, the promise resolves with `undefined`.
+     * @param {'override' | 'strict'} [mode] - Optional behavior mode for handling multiple waiters.
      *
      * @returns {Promise<T | undefined>} A promise that resolves with the triggered value
      * or `undefined` if timeout occurs
      */
-    wait(key: string, timeoutMs?: number) {
+    wait(key: string, timeoutMs?: number, mode?: 'override' | 'strict') {
         return new Promise<T | undefined>((resolve) => {
             const resolvers = this.#promiseResolvers.get(key) || [];
+            if (resolvers.length) {
+                switch (mode) {
+                    case 'override':
+                        resolvers.forEach((r) => r(undefined));
+                        resolvers.length = 0;
+                        break;
+                    case 'strict':
+                        throw new Error(`Duplicate wait detected for key: ${key}`);
+                }
+            }
+
             resolvers.push(resolve);
             this.#promiseResolvers.set(key, resolvers);
             if (timeoutMs) {
@@ -65,5 +81,31 @@ export class EventAwaiter<T> {
                 );
             }
         });
+    }
+
+    /**
+     * Waits for an event in strict mode.
+     * Only one waiter is allowed per key. If another waiter already exists,
+     * this method will throw an error.
+     *
+     * @param {string} key - Identifier for the awaited event
+     * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
+     * If reached, the promise resolves with `undefined`.
+     */
+    waitExclusive(key: string, timeoutMs?: number) {
+        return this.wait(key, timeoutMs, 'strict');
+    }
+
+    /**
+     * Waits for an event in override mode.
+     * If another waiter already exists for the given key, it will be canceled
+     * (resolved with `undefined`) and replaced by the new waiter.
+     *
+     * @param {string} key - Identifier for the awaited event
+     * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
+     * If reached, the promise resolves with `undefined`.
+     */
+    waitLatest(key: string, timeoutMs?: number) {
+        return this.wait(key, timeoutMs, 'override');
     }
 }
