@@ -3,7 +3,7 @@
  *
  * This class allows multiple consumers to `wait` for a specific key
  * and be resolved when `trigger` is called for that key, or automatically
- * resolved with `undefined` if a timeout occurs.
+ * resolved with `undefined` if a timeout occurs or an AbortSignal is triggered.
  *
  * Typical use cases include long-polling, request coordination,
  * or implementing event-driven primitives in applications or services.
@@ -17,7 +17,7 @@ export class EventAwaiter<T> {
      * Triggers all pending promises waiting for the given key.
      * Each promise will be resolved with the provided value.
      *
-     * @param {string} [key] - Identifier for the awaited event
+     * @param {string} key - Identifier for the awaited event
      * @param {T | undefined} value - The value to resolve the awaiting promises with.
      * May be `undefined` to indicate no result or a timeout-like behavior.
      */
@@ -35,6 +35,7 @@ export class EventAwaiter<T> {
      * The returned promise will resolve when:
      *  - `trigger(key)` is called, in which case it resolves with the provided value.
      *  - The optional timeout is reached, in which case it resolves with `undefined`.
+     *  - The optional `AbortSignal` is aborted, in which case it resolves with `undefined`.
      *
      * Behavior when multiple waiters exist for the same key:
      *  - Default (no mode): multiple waiters are allowed, all will be resolved when triggered.
@@ -45,12 +46,13 @@ export class EventAwaiter<T> {
      * @param {string} key - Identifier for the awaited event
      * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
      * If reached, the promise resolves with `undefined`.
-     * @param {'override' | 'strict'} [mode] - Optional behavior mode for handling multiple waiters.
+     * @param {'override' | 'strict'} [mode] - Optional behavior mode for handling multiple waiters
+     * @param {AbortSignal} [signal] - Optional AbortSignal. If aborted, the promise resolves with `undefined`
      *
-     * @returns {Promise<T | undefined>} A promise that resolves with the triggered value
-     * or `undefined` if timeout occurs
+     * @returns {Promise<T | undefined>} A promise that resolves with the triggered value,
+     * or `undefined` if timeout or abort occurs
      */
-    wait(key: string, timeoutMs?: number, mode?: 'override' | 'strict') {
+    wait(key: string, timeoutMs?: number, mode?: 'override' | 'strict', signal?: AbortSignal) {
         return new Promise<T | undefined>((resolve) => {
             const resolvers = this.#promiseResolvers.get(key) || [];
             if (resolvers.length) {
@@ -80,6 +82,22 @@ export class EventAwaiter<T> {
                     timeoutMs,
                 );
             }
+
+            if (signal) {
+                signal.addEventListener(
+                    'abort',
+                    () => {
+                        const resolvers = this.#promiseResolvers.get(key);
+                        if (resolvers?.includes(resolve)) {
+                            resolve(undefined);
+                            const newResolvers = resolvers.filter((r) => r !== resolve);
+                            if (newResolvers.length) this.#promiseResolvers.set(key, newResolvers);
+                            else this.#promiseResolvers.delete(key);
+                        }
+                    },
+                    { once: true },
+                );
+            }
         });
     }
 
@@ -91,9 +109,10 @@ export class EventAwaiter<T> {
      * @param {string} key - Identifier for the awaited event
      * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
      * If reached, the promise resolves with `undefined`.
+     * @param {AbortSignal} [signal] - Optional AbortSignal. If aborted, the promise resolves with `undefined`
      */
-    waitExclusive(key: string, timeoutMs?: number) {
-        return this.wait(key, timeoutMs, 'strict');
+    waitExclusive(key: string, timeoutMs?: number, signal?: AbortSignal) {
+        return this.wait(key, timeoutMs, 'strict', signal);
     }
 
     /**
@@ -104,8 +123,9 @@ export class EventAwaiter<T> {
      * @param {string} key - Identifier for the awaited event
      * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
      * If reached, the promise resolves with `undefined`.
+     * @param {AbortSignal} [signal] - Optional AbortSignal. If aborted, the promise resolves with `undefined`
      */
-    waitLatest(key: string, timeoutMs?: number) {
-        return this.wait(key, timeoutMs, 'override');
+    waitLatest(key: string, timeoutMs?: number, signal?: AbortSignal) {
+        return this.wait(key, timeoutMs, 'override', signal);
     }
 }
