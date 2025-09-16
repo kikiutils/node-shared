@@ -1,5 +1,21 @@
 # Changelog
 
+## v13.2.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.1.0...v13.2.0)
+
+### 🚀 Enhancements
+
+- **EventAwaiter:** Add mode param to wait and new methods ([533a479](https://github.com/kikiutils/node-shared/commit/533a479))
+
+### 🩹 Fixes
+
+- Make value parameter in `EventAwaiter.trigger` required to avoid accidental omission ([57a6bac](https://github.com/kikiutils/node-shared/commit/57a6bac))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.0.1...v13.1.0)
