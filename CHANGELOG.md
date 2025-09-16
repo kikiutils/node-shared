@@ -1,5 +1,17 @@
 # Changelog
 
+## v13.4.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.3.0...v13.4.0)
+
+### 🚀 Enhancements
+
+- **EventAwaiter:** Add `triggerAll` method ([117ec6a](https://github.com/kikiutils/node-shared/commit/117ec6a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.3.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.2.0...v13.3.0)
