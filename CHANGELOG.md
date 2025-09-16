@@ -1,5 +1,49 @@
 # Changelog
 
+## v13.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.0.1...v13.1.0)
+
+### 🚀 Enhancements
+
+- Add `update-peer-dependencies-meta.ts` ([643c006](https://github.com/kikiutils/node-shared/commit/643c006))
+- Add `EventAwaiter` class ([6dcf2bf](https://github.com/kikiutils/node-shared/commit/6dcf2bf))
+
+### 🩹 Fixes
+
+- Add missing -b flag to typecheck command ([cf0c795](https://github.com/kikiutils/node-shared/commit/cf0c795))
+- Remove custom exports configuration from tsdown ([efb18bc](https://github.com/kikiutils/node-shared/commit/efb18bc))
+- Remove tsdown `remove-types-js` plugin ([6922c2f](https://github.com/kikiutils/node-shared/commit/6922c2f))
+- Remove tsdown remove-types-js plugin and custom exports configuration ([735a3a9](https://github.com/kikiutils/node-shared/commit/735a3a9))
+
+### 💅 Refactors
+
+- Unify import paths across all files to use `@/` alias where possible ([d6f61cc](https://github.com/kikiutils/node-shared/commit/d6f61cc))
+
+### 📖 Documentation
+
+- Update README ([63ba464](https://github.com/kikiutils/node-shared/commit/63ba464))
+
+### 📦 Build
+
+- Clean up js files under `dist/types` after tsdown build and update exports config ([2affd31](https://github.com/kikiutils/node-shared/commit/2affd31))
+- Clean up js files under `dist/types` after tsdown build and update exports config ([299e647](https://github.com/kikiutils/node-shared/commit/299e647))
+- Clean up js files under `dist/types` after tsdown build and update exports config ([6fa1d2b](https://github.com/kikiutils/node-shared/commit/6fa1d2b))
+- Update tsdown config to treat all dependencies as external ([f5e4f7a](https://github.com/kikiutils/node-shared/commit/f5e4f7a))
+- Update tsdown customExports to remove entries with keys containing "internals" ([59b1622](https://github.com/kikiutils/node-shared/commit/59b1622))
+- Update tsdown entry ([2e67d6b](https://github.com/kikiutils/node-shared/commit/2e67d6b))
+- Set tsdown external from package.json instead of using wildcard * ([7dc5f28](https://github.com/kikiutils/node-shared/commit/7dc5f28))
+
+### 🏡 Chore
+
+- Update all scripts ([fa5e797](https://github.com/kikiutils/node-shared/commit/fa5e797))
+- Set minimum supported version to 22.12.0 ([76e8cc1](https://github.com/kikiutils/node-shared/commit/76e8cc1))
+- Upgrade dependencies ([7c57018](https://github.com/kikiutils/node-shared/commit/7c57018))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.0.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.0.0...v13.0.1)
