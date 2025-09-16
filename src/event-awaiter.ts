@@ -18,9 +18,10 @@ export class EventAwaiter<T> {
      * Each promise will be resolved with the provided value.
      *
      * @param {string} [key] - Identifier for the awaited event
-     * @param {T} [value] - Optional value to resolve the awaiting promises with
+     * @param {T | undefined} value - The value to resolve the awaiting promises with.
+     * May be `undefined` to indicate no result or a timeout-like behavior.
      */
-    trigger(key: string, value?: T) {
+    trigger(key: string, value: T | undefined) {
         const resolvers = this.#promiseResolvers.get(key);
         if (resolvers) {
             this.#promiseResolvers.delete(key);
