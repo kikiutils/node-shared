@@ -30,6 +30,20 @@ export class EventAwaiter<T> {
     }
 
     /**
+     * Triggers and resolves all pending promises across all keys.
+     *
+     * This is typically used during shutdown or cleanup to ensure that
+     * no consumer is left waiting indefinitely.
+     *
+     * @param {T | undefined} [value] - Optional value to resolve all waiters with.
+     * Defaults to `undefined`, which usually indicates cancellation or shutdown.
+     */
+    triggerAll(value: T | undefined = undefined) {
+        for (const [_, resolvers] of this.#promiseResolvers.entries()) resolvers.forEach((resolve) => resolve(value));
+        this.#promiseResolvers.clear();
+    }
+
+    /**
      * Waits for an event associated with the given key.
      *
      * The returned promise will resolve when:
