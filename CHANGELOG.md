@@ -1,5 +1,17 @@
 # Changelog
 
+## v13.3.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.2.0...v13.3.0)
+
+### 🚀 Enhancements
+
+- **EventAwaiter:** Add signal param to wait method ([94d4f0d](https://github.com/kikiutils/node-shared/commit/94d4f0d))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.2.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.1.0...v13.2.0)
