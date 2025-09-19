@@ -1,5 +1,38 @@
 # Changelog
 
+## v13.5.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.4.0...v13.5.0)
+
+### 🚀 Enhancements
+
+- Migrate contents of `@kikiutils/classes` into this package ([51b9915](https://github.com/kikiutils/node-shared/commit/51b9915))
+- Migrate contents of `@kikiutils/types` into this package ([c70b093](https://github.com/kikiutils/node-shared/commit/c70b093))
+
+### 🩹 Fixes
+
+- Ensure tsdown `customExports` returns after deleting keys containing internals ([7324bab](https://github.com/kikiutils/node-shared/commit/7324bab))
+
+### 💅 Refactors
+
+- Change all import paths to relative paths ([de21635](https://github.com/kikiutils/node-shared/commit/de21635))
+- Cleanup code ([206b234](https://github.com/kikiutils/node-shared/commit/206b234))
+
+### 📦 Build
+
+- Update `customExports` rules to enable IDE import hints for package usage ([e4111c0](https://github.com/kikiutils/node-shared/commit/e4111c0))
+- Update `customExports` rules to enable IDE import hints for package usage ([fa88888](https://github.com/kikiutils/node-shared/commit/fa88888))
+
+### 🏡 Chore
+
+- Remove alias config ([e353604](https://github.com/kikiutils/node-shared/commit/e353604))
+- Change `update-peer-dependencies-meta.ts` to non-executable permission file ([62a7690](https://github.com/kikiutils/node-shared/commit/62a7690))
+- Update base tsconfig ([26f4158](https://github.com/kikiutils/node-shared/commit/26f4158))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.4.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.3.0...v13.4.0)

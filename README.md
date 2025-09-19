@@ -9,6 +9,8 @@ A lightweight and modular utility library for modern JavaScript and TypeScript �
 
 - [✨ Release Notes](./CHANGELOG.md)
 
+TODO: update README
+
 ## Features
 
 - 📋 Clipboard utilities — copy text and blobs using the modern Clipboard API (Browser only)
