@@ -33,34 +33,28 @@
   ],
   "sideEffects": false,
   "exports": {
-    "./buffer": "./dist/buffer.js",
-    "./clipboard": "./dist/clipboard.js",
-    "./consola": "./dist/consola.js",
-    "./crypto-hash": "./dist/crypto-hash.js",
-    "./datetime": "./dist/datetime.js",
-    "./element-plus": "./dist/element-plus.js",
-    "./enum": "./dist/enum.js",
-    "./env": "./dist/env.js",
-    "./event-awaiter": "./dist/event-awaiter.js",
-    "./general": "./dist/general.js",
-    "./hash": "./dist/hash.js",
-    "./math": "./dist/math.js",
-    "./number": "./dist/number.js",
-    "./object": "./dist/object.js",
-    "./pino": "./dist/pino.js",
-    "./random": "./dist/random.js",
-    "./storage/enhanced/local": "./dist/storage/enhanced/local/index.js",
-    "./storage/enhanced/local/core": "./dist/storage/enhanced/local/core.js",
-    "./storage/enhanced/local/keyed-store": "./dist/storage/enhanced/local/keyed-store.js",
-    "./storage/enhanced/redis": "./dist/storage/enhanced/redis/index.js",
-    "./storage/enhanced/redis/core": "./dist/storage/enhanced/redis/core.js",
-    "./storage/enhanced/redis/keyed-store": "./dist/storage/enhanced/redis/keyed-store.js",
-    "./storage/lru/keyed-store": "./dist/storage/lru/keyed-store.js",
-    "./string": "./dist/string.js",
-    "./url": "./dist/url.js",
-    "./vue": "./dist/vue.js",
-    "./web": "./dist/web.js",
-    "./package.json": "./package.json"
+    "./*": "./dist/*.js",
+    "./package.json": "./package.json",
+    "./storage/enhanced/local": {
+      "types": "./dist/storage/enhanced/local/index.d.ts",
+      "import": "./dist/storage/enhanced/local/index.js",
+      "require": null
+    },
+    "./storage/enhanced/local/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./storage/enhanced/redis": {
+      "types": "./dist/storage/enhanced/redis/index.d.ts",
+      "import": "./dist/storage/enhanced/redis/index.js",
+      "require": null
+    },
+    "./storage/enhanced/redis/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    }
   },
   "files": [
     "./dist",
@@ -147,7 +141,10 @@
     "@kikiutils/eslint-config": "^3.0.1",
     "@kikiutils/tsconfigs": "^5.0.5",
     "@noble/hashes": "^2.0.0",
-    "@types/node": "^24.5.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jsonfile": "^6.1.4",
+    "@types/node": "^24.5.2",
+    "@types/ssh2": "^1.15.5",
     "@vitest/coverage-v8": "^3.2.4",
     "async-validator": "^4.2.5",
     "consola": "^3.4.2",
@@ -155,17 +152,19 @@
     "date-fns": "^4.1.0",
     "decimal.js": "^10.6.0",
     "depcheck": "^1.4.7",
-    "element-plus": "^2.11.2",
+    "element-plus": "^2.11.3",
+    "fs-extra": "^11.3.2",
     "ioredis": "^5.7.0",
     "jsdom": "^27.0.0",
     "lru-cache": "^11.2.1",
     "millify": "^6.1.0",
-    "pino": "^9.9.5",
+    "node-ssh": "^13.2.1",
+    "pino": "^9.10.0",
     "pino-pretty": "^13.1.1",
-    "publint": "^0.3.12",
+    "publint": "^0.3.13",
     "superjson": "^2.2.2",
     "ts-unused-exports": "^11.0.1",
-    "tsdown": "^0.15.1",
+    "tsdown": "^0.15.2",
     "typescript": "^5.9.2",
     "unplugin-unused": "^0.5.3",
     "vitest": "^3.2.4",
@@ -174,7 +173,9 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "cpu-features",
       "esbuild",
+      "ssh2",
       "unrs-resolver",
       "vue-demi"
     ]
