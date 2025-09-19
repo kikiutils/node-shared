@@ -54,6 +54,16 @@
       "types": null,
       "import": null,
       "require": null
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": null,
+      "require": null
+    },
+    "./types/index": {
+      "types": null,
+      "import": null,
+      "require": null
     }
   },
   "files": [
@@ -147,6 +157,7 @@
     "@types/ssh2": "^1.15.5",
     "@vitest/coverage-v8": "^3.2.4",
     "async-validator": "^4.2.5",
+    "bson": "^6.10.4",
     "consola": "^3.4.2",
     "cross-env": "^10.0.0",
     "date-fns": "^4.1.0",
