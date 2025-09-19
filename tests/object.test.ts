@@ -3,7 +3,7 @@ import {
     it,
 } from 'vitest';
 
-import { stringifyObjectDeterministically } from '@/object';
+import { stringifyObjectDeterministically } from '../src/object';
 
 describe.concurrent('stringifyObjectDeterministically', () => {
     describe.concurrent('basic functionality', () => {

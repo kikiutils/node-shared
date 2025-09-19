@@ -1,4 +1,4 @@
-import { appendRedirectParamToUrl } from '@/url';
+import { appendRedirectParamToUrl } from './url';
 
 /**
  * Appends the current browser URL (including path, query, and hash) as the `redirect` query parameter to the given URL.

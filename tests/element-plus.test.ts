@@ -6,7 +6,7 @@ import {
     vi,
 } from 'vitest';
 
-import { createElFormItemRuleWithDefaults } from '@/element-plus';
+import { createElFormItemRuleWithDefaults } from '../src/element-plus';
 
 describe.concurrent('createElFormItemRuleWithDefaults', () => {
     it('should create a rule with default values', ({ expect }) => {

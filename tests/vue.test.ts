@@ -5,16 +5,16 @@ import {
 } from 'vitest';
 import { ref } from 'vue';
 
-import { appendRedirectParamToUrl } from '@/url';
+import { appendRedirectParamToUrl } from '../src/url';
 import {
     appendRedirectParamFromCurrentRouteToUrl,
     clearIntervalRef,
     clearTimeoutRef,
-} from '@/vue';
+} from '../src/vue';
 
 // Mocks
 vi.mock('vue-router', () => ({ useRoute: vi.fn(() => ({ fullPath: '/profile?tab=settings#section' })) }));
-vi.mock('@/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
+vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
 // Tests
 describe('appendRedirectParamFromCurrentRouteToUrl', () => {

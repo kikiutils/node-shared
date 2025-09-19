@@ -5,7 +5,7 @@ import {
     vi,
 } from 'vitest';
 
-import { toCompactNumberString } from '@/number';
+import { toCompactNumberString } from '../src/number';
 
 // Mocks
 vi.mock('millify');

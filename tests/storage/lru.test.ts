@@ -4,7 +4,7 @@ import {
     it,
 } from 'vitest';
 
-import { createKeyedLruStore } from '@/storage/lru/keyed-store';
+import { createKeyedLruStore } from '../../src/storage/lru/keyed-store';
 
 interface User {
     id: number;

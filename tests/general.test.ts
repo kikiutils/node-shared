@@ -3,7 +3,7 @@ import {
     it,
 } from 'vitest';
 
-import { extractFirstValue } from '@/general';
+import { extractFirstValue } from '../src/general';
 
 describe.concurrent('extractFirstValue', () => {
     it('should return the first element of an array', ({ expect }) => {

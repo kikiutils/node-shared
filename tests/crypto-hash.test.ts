@@ -16,7 +16,7 @@ import {
     cryptoSha3384ToBuffer,
     cryptoSha3512,
     cryptoSha3512ToBuffer,
-} from '@/crypto-hash';
+} from '../src/crypto-hash';
 
 const input = 'test';
 

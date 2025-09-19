@@ -4,7 +4,7 @@ import {
     it,
 } from 'vitest';
 
-import { toPercentageString } from '@/math';
+import { toPercentageString } from '../src/math';
 
 describe.concurrent('toPercentageString', () => {
     it('should return percentage with 2 decimal places and symbol by default', ({ expect }) => {

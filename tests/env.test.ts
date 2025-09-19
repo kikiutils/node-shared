@@ -8,7 +8,7 @@ import {
 import {
     checkAndGetEnvValue,
     EnvironmentNotFoundError,
-} from '@/env';
+} from '../src/env';
 
 describe.concurrent('environmentNotFoundError', () => {
     it('should create an error with the correct message and key', ({ expect }) => {

@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import '@/clipboard';
+import '../src/clipboard';
 
 import {
     describe,

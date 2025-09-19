@@ -10,11 +10,11 @@ import {
     vi,
 } from 'vitest';
 
-import { appendRedirectParamToUrl } from '@/url';
-import { appendRedirectParamFromCurrentLocationToUrl } from '@/web';
+import { appendRedirectParamToUrl } from '../src/url';
+import { appendRedirectParamFromCurrentLocationToUrl } from '../src/web';
 
 // Mocks
-vi.mock('@/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
+vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
 // Tests
 describe('appendRedirectParamFromCurrentLocationToUrl', () => {

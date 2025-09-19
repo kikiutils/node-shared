@@ -8,7 +8,7 @@ import {
     sha3256,
     sha3384,
     sha3512,
-} from '@/hash';
+} from '../src/hash';
 
 const input = 'test';
 
