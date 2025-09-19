@@ -40,15 +40,6 @@ export class Path {
         this.#value = join(...this.#toStrings(paths));
     }
 
-    // Private methods
-    #newInstance(...paths: PathLike[]) {
-        return new Path(...paths);
-    }
-
-    #toStrings(paths: PathLike[]) {
-        return paths.map((path) => path.toString());
-    }
-
     // Symbols
     [Symbol.for('nodejs.util.inspect.custom')]() {
         return this.#value;
@@ -57,6 +48,15 @@ export class Path {
     [Symbol.toPrimitive](hint: string) {
         if (hint === 'number') throw new TypeError('Cannot convert a Path to a number');
         return this.#value;
+    }
+
+    // Private methods
+    #newInstance(...paths: PathLike[]) {
+        return new Path(...paths);
+    }
+
+    #toStrings(paths: PathLike[]) {
+        return paths.map((path) => path.toString());
     }
 
     // Public getters
@@ -75,7 +75,7 @@ export class Path {
         return this.#value;
     }
 
-    // Static methods
+    // Public static methods
 
     /**
      * @see {@link nodePath.format}
@@ -91,7 +91,7 @@ export class Path {
         return new this(...paths).resolve();
     }
 
-    // Base methods
+    // Public base methods
 
     /**
      * @see {@link nodePath.basename}

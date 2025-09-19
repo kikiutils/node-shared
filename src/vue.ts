@@ -5,6 +5,7 @@ import {
     useRoute,
 } from 'vue-router';
 
+import type { Nullable } from './types';
 import { appendRedirectParamToUrl } from './url';
 
 /**
@@ -21,9 +22,9 @@ export function appendRedirectParamFromCurrentRouteToUrl(url: string) {
 /**
  * Clears an interval referenced by a Vue ref and sets it to null.
  *
- * @param {Ref<null | ReturnType<typeof setInterval>>} intervalRef - A Vue ref holding a NodeJS.Timeout or null
+ * @param {Ref<Nullable<ReturnType<typeof setInterval>>>} intervalRef - A Vue ref holding a NodeJS.Timeout or null
  */
-export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setInterval>>) {
+export function clearIntervalRef(intervalRef: Ref<Nullable<ReturnType<typeof setInterval>>>) {
     if (intervalRef.value) clearInterval(intervalRef.value);
     intervalRef.value = null;
 }
@@ -31,9 +32,9 @@ export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setIn
 /**
  * Clears a timeout referenced by a Vue ref and sets it to null.
  *
- * @param {Ref<null | ReturnType<typeof setTimeout>>} timeoutRef - A Vue ref holding a NodeJS.Timeout or null
+ * @param {Ref<Nullable<ReturnType<typeof setTimeout>>>} timeoutRef - A Vue ref holding a NodeJS.Timeout or null
  */
-export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTimeout>>) {
+export function clearTimeoutRef(timeoutRef: Ref<Nullable<ReturnType<typeof setTimeout>>>) {
     if (timeoutRef.value) clearTimeout(timeoutRef.value);
     timeoutRef.value = null;
 }
@@ -44,9 +45,9 @@ export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTime
  *
  * @template T - The type of the scrollable element (defaults to HTMLElement)
  *
- * @param {Ref<null | T>} containerRef - A ref to the scrollable HTML element
+ * @param {Ref<Nullable<T>>} containerRef - A ref to the scrollable HTML element
  */
-export function usePreserveScroll<T extends Element = HTMLElement>(containerRef: Ref<null | T>) {
+export function usePreserveScroll<T extends Element = HTMLElement>(containerRef: Ref<Nullable<T>>) {
     let scrollLeft = 0;
     let scrollTop = 0;
     onActivated(() => {

@@ -22,7 +22,6 @@ export class PrecisionNumber {
     // Private properties
     readonly #decimalPlaces: number;
     readonly #rounding: Decimal.Rounding;
-
     #decimal: Decimal;
 
     constructor(
@@ -35,11 +34,6 @@ export class PrecisionNumber {
         this.#decimal = this.#decimalToFixedDecimal(new Decimal(value.toString().trim()));
     }
 
-    // Private methods
-    #decimalToFixedDecimal(decimal: Decimal) {
-        return decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding);
-    }
-
     // Symbols
     [Symbol.for('nodejs.util.inspect.custom')]() {
         return this.value;
@@ -48,6 +42,11 @@ export class PrecisionNumber {
     [Symbol.toPrimitive](hint: string) {
         if (hint === 'number') return this.#decimal.toNumber();
         return this.value;
+    }
+
+    // Private methods
+    #decimalToFixedDecimal(decimal: Decimal) {
+        return decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding);
     }
 
     // Public getters
