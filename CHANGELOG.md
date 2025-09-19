@@ -1,5 +1,17 @@
 # Changelog
 
+## v13.5.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.5.0...v13.5.1)
+
+### 🏡 Chore
+
+- Update `peerDependencies` ([da1b817](https://github.com/kikiutils/node-shared/commit/da1b817))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.5.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.4.0...v13.5.0)
