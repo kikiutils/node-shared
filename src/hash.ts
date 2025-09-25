@@ -17,11 +17,11 @@ import {
     sha3_256,
     sha3_384,
     sha3_512,
-} from '@noble/hashes/sha3';
+} from '@noble/hashes/sha3.js';
 import {
     bytesToHex,
     utf8ToBytes,
-} from '@noble/hashes/utils';
+} from '@noble/hashes/utils.js';
 
 export function sha3224(data: string | Uint8Array) {
     return bytesToHex(sha3_224(typeof data === 'string' ? utf8ToBytes(data) : data));
