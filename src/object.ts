@@ -30,12 +30,12 @@ export function stringifyObjectDeterministically(
 
     function walk(object: any, path: string[] = []) {
         if (Array.isArray(object)) {
-            object.forEach((value, index) => {
+            object.forEach((value, i) => {
                 walk(
                     value,
                     [
                         ...path,
-                        index.toString(),
+                        i.toString(),
                     ],
                 );
             });
