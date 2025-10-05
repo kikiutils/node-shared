@@ -1,5 +1,26 @@
 # Changelog
 
+## v13.5.2
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.5.1...v13.5.2)
+
+### 💅 Refactors
+
+- Change `toBuffer` parameter type to `BinaryInput` (same as original) ([09abf4c](https://github.com/kikiutils/node-shared/commit/09abf4c))
+- Rename func parameters in `arr.map` and similar methods to `item` for consistency ([c5768ac](https://github.com/kikiutils/node-shared/commit/c5768ac))
+- Tidy up code ([1a92f2c](https://github.com/kikiutils/node-shared/commit/1a92f2c))
+- Tidy up code ([523d13d](https://github.com/kikiutils/node-shared/commit/523d13d))
+
+### 🏡 Chore
+
+- Add `.editorconfig` ([11056ce](https://github.com/kikiutils/node-shared/commit/11056ce))
+- Update dependencies and adjust `@noble/hashes` import path ([bef1d7d](https://github.com/kikiutils/node-shared/commit/bef1d7d))
+- Upgrade dependencies ([1b070b2](https://github.com/kikiutils/node-shared/commit/1b070b2))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v13.5.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.5.0...v13.5.1)
