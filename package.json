@@ -175,7 +175,7 @@
     }
   },
   "devDependencies": {
-    "@kikiutils/eslint-config": "^4.0.0",
+    "@kikiutils/eslint-config": "^4.0.1",
     "@kikiutils/tsconfigs": "^5.0.5",
     "@noble/hashes": "^2.0.1",
     "@types/fs-extra": "^11.0.4",
@@ -204,7 +204,7 @@
     "redis": "^5.8.3",
     "superjson": "^2.2.2",
     "ts-unused-exports": "^11.0.1",
-    "tsdown": "^0.15.7",
+    "tsdown": "^0.15.8",
     "typescript": "^5.9.3",
     "unplugin-unused": "^0.5.4",
     "vitest": "^3.2.4",

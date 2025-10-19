@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@kikiutils/eslint-config':
-        specifier: ^4.0.0
-        version: 4.0.0(@vue/compiler-sfc@3.5.22)(eslint-flat-config-utils@2.1.4)(eslint@9.38.0(jiti@1.21.7))(tailwindcss@3.4.18(yaml@2.8.1))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))(vue-eslint-parser@10.2.0(eslint@9.38.0(jiti@1.21.7)))
+        specifier: ^4.0.1
+        version: 4.0.1(@vue/compiler-sfc@3.5.22)(eslint-flat-config-utils@2.1.4)(eslint@9.38.0(jiti@1.21.7))(tailwindcss@3.4.18(yaml@2.8.1))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))(vue-eslint-parser@10.2.0(eslint@9.38.0(jiti@1.21.7)))
       '@kikiutils/tsconfigs':
         specifier: ^5.0.5
         version: 5.0.5
@@ -96,8 +96,8 @@ importers:
         specifier: ^11.0.1
         version: 11.0.1(typescript@5.9.3)
       tsdown:
-        specifier: ^0.15.7
-        version: 0.15.7(publint@0.3.14)(typescript@5.9.3)(unplugin-unused@0.5.4)
+        specifier: ^0.15.8
+        version: 0.15.8(publint@0.3.14)(typescript@5.9.3)(unplugin-unused@0.5.4)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -124,11 +124,11 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@antfu/eslint-config@5.4.1':
-    resolution: {integrity: sha512-x7BiNkxJRlXXs8tIvg0CgMuNo5IZVWkGLMJotCtCtzWUHW78Pmm8PvtXhvLBbTc8683GGBK616MMztWLh4RNjA==}
+  '@antfu/eslint-config@6.0.0':
+    resolution: {integrity: sha512-M2RM+x+hpxpASEZzQh4d5uaUEHn8sYNVlTB+CySpLkDs2rr3QFvRR7KqNdnox/OIPc6YWMsIEnM/XUbQP52nTA==}
     hasBin: true
     peerDependencies:
-      '@eslint-react/eslint-plugin': ^1.38.4
+      '@eslint-react/eslint-plugin': ^2.0.1
       '@next/eslint-plugin-next': ^15.4.0-canary.115
       '@prettier/plugin-xml': ^3.4.1
       '@unocss/eslint-plugin': '>=0.50.0'
@@ -137,7 +137,7 @@ packages:
       eslint-plugin-astro: ^1.2.0
       eslint-plugin-format: '>=0.1.0'
       eslint-plugin-jsx-a11y: '>=6.10.2'
-      eslint-plugin-react-hooks: ^5.2.0
+      eslint-plugin-react-hooks: ^7.0.0
       eslint-plugin-react-refresh: ^0.4.19
       eslint-plugin-solid: ^0.14.3
       eslint-plugin-svelte: '>=2.35.1'
@@ -583,8 +583,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@kikiutils/eslint-config@4.0.0':
-    resolution: {integrity: sha512-1Lad+aqsl7VyiCDg0CCTicCt+/CNirWqzzZ6n7IEmA6+dYKBaSqM8lnhwsOG5u0Eh079oQ6EGfWaaiB/jGtUyA==}
+  '@kikiutils/eslint-config@4.0.1':
+    resolution: {integrity: sha512-dm5OKNxv7LcOWQRBt/H29fwt73t6ZTpAVpjhxXkX4mKMJRMvQ1IfQ2WIaJZ50xjj12oKsQTizNbdnd2LBff7lA==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       eslint: ^9.35.0
@@ -1190,8 +1190,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  baseline-browser-mapping@2.8.17:
-    resolution: {integrity: sha512-j5zJcx6golJYTG6c05LUZ3Z8Gi+M62zRT/ycz4Xq4iCOdpcxwg7ngEYD4KA0eWZC7U17qh/Smq8bYbACJ0ipBA==}
+  baseline-browser-mapping@2.8.18:
+    resolution: {integrity: sha512-UYmTpOBwgPScZpS4A+YbapwWuBwasxvO/2IOHArSsAhL/+ZdmATBXTex3t+l2hXwLVYK382ibr/nKoY9GKe86w==}
     hasBin: true
 
   bcrypt-pbkdf@1.0.2:
@@ -3083,8 +3083,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tsdown@0.15.7:
-    resolution: {integrity: sha512-uFaVgWAogjOMqjY+CQwrUt3C6wzy6ynt82CIoXymnbS17ipUZ8WDXUceJjkislUahF/BZc5+W44Ue3p2oWtqUg==}
+  tsdown@0.15.8:
+    resolution: {integrity: sha512-A9CY3lO2SC6G5wyQV38cNdPkDmCoIQ6zYVd+lLnEGH09BxNRTJkCHfb7cBeBxZYJDYGFtgg/3yBpEryYJjBd+Q==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -3403,7 +3403,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@antfu/eslint-config@5.4.1(@vue/compiler-sfc@3.5.22)(eslint-plugin-format@1.0.2(eslint@9.38.0(jiti@1.21.7)))(eslint@9.38.0(jiti@1.21.7))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))':
+  '@antfu/eslint-config@6.0.0(@vue/compiler-sfc@3.5.22)(eslint-plugin-format@1.0.2(eslint@9.38.0(jiti@1.21.7)))(eslint@9.38.0(jiti@1.21.7))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))':
     dependencies:
       '@antfu/install-pkg': 1.1.0
       '@clack/prompts': 0.11.0
@@ -3817,9 +3817,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@kikiutils/eslint-config@4.0.0(@vue/compiler-sfc@3.5.22)(eslint-flat-config-utils@2.1.4)(eslint@9.38.0(jiti@1.21.7))(tailwindcss@3.4.18(yaml@2.8.1))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))(vue-eslint-parser@10.2.0(eslint@9.38.0(jiti@1.21.7)))':
+  '@kikiutils/eslint-config@4.0.1(@vue/compiler-sfc@3.5.22)(eslint-flat-config-utils@2.1.4)(eslint@9.38.0(jiti@1.21.7))(tailwindcss@3.4.18(yaml@2.8.1))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))(vue-eslint-parser@10.2.0(eslint@9.38.0(jiti@1.21.7)))':
     dependencies:
-      '@antfu/eslint-config': 5.4.1(@vue/compiler-sfc@3.5.22)(eslint-plugin-format@1.0.2(eslint@9.38.0(jiti@1.21.7)))(eslint@9.38.0(jiti@1.21.7))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))
+      '@antfu/eslint-config': 6.0.0(@vue/compiler-sfc@3.5.22)(eslint-plugin-format@1.0.2(eslint@9.38.0(jiti@1.21.7)))(eslint@9.38.0(jiti@1.21.7))(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.8.1)(jiti@1.21.7)(jsdom@27.0.1(postcss@8.5.6))(yaml@2.8.1))
       '@kikiutils/eslint-plugin-tailwindcss': 3.19.0(tailwindcss@3.4.18(yaml@2.8.1))
       '@kikiutils/eslint-plugin-vue': 10.2.2(eslint@9.38.0(jiti@1.21.7))(vue-eslint-parser@10.2.0(eslint@9.38.0(jiti@1.21.7)))
       eslint: 9.38.0(jiti@1.21.7)
@@ -4428,7 +4428,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  baseline-browser-mapping@2.8.17: {}
+  baseline-browser-mapping@2.8.18: {}
 
   bcrypt-pbkdf@1.0.2:
     dependencies:
@@ -4459,7 +4459,7 @@ snapshots:
 
   browserslist@4.26.3:
     dependencies:
-      baseline-browser-mapping: 2.8.17
+      baseline-browser-mapping: 2.8.18
       caniuse-lite: 1.0.30001751
       electron-to-chromium: 1.5.237
       node-releases: 2.0.25
@@ -6619,7 +6619,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.15.7(publint@0.3.14)(typescript@5.9.3)(unplugin-unused@0.5.4):
+  tsdown@0.15.8(publint@0.3.14)(typescript@5.9.3)(unplugin-unused@0.5.4):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
