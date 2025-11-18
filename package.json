@@ -93,7 +93,7 @@
     "@types/node": "^24.5.2",
     "@types/ssh2": "^1.15.5",
     "async-validator": "^4.2.5",
-    "bson": "^6.10.4",
+    "bson": "^7.0.0",
     "consola": "^3.4.2",
     "date-fns": "^4.1.0",
     "decimal.js": "^10.6.0",
@@ -175,6 +175,7 @@
     }
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^6.2.0",
     "@kikiutils/eslint-config": "^5.0.0",
     "@kikiutils/tsconfigs": "^5.0.5",
     "@noble/hashes": "^2.0.1",
