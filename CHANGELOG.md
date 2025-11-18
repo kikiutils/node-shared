@@ -1,5 +1,36 @@
 # Changelog
 
+## v13.6.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.5.2...v13.6.0)
+
+### 🚀 Enhancements
+
+- Add `delay` utils ([46bd9c4](https://github.com/kikiutils/node-shared/commit/46bd9c4))
+
+### 🏡 Chore
+
+- Upgrade devDependencies ([aca04e8](https://github.com/kikiutils/node-shared/commit/aca04e8))
+- Replace `@kikiutils/changelogen` with `changelogen` ([8d1d648](https://github.com/kikiutils/node-shared/commit/8d1d648))
+- Update script ([44312fb](https://github.com/kikiutils/node-shared/commit/44312fb))
+- Update `pnpm.onlyBuiltDependencies` ([9788a78](https://github.com/kikiutils/node-shared/commit/9788a78))
+- Upgrade dependencies ([d4ff884](https://github.com/kikiutils/node-shared/commit/d4ff884))
+- Upgrade dependencies ([1b5f510](https://github.com/kikiutils/node-shared/commit/1b5f510))
+- Update tsdown config ([59407a9](https://github.com/kikiutils/node-shared/commit/59407a9))
+- Disable tsdown `fixedExtension` config ([9039405](https://github.com/kikiutils/node-shared/commit/9039405))
+- Update eslint config ([e75c3d7](https://github.com/kikiutils/node-shared/commit/e75c3d7))
+- Upgrade deps ([85be5bd](https://github.com/kikiutils/node-shared/commit/85be5bd))
+- Add missing deps ([2b6325c](https://github.com/kikiutils/node-shared/commit/2b6325c))
+- Rename `delay` to `abortableDelay` ([5aab046](https://github.com/kikiutils/node-shared/commit/5aab046))
+
+### 🤖 CI
+
+- Update config file ([cfba23c](https://github.com/kikiutils/node-shared/commit/cfba23c))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v13.5.2
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.5.1...v13.5.2)
