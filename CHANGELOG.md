@@ -1,5 +1,21 @@
 # Changelog
 
+## v13.6.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.6.0...v13.6.1)
+
+### 🩹 Fixes
+
+- Update `createElFormItemRuleWithDefaults` to use `FormItemRule['message']` as the type for `message` parameter ([f202dde](https://github.com/kikiutils/node-shared/commit/f202dde))
+
+### 🏡 Chore
+
+- Upgrade deps ([95a0116](https://github.com/kikiutils/node-shared/commit/95a0116))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v13.6.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.5.2...v13.6.0)
