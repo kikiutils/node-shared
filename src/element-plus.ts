@@ -10,7 +10,7 @@ export type DoNotRemoveOrUseThisType = RuleType;
  * while allowing overrides via the `options` parameter. It simplifies common
  * form validation rule creation and ensures consistency across forms.
  *
- * @param {string} message - The validation message to display when the rule fails
+ * @param {FormItemRule['message']} message - The validation message to display when the rule fails
  * @param {FormItemRule} [options] - Optional overrides for the rule fields
  * @param {boolean} [options.required] - Whether the field is required (default: `true`)
  * @param {string | string[]} [options.trigger] - The event(s) that trigger validation (default: `'blur'`)
@@ -26,7 +26,10 @@ export type DoNotRemoveOrUseThisType = RuleType;
  * const optionalRule = createElFormItemRuleWithDefaults('Optional field', { required: false });
  * ```
  */
-export function createElFormItemRuleWithDefaults(message: string, options: FormItemRule = {}): FormItemRule {
+export function createElFormItemRuleWithDefaults(
+    message: FormItemRule['message'],
+    options: FormItemRule = {},
+): FormItemRule {
     return {
         ...options,
         message,
