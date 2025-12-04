@@ -1,5 +1,26 @@
 # Changelog
 
+## v14.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v13.6.1...v14.0.0)
+
+### 🚀 Enhancements
+
+- Add redis-related storages files ([7bee0ac](https://github.com/kikiutils/node-shared/commit/7bee0ac))
+- Add `createLruKeyedStore` ([b2ea275](https://github.com/kikiutils/node-shared/commit/b2ea275))
+
+### 🏡 Chore
+
+- ⚠️  Remove all storage-related files ([354e8df](https://github.com/kikiutils/node-shared/commit/354e8df))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove all storage-related files ([354e8df](https://github.com/kikiutils/node-shared/commit/354e8df))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v13.6.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.6.0...v13.6.1)
