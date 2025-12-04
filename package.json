@@ -99,6 +99,7 @@
     "decimal.js": "^10.6.0",
     "element-plus": "^2.11.3",
     "fs-extra": "^11.3.2",
+    "lru-cache": "^11.2.4",
     "millify": "^6.1.0",
     "msgpackr": "^1.11.5",
     "node-ssh": "^13.2.1",
@@ -143,6 +144,9 @@
       "optional": true
     },
     "fs-extra": {
+      "optional": true
+    },
+    "lru-cache": {
       "optional": true
     },
     "millify": {
@@ -191,6 +195,7 @@
     "element-plus": "^2.11.9",
     "fs-extra": "^11.3.2",
     "jsdom": "^27.2.0",
+    "lru-cache": "^11.2.4",
     "millify": "^6.1.0",
     "msgpackr": "^1.11.5",
     "node-ssh": "^13.2.1",
