@@ -1,5 +1,18 @@
 # Changelog
 
+## v14.0.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v14.0.0...v14.0.1)
+
+### 🏡 Chore
+
+- Remove `superjson` ([be45ba1](https://github.com/kikiutils/node-shared/commit/be45ba1))
+- Upgrade deps ([7a8d3ec](https://github.com/kikiutils/node-shared/commit/7a8d3ec))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v14.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v13.6.1...v14.0.0)
