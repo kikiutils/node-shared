@@ -1,5 +1,21 @@
 # Changelog
 
+## v14.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v14.0.1...v14.1.0)
+
+### 🚀 Enhancements
+
+- Update `toBuffer` and `BinaryInput` to accept more input types ([ddc922d](https://github.com/kikiutils/node-shared/commit/ddc922d))
+
+### 🏡 Chore
+
+- Update deps ([d775335](https://github.com/kikiutils/node-shared/commit/d775335))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v14.0.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v14.0.0...v14.0.1)
