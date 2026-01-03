@@ -175,12 +175,23 @@ describe.concurrent('toBuffer', () => {
                 Buffer.from('test'),
                 new Blob(['test']),
                 new File(['test'], 'test.txt'),
+                new ArrayBuffer(4),
+                new Uint8Array([
+                    1,
+                    2,
+                    3,
+                ]),
             ];
 
             for (const input of inputs) {
-                const result = await toBuffer(input);
+                const result = await toBuffer(input as any);
                 expect(Buffer.isBuffer(result)).toBe(true);
             }
+        });
+
+        it('should throw TypeError for unsupported types', async ({ expect }) => {
+            const invalidInput = { some: 'object' };
+            await expect(toBuffer(invalidInput as any)).rejects.toThrow(TypeError);
         });
     });
 
@@ -193,6 +204,75 @@ describe.concurrent('toBuffer', () => {
             const endTime = performance.now();
             expect(result).toBe(input);
             expect(endTime - startTime).toBeLessThan(10);
+        });
+
+        it('should handle Uint8Array efficiently', async ({ expect }) => {
+            const input = new Uint8Array(1024);
+            const startTime = performance.now();
+            const result = await toBuffer(input);
+            const endTime = performance.now();
+
+            expect(Buffer.isBuffer(result)).toBe(true);
+            expect(endTime - startTime).toBeLessThan(10);
+        });
+    });
+
+    describe.concurrent('array buffer input', () => {
+        it('should convert ArrayBuffer to Buffer', async ({ expect }) => {
+            const input = new ArrayBuffer(5);
+            const view = new Uint8Array(input);
+            view.set([
+                72,
+                101,
+                108,
+                108,
+                111,
+            ]);
+
+            const result = await toBuffer(input);
+            expect(Buffer.isBuffer(result)).toBe(true);
+            expect(result.toString()).toBe('Hello');
+
+            // Ensure the content is identical
+            expect(new Uint8Array(result)).toEqual(view);
+        });
+
+        it('should handle empty ArrayBuffer', async ({ expect }) => {
+            const input = new ArrayBuffer(0);
+            const result = await toBuffer(input);
+            expect(result.length).toBe(0);
+        });
+    });
+
+    describe.concurrent('uint8 array input', () => {
+        it('should convert Uint8Array to Buffer', async ({ expect }) => {
+            const input = new Uint8Array([
+                65,
+                66,
+                67,
+            ]);
+
+            const result = await toBuffer(input);
+
+            expect(Buffer.isBuffer(result)).toBe(true);
+            expect(result.toString()).toBe('ABC');
+        });
+
+        it('should handle Uint8Array views with offsets (Zero-copy check)', async ({ expect }) => {
+            const fullBuffer = new Uint8Array([
+                10,
+                20,
+                30,
+                40,
+                50,
+            ]);
+
+            const input = fullBuffer.subarray(1, 4);
+
+            const result = await toBuffer(input);
+            expect(result.length).toBe(3);
+            expect(result[0]).toBe(20);
+            expect(result[2]).toBe(40);
         });
     });
 });

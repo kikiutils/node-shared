@@ -7,7 +7,7 @@ import type {
 export type { FilteredKeyPath } from './filtered-key-path';
 
 export type AnyRecord = Record<string, any>;
-export type BinaryInput = Blob | Buffer | File | NodeBlob | NodeFile;
+export type BinaryInput = ArrayBuffer | Blob | Buffer | File | NodeBlob | NodeFile | Uint8Array;
 export type Booleanish = 'false' | 'true' | boolean;
 export type MaybePartial<T> = Partial<T> | T;
 export type MaybeReadonly<T> = Readonly<T> | T;

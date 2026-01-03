@@ -3,37 +3,40 @@ import { Buffer } from 'node:buffer';
 import type { BinaryInput } from './types';
 
 /**
- * Converts a Blob, Buffer, or File to a Buffer.
+ * Converts various binary data types to a Node.js Buffer.
  *
- * This function provides a unified way to convert various binary data types
- * to Node.js Buffer. If the input is already a Buffer, it returns it as-is.
- * For Blob or File inputs, it converts them to Buffer via ArrayBuffer.
+ * This function provides a unified, efficient way to convert different binary formats
+ * (Blob, Buffer, File, ArrayBuffer, or Uint8Array) into a Node.js Buffer.
+ * It prioritizes zero-copy conversions for TypedArrays and ArrayBuffers to ensure
+ * optimal performance.
  *
- * @param {Blob | Buffer | File} input - The input to convert to Buffer
+ * @param {ArrayBuffer | Blob | Buffer | File | Uint8Array} input - The binary data input to convert.
+ * Supports Blob, Buffer, File, ArrayBuffer, and Uint8Array.
  *
- * @returns {Promise<Buffer>} A Promise that resolves to a Buffer
+ * @returns {Promise<Buffer>} A promise that resolves to a Node.js Buffer.
  *
  * @example
  * ```typescript
- * import { toBuffer } from '@kikiutils/shared/general';
+ * import { toBuffer } from '@kikiutils/shared/buffer';
  *
- * // Convert a Buffer (returns as-is)
- * const buffer = Buffer.from('Hello World');
- * const result1 = await toBuffer(buffer);
- * console.log(result1); // <Buffer 48 65 6c 6c 6f 20 57 6f 72 6c 64>
+ * // From ArrayBuffer
+ * const ab = new ArrayBuffer(8);
+ * const bufferFromAB = await toBuffer(ab);
  *
- * // Convert a Blob
- * const blob = new Blob(['Hello from Blob'], { type: 'text/plain' });
- * const result2 = await toBuffer(blob);
- * console.log(result2.toString()); // 'Hello from Blob'
+ * // From Uint8Array (Zero-copy)
+ * const u8 = new Uint8Array([10, 20, 30]);
+ * const bufferFromU8 = await toBuffer(u8);
  *
- * // Convert a File
- * const file = new File(['File content'], 'test.txt', { type: 'text/plain' });
- * const result3 = await toBuffer(file);
- * console.log(result3.toString()); // 'File content'
+ * // From Blob or File
+ * const blob = new Blob(['data'], { type: 'text/plain' });
+ * const bufferFromBlob = await toBuffer(blob);
  * ```
  */
 export async function toBuffer(input: BinaryInput) {
     if (Buffer.isBuffer(input)) return input;
-    return Buffer.from(await input.arrayBuffer());
+    if (input instanceof ArrayBuffer) return Buffer.from(input);
+    if (input instanceof Uint8Array) return Buffer.from(input.buffer, input.byteOffset, input.byteLength);
+    if (typeof input.arrayBuffer === 'function') return Buffer.from(await input.arrayBuffer());
+    // eslint-disable-next-line style/max-len
+    throw new TypeError('The provided input is not a supported binary type (Blob, Buffer, File, ArrayBuffer, or Uint8Array).');
 }
