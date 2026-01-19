@@ -1,5 +1,21 @@
 # Changelog
 
+## v14.1.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v14.1.0...v14.1.1)
+
+### 🩹 Fixes
+
+- Adjust `customExports` order in `tsdown.config` to move wildcard (`*`) exports to the end ([0b3f357](https://github.com/kikiutils/node-shared/commit/0b3f357))
+
+### 🏡 Chore
+
+- Update deps ([3cfd593](https://github.com/kikiutils/node-shared/commit/3cfd593))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v14.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v14.0.1...v14.1.0)
