@@ -1,5 +1,17 @@
 # Changelog
 
+## v14.1.2
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v14.1.1...v14.1.2)
+
+### 🏡 Chore
+
+- Update deps ([6a1d2ec](https://github.com/kikiutils/node-shared/commit/6a1d2ec))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v14.1.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v14.1.0...v14.1.1)
