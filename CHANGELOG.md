@@ -1,5 +1,26 @@
 # Changelog
 
+## v15.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v14.1.2...v15.0.0)
+
+### 🏡 Chore
+
+- Update vscode settings ([7b2f6f9](https://github.com/kikiutils/node-shared/commit/7b2f6f9))
+- Update eslint config ([77a5f00](https://github.com/kikiutils/node-shared/commit/77a5f00))
+- Update deps, tsdown config and package scripts ([5ada952](https://github.com/kikiutils/node-shared/commit/5ada952))
+- Update deps and configs ([6082b0e](https://github.com/kikiutils/node-shared/commit/6082b0e))
+- ⚠️  Remove `fs-extra` dep and remove the relate methods from `Path` class ([e56fd3b](https://github.com/kikiutils/node-shared/commit/e56fd3b))
+- Lint code ([e2d0465](https://github.com/kikiutils/node-shared/commit/e2d0465))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove `fs-extra` dep and remove the relate methods from `Path` class ([e56fd3b](https://github.com/kikiutils/node-shared/commit/e56fd3b))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v14.1.2
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v14.1.1...v14.1.2)
