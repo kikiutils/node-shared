@@ -17,13 +17,6 @@ import {
 } from 'node:path';
 import type * as nodePath from 'node:path';
 
-import * as fsExtra from 'fs-extra';
-import type {
-    JFReadOptions,
-    JFWriteOptions,
-} from 'jsonfile';
-
-export type DoNotRemoveOrUseThisType = typeof fsExtra;
 type DropFirstParameters<T extends (...args: any) => any> = Parameters<T> extends [any, ...infer R] ? R : never;
 export type PathLike = fs.PathLike | Path;
 
@@ -384,45 +377,5 @@ export class Path {
      */
     writeFile(...args: DropFirstParameters<typeof fsp.writeFile>) {
         return fsp.writeFile(this.#value, ...args);
-    }
-
-    // Some commonly used promise fs extra methods
-
-    /**
-     * @see {@link fsExtra.ensureDir}
-     */
-    ensureDir(options?: fsExtra.EnsureDirOptions | number) {
-        return fsExtra.ensureDir(this.#value, options);
-    }
-
-    /**
-     * @see {@link fsExtra.ensureDir}
-     */
-    mkdirp = this.ensureDir;
-
-    /**
-     * @see {@link fsExtra.ensureDir}
-     */
-    mkdirs = this.ensureDir;
-
-    /**
-     * @see {@link fsExtra.readJson}
-     */
-    async readJson<T = any>(options?: JFReadOptions) {
-        return await fsExtra.readJson(this.#value, options) as T;
-    }
-
-    /**
-     * @see {@link fsExtra.remove}
-     */
-    remove() {
-        return fsExtra.remove(this.#value);
-    }
-
-    /**
-     * @see {@link fsExtra.writeJson}
-     */
-    writeJson(data: any, options?: JFWriteOptions) {
-        return fsExtra.writeJson(this.#value, data, options);
     }
 }
