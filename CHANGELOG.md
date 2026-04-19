@@ -1,5 +1,28 @@
 # Changelog
 
+## v15.0.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.0...v15.0.1)
+
+### 🩹 Fixes
+
+- Resolve `randomString` issues ([dd9fda7](https://github.com/kikiutils/node-shared/commit/dd9fda7))
+
+### 🏡 Chore
+
+- Update deps ([8b23202](https://github.com/kikiutils/node-shared/commit/8b23202))
+- Update `peerDependencies` ([42b3859](https://github.com/kikiutils/node-shared/commit/42b3859))
+- Upgrade deps ([0c9a9d3](https://github.com/kikiutils/node-shared/commit/0c9a9d3))
+- Upgrade deps ([482450f](https://github.com/kikiutils/node-shared/commit/482450f))
+
+### ✅ Tests
+
+- Update string units ([5a7b939](https://github.com/kikiutils/node-shared/commit/5a7b939))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v15.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v14.1.2...v15.0.0)
