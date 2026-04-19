@@ -46,5 +46,5 @@ export function randomString(length: number, mode: RandomStringMode = 'alphabeti
 
     const charset = CHARSETS[mode];
     if (!charset) throw new Error(`Unsupported mode: ${mode}`);
-    return Array.from({ length }).fill(charset[Math.floor(Math.random() * charset.length)]).join('');
+    return Array.from({ length }, () => charset[Math.floor(Math.random() * charset.length)]).join('');
 }
