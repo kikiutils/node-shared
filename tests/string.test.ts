@@ -21,8 +21,7 @@ describe.concurrent('randomString', () => {
     };
 
     it('should generate a string of the specified length', ({ expect }) => {
-        const result = randomString(10);
-        expect(result).toHaveLength(10);
+        expect(randomString(10)).toHaveLength(10);
     });
 
     Object.entries(CHARSETS).forEach(([mode, charset]) => {
@@ -30,6 +29,18 @@ describe.concurrent('randomString', () => {
             const result = randomString(20, mode as RandomStringMode);
             expect(result).toHaveLength(20);
             for (const char of result) expect(charset).toContain(char);
+        });
+
+        it(`should NOT generate a ${mode} string with all same characters`, ({ expect }) => {
+            const result = randomString(20, mode as RandomStringMode);
+            const uniqueChars = new Set(result);
+            expect(uniqueChars.size).toBeGreaterThan(1);
+        });
+
+        it(`should generate different ${mode} strings on repeated calls`, ({ expect }) => {
+            const result1 = randomString(20, mode as RandomStringMode);
+            const result2 = randomString(20, mode as RandomStringMode);
+            expect(result1).not.toBe(result2);
         });
     });
 
@@ -47,5 +58,10 @@ describe.concurrent('randomString', () => {
 
     it('should throw if mode is unsupported', ({ expect }) => {
         expect(() => randomString(5, 'invalid-mode' as any)).toThrow('Unsupported mode: invalid-mode');
+    });
+
+    it('should handle length 1', ({ expect }) => {
+        const result = randomString(1);
+        expect(result).toHaveLength(1);
     });
 });
