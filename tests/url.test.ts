@@ -21,13 +21,12 @@ describe.concurrent('appendRedirectParamToUrl', () => {
         expect(result).toBe('/login?redirect=%2Fdashboard');
     });
 
-    it('should preserve hash in URL (even though split ignores it)', ({ expect }) => {
+    it('should preserve hash in URL', ({ expect }) => {
         const result = appendRedirectParamToUrl('/login#section', '/dashboard');
-        expect(result).toBe('/login#section?redirect=%2Fdashboard');
+        expect(result).toBe('/login?redirect=%2Fdashboard#section');
     });
 
-    it('should handle empty redirectPath', ({ expect }) => {
-        const result = appendRedirectParamToUrl('/login', '');
-        expect(result).toBe('/login?redirect=');
+    it('should throw error for empty redirectPath', ({ expect }) => {
+        expect(() => appendRedirectParamToUrl('/login', '')).toThrow();
     });
 });

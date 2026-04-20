@@ -52,9 +52,9 @@ export function toPercentageString(
     const denominatorDecimal = new Decimal(denominator.toString());
     const calculationResult = molecularDecimal.div(denominatorDecimal);
 
-    if (calculationResult.isNaN() || !calculationResult.isFinite()) return '0.00';
-
-    const result = calculationResult.times(100).toFixed(options?.decimalPlaces ?? 2);
+    const result = calculationResult.isNaN() || !calculationResult.isFinite()
+        ? '0.00'
+        : calculationResult.times(100).toFixed(options?.decimalPlaces ?? 2);
 
     return options?.withSymbol ?? true ? `${result}%` : result;
 }
