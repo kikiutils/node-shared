@@ -8,6 +8,9 @@
  * It is designed for use cases such as signature generation, cache key construction,
  * or any context requiring consistent and predictable object serialization.
  *
+ * Note: Empty objects and arrays produce an empty string, which is useful for
+ * generating deterministic signature payloads.
+ *
  * @param {Record<string, any>} input - The object to serialize. Can contain nested objects and arrays
  * @param {string} kvSeparator - The string used to separate each key from its value (default: '=')
  * @param {string} pairSeparator - The string used to separate each key-value pair (default: '&')
@@ -19,6 +22,7 @@
  *
  * console.log(stringifyObjectDeterministically({ b: 2, a: { x: 1, y: [3, 4] } })); // a.x=1&a.y.0=3&a.y.1=4&b=2
  * console.log(stringifyObjectDeterministically({ foo: 'bar' }, ':', '|')); // foo:bar
+ * console.log(stringifyObjectDeterministically({})); // ''
  * ```
  */
 export function stringifyObjectDeterministically(
