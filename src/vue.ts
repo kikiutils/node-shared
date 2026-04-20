@@ -43,6 +43,12 @@ export function clearTimeoutRef(timeoutRef: Ref<Nullable<ReturnType<typeof setTi
  * A Vue composition function that remembers and restores scroll position
  * of a scrollable container across route changes and keep-alive activation.
  *
+ * Designed for use with `<KeepAlive>` components. Scroll state is saved on
+ * route leave and restored when the component is activated again.
+ *
+ * Note: Without `<KeepAlive>`, the component state is destroyed on unmount,
+ * so scroll position will not be preserved.
+ *
  * @template T - The type of the scrollable element (defaults to HTMLElement)
  *
  * @param {Ref<Nullable<T>>} containerRef - A ref to the scrollable HTML element
