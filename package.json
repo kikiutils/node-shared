@@ -151,7 +151,7 @@
     "decimal.js": "^10.6.0",
     "element-plus": "^2.13.7",
     "jsdom": "^29.0.2",
-    "knip": "^6.4.1",
+    "knip": "^6.5.0",
     "lru-cache": "^11.3.5",
     "millify": "^6.1.0",
     "msgpackr": "^1.11.10",
