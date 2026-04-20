@@ -25,6 +25,9 @@ export function generateWithNestedRandomLength<T = string>(
     maxMin: number,
     maxMax: number,
 ) {
+    if (minMin > minMax) throw new Error(`Invalid range: minMin (${minMin}) cannot be greater than minMax (${minMax})`);
+    if (maxMin > maxMax) throw new Error(`Invalid range: maxMin (${maxMin}) cannot be greater than maxMax (${maxMax})`);
+
     const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
     const innerMin = random(minMin, minMax);
     const finalLength = random(Math.max(innerMin, maxMin), maxMax);
