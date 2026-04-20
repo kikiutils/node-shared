@@ -18,8 +18,10 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
         );
     }
 
-    const [base, rawQuery = ''] = url.split('?');
+    const [baseAndHash, rawQuery = ''] = url.split('?');
+    const [base, hash] = (baseAndHash || '').split('#');
     const searchParams = new URLSearchParams(rawQuery);
     searchParams.set('redirect', redirectPath);
-    return `${base}?${searchParams.toString()}`;
+    const queryString = searchParams.toString();
+    return hash ? `${base}?${queryString}#${hash}` : `${base}?${queryString}`;
 }
