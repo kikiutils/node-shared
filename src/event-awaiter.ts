@@ -82,7 +82,7 @@ export class EventAwaiter<T> {
 
             resolvers.push(resolve);
             this.#promiseResolvers.set(key, resolvers);
-            if (timeoutMs) {
+            if (timeoutMs != null) {
                 setTimeout(
                     () => {
                         const resolvers = this.#promiseResolvers.get(key);
