@@ -35,6 +35,8 @@ export class EnvironmentNotFoundError extends Error {
  *
  * @example
  * ```typescript
+ * import { checkAndGetEnvValue } from '@kikiutils/shared/env';
+ *
  * process.env.API_KEY = '';
  * checkAndGetEnvValue('API_KEY'); // ✅ Returns '' (still considered "defined")
  *

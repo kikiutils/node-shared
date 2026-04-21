@@ -42,8 +42,6 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  * // Format a date string
  * console.log(formatDate('2024-07-10T00:00:00Z', 'yyyy-MM-dd')); // 2024-07-10
  * ```
- *
- * @see https://date-fns.org/docs/format
  */
 export function formatDate(date: DateArg<Date> & {}, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) {
     return dateFnsFormat(date, format, options);
