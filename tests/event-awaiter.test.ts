@@ -6,7 +6,7 @@ import {
 
 import { EventAwaiter } from '../src/event-awaiter';
 
-describe.concurrent('EventAwaiter', () => {
+describe.concurrent('event awaiter', () => {
     describe.concurrent('trigger', () => {
         it('should resolve waiting promises with the provided value', async ({ expect }) => {
             const eventAwaiter = new EventAwaiter<string>();
@@ -21,7 +21,7 @@ describe.concurrent('EventAwaiter', () => {
             const eventAwaiter = new EventAwaiter<string>();
             const promise = eventAwaiter.wait('key');
 
-            eventAwaiter.trigger('key');
+            eventAwaiter.trigger('key', undefined);
 
             await expect(promise).resolves.toBeUndefined();
         });
@@ -137,7 +137,9 @@ describe.concurrent('EventAwaiter', () => {
             const eventAwaiter = new EventAwaiter<string>();
             eventAwaiter.wait('key');
 
-            await expect(eventAwaiter.wait('key', undefined, 'strict')).rejects.toThrow('Duplicate wait detected for key: key');
+            await expect(eventAwaiter.wait('key', undefined, 'strict'))
+                .rejects
+                .toThrow('Duplicate wait detected for key: key');
         });
 
         it('should cancel existing waiters in override mode', async ({ expect }) => {
