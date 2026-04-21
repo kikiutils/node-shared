@@ -55,4 +55,20 @@ describe.concurrent('generateWithNestedRandomLength', () => {
         const result = generateWithNestedRandomLength(generator, 10, 10, 10, 10);
         expect(result).toBe(10);
     });
+
+    it('should throw if minMin is greater than minMax', ({ expect }) => {
+        const generator = (len: number) => len;
+
+        expect(() => generateWithNestedRandomLength(generator, 20, 10, 30, 40)).toThrow(
+            'Invalid range: minMin (20) cannot be greater than minMax (10)',
+        );
+    });
+
+    it('should throw if maxMin is greater than maxMax', ({ expect }) => {
+        const generator = (len: number) => len;
+
+        expect(() => generateWithNestedRandomLength(generator, 10, 20, 40, 30)).toThrow(
+            'Invalid range: maxMin (40) cannot be greater than maxMax (30)',
+        );
+    });
 });
