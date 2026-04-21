@@ -1,5 +1,45 @@
 # Changelog
 
+## v15.0.2
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.1...v15.0.2)
+
+### 🩹 Fixes
+
+- Validate redirect path to prevent open redirect vulnerability ([0cfa21d](https://github.com/kikiutils/node-shared/commit/0cfa21d))
+- Handle zero timeout correctly in EventAwaiter.wait() ([d62031d](https://github.com/kikiutils/node-shared/commit/d62031d))
+- Handle infinity and division by zero in toPercentageString() ([7c27d1f](https://github.com/kikiutils/node-shared/commit/7c27d1f))
+- Validate range parameters in generateWithNestedRandomLength() ([2d06fd9](https://github.com/kikiutils/node-shared/commit/2d06fd9))
+- Preserve URL hash fragment in appendRedirectParamToUrl() ([ba5e15d](https://github.com/kikiutils/node-shared/commit/ba5e15d))
+- Handle infinity in toPercentageString and update url tests for hash/empty path behavior ([20bb178](https://github.com/kikiutils/node-shared/commit/20bb178))
+
+### 📖 Documentation
+
+- Clarify empty object behavior in stringifyObjectDeterministically() ([9b982a3](https://github.com/kikiutils/node-shared/commit/9b982a3))
+- Clarify keep-alive requirement for usePreserveScroll() ([5783450](https://github.com/kikiutils/node-shared/commit/5783450))
+- Update TEST_REVIEW with event-awaiter completion ([e02aff5](https://github.com/kikiutils/node-shared/commit/e02aff5))
+- Standardize JSDoc across src/ and storages/ with import examples ([5e86408](https://github.com/kikiutils/node-shared/commit/5e86408))
+- Trim README to essential sections, remove Modules & Functions ([eb591fc](https://github.com/kikiutils/node-shared/commit/eb591fc))
+- Add module tree to README ([1a951c1](https://github.com/kikiutils/node-shared/commit/1a951c1))
+- Add classes/ to README module tree ([7a263e6](https://github.com/kikiutils/node-shared/commit/7a263e6))
+- Remove `TEST_REVIEW.md` ([c6fc112](https://github.com/kikiutils/node-shared/commit/c6fc112))
+
+### 🏡 Chore
+
+- Upgrade deps ([038031b](https://github.com/kikiutils/node-shared/commit/038031b))
+- Lint code ([c04c8ef](https://github.com/kikiutils/node-shared/commit/c04c8ef))
+
+### ✅ Tests
+
+- Add range validation tests for generateWithNestedRandomLength() ([371048e](https://github.com/kikiutils/node-shared/commit/371048e))
+- Add url validation and edge case tests ([199412e](https://github.com/kikiutils/node-shared/commit/199412e))
+- Add time.ts abortableDelay tests ([919d253](https://github.com/kikiutils/node-shared/commit/919d253))
+- Add event-awaiter.ts full test suite ([f763f9f](https://github.com/kikiutils/node-shared/commit/f763f9f))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v15.0.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.0...v15.0.1)
