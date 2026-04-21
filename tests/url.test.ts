@@ -29,4 +29,14 @@ describe.concurrent('appendRedirectParamToUrl', () => {
     it('should throw error for empty redirectPath', ({ expect }) => {
         expect(() => appendRedirectParamToUrl('/login', '')).toThrow();
     });
+
+    it('should throw error for absolute URL as redirectPath', ({ expect }) => {
+        expect(() => appendRedirectParamToUrl('/login', 'https://evil.com')).toThrow();
+        expect(() => appendRedirectParamToUrl('/login', 'http://evil.com')).toThrow();
+    });
+
+    it('should handle URL starting with question mark', ({ expect }) => {
+        const result = appendRedirectParamToUrl('?foo=bar', '/dashboard');
+        expect(result).toBe('?foo=bar&redirect=%2Fdashboard');
+    });
 });
