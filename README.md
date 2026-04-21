@@ -26,6 +26,39 @@ A lightweight and modular utility library for modern JavaScript and TypeScript �
 - 🗄️ Storage utilities — enhanced localStorage, Redis, and LRU abstractions
 - 📦 Modular by design — import only what you need via `@kikiutils/shared/<module>`
 
+## Modules
+
+```
+src/
+├── buffer.ts        # Binary → Node.js Buffer
+├── clipboard.ts    # Clipboard API (browser)
+├── consola.ts      # Consola logger
+├── crypto-hash.ts # MD5, SHA3 (Node)
+├── datetime.ts    # date-fns wrappers
+├── element-plus.ts # Element Plus form rules
+├── enum.ts        # Enum value extractors
+├── env.ts         # Env var accessor
+├── event-awaiter.ts # Async event wait
+├── general.ts     # extractFirstValue
+├── hash.ts        # SHA3 (browser)
+├── math.ts        # toPercentageString
+├── number.ts      # toCompactNumberString
+├── object.ts      # deterministic stringify
+├── pino.ts        # Pino logger
+├── random.ts      # nested random length
+├── string.ts      # randomString
+├── time.ts        # abortableDelay
+├── url.ts         # redirect param
+├── vue.ts         # Vue composables
+├── web.ts         # Web DOM helpers
+└── storages/
+    ├── lru/keyed-store.ts    # LRU cache wrapper
+    └── redis/
+        ├── keyed-store.ts     # Redis keyed store
+        ├── msgpack.ts         # Redis + msgpack
+        └── types.ts           # Storage interfaces
+```
+
 ## Requirements
 
 - **Node.js** `>=22.12.0`
