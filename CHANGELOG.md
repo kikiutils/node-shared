@@ -1,5 +1,17 @@
 # Changelog
 
+## v15.0.3
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.2...v15.0.3)
+
+### 🏡 Chore
+
+- Upgrade deps ([405e374](https://github.com/kikiutils/node-shared/commit/405e374))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v15.0.2
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.1...v15.0.2)
