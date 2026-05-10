@@ -1,5 +1,30 @@
 # Changelog
 
+## v15.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.3...v15.1.0)
+
+### 🚀 Enhancements
+
+- Add more methods to `PrecisionNumber` ([b1bf660](https://github.com/kikiutils/node-shared/commit/b1bf660))
+
+### 📖 Documentation
+
+- Remove TODO.md ([ed8ecb3](https://github.com/kikiutils/node-shared/commit/ed8ecb3))
+- Update README and jsdoc ([bf35ca7](https://github.com/kikiutils/node-shared/commit/bf35ca7))
+
+### 🏡 Chore
+
+- Upgrade deps ([ead48fd](https://github.com/kikiutils/node-shared/commit/ead48fd))
+
+### ✅ Tests
+
+- Add more test units ([faacc56](https://github.com/kikiutils/node-shared/commit/faacc56))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v15.0.3
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.2...v15.0.3)
