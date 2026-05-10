@@ -11,10 +11,26 @@ import {
     appendRedirectParamFromCurrentRouteToUrl,
     clearIntervalRef,
     clearTimeoutRef,
+    usePreserveScroll,
 } from '../src/vue';
 
+const lifecycleCallbacks = {
+    activated: [] as Array<() => void>,
+    beforeRouteLeave: [] as Array<() => void>,
+};
+
 // Mocks
-vi.mock('vue-router', () => ({ useRoute: vi.fn(() => ({ fullPath: '/profile?tab=settings#section' })) }));
+vi.mock('vue', async (importActual) => {
+    const actual = await importActual<typeof import('vue')>();
+    return {
+        ...actual,
+        onActivated: vi.fn((callback: () => void) => lifecycleCallbacks.activated.push(callback)),
+    };
+});
+vi.mock('vue-router', () => ({
+    onBeforeRouteLeave: vi.fn((callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback)),
+    useRoute: vi.fn(() => ({ fullPath: '/profile?tab=settings#section' })),
+}));
 vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
 // Tests
@@ -67,5 +83,40 @@ describe.concurrent('clearTimeoutRef', () => {
 
         expect(() => clearTimeoutRef(timeoutRef)).not.toThrow();
         expect(timeoutRef.value).toBeNull();
+    });
+});
+
+describe('usePreserveScroll', () => {
+    it('should save scroll on route leave and restore it on activation', ({ expect }) => {
+        lifecycleCallbacks.activated.length = 0;
+        lifecycleCallbacks.beforeRouteLeave.length = 0;
+        const element = {
+            scrollLeft: 12,
+            scrollTop: 34,
+        } as HTMLElement;
+        const containerRef = ref<Nullable<HTMLElement>>(element);
+
+        usePreserveScroll(containerRef);
+        expect(lifecycleCallbacks.activated).toHaveLength(1);
+        expect(lifecycleCallbacks.beforeRouteLeave).toHaveLength(1);
+
+        lifecycleCallbacks.beforeRouteLeave[0]!();
+        element.scrollLeft = 0;
+        element.scrollTop = 0;
+        lifecycleCallbacks.activated[0]!();
+
+        expect(element.scrollLeft).toBe(12);
+        expect(element.scrollTop).toBe(34);
+    });
+
+    it('should tolerate a missing container while saving and restoring scroll', ({ expect }) => {
+        lifecycleCallbacks.activated.length = 0;
+        lifecycleCallbacks.beforeRouteLeave.length = 0;
+        const containerRef = ref<Nullable<HTMLElement>>(null);
+
+        usePreserveScroll(containerRef);
+
+        expect(() => lifecycleCallbacks.beforeRouteLeave[0]!()).not.toThrow();
+        expect(() => lifecycleCallbacks.activated[0]!()).not.toThrow();
     });
 });

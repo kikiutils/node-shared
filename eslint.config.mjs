@@ -3,6 +3,7 @@ import { createBaseConfigs } from '@kikiutils/eslint-config/base';
 
 export default antfu(
     {
+        ignores: ['.omx/**'],
         type: 'lib',
         typescript: true,
     },
