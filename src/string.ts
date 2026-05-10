@@ -1,3 +1,6 @@
+/**
+ * Character-set presets supported by `randomString`.
+ */
 export type RandomStringMode =
   | 'alphabetic'
   | 'alphanumeric'
@@ -21,10 +24,13 @@ const CHARSETS: Record<RandomStringMode, string> = {
 };
 
 /**
- * Generates a random string of a given length using a specified character set.
+ * Generates a random string of a given length using a predefined character set.
  *
- * @param {number} length - The length of the string to generate. Must be a positive integer
- * @param {RandomStringMode} [mode] - The character set to use
+ * Uses `Math.random`, so this helper is suitable for display tokens, placeholders,
+ * and test data, but not for passwords, API keys, or other cryptographic secrets.
+ *
+ * @param {number} length - The positive integer length of the string to generate
+ * @param {RandomStringMode} [mode] - The character set to use (default: `'alphabetic'`)
  *
  * @returns {string} The generated random string
  *
@@ -34,9 +40,9 @@ const CHARSETS: Record<RandomStringMode, string> = {
  * ```typescript
  * import { randomString } from '@kikiutils/shared/string';
  *
- * console.log(randomString(8)); // e.g. 'aZbXwTyQ' (alphabetic)
- * console.log(randomString(6, 'numeric')); // e.g. '402398'
- * console.log(randomString(10, 'alphanumeric')); // e.g. 'a9Z4pQ8xY2'
+ * randomString(8); // e.g. 'aZbXwTyQ'
+ * randomString(6, 'numeric'); // e.g. '402398'
+ * randomString(10, 'alphanumeric'); // e.g. 'a9Z4pQ8xY2'
  * ```
  */
 export function randomString(length: number, mode: RandomStringMode = 'alphabetic') {

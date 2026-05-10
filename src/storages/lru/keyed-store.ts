@@ -9,7 +9,7 @@ import type { LRUCache } from 'lru-cache';
  *
  * @returns {(keyFn: (...args: P) => string) => Readonly<{
  *   getItem, getItemTtl, hasItem, removeItem, resolveKey, setItem
- * }>} A keyed store factory that takes a key resolution function
+ * }>} A factory that accepts a key resolver and returns a frozen keyed cache facade
  *
  * @example
  * ```typescript
@@ -18,8 +18,8 @@ import type { LRUCache } from 'lru-cache';
  *
  * const lru = new LRUCache({ max: 100 });
  * const keyedStore = createLruKeyedStore(lru)((userId: string) => `user:${userId}`);
- * await keyedStore.setItem({ name: 'Alice' }, 'user-123');
- * const user = await keyedStore.getItem('user-123'); // { name: 'Alice' }
+ * keyedStore.setItem({ name: 'Alice' }, 'user-123');
+ * const user = keyedStore.getItem('user-123'); // { name: 'Alice' }
  * ```
  */
 export function createLruKeyedStore<D = unknown>(lruInstance: LRUCache<any, any, any>) {

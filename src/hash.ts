@@ -20,7 +20,7 @@ import {
  * ```typescript
  * import { sha3224 } from '@kikiutils/shared/hash';
  *
- * console.log(sha3224('test')); // 0qW8FoqDcFmkpuqR9J3uT8YXVb3pWnLYgA4JqyprhqZ5H...
+ * console.log(sha3224('test')); // 3797bf0afbbfca4a7bbba7602a2b552746876517a7f9b7ce2db0ae7b
  * ```
  */
 export function sha3224(data: string | Uint8Array) {
@@ -56,7 +56,7 @@ export function sha3256(data: string | Uint8Array) {
  * ```typescript
  * import { sha3384 } from '@kikiutils/shared/hash';
  *
- * console.log(sha3384('test')); // 1Q2wQAYaZ4o8vWX5bEB2n3Y...
+ * console.log(sha3384('test')); // e516dabb23b6e30026863543282780a3ae0dccf05551cf0295178d7f...
  * ```
  */
 export function sha3384(data: string | Uint8Array) {
@@ -74,7 +74,7 @@ export function sha3384(data: string | Uint8Array) {
  * ```typescript
  * import { sha3512 } from '@kikiutils/shared/hash';
  *
- * console.log(sha3512('test')); // b_NQJ8FJBY9dIjm1q7...
+ * console.log(sha3512('test')); // 9ece086e9bac491fac5c1d1046ca11d737b92a2b2ebd93f005d7...
  * ```
  */
 export function sha3512(data: string | Uint8Array) {

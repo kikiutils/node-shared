@@ -16,7 +16,7 @@ import type {
  * ```typescript
  * import { cryptoMd5 } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoMd5('test')); // 33ed9a05a10b21f0...
+ * console.log(cryptoMd5('test')); // 098f6bcd4621d373cade4e832627b4f6
  * ```
  */
 export function cryptoMd5(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
@@ -53,7 +53,7 @@ export function cryptoMd5ToBuffer(data: BinaryLike) {
  * ```typescript
  * import { cryptoSha3224 } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoSha3224('test')); // 0qW8FoqDcFmkpuqR9J3uT8YX...
+ * console.log(cryptoSha3224('test')); // 3797bf0afbbfca4a7bbba7602a2b552746876517a7f9b7ce2db0ae7b
  * ```
  */
 export function cryptoSha3224(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
@@ -71,7 +71,7 @@ export function cryptoSha3224(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```typescript
  * import { cryptoSha3224ToBuffer } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoSha3224ToBuffer('test')); // <Buffer 0q W8 Fo ...>
+ * console.log(cryptoSha3224ToBuffer('test')); // <Buffer 37 97 bf 0a ...>
  * ```
  */
 export function cryptoSha3224ToBuffer(data: BinaryLike) {
@@ -127,7 +127,7 @@ export function cryptoSha3256ToBuffer(data: BinaryLike) {
  * ```typescript
  * import { cryptoSha3384 } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoSha3384('test')); // 1Q2wQAYaZ4o8vWX5bEB2n3Y...
+ * console.log(cryptoSha3384('test')); // e516dabb23b6e30026863543282780a3ae0dccf05551cf0295178d7f...
  * ```
  */
 export function cryptoSha3384(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
@@ -145,7 +145,7 @@ export function cryptoSha3384(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```typescript
  * import { cryptoSha3384ToBuffer } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoSha3384ToBuffer('test')); // <Buffer 1Q 2w QZ ...>
+ * console.log(cryptoSha3384ToBuffer('test')); // <Buffer e5 16 da bb ...>
  * ```
  */
 export function cryptoSha3384ToBuffer(data: BinaryLike) {
@@ -164,7 +164,7 @@ export function cryptoSha3384ToBuffer(data: BinaryLike) {
  * ```typescript
  * import { cryptoSha3512 } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoSha3512('test')); // b_NQJ8FJBY9dIjm1q7...
+ * console.log(cryptoSha3512('test')); // 9ece086e9bac491fac5c1d1046ca11d737b92a2b2ebd93f005d7...
  * ```
  */
 export function cryptoSha3512(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
@@ -182,7 +182,7 @@ export function cryptoSha3512(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```typescript
  * import { cryptoSha3512ToBuffer } from '@kikiutils/shared/crypto-hash';
  *
- * console.log(cryptoSha3512ToBuffer('test')); // <Buffer b_ NQ ...>
+ * console.log(cryptoSha3512ToBuffer('test')); // <Buffer 9e ce 08 6e ...>
  * ```
  */
 export function cryptoSha3512ToBuffer(data: BinaryLike) {

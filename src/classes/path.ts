@@ -18,6 +18,10 @@ import {
 import type * as nodePath from 'node:path';
 
 type DropFirstParameters<T extends (...args: any) => any> = Parameters<T> extends [any, ...infer R] ? R : never;
+
+/**
+ * Values accepted by the `Path` constructor and path-composition methods.
+ */
 export type PathLike = fs.PathLike | Path;
 
 /**
@@ -29,6 +33,11 @@ export type PathLike = fs.PathLike | Path;
 export class Path {
     readonly #value: string;
 
+    /**
+     * Creates a normalized path value by joining the provided path segments.
+     *
+     * @param {PathLike[]} paths - Path segments accepted by Node.js `path.join` or another `Path` instance
+     */
     constructor(...paths: PathLike[]) {
         this.#value = join(...this.#toStrings(paths));
     }

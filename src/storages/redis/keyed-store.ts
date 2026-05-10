@@ -11,7 +11,7 @@ import type { RedisLikeStorage } from './types';
  *
  * @returns {(keyFn: (...args: P) => string) => Readonly<{
  *   getItem, getItemTtl, hasItem, removeItem, resolveKey, setItem, setItemWithTtl
- * }>} A keyed store factory that takes a key resolution function
+ * }>} A factory that accepts a key resolver and returns a frozen Redis keyed-store facade
  *
  * @example
  * ```typescript
