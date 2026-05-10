@@ -48,6 +48,15 @@ describe('precision number', () => {
         });
     });
 
+    describe('getters', () => {
+        it('should expose decimal places and rounding mode', () => {
+            const num = new PrecisionNumber('1.23', 4, Decimal.ROUND_UP);
+
+            expect(num.decimalPlaces).toBe(4);
+            expect(num.rounding).toBe(Decimal.ROUND_UP);
+        });
+    });
+
     describe('static methods', () => {
         it('should convert to fixed string with toFixed', () => {
             const result = PrecisionNumber.toFixed('123.456789', 3);
@@ -161,6 +170,50 @@ describe('precision number', () => {
                 expect(num.value).toBe('123.45');
             });
         });
+
+        describe('ceil', () => {
+            it('should round up to the nearest integer in place', () => {
+                const num = new PrecisionNumber('1.01');
+                num.ceil();
+                expect(num.value).toBe('2.00');
+            });
+        });
+
+        describe('floor', () => {
+            it('should round down to the nearest integer in place', () => {
+                const num = new PrecisionNumber('1.99');
+                num.floor();
+                expect(num.value).toBe('1.00');
+            });
+        });
+
+        describe('modulo', () => {
+            it('should keep the remainder in place', () => {
+                const num = new PrecisionNumber('10.50');
+                num.modulo('4');
+                expect(num.value).toBe('2.50');
+            });
+        });
+
+        describe('pow', () => {
+            it('should raise the current value to an exponent in place', () => {
+                const num = new PrecisionNumber('2');
+                num.pow('3');
+                expect(num.value).toBe('8.00');
+            });
+        });
+
+        describe('clamp', () => {
+            it('should clamp values below, inside, and above the inclusive range', () => {
+                expect(new PrecisionNumber('1').clamp('2', '4').value).toBe('2.00');
+                expect(new PrecisionNumber('3').clamp('2', '4').value).toBe('3.00');
+                expect(new PrecisionNumber('5').clamp('2', '4').value).toBe('4.00');
+            });
+
+            it('should reject invalid ranges', () => {
+                expect(() => new PrecisionNumber('3').clamp('4', '2')).toThrow('Invalid clamp range');
+            });
+        });
     });
 
     describe('arithmetic operations (immutable)', () => {
@@ -215,6 +268,51 @@ describe('precision number', () => {
                 const num2 = num1.toNegated();
                 expect(num1.value).toBe('123.45');
                 expect(num2.value).toBe('-123.45');
+            });
+        });
+
+        describe('toCeil', () => {
+            it('should return a new instance rounded up to the nearest integer', () => {
+                const num1 = new PrecisionNumber('1.01');
+                const num2 = num1.toCeil();
+                expect(num1.value).toBe('1.01');
+                expect(num2.value).toBe('2.00');
+            });
+        });
+
+        describe('toFloor', () => {
+            it('should return a new instance rounded down to the nearest integer', () => {
+                const num1 = new PrecisionNumber('1.99');
+                const num2 = num1.toFloor();
+                expect(num1.value).toBe('1.99');
+                expect(num2.value).toBe('1.00');
+            });
+        });
+
+        describe('toModulo', () => {
+            it('should return a new instance with the remainder', () => {
+                const num1 = new PrecisionNumber('10.50');
+                const num2 = num1.toModulo('4');
+                expect(num1.value).toBe('10.50');
+                expect(num2.value).toBe('2.50');
+            });
+        });
+
+        describe('toPow', () => {
+            it('should return a new instance raised to an exponent', () => {
+                const num1 = new PrecisionNumber('2');
+                const num2 = num1.toPow('3');
+                expect(num1.value).toBe('2.00');
+                expect(num2.value).toBe('8.00');
+            });
+        });
+
+        describe('toClamped', () => {
+            it('should return a new clamped instance', () => {
+                const num1 = new PrecisionNumber('5');
+                const num2 = num1.toClamped('2', '4');
+                expect(num1.value).toBe('5.00');
+                expect(num2.value).toBe('4.00');
             });
         });
     });
@@ -370,6 +468,27 @@ describe('precision number', () => {
     });
 
     describe('conversion methods', () => {
+        describe('clone', () => {
+            it('should return an independent instance with the same configuration', () => {
+                const num1 = new PrecisionNumber('1.234', 3, Decimal.ROUND_UP);
+                const num2 = num1.clone();
+
+                num2.plus('1');
+
+                expect(num1.value).toBe('1.234');
+                expect(num2.value).toBe('2.234');
+                expect(num2.decimalPlaces).toBe(3);
+                expect(num2.rounding).toBe(Decimal.ROUND_UP);
+            });
+        });
+
+        describe('toNumber', () => {
+            it('should return a native number representation', () => {
+                const num = new PrecisionNumber('123.45');
+                expect(num.toNumber()).toBe(123.45);
+            });
+        });
+
         describe('toString', () => {
             it('should return string representation', () => {
                 const num = new PrecisionNumber('123.45');
