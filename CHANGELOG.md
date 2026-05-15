@@ -1,5 +1,25 @@
 # Changelog
 
+## v15.1.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v15.1.0...v15.1.1)
+
+### 🩹 Fixes
+
+- **url:** Harden redirect path validation ([ce06bee](https://github.com/kikiutils/node-shared/commit/ce06bee))
+
+### 🏡 Chore
+
+- Upgrade deps ([df4320a](https://github.com/kikiutils/node-shared/commit/df4320a))
+
+### 🤖 CI
+
+- Update node versions ([8f4edfd](https://github.com/kikiutils/node-shared/commit/8f4edfd))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v15.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v15.0.3...v15.1.0)
