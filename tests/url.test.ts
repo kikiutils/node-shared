@@ -3,7 +3,47 @@ import {
     it,
 } from 'vitest';
 
-import { appendRedirectParamToUrl } from '../src/url';
+import {
+    appendRedirectParamToUrl,
+    isSafeRedirectPath,
+    normalizeRedirectPath,
+} from '../src/url';
+
+describe.concurrent('isSafeRedirectPath', () => {
+    it('should accept same-origin application paths', ({ expect }) => {
+        expect(isSafeRedirectPath('/')).toBe(true);
+        expect(isSafeRedirectPath('/dashboard')).toBe(true);
+        expect(isSafeRedirectPath('/dashboard?tab=home#section')).toBe(true);
+    });
+
+    it('should reject unsafe redirect paths', ({ expect }) => {
+        expect(isSafeRedirectPath('')).toBe(false);
+        expect(isSafeRedirectPath('dashboard')).toBe(false);
+        expect(isSafeRedirectPath('https://evil.com')).toBe(false);
+        expect(isSafeRedirectPath('http://evil.com')).toBe(false);
+        expect(isSafeRedirectPath('//evil.com')).toBe(false);
+        expect(isSafeRedirectPath('/\\evil.com')).toBe(false);
+        expect(isSafeRedirectPath(123)).toBe(false);
+        expect(isSafeRedirectPath(undefined)).toBe(false);
+    });
+});
+
+describe.concurrent('normalizeRedirectPath', () => {
+    it('should return safe redirect paths', ({ expect }) => {
+        expect(normalizeRedirectPath('/dashboard')).toBe('/dashboard');
+        expect(normalizeRedirectPath([
+            '/dashboard',
+            '//evil.com',
+        ])).toBe('/dashboard');
+    });
+
+    it('should return fallback for unsafe redirect paths', ({ expect }) => {
+        expect(normalizeRedirectPath('//evil.com')).toBe('/');
+        expect(normalizeRedirectPath('https://evil.com')).toBe('/');
+        expect(normalizeRedirectPath('/\\evil.com')).toBe('/');
+        expect(normalizeRedirectPath(undefined, '/fallback')).toBe('/fallback');
+    });
+});
 
 describe.concurrent('appendRedirectParamToUrl', () => {
     it('should append redirect param to URL with no existing query', ({ expect }) => {
@@ -33,6 +73,14 @@ describe.concurrent('appendRedirectParamToUrl', () => {
     it('should throw error for absolute URL as redirectPath', ({ expect }) => {
         expect(() => appendRedirectParamToUrl('/login', 'https://evil.com')).toThrow();
         expect(() => appendRedirectParamToUrl('/login', 'http://evil.com')).toThrow();
+    });
+
+    it('should throw error for protocol-relative URL as redirectPath', ({ expect }) => {
+        expect(() => appendRedirectParamToUrl('/login', '//evil.com')).toThrow();
+    });
+
+    it('should throw error for backslash redirectPath', ({ expect }) => {
+        expect(() => appendRedirectParamToUrl('/login', '/\\evil.com')).toThrow();
     });
 
     it('should handle URL starting with question mark', ({ expect }) => {
