@@ -150,6 +150,7 @@
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.2",
+    "eslint": "^10.6.0",
     "jsdom": "^29.1.1",
     "knip": "^6.25.0",
     "lru-cache": "^11.5.2",
