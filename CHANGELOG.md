@@ -1,5 +1,33 @@
 # Changelog
 
+## v16.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v15.1.1...v16.0.0)
+
+### 🩹 Fixes
+
+- Normalize hash data inputs for node crypto ([6a37431](https://github.com/kikiutils/node-shared/commit/6a37431))
+
+### 💅 Refactors
+
+- ⚠️  Remove `Nullable` type ([2109faf](https://github.com/kikiutils/node-shared/commit/2109faf))
+
+### 🏡 Chore
+
+- Add `.gitattributes` ([4645112](https://github.com/kikiutils/node-shared/commit/4645112))
+- Add `.omx/` to `.gitignore` ([a9a8cfa](https://github.com/kikiutils/node-shared/commit/a9a8cfa))
+- Update scripts ([723523c](https://github.com/kikiutils/node-shared/commit/723523c))
+- Upgrade deps ([6211bb9](https://github.com/kikiutils/node-shared/commit/6211bb9))
+- Add eslint dev dep ([2b7dd62](https://github.com/kikiutils/node-shared/commit/2b7dd62))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove `Nullable` type ([2109faf](https://github.com/kikiutils/node-shared/commit/2109faf))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v15.1.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v15.1.0...v15.1.1)
