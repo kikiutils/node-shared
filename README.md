@@ -26,7 +26,7 @@ A lightweight, modular TypeScript utility library for Node.js and browser projec
 - 🧩 Vue/web helpers — Vue Router redirects, timer ref cleanup, scroll preservation, and browser redirects.
 - 🗄️ Storage helpers — typed keyed-store facades for LRU cache and Redis-like storage.
 - 🛤️ Class utilities — immutable `Path` wrapper and chainable `PrecisionNumber` arithmetic.
-- 🧰 Shared types — reusable nullable, readonly, partial-record, binary-input, and filtered-key-path types.
+- 🧰 Shared types — reusable readonly, partial-record, binary-input, and filtered-key-path types.
 
 ## Requirements
 

@@ -5,7 +5,6 @@ import {
 } from 'vitest';
 import { ref } from 'vue';
 
-import type { Nullable } from '../src/types';
 import { appendRedirectParamToUrl } from '../src/url';
 import {
     appendRedirectParamFromCurrentRouteToUrl,
@@ -45,7 +44,7 @@ describe('appendRedirectParamFromCurrentRouteToUrl', () => {
 describe.concurrent('clearIntervalRef', () => {
     it('should clear the interval and set ref to null', ({ expect }) => {
         const clearSpy = vi.spyOn(globalThis, 'clearInterval');
-        const intervalRef = ref<Nullable<ReturnType<typeof setInterval>>>(setInterval(() => {}, 1000));
+        const intervalRef = ref<null | ReturnType<typeof setInterval>>(setInterval(() => {}, 1000));
         const interval = intervalRef.value;
 
         clearIntervalRef(intervalRef);
@@ -57,7 +56,7 @@ describe.concurrent('clearIntervalRef', () => {
     });
 
     it('should not throw if ref is already null', ({ expect }) => {
-        const intervalRef = ref<Nullable<ReturnType<typeof setInterval>>>(null);
+        const intervalRef = ref<null | ReturnType<typeof setInterval>>(null);
 
         expect(() => clearIntervalRef(intervalRef)).not.toThrow();
         expect(intervalRef.value).toBeNull();
@@ -67,7 +66,7 @@ describe.concurrent('clearIntervalRef', () => {
 describe.concurrent('clearTimeoutRef', () => {
     it('should clear the timeout and set ref to null', ({ expect }) => {
         const clearSpy = vi.spyOn(globalThis, 'clearTimeout');
-        const timeoutRef = ref<Nullable<ReturnType<typeof setTimeout>>>(setTimeout(() => {}, 1000));
+        const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(setTimeout(() => {}, 1000));
         const timeout = timeoutRef.value;
 
         clearTimeoutRef(timeoutRef);
@@ -79,7 +78,7 @@ describe.concurrent('clearTimeoutRef', () => {
     });
 
     it('should not throw if ref is already null', ({ expect }) => {
-        const timeoutRef = ref<Nullable<ReturnType<typeof setTimeout>>>(null);
+        const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(null);
 
         expect(() => clearTimeoutRef(timeoutRef)).not.toThrow();
         expect(timeoutRef.value).toBeNull();
@@ -94,7 +93,7 @@ describe('usePreserveScroll', () => {
             scrollLeft: 12,
             scrollTop: 34,
         } as HTMLElement;
-        const containerRef = ref<Nullable<HTMLElement>>(element);
+        const containerRef = ref<HTMLElement | null>(element);
 
         usePreserveScroll(containerRef);
         expect(lifecycleCallbacks.activated).toHaveLength(1);
@@ -112,7 +111,7 @@ describe('usePreserveScroll', () => {
     it('should tolerate a missing container while saving and restoring scroll', ({ expect }) => {
         lifecycleCallbacks.activated.length = 0;
         lifecycleCallbacks.beforeRouteLeave.length = 0;
-        const containerRef = ref<Nullable<HTMLElement>>(null);
+        const containerRef = ref<HTMLElement | null>(null);
 
         usePreserveScroll(containerRef);
 

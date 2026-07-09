@@ -1,5 +1,3 @@
-import type { Nullable } from '../../types';
-
 /**
  * Low-level Redis-like adapter interface for raw buffer operations.
  */
@@ -12,7 +10,7 @@ export interface RedisLikeAdapter {
     /**
      * Gets the raw buffer value for a key.
      */
-    getBuffer: (key: string) => Promise<Nullable<Uint8Array>>;
+    getBuffer: (key: string) => Promise<null | Uint8Array>;
 
     /**
      * Checks if a key exists.
@@ -42,7 +40,7 @@ export interface RedisLikeStorage {
     /**
      * Gets a deserialized value by key.
      */
-    getItem: <T = unknown>(key: string) => Promise<Nullable<T>>;
+    getItem: <T = unknown>(key: string) => Promise<null | T>;
 
     /**
      * Gets the TTL of a key in seconds.

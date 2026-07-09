@@ -32,11 +32,6 @@ export type MaybePartial<T> = Partial<T> | T;
 export type MaybeReadonly<T> = Readonly<T> | T;
 
 /**
- * Explicitly nullable value helper.
- */
-export type Nullable<T> = null | T;
-
-/**
  * Number-like value represented as a number or a numeric string.
  */
 export type Numberish = number | string;

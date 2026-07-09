@@ -12,8 +12,6 @@ import type {
     TransferOptions,
 } from 'ssh2';
 
-import type { Nullable } from '../types';
-
 import type { PathLike } from './path';
 
 const loggerLevelStringToConsolaLogLevelMap = {
@@ -101,8 +99,8 @@ export class SshClient {
     async getFile(
         localFile: PathLike,
         remoteFile: PathLike,
-        givenSftp?: Nullable<SFTPWrapper>,
-        transferOptions?: Nullable<TransferOptions>,
+        givenSftp?: null | SFTPWrapper,
+        transferOptions?: null | TransferOptions,
     ) {
         try {
             await this.#nodeSsh.getFile(localFile.toString(), remoteFile.toString(), givenSftp, transferOptions);
@@ -141,8 +139,8 @@ export class SshClient {
     async putFile(
         localFile: PathLike,
         remoteFile: PathLike,
-        givenSftp?: Nullable<SFTPWrapper>,
-        transferOptions?: Nullable<TransferOptions>,
+        givenSftp?: null | SFTPWrapper,
+        transferOptions?: null | TransferOptions,
     ) {
         try {
             await this.#nodeSsh.putFile(localFile.toString(), remoteFile.toString(), givenSftp, transferOptions);

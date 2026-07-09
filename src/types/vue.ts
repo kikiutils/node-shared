@@ -1,7 +1,5 @@
 import type { GlobalComponents } from 'vue';
 
-import type { Nullable } from './';
-
 /**
  * A type that represents a reference to a Vue component instance.
  * The reference can be either an instance of the specified component or null.
@@ -15,4 +13,4 @@ import type { Nullable } from './';
  * const keepAliveRef = ref<ComponentRef<'KeepAlive'>>(null);
  * ```
  */
-export type ComponentRef<K extends keyof GlobalComponents> = Nullable<InstanceType<GlobalComponents[K]>>;
+export type ComponentRef<K extends keyof GlobalComponents> = InstanceType<GlobalComponents[K]> | null;
