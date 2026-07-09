@@ -3,6 +3,9 @@ allowBuilds:
   msgpackr-extract: true
   ssh2: true
 
+minimumReleaseAgeExclude:
+  - '@kikiutils/tsconfigs@7.0.0'
+
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
