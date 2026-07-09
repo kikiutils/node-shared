@@ -1,14 +1,12 @@
+import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
-import type {
-    BinaryLike,
-    BinaryToTextEncoding,
-} from 'node:crypto';
+import type { BinaryLike } from 'node:crypto';
 
 /**
  * Computes the MD5 hash of the given data.
  *
  * @param {BinaryLike} data - The input data to hash
- * @param {BinaryToTextEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
+ * @param {BufferEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
  *
  * @returns {string | Buffer} The hash digest in the specified encoding
  *
@@ -19,8 +17,8 @@ import type {
  * console.log(cryptoMd5('test')); // 098f6bcd4621d373cade4e832627b4f6
  * ```
  */
-export function cryptoMd5(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
-    return createHash('md5').update(data).digest(outputEncoding);
+export function cryptoMd5(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
+    return createHash('md5').update(normalizeHashData(data)).digest(outputEncoding);
 }
 
 /**
@@ -38,14 +36,14 @@ export function cryptoMd5(data: BinaryLike, outputEncoding: BinaryToTextEncoding
  * ```
  */
 export function cryptoMd5ToBuffer(data: BinaryLike) {
-    return createHash('md5').update(data).digest();
+    return createHash('md5').update(normalizeHashData(data)).digest();
 }
 
 /**
  * Computes the SHA-3 hash of the given data using the 224-bit digest.
  *
  * @param {BinaryLike} data - The input data to hash
- * @param {BinaryToTextEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
+ * @param {BufferEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
  *
  * @returns {string | Buffer} The hash digest in the specified encoding
  *
@@ -56,8 +54,8 @@ export function cryptoMd5ToBuffer(data: BinaryLike) {
  * console.log(cryptoSha3224('test')); // 3797bf0afbbfca4a7bbba7602a2b552746876517a7f9b7ce2db0ae7b
  * ```
  */
-export function cryptoSha3224(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
-    return createHash('sha3-224').update(data).digest(outputEncoding);
+export function cryptoSha3224(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
+    return createHash('sha3-224').update(normalizeHashData(data)).digest(outputEncoding);
 }
 
 /**
@@ -75,14 +73,14 @@ export function cryptoSha3224(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```
  */
 export function cryptoSha3224ToBuffer(data: BinaryLike) {
-    return createHash('sha3-224').update(data).digest();
+    return createHash('sha3-224').update(normalizeHashData(data)).digest();
 }
 
 /**
  * Computes the SHA-3 hash of the given data using the 256-bit digest.
  *
  * @param {BinaryLike} data - The input data to hash
- * @param {BinaryToTextEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
+ * @param {BufferEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
  *
  * @returns {string | Buffer} The hash digest in the specified encoding
  *
@@ -93,8 +91,8 @@ export function cryptoSha3224ToBuffer(data: BinaryLike) {
  * console.log(cryptoSha3256('test')); // 36f028580bb02cc8272a9a020f4200e346e276ae664e45ee80745574e2f5ab80
  * ```
  */
-export function cryptoSha3256(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
-    return createHash('sha3-256').update(data).digest(outputEncoding);
+export function cryptoSha3256(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
+    return createHash('sha3-256').update(normalizeHashData(data)).digest(outputEncoding);
 }
 
 /**
@@ -112,14 +110,14 @@ export function cryptoSha3256(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```
  */
 export function cryptoSha3256ToBuffer(data: BinaryLike) {
-    return createHash('sha3-256').update(data).digest();
+    return createHash('sha3-256').update(normalizeHashData(data)).digest();
 }
 
 /**
  * Computes the SHA-3 hash of the given data using the 384-bit digest.
  *
  * @param {BinaryLike} data - The input data to hash
- * @param {BinaryToTextEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
+ * @param {BufferEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
  *
  * @returns {string | Buffer} The hash digest in the specified encoding
  *
@@ -130,8 +128,8 @@ export function cryptoSha3256ToBuffer(data: BinaryLike) {
  * console.log(cryptoSha3384('test')); // e516dabb23b6e30026863543282780a3ae0dccf05551cf0295178d7f...
  * ```
  */
-export function cryptoSha3384(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
-    return createHash('sha3-384').update(data).digest(outputEncoding);
+export function cryptoSha3384(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
+    return createHash('sha3-384').update(normalizeHashData(data)).digest(outputEncoding);
 }
 
 /**
@@ -149,14 +147,14 @@ export function cryptoSha3384(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```
  */
 export function cryptoSha3384ToBuffer(data: BinaryLike) {
-    return createHash('sha3-384').update(data).digest();
+    return createHash('sha3-384').update(normalizeHashData(data)).digest();
 }
 
 /**
  * Computes the SHA-3 hash of the given data using the 512-bit digest.
  *
  * @param {BinaryLike} data - The input data to hash
- * @param {BinaryToTextEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
+ * @param {BufferEncoding} [outputEncoding] - The output encoding (default: `'hex'`)
  *
  * @returns {string | Buffer} The hash digest in the specified encoding
  *
@@ -167,8 +165,8 @@ export function cryptoSha3384ToBuffer(data: BinaryLike) {
  * console.log(cryptoSha3512('test')); // 9ece086e9bac491fac5c1d1046ca11d737b92a2b2ebd93f005d7...
  * ```
  */
-export function cryptoSha3512(data: BinaryLike, outputEncoding: BinaryToTextEncoding = 'hex') {
-    return createHash('sha3-512').update(data).digest(outputEncoding);
+export function cryptoSha3512(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
+    return createHash('sha3-512').update(normalizeHashData(data)).digest(outputEncoding);
 }
 
 /**
@@ -186,5 +184,9 @@ export function cryptoSha3512(data: BinaryLike, outputEncoding: BinaryToTextEnco
  * ```
  */
 export function cryptoSha3512ToBuffer(data: BinaryLike) {
-    return createHash('sha3-512').update(data).digest();
+    return createHash('sha3-512').update(normalizeHashData(data)).digest();
+}
+
+function normalizeHashData(data: BinaryLike): NodeJS.ArrayBufferView | string {
+    return typeof data === 'string' || ArrayBuffer.isView(data) ? data : Buffer.from(data);
 }
