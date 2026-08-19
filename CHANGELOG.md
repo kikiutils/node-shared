@@ -1,5 +1,21 @@
 # Changelog
 
+## v18.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v17.0.0...v18.0.0)
+
+### 💅 Refactors
+
+- ⚠️  Remove the `delay` function because `es-toolkit` already provides the same functionality ([4ff7668](https://github.com/kikiutils/node-shared/commit/4ff7668))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove the `delay` function because `es-toolkit` already provides the same functionality ([4ff7668](https://github.com/kikiutils/node-shared/commit/4ff7668))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v17.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v16.0.0...v17.0.0)
