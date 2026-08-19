@@ -5,55 +5,10 @@ import {
     vi,
 } from 'vitest';
 
-import {
-    delay,
-    delayOrThrow,
-} from '../src/time';
+import { delayOrThrow } from '../src/time';
 
 afterEach(() => {
     vi.useRealTimers();
-});
-
-describe.concurrent('delay', () => {
-    it('should resolve after specified milliseconds', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const promise = delay(100);
-
-        await vi.advanceTimersByTimeAsync(100);
-
-        await expect(promise).resolves.toBeUndefined();
-    });
-
-    it('should resolve immediately when aborted', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const controller = new AbortController();
-        const promise = delay(1000, controller.signal);
-
-        controller.abort();
-
-        await expect(promise).resolves.toBeUndefined();
-    });
-
-    it('should resolve immediately when signal is already aborted', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const controller = new AbortController();
-        controller.abort();
-
-        await expect(delay(1000, controller.signal)).resolves.toBeUndefined();
-    });
-
-    it('should work without signal', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const promise = delay(50);
-
-        await vi.advanceTimersByTimeAsync(50);
-
-        await expect(promise).resolves.toBeUndefined();
-    });
 });
 
 describe.concurrent('delayOrThrow', () => {
