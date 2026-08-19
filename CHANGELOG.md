@@ -1,5 +1,29 @@
 # Changelog
 
+## v17.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v16.0.0...v17.0.0)
+
+### 🚀 Enhancements
+
+- **time:** ⚠️  Add abort-aware delay helpers ([9ce1111](https://github.com/kikiutils/node-shared/commit/9ce1111))
+
+### 🏡 Chore
+
+- Ignore local AI tooling artifacts ([7cf272b](https://github.com/kikiutils/node-shared/commit/7cf272b))
+- Update `modify-files-permissions.sh` ([c56f31f](https://github.com/kikiutils/node-shared/commit/c56f31f))
+- Update `modify-files-permissions.sh` ([249c4c8](https://github.com/kikiutils/node-shared/commit/249c4c8))
+- Update `modify-files-permissions.sh` ([4c193c3](https://github.com/kikiutils/node-shared/commit/4c193c3))
+- Upgrade deps ([fb04379](https://github.com/kikiutils/node-shared/commit/fb04379))
+
+#### ⚠️ Breaking Changes
+
+- **time:** ⚠️  Add abort-aware delay helpers ([9ce1111](https://github.com/kikiutils/node-shared/commit/9ce1111))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v16.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v15.1.1...v16.0.0)
