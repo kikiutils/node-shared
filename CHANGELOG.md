@@ -1,5 +1,17 @@
 # Changelog
 
+## v18.0.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v18.0.0...v18.0.1)
+
+### 🩹 Fixes
+
+- **time:** Restore custom `delay` to avoid `es-toolkit` throwing errors ([210e944](https://github.com/kikiutils/node-shared/commit/210e944))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v18.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v17.0.0...v18.0.0)
