@@ -1,12 +1,12 @@
+minimumReleaseAgeExcludePrune: true
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - semver@6.3.1
+
+shellEmulator: true
+
 allowBuilds:
   cpu-features: true
   msgpackr-extract: true
   ssh2: true
-
-minimumReleaseAgeExclude:
-  - '@kikiutils/tsconfigs@7.0.0'
-
-shellEmulator: true
-trustPolicy: no-downgrade
-trustPolicyExclude:
-  - semver@6.3.1
