@@ -139,9 +139,9 @@
     "@kikiutils/eslint-config": "^9.2.1",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@noble/hashes": "^2.4.0",
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.3",
     "@types/ssh2": "^1.15.6",
-    "@vitest/coverage-v8": "^5.0.1",
+    "@vitest/coverage-v8": "^5.0.2",
     "async-validator": "^4.2.5",
     "bson": "^7.3.3",
     "changelogen": "^0.6.2",
@@ -163,7 +163,7 @@
     "tsdown": "^0.23.0",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
-    "vitest": "^5.0.1",
+    "vitest": "^5.0.2",
     "vue": "^3.5.43",
     "vue-router": "^5.3.1"
   }
