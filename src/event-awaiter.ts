@@ -11,7 +11,10 @@
  * @template T - The type of value that will be resolved when the event is triggered
  */
 export class EventAwaiter<T> {
+    // Private instance properties
     #promiseResolvers = new Map<string, ((value: PromiseLike<T | undefined> | T | undefined) => void)[]>();
+
+    // Public instance methods
 
     /**
      * Triggers all pending promises waiting for the given key.

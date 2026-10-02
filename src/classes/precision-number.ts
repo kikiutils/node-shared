@@ -25,10 +25,12 @@ export type PrecisionNumberValue = Decimal.Value | PrecisionNumber | { toString:
  * ```
  */
 export class PrecisionNumber {
-    // Private properties
+    // Private instance properties
     readonly #decimalPlaces: number;
     readonly #rounding: Decimal.Rounding;
     #decimal: Decimal;
+
+    // Constructor
 
     /**
      * Creates a fixed-decimal number.
@@ -47,26 +49,7 @@ export class PrecisionNumber {
         this.#decimal = this.#decimalToFixedDecimal(new Decimal(value.toString().trim()));
     }
 
-    // Symbols
-
-    /**
-     * Returns the formatted value when inspected by Node.js utilities.
-     */
-    [Symbol.for('nodejs.util.inspect.custom')]() {
-        return this.value;
-    }
-
-    /**
-     * Converts to a number for numeric coercion and to the fixed string otherwise.
-     *
-     * @param {string} hint - JavaScript primitive-conversion hint
-     */
-    [Symbol.toPrimitive](hint: string) {
-        if (hint === 'number') return this.#decimal.toNumber();
-        return this.value;
-    }
-
-    // Private methods
+    // Private instance methods
     #decimalToFixedDecimal(decimal: Decimal) {
         return decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding);
     }
@@ -75,7 +58,7 @@ export class PrecisionNumber {
         return value.toString().trim();
     }
 
-    // Public getters
+    // Public instance accessors
 
     /**
      * Decimal places retained by mutating operations and default formatting.
@@ -98,6 +81,8 @@ export class PrecisionNumber {
         return this.#decimal.toFixed(this.#decimalPlaces, this.#rounding);
     }
 
+    // Public static methods
+
     /**
      * Formats a value with decimal.js without creating a reusable instance.
      *
@@ -115,7 +100,24 @@ export class PrecisionNumber {
         return new Decimal(value.toString().trim()).toFixed(decimalPlaces, rounding);
     }
 
-    // Public methods
+    // Public instance methods
+
+    /**
+     * Returns the formatted value when inspected by Node.js utilities.
+     */
+    [Symbol.for('nodejs.util.inspect.custom')]() {
+        return this.value;
+    }
+
+    /**
+     * Converts to a number for numeric coercion and to the fixed string otherwise.
+     *
+     * @param {string} hint - JavaScript primitive-conversion hint
+     */
+    [Symbol.toPrimitive](hint: string) {
+        if (hint === 'number') return this.#decimal.toNumber();
+        return this.value;
+    }
 
     /**
      * Replaces the current value with its absolute value.

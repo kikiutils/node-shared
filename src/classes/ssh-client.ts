@@ -27,11 +27,16 @@ const loggerLevelStringToConsolaLogLevelMap = {
 } as const;
 
 export class SshClient {
+    // Private instance properties
     readonly #connectConfig: Config;
     readonly #logger: ConsolaInstance;
-
     #nodeSsh: NodeSSH;
 
+    // Public instance properties
+    getDir = this.getDirectory;
+    putDir = this.putDirectory;
+
+    // Constructor
     constructor(host: string, username: string, password: string, port: number = 22, connectConfig?: Config) {
         this.#connectConfig = {
             ...connectConfig,
@@ -46,10 +51,12 @@ export class SshClient {
         if (process.env.NODE_ENV === 'production') this.setLoggerLevel('error');
     }
 
+    // Public instance accessors
     get nodeSsh() {
         return this.#nodeSsh;
     }
 
+    // Public instance methods
     async connect() {
         try {
             this.#nodeSsh = await this.#nodeSsh.connect(this.#connectConfig);
@@ -84,8 +91,6 @@ export class SshClient {
             },
         );
     }
-
-    getDir = this.getDirectory;
 
     async getDirectory(localDirectory: PathLike, remoteDirectory: PathLike, options?: SSHGetPutDirectoryOptions) {
         try {
@@ -124,8 +129,6 @@ export class SshClient {
             return false;
         }
     }
-
-    putDir = this.putDirectory;
 
     async putDirectory(localDirectory: PathLike, remoteDirectory: PathLike, options?: SSHGetPutDirectoryOptions) {
         try {

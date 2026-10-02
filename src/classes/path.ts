@@ -2,20 +2,7 @@ import type { Buffer } from 'node:buffer';
 import type { Abortable } from 'node:events';
 import type * as fs from 'node:fs';
 import * as fsp from 'node:fs/promises';
-import {
-    basename,
-    dirname,
-    extname,
-    format,
-    isAbsolute,
-    join,
-    normalize,
-    parse,
-    relative,
-    resolve,
-    toNamespacedPath,
-} from 'node:path';
-import type * as nodePath from 'node:path';
+import * as nodePath from 'node:path';
 
 type DropFirstParameters<T extends (...args: any) => any> = Parameters<T> extends [any, ...infer R] ? R : never;
 
@@ -31,7 +18,10 @@ export type PathLike = fs.PathLike | Path;
  * and leaving the original instance unchanged.
  */
 export class Path {
+    // Private instance properties
     readonly #value: string;
+
+    // Constructor
 
     /**
      * Creates a normalized path value by joining the provided path segments.
@@ -39,20 +29,10 @@ export class Path {
      * @param {PathLike[]} paths - Path segments accepted by Node.js `path.join` or another `Path` instance
      */
     constructor(...paths: PathLike[]) {
-        this.#value = join(...this.#toStrings(paths));
+        this.#value = nodePath.join(...this.#toStrings(paths));
     }
 
-    // Symbols
-    [Symbol.for('nodejs.util.inspect.custom')]() {
-        return this.#value;
-    }
-
-    [Symbol.toPrimitive](hint: string) {
-        if (hint === 'number') throw new TypeError('Cannot convert a Path to a number');
-        return this.#value;
-    }
-
-    // Private methods
+    // Private instance methods
     #newInstance(...paths: PathLike[]) {
         return new Path(...paths);
     }
@@ -61,7 +41,7 @@ export class Path {
         return paths.map((path) => path.toString());
     }
 
-    // Public getters
+    // Public instance accessors
 
     /**
      * @see {@link nodePath.dirname}
@@ -83,7 +63,7 @@ export class Path {
      * @see {@link nodePath.format}
      */
     static format(pathObject: nodePath.FormatInputPathObject) {
-        return new Path(format(pathObject));
+        return new Path(nodePath.format(pathObject));
     }
 
     /**
@@ -93,41 +73,49 @@ export class Path {
         return new this(...paths).resolve();
     }
 
-    // Public base methods
+    // Public instance methods
+    [Symbol.for('nodejs.util.inspect.custom')]() {
+        return this.#value;
+    }
+
+    [Symbol.toPrimitive](hint: string) {
+        if (hint === 'number') throw new TypeError('Cannot convert a Path to a number');
+        return this.#value;
+    }
 
     /**
      * @see {@link nodePath.basename}
      */
     basename(suffix?: string) {
-        return basename(this.#value, suffix);
+        return nodePath.basename(this.#value, suffix);
     }
 
     /**
      * @see {@link nodePath.dirname}
      */
     dirname() {
-        return this.#newInstance(dirname(this.#value));
+        return this.#newInstance(nodePath.dirname(this.#value));
     }
 
     /**
      * @see {@link nodePath.extname}
      */
     extname() {
-        return extname(this.#value);
+        return nodePath.extname(this.#value);
     }
 
     /**
      * @see {@link nodePath.isAbsolute}
      */
     isAbsolute() {
-        return isAbsolute(this.#value);
+        return nodePath.isAbsolute(this.#value);
     }
 
     /**
      * @see {@link nodePath.normalize}
      */
     normalize() {
-        return this.#newInstance(normalize(this.#value));
+        return this.#newInstance(nodePath.normalize(this.#value));
     }
 
     /**
@@ -141,21 +129,21 @@ export class Path {
      * @see {@link nodePath.parse}
      */
     parse() {
-        return parse(this.#value);
+        return nodePath.parse(this.#value);
     }
 
     /**
      * @see {@link nodePath.relative}
      */
     relative(to: PathLike) {
-        return this.#newInstance(relative(this.#value, to.toString()));
+        return this.#newInstance(nodePath.relative(this.#value, to.toString()));
     }
 
     /**
      * @see {@link nodePath.resolve}
      */
     resolve() {
-        return this.#newInstance(resolve(this.#value));
+        return this.#newInstance(nodePath.resolve(this.#value));
     }
 
     toJSON() {
@@ -166,7 +154,7 @@ export class Path {
      * @see {@link nodePath.toNamespacedPath}
      */
     toNamespacedPath() {
-        return toNamespacedPath(this.#value);
+        return nodePath.toNamespacedPath(this.#value);
     }
 
     /**
@@ -177,8 +165,6 @@ export class Path {
     toString() {
         return this.#value;
     }
-
-    // Some commonly used promise fs methods
 
     /**
      * @see {@link fsp.access}

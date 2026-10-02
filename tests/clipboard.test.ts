@@ -16,9 +16,11 @@ import {
 } from '../src/clipboard';
 
 class TestClipboardItem {
+    // Public instance properties
     readonly data: Record<string, Blob>;
     readonly options?: ClipboardItemOptions;
 
+    // Constructor
     constructor(data: Record<string, Blob>, options?: ClipboardItemOptions) {
         this.data = data;
         this.options = options;
