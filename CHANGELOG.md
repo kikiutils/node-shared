@@ -1,5 +1,44 @@
 # Changelog
 
+## v18.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v18.0.1...v18.1.0)
+
+### 🚀 Enhancements
+
+- **datetime:** Add chainable EnhancedDate ([2b711a2](https://github.com/kikiutils/node-shared/commit/2b711a2))
+- **redis:** Add Lua script runner with configurable retry limits ([ef2c844](https://github.com/kikiutils/node-shared/commit/ef2c844))
+
+### 🩹 Fixes
+
+- Correct readdir overloads and standardize API documentation ([cdd0c50](https://github.com/kikiutils/node-shared/commit/cdd0c50))
+- Align Path return types and API documentation with runtime behavior ([64e03d2](https://github.com/kikiutils/node-shared/commit/64e03d2))
+
+### 💅 Refactors
+
+- Standardize class member grouping and path imports ([9c78617](https://github.com/kikiutils/node-shared/commit/9c78617))
+
+### 🏡 Chore
+
+- Update `.gitignore` ([5d5bbc5](https://github.com/kikiutils/node-shared/commit/5d5bbc5))
+- Add `pnpm-workspace.yaml` ([bcd3c17](https://github.com/kikiutils/node-shared/commit/bcd3c17))
+- Update `pnpm-workspace.yaml` ([fe5e43f](https://github.com/kikiutils/node-shared/commit/fe5e43f))
+- Update `pnpm-workspace.yaml` ([5f000dd](https://github.com/kikiutils/node-shared/commit/5f000dd))
+- Upgrade deps ([4f0b8da](https://github.com/kikiutils/node-shared/commit/4f0b8da))
+- Update `.gitignore` ([87bd40c](https://github.com/kikiutils/node-shared/commit/87bd40c))
+- Upgrade deps ([047a892](https://github.com/kikiutils/node-shared/commit/047a892))
+- Update ignore files ([d91f81e](https://github.com/kikiutils/node-shared/commit/d91f81e))
+- Upgrade deps ([6d64849](https://github.com/kikiutils/node-shared/commit/6d64849))
+- Upgrade deps ([dee897a](https://github.com/kikiutils/node-shared/commit/dee897a))
+
+### 🎨 Styles
+
+- **test:** Reformat Path.format assertion ([21a8591](https://github.com/kikiutils/node-shared/commit/21a8591))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v18.0.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v18.0.0...v18.0.1)
