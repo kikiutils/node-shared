@@ -81,11 +81,11 @@ importers:
         specifier: ^13.1.3
         version: 13.1.3
       publint:
-        specifier: ^0.3.24
-        version: 0.3.24
+        specifier: ^0.3.25
+        version: 0.3.25
       tsdown:
         specifier: ^0.23.0
-        version: 0.23.0(oxc-resolver@11.24.2)(publint@0.3.24)(typescript@6.0.3)(unplugin-unused@0.6.0(rolldown@1.2.12)(vite@8.3.2(@types/node@26.6.3)(jiti@2.7.0)(yaml@2.9.1)))
+        version: 0.23.0(oxc-resolver@11.24.2)(publint@0.3.25)(typescript@6.0.3)(unplugin-unused@0.6.0(rolldown@1.2.12)(vite@8.3.2(@types/node@26.6.3)(jiti@2.7.0)(yaml@2.9.1)))
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -2531,8 +2531,8 @@ packages:
   process-warning@5.1.0:
     resolution: {integrity: sha512-jQSaVHsPgtyw60e1rQ/A+/ArPEj/S8pS/vFnyGa/gYFXrKk/6RuDkoqVDQ5NI5MmS01698ltlAk0NoDBNLujRw==}
 
-  publint@0.3.24:
-    resolution: {integrity: sha512-9zS56KrKBoqi5Qt8h92uMP8TTM9AYZSgnmCo4u2priMqkOZvQnTsziZ2p5LJ2ywbYkAjoCDp2jda9u4cgFefIw==}
+  publint@0.3.25:
+    resolution: {integrity: sha512-WMMbn/d7JqRlfXQL/JUI4n5skC8cJ5WVr8/wT5mmiYWkUdENkZr1I5rgs2+dQPVRgoJd+JRYtB46MTsuDylw9g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5654,7 +5654,7 @@ snapshots:
 
   process-warning@5.1.0: {}
 
-  publint@0.3.24:
+  publint@0.3.25:
     dependencies:
       '@publint/pack': 0.1.7
       package-manager-detector: 1.8.0
@@ -5896,7 +5896,7 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  tsdown@0.23.0(oxc-resolver@11.24.2)(publint@0.3.24)(typescript@6.0.3)(unplugin-unused@0.6.0(rolldown@1.2.12)(vite@8.3.2(@types/node@26.6.3)(jiti@2.7.0)(yaml@2.9.1))):
+  tsdown@0.23.0(oxc-resolver@11.24.2)(publint@0.3.25)(typescript@6.0.3)(unplugin-unused@0.6.0(rolldown@1.2.12)(vite@8.3.2(@types/node@26.6.3)(jiti@2.7.0)(yaml@2.9.1))):
     dependencies:
       cac: 7.0.0
       defu: 6.1.7
@@ -5913,7 +5913,7 @@ snapshots:
       unconfig-core: 7.5.0
       verkit: 0.4.1
     optionalDependencies:
-      publint: 0.3.24
+      publint: 0.3.25
       typescript: 6.0.3
       unplugin-unused: 0.6.0(rolldown@1.2.12)(vite@8.3.2(@types/node@26.6.3)(jiti@2.7.0)(yaml@2.9.1))
     transitivePeerDependencies:
