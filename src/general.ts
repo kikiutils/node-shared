@@ -1,28 +1,34 @@
 /* eslint-disable jsdoc/check-param-names */
 
 /**
- * Extracts the first value from an array or returns the value itself if it's not an array.
+ * Returns the first array element or the input value, with a nullish fallback.
  *
- * - If `value` is an array, returns the first element.
- * - If `value` is not an array, returns `value` directly.
- * - If the result is `null` or `undefined`, and `defaultValue` is provided, returns `defaultValue` instead.
+ * @remarks
+ * An empty array, `null`, or `undefined` selects the fallback; omission of a fallback yields `undefined`.
+ * The input and selected values are not copied or changed.
  *
- * @template T - The type of the input value(s)
- * @template D - The type of the default value (if provided)
+ * @typeParam T - The input value or array element type.
+ * @typeParam D - The fallback type when the fallback overload is used.
  *
- * @param {T | T[]} value - A single value or an array of values
- * @param {D} [defaultValue] - A fallback value if the result is `null` or `undefined`
+ * @param value - A single value or an array of values.
+ * @param defaultValue - The fallback returned when the selected value is nullish.
  *
- * @returns {T | D | undefined} The first value or the fallback
+ * @returns The selected non-nullish value, or the fallback without copying either value.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { extractFirstValue } from '@kikiutils/shared/general';
  *
- * console.log(extractFirstValue([1, 2, 3])); // 1
- * console.log(extractFirstValue('hello'));  // hello
- * console.log(extractFirstValue([], 'default')); // default
- * console.log(extractFirstValue(undefined, 'fallback')); // fallback
+ * console.log(extractFirstValue([
+ *     1,
+ *     2,
+ *     3,
+ * ])); // => 1
+ *
+ * console.log(extractFirstValue('hello')); // => 'hello'
+ * console.log(extractFirstValue([], 'default')); // => 'default'
+ * console.log(extractFirstValue(undefined, 'fallback')); // => 'fallback'
  * ```
  */
 export function extractFirstValue<T>(value: T | T[]): T | undefined;

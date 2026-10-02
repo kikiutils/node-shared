@@ -1,25 +1,31 @@
 import * as dateFns from 'date-fns';
 
 /**
- * Chainable extension of native `Date` backed by date-fns.
+ * A mutable calendar date with chainable date-fns operations.
  *
- * Inherits the native constructor, including zero-based month arguments and
- * millisecond timestamps. Native methods retain their original behavior.
+ * @remarks
+ * Inherits the native constructor, including zero-based month arguments and millisecond timestamps.
+ * Native methods retain their original behavior.
  * Mutating arithmetic and boundary methods update this instance and return `this`;
  * their `to`-prefixed counterparts return a new `EnhancedDate` instead.
  * Invalid dates, parsing, rounding, and week defaults follow date-fns semantics.
  * Operations use the system time zone unless configured through date-fns options.
+ * Day and week arithmetic uses calendar days, preserving local wall-clock time across daylight saving changes.
+ * Hour, minute, second, and millisecond arithmetic uses elapsed durations. Month and year arithmetic clamps
+ * to the last valid day of the destination month. Native setters retain their native overflow behavior.
+ * Exceptions from date-fns propagate unchanged, and operations can preserve or produce `Invalid Date`.
  *
  * When used in Vue state, prefer replacing the value with a `to`-prefixed result:
  * mutating a Date's internal timestamp does not trigger reactive updates.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
  *
  * const date = new EnhancedDate('2026-01-31T12:00:00Z');
- * const nextMonth = date.toAddMonths(1); // Original date is unchanged
- * date.addDays(1).startOfDay(); // Mutates the original date
+ * const nextMonth = date.toAddMonths(1); // Original date is unchanged.
+ * date.addDays(1).startOfDay(); // Mutates the original date.
  * nextMonth.isAfter(date);
  * ```
  */
@@ -36,12 +42,12 @@ export class EnhancedDate extends Date {
     /**
      * Parses a date using date-fns and an explicit reference for missing fields.
      *
-     * @param {string} value - Date string to parse
-     * @param {string} pattern - date-fns parsing pattern
-     * @param {dateFns.DateArg<Date>} referenceDate - Reference for fields absent from the pattern
-     * @param {dateFns.ParseOptions} [options] - Options passed to date-fns/parse
+     * @param value - Date string to parse.
+     * @param pattern - date-fns parsing pattern.
+     * @param referenceDate - Reference for fields absent from the pattern.
+     * @param options - Options passed to `date-fns/parse`.
      *
-     * @returns {EnhancedDate} Parsed date, including Invalid Date for invalid values
+     * @returns A new `EnhancedDate`, including `Invalid Date` for invalid values.
      */
     static fromFormat(
         value: string,
@@ -55,10 +61,10 @@ export class EnhancedDate extends Date {
     /**
      * Parses an ISO 8601 string using date-fns, including its partial-date support.
      *
-     * @param {string} value - ISO date string
-     * @param {dateFns.ParseISOOptions} [options] - Options passed to date-fns/parseISO
+     * @param value - ISO date string.
+     * @param options - Options passed to `date-fns/parseISO`.
      *
-     * @returns {EnhancedDate} Parsed date, or Invalid Date when parsing fails
+     * @returns A new `EnhancedDate`, or `Invalid Date` when parsing fails.
      */
     static fromISO(value: string, options?: dateFns.ParseISOOptions) {
         return new EnhancedDate(dateFns.parseISO(value, options));
@@ -67,7 +73,7 @@ export class EnhancedDate extends Date {
     /**
      * Creates a date from Unix seconds; native constructor numbers remain milliseconds.
      *
-     * @param {number} seconds - Seconds since the Unix epoch
+     * @param seconds - Seconds since the Unix epoch.
      */
     static fromUnixSeconds(seconds: number) {
         return new EnhancedDate(seconds * 1000);
@@ -85,8 +91,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of days in place using date-fns.
      *
-     * @param {number} amount - Number of days
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of days.
+     *
+     * @returns This instance for chaining.
      */
     addDays(amount: number) {
         this.setTime(dateFns.addDays(this, amount).getTime());
@@ -96,8 +103,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of hours in place using date-fns.
      *
-     * @param {number} amount - Number of hours
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of hours.
+     *
+     * @returns This instance for chaining.
      */
     addHours(amount: number) {
         this.setTime(dateFns.addHours(this, amount).getTime());
@@ -107,8 +115,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of milliseconds in place using date-fns.
      *
-     * @param {number} amount - Number of milliseconds
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of milliseconds.
+     *
+     * @returns This instance for chaining.
      */
     addMilliseconds(amount: number) {
         this.setTime(dateFns.addMilliseconds(this, amount).getTime());
@@ -118,8 +127,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of minutes in place using date-fns.
      *
-     * @param {number} amount - Number of minutes
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of minutes.
+     *
+     * @returns This instance for chaining.
      */
     addMinutes(amount: number) {
         this.setTime(dateFns.addMinutes(this, amount).getTime());
@@ -129,8 +139,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of months in place using date-fns.
      *
-     * @param {number} amount - Number of months
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of months.
+     *
+     * @returns This instance for chaining.
      */
     addMonths(amount: number) {
         this.setTime(dateFns.addMonths(this, amount).getTime());
@@ -140,8 +151,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of seconds in place using date-fns.
      *
-     * @param {number} amount - Number of seconds
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of seconds.
+     *
+     * @returns This instance for chaining.
      */
     addSeconds(amount: number) {
         this.setTime(dateFns.addSeconds(this, amount).getTime());
@@ -151,8 +163,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of weeks in place using date-fns.
      *
-     * @param {number} amount - Number of weeks
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of weeks.
+     *
+     * @returns This instance for chaining.
      */
     addWeeks(amount: number) {
         this.setTime(dateFns.addWeeks(this, amount).getTime());
@@ -162,8 +175,9 @@ export class EnhancedDate extends Date {
     /**
      * Adds the specified number of years in place using date-fns.
      *
-     * @param {number} amount - Number of years
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of years.
+     *
+     * @returns This instance for chaining.
      */
     addYears(amount: number) {
         this.setTime(dateFns.addYears(this, amount).getTime());
@@ -171,7 +185,7 @@ export class EnhancedDate extends Date {
     }
 
     /**
-     * Returns a new EnhancedDate with the same timestamp, including Invalid Date.
+     * Returns a new `EnhancedDate` with the same timestamp, including `Invalid Date`.
      */
     clone() {
         return new EnhancedDate(this.getTime());
@@ -179,6 +193,8 @@ export class EnhancedDate extends Date {
 
     /**
      * Returns the signed difference in calendar days: this date minus the other date.
+     *
+     * @remarks
      * Defaults and rounding follow date-fns.
      */
     differenceInCalendarDays(other: dateFns.DateArg<Date>) {
@@ -187,6 +203,8 @@ export class EnhancedDate extends Date {
 
     /**
      * Returns the signed difference in calendar weeks: this date minus the other date.
+     *
+     * @remarks
      * Defaults and rounding follow date-fns.
      */
     differenceInCalendarWeeks(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInCalendarWeeksOptions) {
@@ -195,6 +213,8 @@ export class EnhancedDate extends Date {
 
     /**
      * Returns the signed difference in full minutes: this date minus the other date.
+     *
+     * @remarks
      * Defaults and rounding follow date-fns.
      */
     differenceInMinutes(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInMinutesOptions) {
@@ -204,7 +224,7 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the end of its day in place.
      *
-     * @returns {this} The current instance for chaining
+     * @returns This instance for chaining.
      */
     endOfDay() {
         this.setTime(dateFns.endOfDay(this).getTime());
@@ -214,7 +234,7 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the end of its minute in place.
      *
-     * @returns {this} The current instance for chaining
+     * @returns This instance for chaining.
      */
     endOfMinute() {
         this.setTime(dateFns.endOfMinute(this).getTime());
@@ -224,7 +244,7 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the end of its month in place.
      *
-     * @returns {this} The current instance for chaining
+     * @returns This instance for chaining.
      */
     endOfMonth() {
         this.setTime(dateFns.endOfMonth(this).getTime());
@@ -234,8 +254,9 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the end of its week in place.
      *
-     * @param {dateFns.EndOfWeekOptions} [options] - date-fns week options; defaults are unchanged
-     * @returns {this} The current instance for chaining
+     * @param options - date-fns week options; defaults are unchanged.
+     *
+     * @returns This instance for chaining.
      */
     endOfWeek(options?: dateFns.EndOfWeekOptions) {
         this.setTime(dateFns.endOfWeek(this, options).getTime());
@@ -243,7 +264,9 @@ export class EnhancedDate extends Date {
     }
 
     /**
-     * Formats this date using a date-fns pattern (default: yyyy-MM-dd HH:mm:ss) and optional locale/options.
+     * Formats this date using a date-fns pattern (default: `yyyy-MM-dd HH:mm:ss`) and optional locale/options.
+     *
+     * @remarks
      * Invalid dates and invalid patterns retain date-fns error behavior.
      */
     format(pattern: string = 'yyyy-MM-dd HH:mm:ss', options?: dateFns.FormatOptions) {
@@ -258,7 +281,7 @@ export class EnhancedDate extends Date {
     }
 
     /**
-     * Returns Unix seconds using date-fns; getTime() returns milliseconds.
+     * Returns Unix seconds using date-fns; `getTime()` returns milliseconds.
      */
     getUnixTime() {
         return dateFns.getUnixTime(this);
@@ -330,7 +353,7 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the start of its day in place.
      *
-     * @returns {this} The current instance for chaining
+     * @returns This instance for chaining.
      */
     startOfDay() {
         this.setTime(dateFns.startOfDay(this).getTime());
@@ -340,7 +363,7 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the start of its minute in place.
      *
-     * @returns {this} The current instance for chaining
+     * @returns This instance for chaining.
      */
     startOfMinute() {
         this.setTime(dateFns.startOfMinute(this).getTime());
@@ -350,7 +373,7 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the start of its month in place.
      *
-     * @returns {this} The current instance for chaining
+     * @returns This instance for chaining.
      */
     startOfMonth() {
         this.setTime(dateFns.startOfMonth(this).getTime());
@@ -360,8 +383,9 @@ export class EnhancedDate extends Date {
     /**
      * Moves this date to the start of its week in place.
      *
-     * @param {dateFns.StartOfWeekOptions} [options] - date-fns week options; defaults are unchanged
-     * @returns {this} The current instance for chaining
+     * @param options - date-fns week options; defaults are unchanged.
+     *
+     * @returns This instance for chaining.
      */
     startOfWeek(options?: dateFns.StartOfWeekOptions) {
         this.setTime(dateFns.startOfWeek(this, options).getTime());
@@ -371,8 +395,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of days in place using date-fns.
      *
-     * @param {number} amount - Number of days
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of days.
+     *
+     * @returns This instance for chaining.
      */
     subDays(amount: number) {
         this.setTime(dateFns.subDays(this, amount).getTime());
@@ -382,8 +407,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of hours in place using date-fns.
      *
-     * @param {number} amount - Number of hours
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of hours.
+     *
+     * @returns This instance for chaining.
      */
     subHours(amount: number) {
         this.setTime(dateFns.subHours(this, amount).getTime());
@@ -393,8 +419,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of milliseconds in place using date-fns.
      *
-     * @param {number} amount - Number of milliseconds
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of milliseconds.
+     *
+     * @returns This instance for chaining.
      */
     subMilliseconds(amount: number) {
         this.setTime(dateFns.subMilliseconds(this, amount).getTime());
@@ -404,8 +431,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of minutes in place using date-fns.
      *
-     * @param {number} amount - Number of minutes
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of minutes.
+     *
+     * @returns This instance for chaining.
      */
     subMinutes(amount: number) {
         this.setTime(dateFns.subMinutes(this, amount).getTime());
@@ -415,8 +443,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of months in place using date-fns.
      *
-     * @param {number} amount - Number of months
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of months.
+     *
+     * @returns This instance for chaining.
      */
     subMonths(amount: number) {
         this.setTime(dateFns.subMonths(this, amount).getTime());
@@ -426,8 +455,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of seconds in place using date-fns.
      *
-     * @param {number} amount - Number of seconds
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of seconds.
+     *
+     * @returns This instance for chaining.
      */
     subSeconds(amount: number) {
         this.setTime(dateFns.subSeconds(this, amount).getTime());
@@ -437,8 +467,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of weeks in place using date-fns.
      *
-     * @param {number} amount - Number of weeks
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of weeks.
+     *
+     * @returns This instance for chaining.
      */
     subWeeks(amount: number) {
         this.setTime(dateFns.subWeeks(this, amount).getTime());
@@ -448,8 +479,9 @@ export class EnhancedDate extends Date {
     /**
      * Subtracts the specified number of years in place using date-fns.
      *
-     * @param {number} amount - Number of years
-     * @returns {this} The current instance for chaining
+     * @param amount - Number of years.
+     *
+     * @returns This instance for chaining.
      */
     subYears(amount: number) {
         this.setTime(dateFns.subYears(this, amount).getTime());

@@ -1,14 +1,15 @@
 import type { GlobalComponents } from 'vue';
 
 /**
- * A type that represents a reference to a Vue component instance.
- * The reference can be either an instance of the specified component or null.
+ * A nullable reference to an instance of a globally registered Vue component.
  *
- * @template K - The key of the component in the GlobalComponents.
+ * @typeParam K - The component name in Vue's `GlobalComponents` registry.
  *
  * @example
- * ```typescript
- * import type { ComponentRef } from '@kikiutils/types/vue';
+ *
+ * ```ts
+ * import type { ComponentRef } from '@kikiutils/shared/types/vue';
+ * import { ref } from 'vue';
  *
  * const keepAliveRef = ref<ComponentRef<'KeepAlive'>>(null);
  * ```

@@ -1,4 +1,6 @@
+import type { Buffer } from 'node:buffer';
 import { constants } from 'node:fs';
+import type { Dirent } from 'node:fs';
 import {
     mkdtemp,
     rm,
@@ -17,6 +19,7 @@ import {
     afterEach,
     beforeEach,
     describe,
+    expectTypeOf,
     it,
 } from 'vitest';
 
@@ -109,7 +112,8 @@ describe('path fs promise operations', () => {
         await expect(file.rename(renamed)).resolves.toBeUndefined();
         await expect(renamed.readFile('utf8')).resolves.toBe('hello');
 
-        const entries = await (nestedDir.readdir as unknown as () => Promise<string[]>)();
+        const entries = await nestedDir.readdir();
+        expectTypeOf(entries).toEqualTypeOf<string[]>();
         expect(entries.toSorted()).toEqual([
             'copy.txt',
             'renamed.txt',
@@ -118,6 +122,31 @@ describe('path fs promise operations', () => {
         await expect(copy.unlink()).resolves.toBeUndefined();
         await expect(renamed.rm()).resolves.toBeUndefined();
         await expect(nestedDir.rmdir()).resolves.toBeUndefined();
+    });
+
+    it('should infer and return entries for each readdir option', async ({ expect }) => {
+        await tempPath.join('entry.txt').writeFile('hello');
+
+        const names = await tempPath.readdir('utf8');
+        expectTypeOf(names).toEqualTypeOf<string[]>();
+        expect(names).toEqual(['entry.txt']);
+
+        const buffers = await tempPath.readdir('buffer');
+        expectTypeOf(buffers).toEqualTypeOf<Buffer[]>();
+        expect(buffers.map((entry) => entry.toString())).toEqual(['entry.txt']);
+
+        const entries = await tempPath.readdir({ withFileTypes: true });
+        expectTypeOf(entries).toEqualTypeOf<Dirent[]>();
+        expect(entries.map((entry) => entry.name)).toEqual(['entry.txt']);
+        expect(entries[0]?.isFile()).toBe(true);
+
+        const bufferEntries = await tempPath.readdir({
+            encoding: 'buffer',
+            withFileTypes: true,
+        });
+
+        expectTypeOf(bufferEntries).toEqualTypeOf<Dirent<Buffer>[]>();
+        expect(bufferEntries.map((entry) => entry.name.toString())).toEqual(['entry.txt']);
     });
 
     it('should create a non-recursive directory without returning a path', async ({ expect }) => {

@@ -1,20 +1,21 @@
 /**
- * Delays execution until the specified duration elapses or the signal is aborted.
+ * Waits until a duration elapses or cancellation occurs without rejecting on cancellation.
  *
- * Aborting the signal resolves the promise normally without throwing.
+ * @remarks
+ * The promise resolves without a value when the timer completes or the signal aborts.
+ * An already aborted signal resolves immediately; completion removes the abort listener and clears the timer.
  *
- * @param {number} ms - Delay duration in milliseconds
- * @param {AbortSignal} [signal] - Optional signal used to end the delay early
- *
- * @returns {Promise<void>} Resolves when the delay completes or the signal is aborted
+ * @param ms - The delay duration in milliseconds, using native `setTimeout` timing rules.
+ * @param signal - The signal that ends the wait early.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { delay } from '@kikiutils/shared/time';
  *
  * const controller = new AbortController();
- * setTimeout(() => controller.abort(), 1000);
- * await delay(5000, controller.signal); // resolves after ~1s
+ * controller.abort();
+ * await delay(5000, controller.signal);
  * ```
  */
 export function delay(ms: number, signal?: AbortSignal): Promise<void> {
@@ -37,22 +38,27 @@ export function delay(ms: number, signal?: AbortSignal): Promise<void> {
 }
 
 /**
- * Delays execution until the specified duration elapses or the signal is aborted.
+ * Waits until a duration elapses and rejects on cancellation.
  *
- * Aborting the signal rejects the promise with the signal's abort reason.
+ * @remarks
+ * The promise resolves without a value when the timer completes and rejects with `signal.reason` if aborted.
+ * An already aborted signal rejects immediately. Aborting clears the timer; timer completion removes the listener.
  *
- * @param {number} ms - Delay duration in milliseconds
- * @param {AbortSignal} [signal] - Optional signal used to abort the delay
- *
- * @returns {Promise<void>} Resolves when the delay completes or rejects when the signal is aborted
+ * @param ms - The delay duration in milliseconds, using native `setTimeout` timing rules.
+ * @param signal - The signal that cancels the wait.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { delayOrThrow } from '@kikiutils/shared/time';
  *
  * const controller = new AbortController();
- * setTimeout(() => controller.abort(), 1000);
- * await delayOrThrow(5000, controller.signal); // rejects after ~1s
+ * controller.abort(new Error('Canceled'));
+ * try {
+ *     await delayOrThrow(5000, controller.signal);
+ * } catch (error) {
+ *     console.error(error);
+ * }
  * ```
  */
 export function delayOrThrow(ms: number, signal?: AbortSignal): Promise<void> {

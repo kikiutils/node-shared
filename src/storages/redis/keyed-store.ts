@@ -3,29 +3,20 @@ import type { MaybeReadonly } from '../../types';
 import type { RedisLikeStorage } from './types';
 
 /**
- * Creates a keyed store wrapper around a Redis-like storage.
+ * Creates a keyed store factory sharing a caller-owned Redis-like storage facade.
  *
- * @template D - The data type stored in the keyed store
+ * @remarks
+ * The key resolver is called synchronously once per operation with the operation's key arguments.
+ * Resolver exceptions propagate synchronously; asynchronous storage failures retain the underlying rejection.
+ * `setItemWithTtl` accepts its TTL in seconds before the value and key arguments.
+ * The factory does not open or close the underlying connection; cleanup remains the caller's responsibility.
  *
- * @param {MaybeReadonly<RedisLikeStorage>} storage - The underlying Redis-like storage instance
+ * @typeParam D - The stored value type used by reads and writes.
  *
- * @returns {(keyFn: (...args: P) => string) => Readonly<{
- *   getItem, getItemTtl, hasItem, removeItem, resolveKey, setItem, setItemWithTtl
- * }>} A factory that accepts a key resolver and returns a frozen Redis keyed-store facade
+ * @param storage - The shared Redis-like storage instance.
  *
- * @example
- * ```typescript
- * import { createRedisKeyedStore } from '@kikiutils/shared/storages/redis/keyed-store';
- * import { createRedisMsgpackStorage } from '@kikiutils/shared/storages/redis/msgpack';
- * import { createClient } from 'redis';
- *
- * const client = createClient();
- * await client.connect();
- * const storage = createRedisMsgpackStorage(client as unknown as RedisLikeAdapter);
- * const keyedStore = createRedisKeyedStore(storage)((userId: string) => `user:${userId}`);
- * await keyedStore.setItem({ name: 'Alice' }, 'user-123');
- * const user = await keyedStore.getItem('user-123'); // { name: 'Alice' }
- * ```
+ * @returns A factory accepting a key resolver and returning a new frozen keyed facade sharing the storage.
+ * Reads, writes, removals, and TTL results retain the underlying storage contract.
  */
 export function createRedisKeyedStore<D = unknown>(storage: MaybeReadonly<RedisLikeStorage>) {
     return <P extends any[]>(keyFn: (...args: P) => string) => Object.freeze({

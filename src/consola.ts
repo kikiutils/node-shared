@@ -1,25 +1,23 @@
 import { createConsola } from 'consola';
 
 /**
- * A consola logger instance.
+ * A consola logger with environment-controlled verbosity.
  *
- * The logger's level is determined based on the `CONSOLA_LOGGER_LEVEL` and `NODE_ENV` environment variables.
- * If `CONSOLA_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`,
- * the level will be set to `0`.
- *
- * To manually change the level, assign the desired level to `logger.level`.
- *
- * See available levels [here](https://github.com/unjs/consola?tab=readme-ov-file#log-level).
+ * @remarks
+ * `CONSOLA_LOGGER_LEVEL` sets the log level when defined at module initialization;
+ * otherwise, `NODE_ENV=production` selects `0`, and other environments retain the logger's default level.
+ * Assign `logger.level` to change verbosity after initialization.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { logger } from '@kikiutils/shared/consola';
  *
- * logger.info('test'); // ℹ test 3:56:30 AM
- *
- * // Manually change the level
  * logger.level = 3;
+ * logger.info('Application started');
  * ```
+ *
+ * @see {@link https://github.com/unjs/consola#log-level | Consola log levels}
  */
 export const consolaLogger = createConsola();
 export const logger = consolaLogger;

@@ -7,40 +7,42 @@ type CalculableValue = Decimal.Value | { toString: () => string };
  */
 export interface ToPercentageStringOptions {
     /**
-     * Number of decimal places to include in the result.
+     * The number of decimal places to include in the result.
      *
-     * @default 2
+     * @defaultValue 2
      */
     decimalPlaces?: number;
 
     /**
-     * Whether to include the '%' symbol in the result.
+     * Whether to include the `%` symbol in the result.
      *
-     * @default true
+     * @defaultValue true
      */
     withSymbol?: boolean;
 }
 
 /**
- * Converts a fraction (numerator / denominator) into a percentage string.
+ * Converts a numerator and denominator into a formatted percentage.
  *
- * - Uses `decimal.js` for precise decimal calculations.
- * - Supports custom decimal places and optional percentage symbol.
- * - Returns `'0.00%'` if result is `NaN` or division is invalid.
+ * @remarks
+ * A `NaN` or infinite quotient produces `0.00`, regardless of the configured decimal places;
+ * the percent symbol is appended according to `options.withSymbol`.
+ * Invalid decimal input and formatting options propagate decimal.js exceptions.
  *
- * @param {CalculableValue} molecular - The numerator of the fraction
- * @param {CalculableValue} denominator - The denominator of the fraction
- * @param {ToPercentageStringOptions} [options] - Optional output settings
+ * @param molecular - The numerator of the fraction.
+ * @param denominator - The denominator of the fraction.
+ * @param options - Output precision and percent-symbol settings.
  *
- * @returns {string} Formatted percentage string
+ * @returns The formatted percentage string.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { toPercentageString } from '@kikiutils/shared/math';
  *
- * console.log(toPercentageString(50, 200)); // 25.00%
- * console.log(toPercentageString(50, 200, { withSymbol: false })); // 25.00
- * console.log(toPercentageString(50, 200, { decimalPlaces: 1 })); // 25.0%
+ * console.log(toPercentageString(50, 200)); // => '25.00%'
+ * console.log(toPercentageString(50, 200, { withSymbol: false })); // => '25.00'
+ * console.log(toPercentageString(50, 200, { decimalPlaces: 1 })); // => '25.0%'
  * ```
  */
 export function toPercentageString(

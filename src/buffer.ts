@@ -3,33 +3,32 @@ import { Buffer } from 'node:buffer';
 import type { BinaryInput } from './types';
 
 /**
- * Converts various binary data types to a Node.js Buffer.
+ * Converts binary input to a Node.js `Buffer`.
  *
- * This function provides a unified, efficient way to convert different binary formats
- * (Blob, Buffer, File, ArrayBuffer, or Uint8Array) into a Node.js Buffer.
- * It prioritizes zero-copy conversions for TypedArrays and ArrayBuffers to ensure
- * optimal performance.
+ * @remarks
+ * An existing `Buffer` is returned unchanged. `ArrayBuffer` and `Uint8Array` inputs share their backing memory
+ * with the result, so changes are visible through both views. `Blob` and `File` inputs are read asynchronously.
  *
- * @param {ArrayBuffer | Blob | Buffer | File | Uint8Array} input - The binary data input to convert.
- * Supports Blob, Buffer, File, ArrayBuffer, and Uint8Array.
+ * @param input - The binary data to convert.
  *
- * @returns {Promise<Buffer>} A promise that resolves to a Node.js Buffer.
+ * @returns A promise resolving to the original buffer or a new buffer view after the input is available.
+ *
+ * @throws TypeError through promise rejection if the input is unsupported.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { toBuffer } from '@kikiutils/shared/buffer';
  *
- * // From ArrayBuffer
- * const ab = new ArrayBuffer(8);
- * const bufferFromAB = await toBuffer(ab);
+ * const bytes = new Uint8Array([
+ *     10,
+ *     20,
+ *     30,
+ * ]);
  *
- * // From Uint8Array (Zero-copy)
- * const u8 = new Uint8Array([10, 20, 30]);
- * const bufferFromU8 = await toBuffer(u8);
- *
- * // From Blob or File
- * const blob = new Blob(['data'], { type: 'text/plain' });
- * const bufferFromBlob = await toBuffer(blob);
+ * const buffer = await toBuffer(bytes);
+ * bytes[0] = 40;
+ * console.log(buffer[0]); // => 40
  * ```
  */
 export async function toBuffer(input: BinaryInput) {

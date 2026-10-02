@@ -1,33 +1,38 @@
 import type { LRUCache } from 'lru-cache';
 
 /**
- * Creates a keyed store wrapper around an LRU cache instance.
+ * Creates a keyed cache factory sharing a caller-owned LRU cache.
  *
- * @template D - The data type stored in the keyed store
+ * @remarks
+ * The key resolver is called synchronously once per operation, and its exceptions propagate.
+ * Reads return the cached value without copying it, or `null` for missing or nullish values.
+ * `getItemTtl` exposes the underlying remaining TTL in milliseconds; `setItem` returns the underlying cache.
+ * The facade does not dispose the supplied cache, and LRU defaults remain those of the supplied instance.
  *
- * @param {LRUCache<any, any, any>} lruInstance - The underlying lru-cache instance
+ * @typeParam D - The stored value type used by reads and writes.
  *
- * @returns {(keyFn: (...args: P) => string) => Readonly<{
- *   getItem, getItemTtl, hasItem, removeItem, resolveKey, setItem
- * }>} A factory that accepts a key resolver and returns a frozen keyed cache facade
+ * @param lruInstance - The shared LRU cache instance.
+ *
+ * @returns A factory accepting a key resolver and returning a new frozen keyed facade sharing the cache.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { createLruKeyedStore } from '@kikiutils/shared/storages/lru/keyed-store';
  * import { LRUCache } from 'lru-cache';
  *
- * const lru = new LRUCache({ max: 100 });
- * const keyedStore = createLruKeyedStore(lru)((userId: string) => `user:${userId}`);
+ * const cache = new LRUCache<string, { name: string }>({ max: 100 });
+ * const keyedStore = createLruKeyedStore<{ name: string }>(cache)((userId: string) => `user:${userId}`);
  * keyedStore.setItem({ name: 'Alice' }, 'user-123');
- * const user = keyedStore.getItem('user-123'); // { name: 'Alice' }
+ * console.log(keyedStore.getItem('user-123')); // => { name: 'Alice' }
  * ```
  */
 export function createLruKeyedStore<D = unknown>(lruInstance: LRUCache<any, any, any>) {
     return <P extends any[]>(keyFn: (...args: P) => string) => Object.freeze({
         /**
-         * Return a value from the cache. Will update the recency of the cache entry found.
+         * Returns the cached value and applies the underlying cache's read-recency policy.
          *
-         * If the key is not found, returns `null`.
+         * @returns The cached value without copying it, or `null` when absent or nullish.
          */
         getItem(...args: P) {
             const rawValue = lruInstance.get(keyFn(...args));

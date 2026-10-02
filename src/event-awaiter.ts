@@ -1,14 +1,13 @@
 /**
- * EventAwaiter provides a mechanism to wait for events (by key) asynchronously.
+ * An asynchronous keyed event rendezvous for one or more waiting consumers.
  *
- * This class allows multiple consumers to `wait` for a specific key
- * and be resolved when `trigger` is called for that key, or automatically
- * resolved with `undefined` if a timeout occurs or an AbortSignal is triggered.
+ * @remarks
+ * Triggers resolve the currently registered waiters; values are not retained for future waits.
+ * Timeouts and subsequent abort events resolve affected waiters with `undefined`.
+ * Use `triggerAll` to resolve pending waits during cleanup. Timers and abort listeners are not proactively
+ * removed by triggers, so they may remain until their timeout or abort event occurs.
  *
- * Typical use cases include long-polling, request coordination,
- * or implementing event-driven primitives in applications or services.
- *
- * @template T - The type of value that will be resolved when the event is triggered
+ * @typeParam T - The value delivered to waiting consumers.
  */
 export class EventAwaiter<T> {
     // Private instance properties
@@ -17,12 +16,10 @@ export class EventAwaiter<T> {
     // Public instance methods
 
     /**
-     * Triggers all pending promises waiting for the given key.
-     * Each promise will be resolved with the provided value.
+     * Resolves all currently pending waits for a key with the supplied value.
      *
-     * @param {string} key - Identifier for the awaited event
-     * @param {T | undefined} value - The value to resolve the awaiting promises with.
-     * May be `undefined` to indicate no result or a timeout-like behavior.
+     * @param key - The event identifier; a key without pending waits has no effect.
+     * @param value - The delivered value; `undefined` indicates no result.
      */
     trigger(key: string, value: T | undefined) {
         const resolvers = this.#promiseResolvers.get(key);
@@ -33,13 +30,9 @@ export class EventAwaiter<T> {
     }
 
     /**
-     * Triggers and resolves all pending promises across all keys.
+     * Resolves all currently pending waits and clears their registrations.
      *
-     * This is typically used during shutdown or cleanup to ensure that
-     * no consumer is left waiting indefinitely.
-     *
-     * @param {T | undefined} [value] - Optional value to resolve all waiters with.
-     * Defaults to `undefined`, which usually indicates cancellation or shutdown.
+     * @param value - The delivered value; omission resolves all pending waits with `undefined`.
      */
     triggerAll(value: T | undefined = undefined) {
         for (const [_, resolvers] of this.#promiseResolvers.entries()) resolvers.forEach((resolve) => resolve(value));
@@ -47,27 +40,23 @@ export class EventAwaiter<T> {
     }
 
     /**
-     * Waits for an event associated with the given key.
+     * Waits for a trigger associated with a key.
      *
-     * The returned promise will resolve when:
-     *  - `trigger(key)` is called, in which case it resolves with the provided value.
-     *  - The optional timeout is reached, in which case it resolves with `undefined`.
-     *  - The optional `AbortSignal` is aborted, in which case it resolves with `undefined`.
+     * @remarks
+     * By default, multiple waiters share a key and all receive the next trigger value.
+     * `strict` mode rejects duplicate waits; `override` mode resolves existing waits with `undefined` before
+     * registering the new wait. Timeout and abort remove only the affected waiter's registration.
+     * An already aborted signal is not checked; only an abort event emitted after registration ends the wait.
+     * Without a timeout or subsequent abort, the wait remains pending until a trigger arrives.
      *
-     * Behavior when multiple waiters exist for the same key:
-     *  - Default (no mode): multiple waiters are allowed, all will be resolved when triggered.
-     *  - `strict` mode: throws an error if a waiter already exists for the given key.
-     *  - `override` mode: cancels all existing waiters (resolving them with `undefined`)
-     *    and only keeps the latest one.
+     * @param key - The event identifier to wait for.
+     * @param timeoutMs - The optional timeout in milliseconds, using native `setTimeout` timing rules.
+     * @param mode - The policy for existing waiters; omission allows multiple waiters.
+     * @param signal - A signal whose subsequent abort event ends this wait.
      *
-     * @param {string} key - Identifier for the awaited event
-     * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
-     * If reached, the promise resolves with `undefined`.
-     * @param {'override' | 'strict'} [mode] - Optional behavior mode for handling multiple waiters
-     * @param {AbortSignal} [signal] - Optional AbortSignal. If aborted, the promise resolves with `undefined`
+     * @returns A promise resolving to the triggered value, or `undefined` after timeout, abort, or replacement.
      *
-     * @returns {Promise<T | undefined>} A promise that resolves with the triggered value,
-     * or `undefined` if timeout or abort occurs
+     * @throws Error through promise rejection if `strict` mode encounters an existing waiter.
      */
     wait(key: string, timeoutMs?: number, mode?: 'override' | 'strict', signal?: AbortSignal) {
         return new Promise<T | undefined>((resolve) => {
@@ -119,28 +108,35 @@ export class EventAwaiter<T> {
     }
 
     /**
-     * Waits for an event in strict mode.
-     * Only one waiter is allowed per key. If another waiter already exists,
-     * this method will throw an error.
+     * Waits for a key while rejecting duplicate registrations.
      *
-     * @param {string} key - Identifier for the awaited event
-     * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
-     * If reached, the promise resolves with `undefined`.
-     * @param {AbortSignal} [signal] - Optional AbortSignal. If aborted, the promise resolves with `undefined`
+     * @param key - The event identifier to wait for.
+     * @param timeoutMs - The optional timeout in milliseconds.
+     * @param signal - A signal whose subsequent abort event ends this wait; an already aborted signal is not checked.
+     *
+     * @returns A promise resolving to the triggered value, or `undefined` on timeout or subsequent abort.
+     *
+     * @throws Error through promise rejection if the key already has a pending waiter.
+     *
+     * @see {@link EventAwaiter.wait}
      */
     waitExclusive(key: string, timeoutMs?: number, signal?: AbortSignal) {
         return this.wait(key, timeoutMs, 'strict', signal);
     }
 
     /**
-     * Waits for an event in override mode.
-     * If another waiter already exists for the given key, it will be canceled
-     * (resolved with `undefined`) and replaced by the new waiter.
+     * Replaces existing waiters for a key and waits for its next trigger.
      *
-     * @param {string} key - Identifier for the awaited event
-     * @param {number} [timeoutMs] - Optional timeout (in milliseconds).
-     * If reached, the promise resolves with `undefined`.
-     * @param {AbortSignal} [signal] - Optional AbortSignal. If aborted, the promise resolves with `undefined`
+     * @remarks
+     * Existing waiters resolve with `undefined` before the new waiter is registered.
+     *
+     * @param key - The event identifier to wait for.
+     * @param timeoutMs - The optional timeout in milliseconds.
+     * @param signal - A signal whose subsequent abort event ends this wait; an already aborted signal is not checked.
+     *
+     * @returns A promise resolving to the triggered value, or `undefined` on timeout, subsequent abort, or replacement.
+     *
+     * @see {@link EventAwaiter.wait}
      */
     waitLatest(key: string, timeoutMs?: number, signal?: AbortSignal) {
         return this.wait(key, timeoutMs, 'override', signal);

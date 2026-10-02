@@ -3,28 +3,28 @@ type CopyResult =
   | { ok: true };
 
 /**
- * Attempts to copy a Blob (e.g. image, plain text, HTML) to the user's clipboard using the ClipboardItem API.
+ * Attempts to copy a blob to the browser clipboard.
  *
- * ⚠️ Usage Notes:
- * - Must be called in a **secure context** (HTTPS or localhost).
- * - Must be called **in response to a user interaction** (e.g. click, input).
- * - Not supported in Safari and some older browsers.
+ * @remarks
+ * Requires a browser environment with clipboard support, a secure context, and any user activation required
+ * by the browser. Clipboard API failures are returned as results rather than rethrown.
  *
- * @param {Blob} blob - The Blob object to copy (e.g. from a File, image, or text content)
- * @param {ClipboardItemOptions} [options] - Optional options passed to the ClipboardItem constructor
+ * @param blob - The blob whose MIME type identifies the clipboard format.
+ * @param options - Options passed to the `ClipboardItem` constructor.
  *
- * @returns {Promise<CopyResult>} A promise resolving to a `CopyResult`:
- *   - `{ ok: true }` if the copy succeeded
- *   - `{ ok: false, error }` if the copy failed, with the error included
+ * @returns A promise resolving after the copy attempt to `{ ok: true }` on success, or
+ * `{ ok: false, error }` with the failure reason.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { copyBlobToClipboard } from '@kikiutils/shared/clipboard';
  *
+ * // Call from a user interaction in a supported browser.
  * const blob = new Blob(['Hello world'], { type: 'text/plain' });
  * const result = await copyBlobToClipboard(blob);
  * if (result.ok) {
- *     console.log('Copied blob!');
+ *     console.log('Copied!');
  * } else {
  *     console.error('Copy failed:', result.error);
  * }
@@ -51,24 +51,24 @@ export async function copyBlobToClipboard(blob: Blob, options?: ClipboardItemOpt
 }
 
 /**
- * Attempts to copy the given text to the user's clipboard using the modern Clipboard API.
+ * Attempts to copy text to the browser clipboard.
  *
- * ⚠️ Usage Notes:
- * - Must be called in a **secure context** (HTTPS or localhost).
- * - Must be called **in response to a user interaction** (e.g. click, input).
- * - Not supported in some older browsers (especially legacy Safari).
+ * @remarks
+ * Requires a browser environment with clipboard support, a secure context, and any user activation required
+ * by the browser. Clipboard API failures are returned as results rather than rethrown.
  *
- * @param {string} text - The string to be copied to the clipboard
+ * @param text - The text to copy.
  *
- * @returns {Promise<CopyResult>} A promise resolving to a `CopyResult`:
- *   - `{ ok: true }` if the copy succeeded
- *   - `{ ok: false, error }` if the copy failed, with the error included
+ * @returns A promise resolving after the copy attempt to `{ ok: true }` on success, or
+ * `{ ok: false, error }` with the failure reason.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { copyTextToClipboard } from '@kikiutils/shared/clipboard';
  *
- * const result = await copyTextToClipboard('Hello!');
+ * // Call from a user interaction in a supported browser.
+ * const result = await copyTextToClipboard('Hello world');
  * if (result.ok) {
  *     console.log('Copied!');
  * } else {

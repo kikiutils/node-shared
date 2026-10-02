@@ -1,9 +1,7 @@
 import { pino } from 'pino';
 import { PinoPretty } from 'pino-pretty';
 
-/**
- * Configure pinoPretty to enhance the log output.
- */
+// Configure pretty-printed log output.
 const stream = PinoPretty({
     colorize: true, // Enable colored output for better readability
     ignore: 'hostname,pid', // Exclude 'hostname' and 'pid' fields from the logs
@@ -11,25 +9,23 @@ const stream = PinoPretty({
 });
 
 /**
- * A pino logger instance with the configured stream.
+ * A pino logger with environment-controlled verbosity.
  *
- * The logger's level is determined based on the `PINO_LOGGER_LEVEL` and `NODE_ENV` environment variables.
- * If `PINO_LOGGER_LEVEL` is set, it will be used; otherwise, if `NODE_ENV` is `production`,
- * the level will be set to `error`.
- *
- * To manually change the level, assign the desired level to `logger.level`.
- *
- * See available levels [here](https://getpino.io/#/docs/api?id=level-string).
+ * @remarks
+ * `PINO_LOGGER_LEVEL` sets the log level when nonempty at module initialization;
+ * otherwise, `NODE_ENV=production` selects `error`, and other environments retain the logger's default level.
+ * Assign `logger.level` to change verbosity after initialization.
  *
  * @example
- * ```typescript
+ *
+ * ```ts
  * import { logger } from '@kikiutils/shared/pino';
  *
- * logger.info('test'); // [2024-07-11 12:12:30.085] INFO: test
- *
- * // Manually change the level
  * logger.level = 'info';
+ * logger.info('Application started');
  * ```
+ *
+ * @see {@link https://getpino.io/#/docs/api?id=level-string | Pino log levels}
  */
 export const pinoLogger = pino({}, stream);
 export const logger = pinoLogger;

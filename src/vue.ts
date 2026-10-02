@@ -8,20 +8,20 @@ import {
 import { appendRedirectParamToUrl } from './url';
 
 /**
- * Appends the current Vue Router route's fullPath as the `redirect` query parameter to the given URL.
+ * Appends the current Vue Router route's `fullPath` as the `redirect` query parameter to the given URL.
  *
- * @param {string} url - The base URL to modify
+ * @param url - The base URL to modify.
  *
- * @returns {string} A new URL with the current route fullPath as the `redirect` parameter
+ * @returns A new URL with the current route `fullPath` as the `redirect` parameter.
  */
 export function appendRedirectParamFromCurrentRouteToUrl(url: string) {
     return appendRedirectParamToUrl(url, useRoute().fullPath);
 }
 
 /**
- * Clears an interval referenced by a Vue ref and sets it to null.
+ * Clears an interval referenced by a Vue ref and sets it to `null`.
  *
- * @param {Ref<null | ReturnType<typeof setInterval>>} intervalRef - A Vue ref holding a NodeJS.Timeout or null
+ * @param intervalRef - A Vue ref holding a timer handle or `null`.
  */
 export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setInterval>>) {
     if (intervalRef.value) clearInterval(intervalRef.value);
@@ -29,9 +29,9 @@ export function clearIntervalRef(intervalRef: Ref<null | ReturnType<typeof setIn
 }
 
 /**
- * Clears a timeout referenced by a Vue ref and sets it to null.
+ * Clears a timeout referenced by a Vue ref and sets it to `null`.
  *
- * @param {Ref<null | ReturnType<typeof setTimeout>>} timeoutRef - A Vue ref holding a NodeJS.Timeout or null
+ * @param timeoutRef - A Vue ref holding a timer handle or `null`.
  */
 export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTimeout>>) {
     if (timeoutRef.value) clearTimeout(timeoutRef.value);
@@ -39,18 +39,17 @@ export function clearTimeoutRef(timeoutRef: Ref<null | ReturnType<typeof setTime
 }
 
 /**
- * A Vue composition function that remembers and restores scroll position
- * of a scrollable container across route changes and keep-alive activation.
+ * Registers hooks that save and restore a container's scroll position across kept-alive route changes.
  *
- * Designed for use with `<KeepAlive>` components. Scroll state is saved on
- * route leave and restored when the component is activated again.
+ * @remarks
+ * Call within Vue component setup with Vue Router and `KeepAlive`.
+ * Route leave saves the current offsets, and each activation restores them to the currently referenced element.
+ * A missing element saves zero offsets and skips restoration. Without `KeepAlive`, unmounting discards the state.
+ * The hooks follow the component lifecycle; there is no separate cleanup handle.
  *
- * Note: Without `<KeepAlive>`, the component state is destroyed on unmount,
- * so scroll position will not be preserved.
+ * @typeParam T - The scrollable element type.
  *
- * @template T - The type of the scrollable element (defaults to HTMLElement)
- *
- * @param {Ref<null | T>} containerRef - A ref to the scrollable HTML element
+ * @param containerRef - The reference to the scrollable element, or `null` while it is unavailable.
  */
 export function usePreserveScroll<T extends Element = HTMLElement>(containerRef: Ref<null | T>) {
     let scrollLeft = 0;

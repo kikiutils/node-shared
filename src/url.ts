@@ -1,15 +1,15 @@
 /**
  * Appends or updates the `redirect` query parameter on a given URL.
  *
+ * @remarks
  * Typically used to preserve the user's current path for post-login navigation.
  *
- * @param {string} url - The target URL to modify
- * @param {string} redirectPath - The path to use as the redirect destination
- * (must be a safe same-origin application path starting with `/`)
+ * @param url - The target URL to modify.
+ * @param redirectPath - The safe same-origin application path starting with `/` to use as the redirect destination.
  *
- * @returns {string} A new URL string with the `redirect` query parameter
+ * @returns A new URL string with the `redirect` query parameter.
  *
- * @throws {Error} If redirectPath is not a safe same-origin application path
+ * @throws Error if `redirectPath` is not a safe same-origin application path.
  */
 export function appendRedirectParamToUrl(url: string, redirectPath: string) {
     // eslint-disable-next-line style/max-len
@@ -26,13 +26,14 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
 /**
  * Returns whether a value is a safe same-origin redirect path.
  *
+ * @remarks
  * Safe redirect paths are absolute application paths such as `/dashboard`.
  * Protocol-relative URLs (`//example.com`), absolute URLs, backslash paths,
  * and non-string values are rejected.
  *
- * @param {unknown} value - The value to check
+ * @param value - The value to check.
  *
- * @returns {boolean} Whether the value is safe to use as an application redirect path
+ * @returns Whether the value is safe to use as an application redirect path.
  */
 export function isSafeRedirectPath(value: unknown): value is string {
     if (typeof value !== 'string') return false;
@@ -45,13 +46,14 @@ export function isSafeRedirectPath(value: unknown): value is string {
 /**
  * Normalizes a redirect value into a safe same-origin application path.
  *
+ * @remarks
  * If an array is provided, the first value is checked. Unsafe values fall back
  * to the provided fallback path.
  *
- * @param {unknown} value - The redirect value to normalize
- * @param {string} fallback - The safe fallback path
+ * @param value - The redirect value to normalize.
+ * @param fallback - The caller-supplied safe fallback path; it is returned unchanged and is not validated.
  *
- * @returns {string} A safe redirect path
+ * @returns The validated input path, or the unvalidated fallback path.
  */
 export function normalizeRedirectPath(value: unknown, fallback = '/') {
     const redirectPath = Array.isArray(value) ? value[0] : value;
