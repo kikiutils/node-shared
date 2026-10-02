@@ -7,6 +7,7 @@ import {
     it,
 } from 'vitest';
 
+import { EnhancedDate } from '../src/classes/enhanced-date';
 import {
     formatDate,
     getDateRangeFromDate,
@@ -45,6 +46,30 @@ describe.concurrent('formatDate', () => {
 
 describe.concurrent('getDateRangeFromDate', () => {
     const input = new Date('2023-07-01T12:00:00Z');
+
+    for (
+        const type of [
+            'lastMonth',
+            'lastWeek',
+            'thisMonth',
+            'thisWeek',
+            'today',
+            'yesterday',
+        ] as const
+    ) {
+        it(`should return independent EnhancedDate boundaries without mutating the input for ${type}`, ({ expect }) => {
+            const date = new Date(input);
+            const originalTime = date.getTime();
+            const result = getDateRangeFromDate(date, type);
+
+            expect(result.startDate).toBeInstanceOf(EnhancedDate);
+            expect(result.endDate).toBeInstanceOf(EnhancedDate);
+            expect(result.startDate).not.toBe(result.endDate);
+            result.startDate.addDays(1);
+            expect(date.getTime()).toBe(originalTime);
+            expect(result.endDate.getTime()).toBe(getDateRangeFromDate(date, type).endDate.getTime());
+        });
+    }
 
     it('should return correct range for last month', ({ expect }) => {
         const result = getDateRangeFromDate(input, 'lastMonth');
@@ -112,6 +137,7 @@ describe.concurrent('getMidnightDateFromToday', () => {
         expectedMidnight.setHours(0, 0, 0, 0);
 
         const result = getMidnightDateFromToday();
+        expect(result).toBeInstanceOf(EnhancedDate);
         expect(result).toEqual(expectedMidnight);
     });
 

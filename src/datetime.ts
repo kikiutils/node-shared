@@ -1,20 +1,6 @@
-import {
-    format as dateFnsFormat,
-    endOfDay,
-    endOfMonth,
-    endOfWeek,
-    startOfDay,
-    startOfMonth,
-    startOfWeek,
-    subDays,
-    subMonths,
-    subWeeks,
-} from 'date-fns';
-import type {
-    DateArg,
-    Day,
-    FormatOptions,
-} from 'date-fns';
+import * as dateFns from 'date-fns';
+
+import { EnhancedDate } from './classes/enhanced-date';
 
 export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' | 'today' | 'yesterday';
 
@@ -43,8 +29,12 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  * console.log(formatDate('2024-07-10T00:00:00Z', 'yyyy-MM-dd')); // 2024-07-10
  * ```
  */
-export function formatDate(date: DateArg<Date> & {}, format: string = 'yyyy-MM-dd HH:mm:ss', options?: FormatOptions) {
-    return dateFnsFormat(date, format, options);
+export function formatDate(
+    date: dateFns.DateArg<Date>,
+    format: string = 'yyyy-MM-dd HH:mm:ss',
+    options?: dateFns.FormatOptions,
+) {
+    return dateFns.format(date, format, options);
 }
 
 /**
@@ -58,7 +48,7 @@ export function formatDate(date: DateArg<Date> & {}, format: string = 'yyyy-MM-d
  * @param {boolean} [options.setEndDateToNextDayStart] - If true, set `endDate` to 00:00:00.000 of the next day
  * @param {Day} [options.weekStartsOn] - The start day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
  *
- * @returns {{ startDate: Date, endDate: Date }} An object with `startDate` and `endDate`
+ * @returns {{ startDate: EnhancedDate, endDate: EnhancedDate }} An object with `startDate` and `endDate`
  *
  * @example
  * ```typescript
@@ -79,45 +69,46 @@ export function getDateRangeFromDate(
     type: DateRangeType,
     options?: {
         setEndDateToNextDayStart?: boolean;
-        weekStartsOn?: Day;
+        weekStartsOn?: dateFns.Day;
     },
 ) {
-    let endDate: Date;
-    let startDate: Date;
+    const referenceDate = new EnhancedDate(date);
+    let endDate: EnhancedDate;
+    let startDate: EnhancedDate;
     switch (type) {
         case 'lastMonth':
             {
-                const lastMonth = subMonths(date, 1);
-                endDate = endOfMonth(lastMonth);
-                startDate = startOfMonth(lastMonth);
+                const lastMonth = referenceDate.toSubMonths(1);
+                endDate = lastMonth.toEndOfMonth();
+                startDate = lastMonth.toStartOfMonth();
             }
 
             break;
         case 'lastWeek':
             {
-                const lastWeek = subWeeks(date, 1);
-                endDate = endOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
-                startDate = startOfWeek(lastWeek, { weekStartsOn: options?.weekStartsOn ?? 1 });
+                const lastWeek = referenceDate.toSubWeeks(1);
+                endDate = lastWeek.toEndOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
+                startDate = lastWeek.toStartOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
             }
 
             break;
         case 'thisMonth':
-            endDate = endOfMonth(date);
-            startDate = startOfMonth(date);
+            endDate = referenceDate.toEndOfMonth();
+            startDate = referenceDate.toStartOfMonth();
             break;
         case 'thisWeek':
-            endDate = endOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
-            startDate = startOfWeek(date, { weekStartsOn: options?.weekStartsOn ?? 1 });
+            endDate = referenceDate.toEndOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
+            startDate = referenceDate.toStartOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
             break;
         case 'today':
-            endDate = endOfDay(date);
-            startDate = startOfDay(date);
+            endDate = referenceDate.toEndOfDay();
+            startDate = referenceDate.toStartOfDay();
             break;
         case 'yesterday':
             {
-                const yesterday = subDays(date, 1);
-                endDate = endOfDay(yesterday);
-                startDate = startOfDay(yesterday);
+                const yesterday = referenceDate.toSubDays(1);
+                endDate = yesterday.toEndOfDay();
+                startDate = yesterday.toStartOfDay();
             }
 
             break;
@@ -132,11 +123,11 @@ export function getDateRangeFromDate(
 }
 
 /**
- * Returns a `Date` object set to midnight (00:00:00) of today, with an optional day offset.
+ * Returns an `EnhancedDate` set to midnight (00:00:00) of today, with an optional day offset.
  *
  * @param {number} [offsetDays] - Number of days to offset from today. Can be negative
  *
- * @returns {Date} A `Date` object at 00:00:00 of the offset day
+ * @returns {EnhancedDate} An `EnhancedDate` at 00:00:00 of the offset day
  *
  * @example
  * ```typescript
@@ -148,8 +139,5 @@ export function getDateRangeFromDate(
  * ```
  */
 export function getMidnightDateFromToday(offsetDays: number = 0) {
-    const date = new Date();
-    date.setDate(date.getDate() + offsetDays);
-    date.setHours(0, 0, 0, 0);
-    return date;
+    return new EnhancedDate().addDays(offsetDays).startOfDay();
 }
