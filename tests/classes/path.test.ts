@@ -1,6 +1,11 @@
 import type { Buffer } from 'node:buffer';
 import { constants } from 'node:fs';
-import type { Dirent } from 'node:fs';
+import type {
+    BigIntStats,
+    Dirent,
+    StatOptions,
+    Stats,
+} from 'node:fs';
 import {
     mkdtemp,
     rm,
@@ -151,5 +156,63 @@ describe('path fs promise operations', () => {
 
     it('should create a non-recursive directory without returning a path', async ({ expect }) => {
         await expect(tempPath.join('plain').mkdir()).resolves.toBeUndefined();
+    });
+
+    it('should return the created directory or undefined for recursive mkdir', async ({ expect }) => {
+        const directory = tempPath.join('recursive');
+        const created = await directory.mkdir({ recursive: true });
+        expectTypeOf(created).toEqualTypeOf<string | undefined>();
+        expect(created).toBe(directory.toString());
+
+        const existing = await directory.mkdir({ recursive: true });
+        expectTypeOf(existing).toEqualTypeOf<string | undefined>();
+        expect(existing).toBeUndefined();
+    });
+
+    it('should infer stat metadata types when missing paths reject', async ({ expect }) => {
+        const stats = await tempPath.stat();
+        expectTypeOf(stats).toEqualTypeOf<Stats>();
+        expect(stats.isDirectory()).toBe(true);
+
+        const bigintStats = await tempPath.stat({ bigint: true });
+        expectTypeOf(bigintStats).toEqualTypeOf<BigIntStats>();
+        expect(typeof bigintStats.size).toBe('bigint');
+
+        const options: StatOptions & { throwIfNoEntry: true } = { throwIfNoEntry: true };
+        const metadata = await tempPath.stat(options);
+        expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats>();
+        expect(metadata.isDirectory()).toBe(true);
+
+        const missing = tempPath.join('missing');
+        await expect(missing.stat()).rejects.toMatchObject({ code: 'ENOENT' });
+        await expect(missing.stat({ throwIfNoEntry: true })).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('should infer optional stat metadata and return undefined for missing paths', async ({ expect }) => {
+        const stats = await tempPath.stat({ throwIfNoEntry: false });
+        expectTypeOf(stats).toEqualTypeOf<Stats | undefined>();
+        expect(stats?.isDirectory()).toBe(true);
+
+        const bigintStats = await tempPath.stat({
+            bigint: true,
+            throwIfNoEntry: false,
+        });
+
+        expectTypeOf(bigintStats).toEqualTypeOf<BigIntStats | undefined>();
+        expect(typeof bigintStats?.size).toBe('bigint');
+
+        const missing = tempPath.join('missing');
+        await expect(missing.stat({ throwIfNoEntry: false })).resolves.toBeUndefined();
+        await expect(
+            missing.stat({
+                bigint: true,
+                throwIfNoEntry: false,
+            }),
+        ).resolves.toBeUndefined();
+
+        const options: StatOptions = { throwIfNoEntry: false };
+        const metadata = await missing.stat(options);
+        expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats | undefined>();
+        expect(metadata).toBeUndefined();
     });
 });

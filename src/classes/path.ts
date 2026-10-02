@@ -217,7 +217,8 @@ export class Path {
     /**
      * Converts this path to the Windows namespace form when applicable.
      *
-     * @returns A new `Path`; this instance is unchanged. On non-Windows platforms, the path text is unchanged.
+     * @returns The namespace-converted path string; this instance is unchanged.
+     * On non-Windows platforms, the path text is unchanged.
      *
      * @see {@link https://nodejs.org/api/path.html | Node.js path.toNamespacedPath}
      */
@@ -301,16 +302,10 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.mkdir}
      */
-    mkdir(
-        options: fs.MakeDirectoryOptions & {
-            recursive: true;
-        },
-    ): Promise<string>;
+    mkdir(options: fs.MakeDirectoryOptions & { recursive: true }): Promise<string | undefined>;
     mkdir(
         options?:
-          | (fs.MakeDirectoryOptions & {
-              recursive?: false;
-          })
+          | (fs.MakeDirectoryOptions & { recursive?: false })
           | fs.Mode
           | null,
     ): Promise<void>;
@@ -464,20 +459,36 @@ export class Path {
      *
      * @remarks
      * The promise resolves to `Stats`, or `BigIntStats` when `bigint` is enabled.
+     * If `throwIfNoEntry` is `false`, a missing path resolves to `undefined` instead of rejecting.
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.stat}
      */
     stat(
         opts?: fs.StatOptions & {
             bigint?: false;
+            throwIfNoEntry?: true;
         },
     ): Promise<fs.Stats>;
     stat(
         opts: fs.StatOptions & {
             bigint: true;
+            throwIfNoEntry?: true;
         },
     ): Promise<fs.BigIntStats>;
-    stat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats>;
+    stat(
+        opts: fs.StatOptions & {
+            bigint?: false;
+            throwIfNoEntry: false;
+        },
+    ): Promise<fs.Stats | undefined>;
+    stat(
+        opts: fs.StatOptions & {
+            bigint: true;
+            throwIfNoEntry: false;
+        },
+    ): Promise<fs.BigIntStats | undefined>;
+    stat(opts: fs.StatOptions & { throwIfNoEntry?: true }): Promise<fs.BigIntStats | fs.Stats>;
+    stat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined>;
     stat(...args: any): any {
         return fsp.stat(this.#value, ...args);
     }

@@ -8,11 +8,12 @@ export type DoNotRemoveOrUseThisType = RuleType;
  *
  * @remarks
  * Defaults to `required: true`, `trigger: 'blur'`, and `type: 'string'`.
- * Options override those defaults and the supplied message, including explicitly provided `undefined` values.
+ * Non-nullish options override those defaults; `null` and `undefined` use the defaults.
+ * The `message` argument takes precedence over `options.message`.
  * The options object is unchanged.
  *
  * @param message - The validation message displayed on failure.
- * @param options - Rule fields that override the defaults and message.
+ * @param options - Additional rule fields and non-nullish overrides for the defaults; `message` takes precedence.
  *
  * @returns A new `FormItemRule` object.
  *
