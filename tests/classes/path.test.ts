@@ -59,11 +59,16 @@ describe.concurrent('path path operations', () => {
         expect(new Path('/tmp/foo').relative('/tmp/foo/bar/baz.txt').toString()).toBe('bar/baz.txt');
         expect(new Path('src').resolve().toString()).toBe(resolve('src'));
         expect(Path.resolve('src').toString()).toBe(resolve('src'));
-        expect(Path.format({
-            dir: '/tmp/foo',
-            ext: '.txt',
-            name: 'bar',
-        }).toString()).toBe('/tmp/foo/bar.txt');
+        expect(
+            Path
+                .format({
+                    dir: '/tmp/foo',
+                    ext: '.txt',
+                    name: 'bar',
+                })
+                .toString(),
+        ).toBe('/tmp/foo/bar.txt');
+
         expect(path.toNamespacedPath()).toBe(path.toString());
         expect(path.toString()).toBe('/tmp/foo/bar.txt');
     });
