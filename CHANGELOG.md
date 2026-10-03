@@ -1,5 +1,29 @@
 # Changelog
 
+## v18.2.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v18.1.0...v18.2.0)
+
+### 🚀 Enhancements
+
+- **datetime:** Add EnhancedDate boundary and extrema factories ([d9f54a4](https://github.com/kikiutils/node-shared/commit/d9f54a4))
+
+### 🩹 Fixes
+
+- **path:** Support optional stat results on older Node.js runtimes ([685d21e](https://github.com/kikiutils/node-shared/commit/685d21e))
+
+### 🏡 Chore
+
+- Upgrade deps ([60844a5](https://github.com/kikiutils/node-shared/commit/60844a5))
+
+### ✅ Tests
+
+- Streamline unit suites and strengthen behavioral coverage ([d443033](https://github.com/kikiutils/node-shared/commit/d443033))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v18.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v18.0.1...v18.1.0)
