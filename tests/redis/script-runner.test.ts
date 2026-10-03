@@ -1,6 +1,5 @@
 import {
     describe,
-    expect,
     expectTypeOf,
     it,
     vi,
@@ -180,14 +179,14 @@ describe('createRedisScriptRunner', () => {
         expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(2);
     });
 
-    it.each([
+    it.for([
         undefined,
         1,
         2,
         5,
     ])(
         'should stop at the total attempt limit %s and preserve the final error',
-        async (maxAttempts) => {
+        async (maxAttempts, { expect }) => {
             const limit = maxAttempts ?? 3;
             const errors = Array.from({ length: limit }, (_, index) => new Error(`NOSCRIPT attempt ${index + 1}`));
             let attempts = 0;
@@ -211,7 +210,7 @@ describe('createRedisScriptRunner', () => {
         },
     );
 
-    it.each([
+    it.for([
         new Error('Redis unavailable'),
         new Error('ERR Lua failure mentioning NOSCRIPT'),
         new Error('NOSCRIPTED is not a missing-script error'),
@@ -220,7 +219,7 @@ describe('createRedisScriptRunner', () => {
         { message: 'NOSCRIPT No matching script' },
     ])(
         'should preserve unrelated or unsupported rejections without retrying: %s',
-        async (error) => {
+        async (error, { expect }) => {
             const send = vi.fn().mockRejectedValue(error);
             const execute = createRedisScriptRunner({ send }, source);
 
@@ -232,7 +231,7 @@ describe('createRedisScriptRunner', () => {
         },
     );
 
-    it.each([
+    it.for([
         0,
         -1,
         1.5,
@@ -241,7 +240,7 @@ describe('createRedisScriptRunner', () => {
         Number.MAX_SAFE_INTEGER + 1,
     ])(
         'should reject invalid attempt limit %s before sending commands',
-        (maxAttempts) => {
+        (maxAttempts, { expect }) => {
             const send = vi.fn();
 
             expect(() => createRedisScriptRunner({ send }, source, maxAttempts)).toThrow(RangeError);

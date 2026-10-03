@@ -6,55 +6,79 @@ import {
 
 import { toPercentageString } from '../src/math';
 
-describe.concurrent('toPercentageString', () => {
-    it('should return percentage with 2 decimal places and symbol by default', ({ expect }) => {
-        const result = toPercentageString(50, 200);
-        expect(result).toBe('25.00%');
+describe('toPercentageString', () => {
+    it.for([
+        {
+            denominator: 2,
+            name: 'numbers',
+            numerator: 0.5,
+        },
+        {
+            denominator: '120',
+            name: 'strings',
+            numerator: '30',
+        },
+        {
+            denominator: new Decimal(300),
+            name: 'Decimal instances',
+            numerator: new Decimal(75),
+        },
+        {
+            denominator: { toString: () => '160' },
+            name: 'stringifiable objects',
+            numerator: { toString: () => '40' },
+        },
+    ])(
+        'should format $name with the default precision and symbol',
+        ({ denominator, numerator }, { expect }) => {
+            expect(toPercentageString(numerator, denominator)).toBe('25.00%');
+        },
+    );
+
+    it('should apply custom precision and omit the symbol when requested', ({ expect }) => {
+        expect(
+            toPercentageString(
+                1,
+                3,
+                {
+                    decimalPlaces: 1,
+                    withSymbol: false,
+                },
+            ),
+        ).toBe('33.3');
+
+        expect(toPercentageString(1, 3, { decimalPlaces: 0 })).toBe('33%');
     });
 
-    it('should return percentage without symbol when withSymbol is set to false', ({ expect }) => {
-        const result = toPercentageString(50, 200, { withSymbol: false });
-        expect(result).toBe('25.00');
-    });
+    it.for([
+        {
+            denominator: 0,
+            name: 'NaN',
+            numerator: 0,
+        },
+        {
+            denominator: 0,
+            name: 'infinity',
+            numerator: 1,
+        },
+    ])(
+        'should ignore custom precision for the $name fallback',
+        ({ denominator, numerator }, { expect }) => {
+            expect(toPercentageString(numerator, denominator, { decimalPlaces: 4 })).toBe('0.00%');
+            expect(
+                toPercentageString(
+                    numerator,
+                    denominator,
+                    {
+                        decimalPlaces: 4,
+                        withSymbol: false,
+                    },
+                ),
+            ).toBe('0.00');
+        },
+    );
 
-    it('should return percentage with custom decimal places', ({ expect }) => {
-        const result = toPercentageString(50, 200, { decimalPlaces: 1 });
-        expect(result).toBe('25.0%');
-    });
-
-    it('should handle Decimal.js values correctly', ({ expect }) => {
-        const molecular = new Decimal(75);
-        const denominator = new Decimal(300);
-
-        const result = toPercentageString(molecular, denominator);
-        expect(result).toBe('25.00%');
-    });
-
-    it('should handle objects with toString method correctly', ({ expect }) => {
-        const molecular = { toString: () => '40' };
-        const denominator = { toString: () => '160' };
-
-        const result = toPercentageString(molecular, denominator);
-        expect(result).toBe('25.00%');
-    });
-
-    it('should return 0.00% if division result is NaN', ({ expect }) => {
-        const result = toPercentageString(0, 0);
-        expect(result).toBe('0.00%');
-    });
-
-    it('should handle string inputs correctly', ({ expect }) => {
-        const result = toPercentageString('30', '120');
-        expect(result).toBe('25.00%');
-    });
-
-    it('should handle large numbers correctly', ({ expect }) => {
-        const result = toPercentageString(5000000, 20000000);
-        expect(result).toBe('25.00%');
-    });
-
-    it('should handle decimal numbers correctly', ({ expect }) => {
-        const result = toPercentageString(0.5, 2);
-        expect(result).toBe('25.00%');
+    it('should propagate invalid decimal input instead of returning the non-finite fallback', ({ expect }) => {
+        expect(() => toPercentageString('not-a-number', 1)).toThrow();
     });
 });

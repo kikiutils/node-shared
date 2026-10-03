@@ -1,161 +1,186 @@
+import { enUS } from 'date-fns/locale';
 import {
-    addDays,
-    format as dateFnsFormat,
-} from 'date-fns';
-import {
+    afterEach,
     describe,
     it,
+    vi,
 } from 'vitest';
 
 import { EnhancedDate } from '../src/classes/enhanced-date';
 import {
     formatDate,
     getDateRangeFromDate,
-    getMidnightDateFromToday,
 } from '../src/datetime';
 
-describe.concurrent('formatDate', () => {
-    it('should format a Date object', ({ expect }) => {
-        const input = new Date('2024-07-10T00:00:00Z');
+afterEach(() => {
+    vi.useRealTimers();
+});
 
-        const result = formatDate(input, 'yyyy-MM-dd');
-        expect(result).toBe('2024-07-10');
+describe('formatDate', () => {
+    it.for([
+        {
+            input: new Date(2024, 6, 10),
+            name: 'a Date',
+        },
+        {
+            input: new Date(2024, 6, 10).getTime(),
+            name: 'a millisecond timestamp',
+        },
+        {
+            input: '2024-07-10T00:00:00',
+            name: 'a local date string',
+        },
+    ])(
+        'should format $name using the supplied pattern',
+        ({ input }, { expect }) => {
+            expect(formatDate(input, 'yyyy-MM-dd')).toBe('2024-07-10');
+        },
+    );
+
+    it('should apply the default pattern and forward locale options without changing the input', ({ expect }) => {
+        const input = new Date(2024, 6, 10, 12, 34, 56);
+        const originalTime = input.getTime();
+
+        expect(formatDate(input)).toBe('2024-07-10 12:34:56');
+        expect(formatDate(input, 'MMMM', { locale: enUS })).toBe('July');
+        expect(input.getTime()).toBe(originalTime);
     });
 
-    it('should format a numeric timestamp', ({ expect }) => {
-        const input = 1657814400000;
-
-        const result = formatDate(input, 'yyyy-MM-dd HH:mm');
-        expect(result).toBe('2022-07-14 16:00');
-    });
-
-    it('should format a date string', ({ expect }) => {
-        const input = '2024-07-10T00:00:00Z';
-
-        const result = formatDate(input, 'yyyy-MM-dd');
-        expect(result).toBe('2024-07-10');
-    });
-
-    it('should format with the default format', ({ expect }) => {
-        const input = new Date('2024-07-10T00:00:00Z');
-
-        const result = formatDate(input);
-        expect(result).toBe(dateFnsFormat(input, 'yyyy-MM-dd HH:mm:ss'));
+    it('should reject an invalid date rather than substituting the current time', ({ expect }) => {
+        expect(() => formatDate(new Date(Number.NaN))).toThrow(RangeError);
     });
 });
 
-describe.concurrent('getDateRangeFromDate', () => {
-    const input = new Date('2023-07-01T12:00:00Z');
+describe('getDateRangeFromDate', () => {
+    it.for([
+        {
+            end: new Date(2023, 5, 30, 23, 59, 59, 999),
+            start: new Date(2023, 5, 1),
+            type: 'lastMonth',
+        },
+        {
+            end: new Date(2023, 5, 25, 23, 59, 59, 999),
+            start: new Date(2023, 5, 19),
+            type: 'lastWeek',
+        },
+        {
+            end: new Date(2023, 6, 31, 23, 59, 59, 999),
+            start: new Date(2023, 6, 1),
+            type: 'thisMonth',
+        },
+        {
+            end: new Date(2023, 6, 2, 23, 59, 59, 999),
+            start: new Date(2023, 5, 26),
+            type: 'thisWeek',
+        },
+        {
+            end: new Date(2023, 6, 1, 23, 59, 59, 999),
+            start: new Date(2023, 6, 1),
+            type: 'today',
+        },
+        {
+            end: new Date(2023, 5, 30, 23, 59, 59, 999),
+            start: new Date(2023, 5, 30),
+            type: 'yesterday',
+        },
+    ] as const)(
+        'should return independent inclusive $type boundaries without mutating the input',
+        (
+            {
+                end,
+                start,
+                type,
+            },
+            { expect },
+        ) => {
+            const input = new Date(2023, 6, 1, 12);
+            const originalTime = input.getTime();
 
-    for (
-        const type of [
-            'lastMonth',
-            'lastWeek',
-            'thisMonth',
-            'thisWeek',
-            'today',
-            'yesterday',
-        ] as const
-    ) {
-        it(`should return independent EnhancedDate boundaries without mutating the input for ${type}`, ({ expect }) => {
-            const date = new Date(input);
-            const originalTime = date.getTime();
-            const result = getDateRangeFromDate(date, type);
+            const result = getDateRangeFromDate(input, type);
 
             expect(result.startDate).toBeInstanceOf(EnhancedDate);
             expect(result.endDate).toBeInstanceOf(EnhancedDate);
             expect(result.startDate).not.toBe(result.endDate);
+            expect(result.startDate.getTime()).toBe(start.getTime());
+            expect(result.endDate.getTime()).toBe(end.getTime());
             result.startDate.addDays(1);
-            expect(date.getTime()).toBe(originalTime);
-            expect(result.endDate.getTime()).toBe(getDateRangeFromDate(date, type).endDate.getTime());
-        });
-    }
+            expect(input.getTime()).toBe(originalTime);
+            expect(result.endDate.getTime()).toBe(end.getTime());
+        },
+    );
 
-    it('should return correct range for last month', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'lastMonth');
-        expect(result.startDate).toEqual(new Date('2023-06-01 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-06-30 23:59:59.999'));
+    it.for([
+        {
+            end: new Date(2023, 5, 24, 23, 59, 59, 999),
+            start: new Date(2023, 5, 18),
+            type: 'lastWeek',
+        },
+        {
+            end: new Date(2023, 6, 1, 23, 59, 59, 999),
+            start: new Date(2023, 5, 25),
+            type: 'thisWeek',
+        },
+    ] as const)(
+        'should respect a Sunday start for $type',
+        (
+            {
+                end,
+                start,
+                type,
+            },
+            { expect },
+        ) => {
+            const result = getDateRangeFromDate(new Date(2023, 6, 1, 12), type, { weekStartsOn: 0 });
+
+            expect(result.startDate.getTime()).toBe(start.getTime());
+            expect(result.endDate.getTime()).toBe(end.getTime());
+        },
+    );
+
+    it('should preserve leap-month boundaries and an exclusive next-day end', ({ expect }) => {
+        const result = getDateRangeFromDate(new Date(2024, 2, 31, 12), 'lastMonth', { setEndDateToNextDayStart: true });
+
+        expect(result.startDate.getTime()).toBe(new Date(2024, 1, 1).getTime());
+        expect(result.endDate.getTime()).toBe(new Date(2024, 2, 1).getTime());
     });
 
-    it('should return correct range for last week', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'lastWeek');
-        expect(result.startDate).toEqual(new Date('2023-06-19 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-06-25 23:59:59.999'));
-    });
-
-    it('should return correct range for last week with weekStartsOn', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'lastWeek', { weekStartsOn: 0 });
-        expect(result.startDate).toEqual(new Date('2023-06-18 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-06-24 23:59:59.999'));
-    });
-
-    it('should return correct range for this month', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'thisMonth');
-        expect(result.startDate).toEqual(new Date('2023-07-01 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-07-31 23:59:59.999'));
-    });
-
-    it('should return correct range for this week', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'thisWeek');
-        expect(result.startDate).toEqual(new Date('2023-06-26 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-07-02 23:59:59.999'));
-    });
-
-    it('should return correct range for this week with weekStartsOn', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'thisWeek', { weekStartsOn: 0 });
-        expect(result.startDate).toEqual(new Date('2023-06-25 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-07-01 23:59:59.999'));
-    });
-
-    it('should return correct range for today', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'today');
-        expect(result.startDate).toEqual(new Date('2023-07-01 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-07-01 23:59:59.999'));
-    });
-
-    it('should return correct range for yesterday', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'yesterday');
-        expect(result.startDate).toEqual(new Date('2023-06-30 00:00:00'));
-        expect(result.endDate).toEqual(new Date('2023-06-30 23:59:59.999'));
-    });
-
-    it('should set end date to next day start when setEndDateToNextDayStart is true', ({ expect }) => {
-        const result = getDateRangeFromDate(input, 'today', { setEndDateToNextDayStart: true });
-        expect(result.endDate).toEqual(new Date('2023-07-02 00:00:00.000 '));
-    });
-
-    it('should throw an error for an invalid range type', ({ expect }) => {
-        expect(() => getDateRangeFromDate(input, 'invalidRangeType' as any)).toThrow(
-            'Unsupported date range type: invalidRangeType',
+    it('should reject an unsupported range type', ({ expect }) => {
+        // @ts-expect-error Exercise the runtime guard beyond the DateRangeType union.
+        expect(() => getDateRangeFromDate(new Date(2023, 6, 1), 'invalid')).toThrow(
+            'Unsupported date range type: invalid',
         );
     });
 });
 
-describe.concurrent('getMidnightDateFromToday', () => {
-    it(`should return today's midnight date`, ({ expect }) => {
-        const expectedMidnight = new Date();
-        expectedMidnight.setHours(0, 0, 0, 0);
+describe('getMidnightDateFromToday', () => {
+    it.for([
+        {
+            expected: new Date(2024, 1, 28),
+            offset: -1,
+        },
+        {
+            expected: new Date(2024, 1, 29),
+            offset: undefined,
+        },
+        {
+            expected: new Date(2024, 2, 1),
+            offset: 1,
+        },
+    ])(
+        'should return local midnight with offset $offset',
+        async ({ expected, offset }, { expect }) => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date(2024, 1, 29, 12, 34, 56));
 
-        const result = getMidnightDateFromToday();
-        expect(result).toBeInstanceOf(EnhancedDate);
-        expect(result).toEqual(expectedMidnight);
-    });
+            // A Date subclass captures its base constructor at module evaluation time.
+            vi.resetModules();
+            const { getMidnightDateFromToday: fromClock } = await import('../src/datetime');
+            const { EnhancedDate: ClockDate } = await import('../src/classes/enhanced-date');
 
-    it('should return midnight date offset by the specified number of days', ({ expect }) => {
-        const offsetDays = 3;
-        const expectedDate = addDays(new Date(), offsetDays);
-        expectedDate.setHours(0, 0, 0, 0);
+            const result = fromClock(offset);
 
-        const result = getMidnightDateFromToday(offsetDays);
-        expect(result).toEqual(expectedDate);
-    });
-
-    it('should return midnight date offset by a negative number of days', ({ expect }) => {
-        const offsetDays = -3;
-        const expectedDate = addDays(new Date(), offsetDays);
-        expectedDate.setHours(0, 0, 0, 0);
-
-        const result = getMidnightDateFromToday(offsetDays);
-        expect(result).toEqual(expectedDate);
-    });
+            expect(result).toBeInstanceOf(ClockDate);
+            expect(result.getTime()).toBe(expected.getTime());
+        },
+    );
 });

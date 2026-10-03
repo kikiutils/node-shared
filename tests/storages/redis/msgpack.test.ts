@@ -37,6 +37,7 @@ describe('createRedisMsgpackStorage', () => {
 
     it('should serialize values to buffers and deserialize them on read', async ({ expect }) => {
         const storage = createRedisMsgpackStorage(adapter);
+        expect(Object.isFrozen(storage)).toBe(true);
         const value = {
             id: 1,
             tags: [
@@ -75,7 +76,13 @@ describe('createRedisMsgpackStorage', () => {
         await expect(storage.hasItem('session')).resolves.toBe(false);
     });
 
-    it('should freeze the returned storage facade', ({ expect }) => {
-        expect(Object.isFrozen(createRedisMsgpackStorage(adapter))).toBe(true);
+    it('should preserve adapter rejections on reads and writes', async ({ expect }) => {
+        const error = new Error('Redis unavailable');
+        vi.mocked(adapter.getBuffer).mockRejectedValue(error);
+        vi.mocked(adapter.setBuffer).mockRejectedValue(error);
+        const storage = createRedisMsgpackStorage(adapter);
+
+        await expect(storage.getItem('key')).rejects.toBe(error);
+        await expect(storage.setItem('key', 'value')).rejects.toBe(error);
     });
 });

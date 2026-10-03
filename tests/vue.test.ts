@@ -1,4 +1,6 @@
 import {
+    afterEach,
+    beforeEach,
     describe,
     it,
     vi,
@@ -18,7 +20,6 @@ const lifecycleCallbacks = {
     beforeRouteLeave: [] as Array<() => void>,
 };
 
-// Mocks
 vi.mock('vue', async (importActual) => {
     const actual = await importActual<typeof import('vue')>();
     return {
@@ -26,13 +27,27 @@ vi.mock('vue', async (importActual) => {
         onActivated: vi.fn((callback: () => void) => lifecycleCallbacks.activated.push(callback)),
     };
 });
+
 vi.mock('vue-router', () => ({
     onBeforeRouteLeave: vi.fn((callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback)),
     useRoute: vi.fn(() => ({ fullPath: '/profile?tab=settings#section' })),
 }));
+
 vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
-// Tests
+beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+    lifecycleCallbacks.activated.length = 0;
+    lifecycleCallbacks.beforeRouteLeave.length = 0;
+});
+
+afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+});
+
 describe('appendRedirectParamFromCurrentRouteToUrl', () => {
     it('should append route fullPath as redirect param', ({ expect }) => {
         const result = appendRedirectParamFromCurrentRouteToUrl('/login');
@@ -41,7 +56,7 @@ describe('appendRedirectParamFromCurrentRouteToUrl', () => {
     });
 });
 
-describe.concurrent('clearIntervalRef', () => {
+describe('clearIntervalRef', () => {
     it('should clear the interval and set ref to null', ({ expect }) => {
         const clearSpy = vi.spyOn(globalThis, 'clearInterval');
         const intervalRef = ref<null | ReturnType<typeof setInterval>>(setInterval(() => {}, 1000));
@@ -51,8 +66,7 @@ describe.concurrent('clearIntervalRef', () => {
 
         expect(clearSpy).toHaveBeenCalledWith(interval);
         expect(intervalRef.value).toBeNull();
-
-        clearSpy.mockRestore();
+        expect(vi.getTimerCount()).toBe(0);
     });
 
     it('should not throw if ref is already null', ({ expect }) => {
@@ -63,7 +77,7 @@ describe.concurrent('clearIntervalRef', () => {
     });
 });
 
-describe.concurrent('clearTimeoutRef', () => {
+describe('clearTimeoutRef', () => {
     it('should clear the timeout and set ref to null', ({ expect }) => {
         const clearSpy = vi.spyOn(globalThis, 'clearTimeout');
         const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(setTimeout(() => {}, 1000));
@@ -73,8 +87,7 @@ describe.concurrent('clearTimeoutRef', () => {
 
         expect(clearSpy).toHaveBeenCalledWith(timeout);
         expect(timeoutRef.value).toBeNull();
-
-        clearSpy.mockRestore();
+        expect(vi.getTimerCount()).toBe(0);
     });
 
     it('should not throw if ref is already null', ({ expect }) => {
@@ -87,12 +100,11 @@ describe.concurrent('clearTimeoutRef', () => {
 
 describe('usePreserveScroll', () => {
     it('should save scroll on route leave and restore it on activation', ({ expect }) => {
-        lifecycleCallbacks.activated.length = 0;
-        lifecycleCallbacks.beforeRouteLeave.length = 0;
         const element = {
             scrollLeft: 12,
             scrollTop: 34,
         } as HTMLElement;
+
         const containerRef = ref<HTMLElement | null>(element);
 
         usePreserveScroll(containerRef);
@@ -109,8 +121,6 @@ describe('usePreserveScroll', () => {
     });
 
     it('should tolerate a missing container while saving and restoring scroll', ({ expect }) => {
-        lifecycleCallbacks.activated.length = 0;
-        lifecycleCallbacks.beforeRouteLeave.length = 0;
         const containerRef = ref<HTMLElement | null>(null);
 
         usePreserveScroll(containerRef);

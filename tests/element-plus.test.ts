@@ -3,77 +3,79 @@ import type { FormItemRule } from 'element-plus';
 import {
     describe,
     it,
-    vi,
 } from 'vitest';
 
 import { createElFormItemRuleWithDefaults } from '../src/element-plus';
 
-describe.concurrent('createElFormItemRuleWithDefaults', () => {
-    it('should create a rule with default values', ({ expect }) => {
-        const result = createElFormItemRuleWithDefaults('This field is required');
-        expect(result).toEqual<FormItemRule>({
-            message: 'This field is required',
+describe('createElFormItemRuleWithDefaults', () => {
+    it('should create a rule with required string validation on blur by default', ({ expect }) => {
+        expect(createElFormItemRuleWithDefaults('Required')).toEqual<FormItemRule>({
+            message: 'Required',
             required: true,
             trigger: 'blur',
             type: 'string',
         });
     });
 
-    it('should allow overriding required', ({ expect }) => {
-        const result = createElFormItemRuleWithDefaults('Optional field', { required: false });
-        expect(result.required).toBe(false);
-        expect(result.message).toBe('Optional field');
-        expect(result.trigger).toBe('blur');
-        expect(result.type).toBe('string');
+    it('should override defaults while preserving extra fields and the original options', ({ expect }) => {
+        const validator = () => true;
+        const options = Object.freeze({
+            message: 'Ignored',
+            required: false,
+            trigger: [
+                'change',
+                'blur',
+            ],
+            type: 'number' as const,
+            validator,
+        });
+
+        const result = createElFormItemRuleWithDefaults('Explicit', options);
+
+        expect(result).toEqual({
+            ...options,
+            message: 'Explicit',
+        });
+
+        expect(result).not.toBe(options);
+        expect(result.validator).toBe(validator);
+        expect(options.message).toBe('Ignored');
     });
 
-    it('should allow overriding trigger and type', ({ expect }) => {
-        const result = createElFormItemRuleWithDefaults(
-            'Enter a number',
-            {
-                trigger: [
-                    'change',
-                    'blur',
-                ],
-                type: 'number',
-            },
-        );
+    it.for([
+        undefined,
+        null,
+    ])(
+        'should restore defaults for nullish options %s',
+        (value, { expect }) => {
+            // Exercise documented nullish runtime options excluded by the upstream type.
+            const options = {
+                required: value,
+                trigger: value,
+                type: value,
+            } as unknown as FormItemRule;
 
-        expect(result.type).toBe('number');
-        expect(result.trigger).toEqual([
-            'change',
-            'blur',
-        ]);
-    });
+            expect(createElFormItemRuleWithDefaults('Required', options)).toEqual({
+                message: 'Required',
+                required: true,
+                trigger: 'blur',
+                type: 'string',
+            });
+        },
+    );
 
-    it('should preserve extra fields from options', ({ expect }) => {
-        const customValidator = vi.fn();
+    it('should preserve explicitly supplied falsy overrides', ({ expect }) => {
+        const result = createElFormItemRuleWithDefaults('Custom', {
+            required: false,
+            trigger: '',
+            type: '' as RuleType,
+        });
 
-        const result = createElFormItemRuleWithDefaults(
-            'With validator',
-            {
-                required: false,
-                validator: customValidator,
-            },
-        );
-
-        expect(result.validator).toBe(customValidator);
-        expect(result.required).toBe(false);
-        expect(result.message).toBe('With validator');
-    });
-
-    it('should preserve explicitly set falsy values because ?? is used', ({ expect }) => {
-        const result = createElFormItemRuleWithDefaults(
-            'Custom trigger and type',
-            {
-                required: false,
-                trigger: '',
-                type: '' as RuleType,
-            },
-        );
-
-        expect(result.required).toBe(false);
-        expect(result.trigger).toBe('');
-        expect(result.type).toBe('');
+        expect(result).toEqual({
+            message: 'Custom',
+            required: false,
+            trigger: '',
+            type: '',
+        });
     });
 });

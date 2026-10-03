@@ -15,6 +15,8 @@ import {
     copyTextToClipboard,
 } from '../src/clipboard';
 
+const originalClipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+
 class TestClipboardItem {
     // Public instance properties
     readonly data: Record<string, Blob>;
@@ -33,41 +35,22 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.unstubAllGlobals();
-});
-
-describe('copyTextToClipboard', () => {
-    it('should copy text with navigator clipboard', async ({ expect }) => {
-        const writeText = vi.fn(() => Promise.resolve());
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: { writeText },
-        });
-
-        await expect(copyTextToClipboard('hello')).resolves.toEqual({ ok: true });
-        expect(writeText).toHaveBeenCalledWith('hello');
-    });
-
-    it('should return the thrown error when text copy fails', async ({ expect }) => {
-        const error = new Error('denied');
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: { writeText: vi.fn(() => Promise.reject(error)) },
-        });
-
-        await expect(copyTextToClipboard('hello')).resolves.toEqual({
-            error,
-            ok: false,
-        });
-    });
+    if (originalClipboard) Object.defineProperty(navigator, 'clipboard', originalClipboard);
+    else Reflect.deleteProperty(navigator, 'clipboard');
 });
 
 describe('copyBlobToClipboard', () => {
     it('should copy a blob with ClipboardItem', async ({ expect }) => {
         const write = vi.fn((items: TestClipboardItem[]) => Promise.resolve(items));
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: { write },
-        });
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: { write },
+            },
+        );
+
         const blob = new Blob(['hello'], { type: 'text/plain' });
         const options = { presentationStyle: 'inline' } as ClipboardItemOptions;
 
@@ -76,15 +59,19 @@ describe('copyBlobToClipboard', () => {
         const items = write.mock.calls[0]![0];
         expect(items).toHaveLength(1);
         expect(items[0]).toBeInstanceOf(TestClipboardItem);
-        expect((items[0] as TestClipboardItem).data).toEqual({ 'text/plain': blob });
-        expect((items[0] as TestClipboardItem).options).toBe(options);
+        expect(items[0]!.data).toEqual({ 'text/plain': blob });
+        expect(items[0]!.options).toBe(options);
     });
 
     it('should return an unsupported error when clipboard.write is unavailable', async ({ expect }) => {
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: {},
-        });
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: {},
+            },
+        );
 
         const result = await copyBlobToClipboard(new Blob(['hello'], { type: 'text/plain' }));
 
@@ -92,14 +79,98 @@ describe('copyBlobToClipboard', () => {
         expect(result).toHaveProperty('error', expect.any(Error));
     });
 
-    it('should return the thrown error when blob copy fails', async ({ expect }) => {
-        const error = new Error('denied');
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: { write: vi.fn(() => Promise.reject(error)) },
+    it('should return a construction failure without writing to the clipboard', async ({ expect }) => {
+        const error = new Error('Unsupported format');
+        const write = vi.fn();
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: { write },
+            },
+        );
+
+        vi.stubGlobal(
+            'ClipboardItem',
+            // eslint-disable-next-line prefer-arrow-callback -- ClipboardItem must be constructible.
+            function UnsupportedClipboardItem() {
+                throw error;
+            },
+        );
+
+        await expect(copyBlobToClipboard(new Blob(['hello']))).resolves.toEqual({
+            error,
+            ok: false,
         });
 
+        expect(write).not.toHaveBeenCalled();
+    });
+
+    it('should return the thrown error when blob copy fails', async ({ expect }) => {
+        const error = new Error('denied');
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: { write: vi.fn(() => Promise.reject(error)) },
+            },
+        );
+
         await expect(copyBlobToClipboard(new Blob(['hello'], { type: 'text/plain' }))).resolves.toEqual({
+            error,
+            ok: false,
+        });
+    });
+});
+
+describe('copyTextToClipboard', () => {
+    it('should copy text with navigator clipboard', async ({ expect }) => {
+        const writeText = vi.fn(() => Promise.resolve());
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: { writeText },
+            },
+        );
+
+        await expect(copyTextToClipboard('hello')).resolves.toEqual({ ok: true });
+        expect(writeText).toHaveBeenCalledWith('hello');
+    });
+
+    it('should return a failure when the text clipboard API is unavailable', async ({ expect }) => {
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: undefined,
+            },
+        );
+
+        const result = await copyTextToClipboard('hello');
+
+        expect(result).toMatchObject({
+            error: expect.any(TypeError),
+            ok: false,
+        });
+    });
+
+    it('should return the thrown error when text copy fails', async ({ expect }) => {
+        const error = new Error('denied');
+        Object.defineProperty(
+            navigator,
+            'clipboard',
+            {
+                configurable: true,
+                value: { writeText: vi.fn(() => Promise.reject(error)) },
+            },
+        );
+
+        await expect(copyTextToClipboard('hello')).resolves.toEqual({
             error,
             ok: false,
         });

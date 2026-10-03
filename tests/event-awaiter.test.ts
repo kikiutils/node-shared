@@ -1,4 +1,6 @@
 import {
+    afterEach,
+    beforeEach,
     describe,
     it,
     vi,
@@ -6,191 +8,223 @@ import {
 
 import { EventAwaiter } from '../src/event-awaiter';
 
-describe.concurrent('event awaiter', () => {
-    describe.concurrent('trigger', () => {
-        it('should resolve waiting promises with the provided value', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.wait('key');
+let awaiter: EventAwaiter<string>;
 
-            eventAwaiter.trigger('key', 'value');
+beforeEach(() => {
+    vi.useFakeTimers();
+    awaiter = new EventAwaiter<string>();
+});
 
-            await expect(promise).resolves.toBe('value');
+afterEach(() => {
+    awaiter.triggerAll();
+    vi.clearAllTimers();
+    vi.useRealTimers();
+});
+
+describe('class EventAwaiter', () => {
+    describe('trigger', () => {
+        it('should deliver a value to all current waiters for only the matching key', async ({ expect }) => {
+            const first = awaiter.wait('key');
+            const second = awaiter.wait('key');
+            const otherSettled = vi.fn();
+            const other = awaiter.wait('other').then(otherSettled);
+
+            awaiter.trigger('key', 'value');
+
+            await expect(
+                Promise.all([
+                    first,
+                    second,
+                ]),
+            ).resolves.toEqual([
+                'value',
+                'value',
+            ]);
+
+            expect(otherSettled).not.toHaveBeenCalled();
+            awaiter.trigger('other', 'separate');
+            await other;
+            expect(otherSettled).toHaveBeenCalledExactlyOnceWith('separate');
         });
 
-        it('should resolve with undefined when no value provided', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.wait('key');
+        it('should resolve with undefined when explicitly triggered without a result', async ({ expect }) => {
+            const promise = awaiter.wait('key');
 
-            eventAwaiter.trigger('key', undefined);
+            awaiter.trigger('key', undefined);
 
             await expect(promise).resolves.toBeUndefined();
         });
 
-        it('should do nothing if no promises are waiting for the key', ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
+        it('should discard unmatched triggers and allow the key to be reused', async ({ expect }) => {
+            awaiter.trigger('key', 'stale');
+            const settled = vi.fn();
+            const first = awaiter.wait('key').then(settled);
+            await Promise.resolve();
+            expect(settled).not.toHaveBeenCalled();
 
-            expect(() => eventAwaiter.trigger('nonexistent', 'value')).not.toThrow();
-        });
-
-        it('should resolve multiple waiting promises with the same value', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.wait('key');
-            const promise2 = eventAwaiter.wait('key');
-
-            eventAwaiter.trigger('key', 'shared');
-
-            await expect(promise1).resolves.toBe('shared');
-            await expect(promise2).resolves.toBe('shared');
+            awaiter.trigger('key', 'first');
+            await first;
+            expect(settled).toHaveBeenCalledExactlyOnceWith('first');
+            const next = awaiter.waitExclusive('key');
+            awaiter.trigger('key', 'next');
+            await expect(next).resolves.toBe('next');
         });
     });
 
-    describe.concurrent('triggerAll', () => {
-        it('should resolve all pending promises with undefined', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.wait('key1');
-            const promise2 = eventAwaiter.wait('key2');
+    describe('triggerAll', () => {
+        it.for([
+            undefined,
+            'shutdown',
+        ])(
+            'should resolve every pending key with %s and clear registrations',
+            async (value, { expect }) => {
+                const first = awaiter.wait('first');
+                const second = awaiter.wait('second');
 
-            eventAwaiter.triggerAll();
+                awaiter.triggerAll(value);
+                awaiter.triggerAll('stale');
 
-            await expect(promise1).resolves.toBeUndefined();
-            await expect(promise2).resolves.toBeUndefined();
-        });
+                await expect(
+                    Promise.all([
+                        first,
+                        second,
+                    ]),
+                ).resolves.toEqual([
+                    value,
+                    value,
+                ]);
 
-        it('should resolve all pending promises with custom value', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.wait('key1');
-            const promise2 = eventAwaiter.wait('key2');
-
-            eventAwaiter.triggerAll('shutdown');
-
-            await expect(promise1).resolves.toBe('shutdown');
-            await expect(promise2).resolves.toBe('shutdown');
-        });
-
-        it('should clear all resolvers after triggerAll', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.wait('key1');
-
-            eventAwaiter.triggerAll();
-
-            // Second triggerAll should do nothing
-            expect(() => eventAwaiter.triggerAll()).not.toThrow();
-
-            await expect(promise1).resolves.toBeUndefined();
-        });
+                const next = awaiter.waitExclusive('first');
+                awaiter.trigger('first', 'next');
+                await expect(next).resolves.toBe('next');
+            },
+        );
     });
 
-    describe.concurrent('wait', () => {
-        it('should resolve when trigger is called', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.wait('key');
+    describe('wait', () => {
+        it.for([
+            0,
+            100,
+        ])(
+            'should expire only the timed waiter after %s milliseconds',
+            async (timeout, { expect }) => {
+                const timedSettled = vi.fn();
+                const timed = awaiter.wait('key', timeout).then(timedSettled);
+                const survivor = awaiter.wait('key');
+                if (timeout > 0) {
+                    await vi.advanceTimersByTimeAsync(timeout - 1);
+                    expect(timedSettled).not.toHaveBeenCalled();
+                }
 
-            eventAwaiter.trigger('key', 'result');
+                await vi.advanceTimersByTimeAsync(timeout > 0 ? 1 : 0);
 
-            await expect(promise).resolves.toBe('result');
-        });
+                await expect(timed).resolves.toBeUndefined();
+                expect(timedSettled).toHaveBeenCalledExactlyOnceWith(undefined);
+                awaiter.trigger('key', 'survivor');
+                await expect(survivor).resolves.toBe('survivor');
+            },
+        );
 
-        it('should resolve with undefined on timeout', async ({ expect }) => {
-            vi.useFakeTimers();
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.wait('key', 100);
-
-            vi.advanceTimersByTime(100);
-
-            await expect(promise).resolves.toBeUndefined();
-            vi.useRealTimers();
-        });
-
-        it('should resolve with undefined on AbortSignal abort', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
+        it('should cancel only the waiter associated with an aborted signal', async ({ expect }) => {
             const controller = new AbortController();
-            const promise = eventAwaiter.wait('key', undefined, undefined, controller.signal);
+            const canceled = awaiter.wait('key', undefined, undefined, controller.signal);
+            const survivor = awaiter.wait('key');
 
             controller.abort();
 
-            await expect(promise).resolves.toBeUndefined();
+            await expect(canceled).resolves.toBeUndefined();
+            awaiter.trigger('key', 'survivor');
+            await expect(survivor).resolves.toBe('survivor');
         });
 
-        it('should handle timeout of 0', async ({ expect }) => {
-            vi.useFakeTimers();
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.wait('key', 0);
+        it('should release an expired exclusive registration for the next waiter', async ({ expect }) => {
+            const expired = awaiter.waitExclusive('key', 100);
 
-            vi.advanceTimersByTime(0);
+            await vi.advanceTimersByTimeAsync(100);
 
-            await expect(promise).resolves.toBeUndefined();
-            vi.useRealTimers();
+            await expect(expired).resolves.toBeUndefined();
+            const next = awaiter.waitExclusive('key');
+            awaiter.trigger('key', 'next');
+            await expect(next).resolves.toBe('next');
         });
 
-        it('should allow multiple waiters for same key by default', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.wait('key');
-            const promise2 = eventAwaiter.wait('key');
+        it('should not cancel a replacement waiter when an earlier timeout fires', async ({ expect }) => {
+            const replaced = awaiter.wait('key', 100);
+            const latest = awaiter.waitLatest('key');
 
-            eventAwaiter.trigger('key', 'both');
+            await expect(replaced).resolves.toBeUndefined();
+            await vi.advanceTimersByTimeAsync(100);
+            awaiter.trigger('key', 'latest');
 
-            await expect(promise1).resolves.toBe('both');
-            await expect(promise2).resolves.toBe('both');
+            await expect(latest).resolves.toBe('latest');
         });
 
-        it('should reject in strict mode if waiter already exists', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            eventAwaiter.wait('key');
+        it('should not cancel a later registration when an earlier signal aborts', async ({ expect }) => {
+            const controller = new AbortController();
+            const first = awaiter.wait('key', undefined, undefined, controller.signal);
+            awaiter.trigger('key', 'first');
+            await expect(first).resolves.toBe('first');
+            const next = awaiter.waitExclusive('key');
 
-            await expect(eventAwaiter.wait('key', undefined, 'strict'))
+            controller.abort();
+            awaiter.trigger('key', 'next');
+
+            await expect(next).resolves.toBe('next');
+        });
+
+        it('should reject a strict duplicate without disturbing the original waiter', async ({ expect }) => {
+            const original = awaiter.wait('key');
+
+            await expect(awaiter.wait('key', undefined, 'strict'))
                 .rejects
                 .toThrow('Duplicate wait detected for key: key');
+
+            awaiter.trigger('key', 'original');
+
+            await expect(original).resolves.toBe('original');
         });
 
-        it('should cancel existing waiters in override mode', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.wait('key');
-            const promise2 = eventAwaiter.wait('key', undefined, 'override');
+        it('should resolve all replaced waiters with undefined in override mode', async ({ expect }) => {
+            const first = awaiter.wait('key');
+            const second = awaiter.wait('key');
+            const latest = awaiter.wait('key', undefined, 'override');
 
-            await expect(promise1).resolves.toBeUndefined();
-            eventAwaiter.trigger('key', 'second');
+            await expect(
+                Promise.all([
+                    first,
+                    second,
+                ]),
+            ).resolves.toEqual([
+                undefined,
+                undefined,
+            ]);
 
-            await expect(promise2).resolves.toBe('second');
-        });
-    });
+            awaiter.trigger('key', 'latest');
 
-    describe.concurrent('waitExclusive', () => {
-        it('should reject if called twice with same key', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            eventAwaiter.waitExclusive('key');
-
-            await expect(eventAwaiter.waitExclusive('key')).rejects.toThrow('Duplicate wait detected for key: key');
-        });
-
-        it('should resolve with trigger', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.waitExclusive('key');
-
-            eventAwaiter.trigger('key', 'exclusive');
-
-            await expect(promise).resolves.toBe('exclusive');
+            await expect(latest).resolves.toBe('latest');
         });
     });
 
-    describe.concurrent('waitLatest', () => {
-        it('should cancel previous waiter when called again', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise1 = eventAwaiter.waitLatest('key');
-            const promise2 = eventAwaiter.waitLatest('key');
+    describe('waitExclusive', () => {
+        it('should reject duplicate registrations and forward cancellation', async ({ expect }) => {
+            const controller = new AbortController();
+            const original = awaiter.waitExclusive('key', undefined, controller.signal);
 
-            eventAwaiter.trigger('key', 'latest');
-
-            await expect(promise1).resolves.toBeUndefined();
-            await expect(promise2).resolves.toBe('latest');
+            await expect(awaiter.waitExclusive('key')).rejects.toThrow('Duplicate wait detected for key: key');
+            controller.abort();
+            await expect(original).resolves.toBeUndefined();
         });
+    });
 
-        it('should resolve with trigger', async ({ expect }) => {
-            const eventAwaiter = new EventAwaiter<string>();
-            const promise = eventAwaiter.waitLatest('key');
+    describe('waitLatest', () => {
+        it('should replace the previous waiter and forward the timeout', async ({ expect }) => {
+            const first = awaiter.waitLatest('key');
+            const latest = awaiter.waitLatest('key', 100);
 
-            eventAwaiter.trigger('key', 'newest');
+            await expect(first).resolves.toBeUndefined();
+            await vi.advanceTimersByTimeAsync(100);
 
-            await expect(promise).resolves.toBe('newest');
+            await expect(latest).resolves.toBeUndefined();
         });
     });
 });

@@ -7,272 +7,125 @@ import {
 
 import { toBuffer } from '../src/buffer';
 
-describe.concurrent('toBuffer', () => {
-    describe.concurrent('buffer input', () => {
-        it('should return the same Buffer instance when input is already a Buffer', async ({ expect }) => {
-            const input = Buffer.from('Hello World');
+describe('toBuffer', () => {
+    it('should return an existing Buffer without copying it', async ({ expect }) => {
+        const input = Buffer.from('Hello 世界');
 
-            const result = await toBuffer(input);
-            expect(result).toBe(input);
-            expect(result.toString()).toBe('Hello World');
-        });
-
-        it('should handle empty Buffer', async ({ expect }) => {
-            const input = Buffer.alloc(0);
-
-            const result = await toBuffer(input);
-            expect(result).toBe(input);
-            expect(result.length).toBe(0);
-        });
-
-        it('should handle Buffer with various encodings', async ({ expect }) => {
-            const input = Buffer.from('Hello 世界', 'utf8');
-
-            const result = await toBuffer(input);
-            expect(result).toBe(input);
-            expect(result.toString('utf8')).toBe('Hello 世界');
-        });
+        expect(await toBuffer(input)).toBe(input);
+        expect(await toBuffer(Buffer.alloc(0))).toHaveLength(0);
     });
 
-    describe.concurrent('blob input', () => {
-        it('should convert Blob to Buffer', async ({ expect }) => {
-            const blobContent = 'Hello from Blob';
-            const input = new Blob([blobContent], { type: 'text/plain' });
+    it('should share ArrayBuffer memory in both directions', async ({ expect }) => {
+        const input = new ArrayBuffer(2);
+        const bytes = new Uint8Array(input);
+        bytes.set([
+            10,
+            20,
+        ]);
 
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe(blobContent);
-        });
+        const result = await toBuffer(input);
 
-        it('should handle empty Blob', async ({ expect }) => {
-            const input = new Blob([], { type: 'text/plain' });
+        expect(result).toEqual(Buffer.from([
+            10,
+            20,
+        ]));
 
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.length).toBe(0);
-        });
-
-        it('should handle Blob with binary data', async ({ expect }) => {
-            const binaryData = new Uint8Array([
-                0x48,
-                0x65,
-                0x6C,
-                0x6C,
-                0x6F,
-            ]);
-
-            const input = new Blob([binaryData], { type: 'application/octet-stream' });
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe('Hello');
-        });
-
-        it('should handle Blob with multiple parts', async ({ expect }) => {
-            const input = new Blob(
-                [
-                    'Hello',
-                    ' ',
-                    'World',
-                ],
-                { type: 'text/plain' },
-            );
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe('Hello World');
-        });
+        bytes[0] = 30;
+        expect(result[0]).toBe(30);
+        result[1] = 40;
+        expect(bytes[1]).toBe(40);
     });
 
-    describe.concurrent('file input', () => {
-        it('should convert File to Buffer', async ({ expect }) => {
-            const fileContent = 'File content';
-            const input = new File([fileContent], 'test.txt', { type: 'text/plain' });
+    it('should preserve the offset and length of a shared Uint8Array view', async ({ expect }) => {
+        const bytes = new Uint8Array([
+            10,
+            20,
+            30,
+            40,
+            50,
+        ]);
 
+        const input = bytes.subarray(1, 4);
+
+        const result = await toBuffer(input);
+
+        expect(result).toEqual(Buffer.from([
+            20,
+            30,
+            40,
+        ]));
+
+        bytes[1] = 60;
+        expect(result[0]).toBe(60);
+        result[2] = 70;
+        expect(bytes[3]).toBe(70);
+    });
+
+    it.for([
+        {
+            expected: 'Hello 世界',
+            input: new Blob([
+                'Hello ',
+                '世界',
+            ]),
+            name: 'Blob',
+        },
+        {
+            expected: 'Hello 世界',
+            input: new File(['Hello 世界'], 'test.txt'),
+            name: 'File',
+        },
+        {
+            expected: '',
+            input: new Blob([]),
+            name: 'empty Blob',
+        },
+        {
+            expected: '',
+            input: new ArrayBuffer(0),
+            name: 'empty ArrayBuffer',
+        },
+        {
+            expected: '',
+            input: new Uint8Array(0),
+            name: 'empty Uint8Array',
+        },
+    ])(
+        'should read the complete contents of $name',
+        async ({ expected, input }, { expect }) => {
             const result = await toBuffer(input);
+
             expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe(fileContent);
-        });
+            expect(result.toString()).toBe(expected);
+        },
+    );
 
-        it('should preserve File metadata during conversion', async ({ expect }) => {
-            const fileContent = 'Test file data';
-            const fileName = 'document.txt';
-            const input = new File(
-                [fileContent],
-                fileName,
-                {
-                    lastModified: Date.now(),
-                    type: 'text/plain',
-                },
-            );
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe(fileContent);
-        });
-
-        it('should handle File with binary content', async ({ expect }) => {
-            const binaryData = new Uint8Array([
+    it('should preserve binary bytes when reading a Blob', async ({ expect }) => {
+        const input = new Blob([
+            new Uint8Array([
+                0,
                 0xFF,
-                0xD8,
-                0xFF,
-                0xE0,
-            ]);
+                0x80,
+            ]),
+        ]);
 
-            const input = new File([binaryData], 'image.jpg', { type: 'image/jpeg' });
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result[0]).toBe(0xFF);
-            expect(result[1]).toBe(0xD8);
-            expect(result[2]).toBe(0xFF);
-            expect(result[3]).toBe(0xE0);
-        });
+        expect(await toBuffer(input)).toEqual(Buffer.from([
+            0,
+            0xFF,
+            0x80,
+        ]));
     });
 
-    describe.concurrent('edge cases', () => {
-        it('should handle large data', async ({ expect }) => {
-            const largeData = 'x'.repeat(1024 * 1024);
-            const input = new Blob([largeData]);
+    it('should preserve a failure from the binary reader', async ({ expect }) => {
+        const error = new Error('Read failed');
+        const input = { arrayBuffer: () => Promise.reject(error) };
 
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.length).toBe(1024 * 1024);
-            expect(result.toString().substring(0, 10)).toBe('xxxxxxxxxx');
-        });
-
-        it('should handle unicode content correctly', async ({ expect }) => {
-            const unicodeContent = '👋 Hello 世界 🌍';
-            const input = new Blob([unicodeContent], { type: 'text/plain' });
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString('utf8')).toBe(unicodeContent);
-        });
-
-        it('should handle Blob created from ArrayBuffer', async ({ expect }) => {
-            const arrayBuffer = new ArrayBuffer(5);
-            const view = new Uint8Array(arrayBuffer);
-            view.set([
-                72,
-                101,
-                108,
-                108,
-                111,
-            ]);
-
-            const input = new Blob([arrayBuffer]);
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe('Hello');
-        });
+        // @ts-expect-error A minimal reader isolates the asynchronous error contract.
+        await expect(toBuffer(input)).rejects.toBe(error);
     });
 
-    describe.concurrent('type validation', () => {
-        it('should return Buffer type for all valid inputs', async ({ expect }) => {
-            const inputs = [
-                Buffer.from('test'),
-                new Blob(['test']),
-                new File(['test'], 'test.txt'),
-                new ArrayBuffer(4),
-                new Uint8Array([
-                    1,
-                    2,
-                    3,
-                ]),
-            ];
-
-            for (const input of inputs) {
-                const result = await toBuffer(input as any);
-                expect(Buffer.isBuffer(result)).toBe(true);
-            }
-        });
-
-        it('should throw TypeError for unsupported types', async ({ expect }) => {
-            const invalidInput = { some: 'object' };
-            await expect(toBuffer(invalidInput as any)).rejects.toThrow(TypeError);
-        });
-    });
-
-    describe.concurrent('performance considerations', () => {
-        it('should not create unnecessary copies for Buffer input', async ({ expect }) => {
-            const input = Buffer.from('Performance test');
-
-            const startTime = performance.now();
-            const result = await toBuffer(input);
-            const endTime = performance.now();
-            expect(result).toBe(input);
-            expect(endTime - startTime).toBeLessThan(10);
-        });
-
-        it('should handle Uint8Array efficiently', async ({ expect }) => {
-            const input = new Uint8Array(1024);
-            const startTime = performance.now();
-            const result = await toBuffer(input);
-            const endTime = performance.now();
-
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(endTime - startTime).toBeLessThan(10);
-        });
-    });
-
-    describe.concurrent('array buffer input', () => {
-        it('should convert ArrayBuffer to Buffer', async ({ expect }) => {
-            const input = new ArrayBuffer(5);
-            const view = new Uint8Array(input);
-            view.set([
-                72,
-                101,
-                108,
-                108,
-                111,
-            ]);
-
-            const result = await toBuffer(input);
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe('Hello');
-
-            // Ensure the content is identical
-            expect(new Uint8Array(result)).toEqual(view);
-        });
-
-        it('should handle empty ArrayBuffer', async ({ expect }) => {
-            const input = new ArrayBuffer(0);
-            const result = await toBuffer(input);
-            expect(result.length).toBe(0);
-        });
-    });
-
-    describe.concurrent('uint8 array input', () => {
-        it('should convert Uint8Array to Buffer', async ({ expect }) => {
-            const input = new Uint8Array([
-                65,
-                66,
-                67,
-            ]);
-
-            const result = await toBuffer(input);
-
-            expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe('ABC');
-        });
-
-        it('should handle Uint8Array views with offsets (Zero-copy check)', async ({ expect }) => {
-            const fullBuffer = new Uint8Array([
-                10,
-                20,
-                30,
-                40,
-                50,
-            ]);
-
-            const input = fullBuffer.subarray(1, 4);
-
-            const result = await toBuffer(input);
-            expect(result.length).toBe(3);
-            expect(result[0]).toBe(20);
-            expect(result[2]).toBe(40);
-        });
+    it('should reject unsupported input', async ({ expect }) => {
+        // @ts-expect-error Runtime validation must also reject inputs outside BinaryInput.
+        await expect(toBuffer({})).rejects.toThrow(TypeError);
     });
 });

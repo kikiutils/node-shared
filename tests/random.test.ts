@@ -1,74 +1,118 @@
 import {
+    afterEach,
     describe,
     it,
+    vi,
 } from 'vitest';
 
 import { generateWithNestedRandomLength } from '../src/random';
 
-describe.concurrent('generateWithNestedRandomLength', () => {
-    it('should work with string generator', ({ expect }) => {
-        const generator = (len: number) => 'x'.repeat(len);
+afterEach(() => {
+    vi.restoreAllMocks();
+});
 
-        for (let i = 0; i < 20; i++) {
-            const result = generateWithNestedRandomLength(generator, 10, 20, 30, 40);
-            expect(typeof result).toBe('string');
-            expect(result.length).toBeGreaterThanOrEqual(30);
-            expect(result.length).toBeLessThanOrEqual(40);
-        }
-    });
+describe('generateWithNestedRandomLength', () => {
+    it.for([
+        {
+            expected: 15,
+            inner: 0,
+            name: 'lower endpoints',
+            outer: 0,
+        },
+        {
+            expected: 40,
+            inner: 1 - Number.EPSILON,
+            name: 'upper endpoints',
+            outer: 1 - Number.EPSILON,
+        },
+        {
+            expected: 20,
+            inner: 1 - Number.EPSILON,
+            name: 'sampled minimum above maxMin',
+            outer: 0,
+        },
+    ])(
+        'should sample inclusive nested bounds for $name',
+        (
+            {
+                expected,
+                inner,
+                outer,
+            },
+            { expect },
+        ) => {
+            vi.spyOn(Math, 'random').mockReturnValueOnce(inner).mockReturnValueOnce(outer);
+            const value = { size: expected };
+            const generator = vi.fn(() => value);
 
-    it('should work with number[] generator', ({ expect }) => {
-        const generator = (len: number) => Array.from({ length: len }, (_, i) => i);
+            const result = generateWithNestedRandomLength(generator, 10, 20, 15, 40);
 
-        const result = generateWithNestedRandomLength<number[]>(generator, 5, 5, 10, 10);
-        expect(Array.isArray(result)).toBe(true);
-        expect(result.length).toBe(10);
-        expect(result).toEqual([
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-        ]);
-    });
+            expect(generator).toHaveBeenCalledExactlyOnceWith(expected);
+            expect(result).toBe(value);
+        },
+    );
 
-    it('should work with object generator (returning typed object)', ({ expect }) => {
-        const generator = (len: number) => ({
-            code: '*'.repeat(len),
-            size: len,
-        });
-
-        const result = generateWithNestedRandomLength(generator, 8, 8, 12, 12);
-        expect(typeof result).toBe('object');
-        expect(result.size).toBe(12);
-        expect(result.code.length).toBe(12);
-    });
-
-    it('should handle equal bounds correctly', ({ expect }) => {
-        const generator = (len: number) => len;
+    it('should pass equal bounds to the generator and return its promise unchanged', async ({ expect }) => {
+        const value = Promise.resolve('value');
+        const generator = vi.fn(() => value);
 
         const result = generateWithNestedRandomLength(generator, 10, 10, 10, 10);
-        expect(result).toBe(10);
+
+        expect(generator).toHaveBeenCalledExactlyOnceWith(10);
+        expect(result).toBe(value);
+        await expect(result).resolves.toBe('value');
     });
 
-    it('should throw if minMin is greater than minMax', ({ expect }) => {
-        const generator = (len: number) => len;
+    it.for([
+        {
+            bounds: [
+                20,
+                10,
+                30,
+                40,
+            ],
+            name: 'inverted inner bounds',
+        },
+        {
+            bounds: [
+                10,
+                20,
+                40,
+                30,
+            ],
+            name: 'inverted outer bounds',
+        },
+    ] as const)(
+        'should reject $name without calling the generator',
+        ({ bounds }, { expect }) => {
+            const generator = vi.fn();
 
-        expect(() => generateWithNestedRandomLength(generator, 20, 10, 30, 40)).toThrow(
-            'Invalid range: minMin (20) cannot be greater than minMax (10)',
-        );
-    });
+            const generate = () => generateWithNestedRandomLength(
+                generator,
+                bounds[0],
+                bounds[1],
+                bounds[2],
+                bounds[3],
+            );
 
-    it('should throw if maxMin is greater than maxMax', ({ expect }) => {
-        const generator = (len: number) => len;
+            expect(generate).toThrow('Invalid range');
+            expect(generator).not.toHaveBeenCalled();
+        },
+    );
 
-        expect(() => generateWithNestedRandomLength(generator, 10, 20, 40, 30)).toThrow(
-            'Invalid range: maxMin (40) cannot be greater than maxMax (30)',
-        );
+    it('should propagate a synchronous generator error unchanged', ({ expect }) => {
+        const error = new Error('Generator failed');
+
+        expect(
+            () => generateWithNestedRandomLength(
+                () => {
+                    throw error;
+                },
+                1,
+                1,
+                1,
+                1,
+            ),
+        ).toThrow(error);
     });
 });

@@ -3,8 +3,7 @@
  */
 
 import {
-    afterAll,
-    beforeAll,
+    afterEach,
     beforeEach,
     describe,
     it,
@@ -17,58 +16,71 @@ import {
     assignUrlWithRedirectParamFromCurrentLocation,
 } from '../src/web';
 
-// Mocks
 vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
-// Tests
-describe('web redirect helpers', () => {
-    const originalLocation = window.location;
-    const assign = vi.fn();
+const assign = vi.fn();
+const originalLocation = Object.getOwnPropertyDescriptor(window, 'location')!;
 
-    beforeAll(() => {
-        delete (window as any).location;
-        (window as any).location = {
-            assign,
-            hash: '#section',
-            pathname: '/profile',
-            search: '?tab=settings',
-        };
-    });
+beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+    Object.defineProperty(
+        window,
+        'location',
+        {
+            configurable: true,
+            value: {
+                assign,
+                hash: '#section',
+                pathname: '/profile',
+                search: '?tab=settings',
+            },
+        },
+    );
+});
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-        vi.useRealTimers();
-    });
+afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    Object.defineProperty(window, 'location', originalLocation);
+});
 
-    afterAll(() => {
-        vi.useRealTimers();
-        // @ts-expect-error Ignore this error.
-        window.location = originalLocation;
-    });
-
-    it('should append current location as redirect param to the given URL', ({ expect }) => {
+describe('appendRedirectParamFromCurrentLocationToUrl', () => {
+    it('should forward the full current path and return the generated URL', ({ expect }) => {
         const result = appendRedirectParamFromCurrentLocationToUrl('/login');
-        expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
+
+        expect(appendRedirectParamToUrl).toHaveBeenCalledExactlyOnceWith('/login', '/profile?tab=settings#section');
         expect(result).toBe('mocked-result');
     });
+});
 
+describe('assignUrlWithRedirectParamFromCurrentLocation', () => {
     it('should assign immediately when no delay is provided', ({ expect }) => {
         const result = assignUrlWithRedirectParamFromCurrentLocation('/login');
 
         expect(result).toBeUndefined();
-        expect(assign).toHaveBeenCalledWith('mocked-result');
+        expect(assign).toHaveBeenCalledExactlyOnceWith('mocked-result');
+        expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should assign after the requested delay', ({ expect }) => {
-        vi.useFakeTimers();
+    it('should assign only after the requested delay', ({ expect }) => {
+        assignUrlWithRedirectParamFromCurrentLocation('/login', 1000);
 
-        const timer = assignUrlWithRedirectParamFromCurrentLocation('/login', 1000);
-
-        expect(timer).toBeDefined();
         expect(assign).not.toHaveBeenCalled();
         vi.advanceTimersByTime(999);
         expect(assign).not.toHaveBeenCalled();
         vi.advanceTimersByTime(1);
-        expect(assign).toHaveBeenCalledWith('mocked-result');
+        expect(assign).toHaveBeenCalledExactlyOnceWith('mocked-result');
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should return a timer handle that lets the caller cancel delayed navigation', ({ expect }) => {
+        const timer = assignUrlWithRedirectParamFromCurrentLocation('/login', 1000);
+
+        clearTimeout(timer);
+        vi.advanceTimersByTime(1000);
+
+        expect(assign).not.toHaveBeenCalled();
+        expect(vi.getTimerCount()).toBe(0);
     });
 });

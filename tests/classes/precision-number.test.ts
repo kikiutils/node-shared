@@ -1,575 +1,464 @@
+import { inspect } from 'node:util';
+
 import { Decimal } from 'decimal.js';
 import {
     describe,
-    expect,
     it,
 } from 'vitest';
 
 import { PrecisionNumber } from '../../src/classes/precision-number';
 
-describe('precision number', () => {
-    describe('constructor', () => {
-        it('should create instance with default values', () => {
-            const num = new PrecisionNumber();
-            expect(num.value).toBe('0.00');
+describe('class PrecisionNumber', () => {
+    describe('construction and configuration', () => {
+        it('should default to two decimal places and round toward zero', ({ expect }) => {
+            const value = new PrecisionNumber();
+
+            expect(value.value).toBe('0.00');
+            expect(value.decimalPlaces).toBe(2);
+            expect(value.rounding).toBe(Decimal.ROUND_DOWN);
         });
 
-        it('should create instance with string value', () => {
-            const num = new PrecisionNumber('123.456');
-            expect(num.value).toBe('123.45');
+        it.for([
+            {
+                expected: '123.45',
+                input: ' 123.456 ',
+                name: 'a padded string',
+            },
+            {
+                expected: '123.45',
+                input: 123.456,
+                name: 'a number',
+            },
+            {
+                expected: '-123.45',
+                input: '-123.456',
+                name: 'a negative value',
+            },
+            {
+                expected: '123.00',
+                input: '1.23e2',
+                name: 'scientific notation',
+            },
+            {
+                expected: '9007199254740993.00',
+                input: '9007199254740993',
+                name: 'a value beyond safe native precision',
+            },
+        ])(
+            'should normalize $name',
+            ({ expected, input }, { expect }) => {
+                expect(new PrecisionNumber(input).value).toBe(expected);
+            },
+        );
+
+        it('should apply custom precision and rounding', ({ expect }) => {
+            const value = new PrecisionNumber('123.456', 3, Decimal.ROUND_UP);
+
+            expect(value.value).toBe('123.456');
+            expect(value.decimalPlaces).toBe(3);
+            expect(value.rounding).toBe(Decimal.ROUND_UP);
+            expect(new PrecisionNumber('123.456', 2, Decimal.ROUND_UP).value).toBe('123.46');
+            expect(new PrecisionNumber('123.456', 0).value).toBe('123');
         });
 
-        it('should create instance with number value', () => {
-            const num = new PrecisionNumber(123.456);
-            expect(num.value).toBe('123.45');
+        it('should copy an instance value without sharing mutable state', ({ expect }) => {
+            const original = new PrecisionNumber('100.50');
+            const copy = new PrecisionNumber(original);
+
+            copy.plus('1');
+
+            expect(original.value).toBe('100.50');
+            expect(copy.value).toBe('101.50');
         });
 
-        it('should create instance with PrecisionNumber value', () => {
-            const num1 = new PrecisionNumber('100.50');
-            const num2 = new PrecisionNumber(num1);
-            expect(num2.value).toBe('100.50');
-        });
-
-        it('should respect custom decimal places', () => {
-            const num = new PrecisionNumber('123.456789', 4);
-            expect(num.value).toBe('123.4567');
-        });
-
-        it('should respect custom rounding mode', () => {
-            const numDown = new PrecisionNumber('123.456', 2, Decimal.ROUND_DOWN);
-            const numUp = new PrecisionNumber('123.456', 2, Decimal.ROUND_UP);
-            expect(numDown.value).toBe('123.45');
-            expect(numUp.value).toBe('123.46');
-        });
-
-        it('should trim whitespace from input', () => {
-            const num = new PrecisionNumber('  123.45  ');
-            expect(num.value).toBe('123.45');
-        });
-    });
-
-    describe('getters', () => {
-        it('should expose decimal places and rounding mode', () => {
-            const num = new PrecisionNumber('1.23', 4, Decimal.ROUND_UP);
-
-            expect(num.decimalPlaces).toBe(4);
-            expect(num.rounding).toBe(Decimal.ROUND_UP);
-        });
-    });
-
-    describe('static methods', () => {
-        it('should convert to fixed string with toFixed', () => {
-            const result = PrecisionNumber.toFixed('123.456789', 3);
-            expect(result).toBe('123.456');
-        });
-
-        it('should use default decimal places in toFixed', () => {
-            const result = PrecisionNumber.toFixed('123.456789');
-            expect(result).toBe('123.45');
-        });
-
-        it('should respect rounding mode in toFixed', () => {
-            const result = PrecisionNumber.toFixed('123.456', 2, Decimal.ROUND_UP);
-            expect(result).toBe('123.46');
-        });
-    });
-
-    describe('arithmetic operations (in-place)', () => {
-        describe('plus', () => {
-            it('should add positive numbers', () => {
-                const num = new PrecisionNumber('100.50');
-                num.plus('50.25');
-                expect(num.value).toBe('150.75');
-            });
-
-            it('should add negative numbers', () => {
-                const num = new PrecisionNumber('100.50');
-                num.plus('-50.25');
-                expect(num.value).toBe('50.25');
-            });
-
-            it('should handle chaining', () => {
-                const num = new PrecisionNumber('10');
-                num.plus('5').plus('3');
-                expect(num.value).toBe('18.00');
-            });
-        });
-
-        describe('minus', () => {
-            it('should subtract positive numbers', () => {
-                const num = new PrecisionNumber('100.50');
-                num.minus('50.25');
-                expect(num.value).toBe('50.25');
-            });
-
-            it('should subtract negative numbers', () => {
-                const num = new PrecisionNumber('100.50');
-                num.minus('-50.25');
-                expect(num.value).toBe('150.75');
-            });
-        });
-
-        describe('times', () => {
-            it('should multiply numbers', () => {
-                const num = new PrecisionNumber('10.50');
-                num.times('2');
-                expect(num.value).toBe('21.00');
-            });
-
-            it('should handle decimal multiplication', () => {
-                const num = new PrecisionNumber('10.00');
-                num.times('0.15');
-                expect(num.value).toBe('1.50');
-            });
-        });
-
-        describe('dividedBy', () => {
-            it('should divide numbers', () => {
-                const num = new PrecisionNumber('100.00');
-                num.dividedBy('4');
-                expect(num.value).toBe('25.00');
-            });
-
-            it('should handle decimal division', () => {
-                const num = new PrecisionNumber('10.00');
-                num.dividedBy('3');
-                expect(num.value).toBe('3.33');
-            });
-
-            it('should respect rounding in division', () => {
-                const num = new PrecisionNumber('10.00', 2, Decimal.ROUND_UP);
-                num.dividedBy('3');
-                expect(num.value).toBe('3.34');
-            });
-        });
-
-        describe('absoluteValue', () => {
-            it('should convert negative to positive', () => {
-                const num = new PrecisionNumber('-123.45');
-                num.absoluteValue();
-                expect(num.value).toBe('123.45');
-            });
-
-            it('should keep positive as positive', () => {
-                const num = new PrecisionNumber('123.45');
-                num.absoluteValue();
-                expect(num.value).toBe('123.45');
-            });
-        });
-
-        describe('negate', () => {
-            it('should negate positive to negative', () => {
-                const num = new PrecisionNumber('123.45');
-                num.negate();
-                expect(num.value).toBe('-123.45');
-            });
-
-            it('should negate negative to positive', () => {
-                const num = new PrecisionNumber('-123.45');
-                num.negate();
-                expect(num.value).toBe('123.45');
-            });
-        });
-
-        describe('ceil', () => {
-            it('should round up to the nearest integer in place', () => {
-                const num = new PrecisionNumber('1.01');
-                num.ceil();
-                expect(num.value).toBe('2.00');
-            });
-        });
-
-        describe('floor', () => {
-            it('should round down to the nearest integer in place', () => {
-                const num = new PrecisionNumber('1.99');
-                num.floor();
-                expect(num.value).toBe('1.00');
-            });
-        });
-
-        describe('modulo', () => {
-            it('should keep the remainder in place', () => {
-                const num = new PrecisionNumber('10.50');
-                num.modulo('4');
-                expect(num.value).toBe('2.50');
-            });
-        });
-
-        describe('pow', () => {
-            it('should raise the current value to an exponent in place', () => {
-                const num = new PrecisionNumber('2');
-                num.pow('3');
-                expect(num.value).toBe('8.00');
-            });
-        });
-
-        describe('clamp', () => {
-            it('should clamp values below, inside, and above the inclusive range', () => {
-                expect(new PrecisionNumber('1').clamp('2', '4').value).toBe('2.00');
-                expect(new PrecisionNumber('3').clamp('2', '4').value).toBe('3.00');
-                expect(new PrecisionNumber('5').clamp('2', '4').value).toBe('4.00');
-            });
-
-            it('should reject invalid ranges', () => {
-                expect(() => new PrecisionNumber('3').clamp('4', '2')).toThrow('Invalid clamp range');
-            });
+        it('should reject invalid decimal text', ({ expect }) => {
+            expect(() => new PrecisionNumber('not-a-number')).toThrow();
         });
     });
 
-    describe('arithmetic operations (immutable)', () => {
-        describe('toPlus', () => {
-            it('should return new instance with added value', () => {
-                const num1 = new PrecisionNumber('100.50');
-                const num2 = num1.toPlus('50.25');
-                expect(num1.value).toBe('100.50');
-                expect(num2.value).toBe('150.75');
-            });
+    describe('arithmetic and identity', () => {
+        it.for([
+            {
+                expected: '150.75',
+                immutable: 'toPlus',
+                input: '100.50',
+                mutable: 'plus',
+                operand: '50.25',
+            },
+            {
+                expected: '50.25',
+                immutable: 'toPlus',
+                input: '100.50',
+                mutable: 'plus',
+                operand: '-50.25',
+            },
+            {
+                expected: '50.25',
+                immutable: 'toMinus',
+                input: '100.50',
+                mutable: 'minus',
+                operand: '50.25',
+            },
+            {
+                expected: '150.75',
+                immutable: 'toMinus',
+                input: '100.50',
+                mutable: 'minus',
+                operand: '-50.25',
+            },
+            {
+                expected: '21.00',
+                immutable: 'toTimes',
+                input: '10.50',
+                mutable: 'times',
+                operand: '2',
+            },
+            {
+                expected: '1.50',
+                immutable: 'toTimes',
+                input: '10.00',
+                mutable: 'times',
+                operand: '0.15',
+            },
+            {
+                expected: '25.00',
+                immutable: 'toDividedBy',
+                input: '100.00',
+                mutable: 'dividedBy',
+                operand: '4',
+            },
+            {
+                expected: '3.33',
+                immutable: 'toDividedBy',
+                input: '10.00',
+                mutable: 'dividedBy',
+                operand: '3',
+            },
+            {
+                expected: '2.50',
+                immutable: 'toModulo',
+                input: '10.50',
+                mutable: 'modulo',
+                operand: '4',
+            },
+            {
+                expected: '8.00',
+                immutable: 'toPow',
+                input: '2.00',
+                mutable: 'pow',
+                operand: '3',
+            },
+        ] as const)(
+            'should preserve mutable and immutable contracts for $mutable($operand) on $input',
+            (
+                {
+                    expected,
+                    immutable,
+                    input,
+                    mutable,
+                    operand,
+                },
+                { expect },
+            ) => {
+                const original = new PrecisionNumber(input);
+
+                const copy = original[immutable](operand);
+
+                expect(copy).toBeInstanceOf(PrecisionNumber);
+                expect(copy).not.toBe(original);
+                expect(copy.value).toBe(expected);
+                expect(copy.decimalPlaces).toBe(original.decimalPlaces);
+                expect(copy.rounding).toBe(original.rounding);
+                expect(original.value).toBe(input);
+                expect(original[mutable](operand)).toBe(original);
+                expect(original.value).toBe(expected);
+            },
+        );
+
+        it.for([
+            {
+                expected: '123.45',
+                immutable: 'toAbsoluteValue',
+                input: '-123.45',
+                mutable: 'absoluteValue',
+            },
+            {
+                expected: '123.45',
+                immutable: 'toAbsoluteValue',
+                input: '123.45',
+                mutable: 'absoluteValue',
+            },
+            {
+                expected: '-123.45',
+                immutable: 'toNegated',
+                input: '123.45',
+                mutable: 'negate',
+            },
+            {
+                expected: '123.45',
+                immutable: 'toNegated',
+                input: '-123.45',
+                mutable: 'negate',
+            },
+            {
+                expected: '2.00',
+                immutable: 'toCeil',
+                input: '1.01',
+                mutable: 'ceil',
+            },
+            {
+                expected: '1.00',
+                immutable: 'toFloor',
+                input: '1.99',
+                mutable: 'floor',
+            },
+        ] as const)(
+            'should preserve mutable and immutable contracts for $mutable on $input',
+            (
+                {
+                    expected,
+                    immutable,
+                    input,
+                    mutable,
+                },
+                { expect },
+            ) => {
+                const original = new PrecisionNumber(input);
+
+                const copy = original[immutable]();
+
+                expect(copy).not.toBe(original);
+                expect(copy.value).toBe(expected);
+                expect(original.value).toBe(input);
+                expect(original[mutable]()).toBe(original);
+                expect(original.value).toBe(expected);
+            },
+        );
+
+        it('should retain custom precision and rounding after immutable and mutable division', ({ expect }) => {
+            const original = new PrecisionNumber('10', 3, Decimal.ROUND_UP);
+            const copy = original.toDividedBy('3');
+
+            expect(copy.value).toBe('3.334');
+            expect(copy.decimalPlaces).toBe(3);
+            expect(copy.rounding).toBe(Decimal.ROUND_UP);
+            expect(original.value).toBe('10.000');
+            expect(original.dividedBy('3')).toBe(original);
+            expect(original.value).toBe('3.334');
         });
 
-        describe('toMinus', () => {
-            it('should return new instance with subtracted value', () => {
-                const num1 = new PrecisionNumber('100.50');
-                const num2 = num1.toMinus('50.25');
-                expect(num1.value).toBe('100.50');
-                expect(num2.value).toBe('50.25');
-            });
+        it('should preserve decimal precision during chained arithmetic', ({ expect }) => {
+            const value = new PrecisionNumber('0.1', 10);
+
+            expect(value.plus('0.2').times('10')).toBe(value);
+            expect(value.value).toBe('3.0000000000');
         });
 
-        describe('toTimes', () => {
-            it('should return new instance with multiplied value', () => {
-                const num1 = new PrecisionNumber('10.50');
-                const num2 = num1.toTimes('2');
-                expect(num1.value).toBe('10.50');
-                expect(num2.value).toBe('21.00');
-            });
-        });
+        it.for([
+            {
+                expected: '2.00',
+                input: '1.00',
+            },
+            {
+                expected: '2.00',
+                input: '2.00',
+            },
+            {
+                expected: '3.00',
+                input: '3.00',
+            },
+            {
+                expected: '4.00',
+                input: '4.00',
+            },
+            {
+                expected: '4.00',
+                input: '5.00',
+            },
+        ])(
+            'should clamp $input inclusively without mutating the original',
+            ({ expected, input }, { expect }) => {
+                const original = new PrecisionNumber(input);
+                const copy = original.toClamped('2', '4');
 
-        describe('toDividedBy', () => {
-            it('should return new instance with divided value', () => {
-                const num1 = new PrecisionNumber('100.00');
-                const num2 = num1.toDividedBy('4');
-                expect(num1.value).toBe('100.00');
-                expect(num2.value).toBe('25.00');
-            });
-        });
+                expect(copy).not.toBe(original);
+                expect(copy.value).toBe(expected);
+                expect(original.value).toBe(input);
+                expect(original.clamp('2', '4')).toBe(original);
+                expect(original.value).toBe(expected);
+            },
+        );
 
-        describe('toAbsoluteValue', () => {
-            it('should return new instance with absolute value', () => {
-                const num1 = new PrecisionNumber('-123.45');
-                const num2 = num1.toAbsoluteValue();
-                expect(num1.value).toBe('-123.45');
-                expect(num2.value).toBe('123.45');
-            });
-        });
+        it('should reject inverted clamp bounds without changing the current value', ({ expect }) => {
+            const value = new PrecisionNumber('3');
 
-        describe('toNegated', () => {
-            it('should return new instance with negated value', () => {
-                const num1 = new PrecisionNumber('123.45');
-                const num2 = num1.toNegated();
-                expect(num1.value).toBe('123.45');
-                expect(num2.value).toBe('-123.45');
-            });
-        });
-
-        describe('toCeil', () => {
-            it('should return a new instance rounded up to the nearest integer', () => {
-                const num1 = new PrecisionNumber('1.01');
-                const num2 = num1.toCeil();
-                expect(num1.value).toBe('1.01');
-                expect(num2.value).toBe('2.00');
-            });
-        });
-
-        describe('toFloor', () => {
-            it('should return a new instance rounded down to the nearest integer', () => {
-                const num1 = new PrecisionNumber('1.99');
-                const num2 = num1.toFloor();
-                expect(num1.value).toBe('1.99');
-                expect(num2.value).toBe('1.00');
-            });
-        });
-
-        describe('toModulo', () => {
-            it('should return a new instance with the remainder', () => {
-                const num1 = new PrecisionNumber('10.50');
-                const num2 = num1.toModulo('4');
-                expect(num1.value).toBe('10.50');
-                expect(num2.value).toBe('2.50');
-            });
-        });
-
-        describe('toPow', () => {
-            it('should return a new instance raised to an exponent', () => {
-                const num1 = new PrecisionNumber('2');
-                const num2 = num1.toPow('3');
-                expect(num1.value).toBe('2.00');
-                expect(num2.value).toBe('8.00');
-            });
-        });
-
-        describe('toClamped', () => {
-            it('should return a new clamped instance', () => {
-                const num1 = new PrecisionNumber('5');
-                const num2 = num1.toClamped('2', '4');
-                expect(num1.value).toBe('5.00');
-                expect(num2.value).toBe('4.00');
-            });
-        });
-    });
-
-    describe('comparison methods', () => {
-        describe('equals', () => {
-            it('should return true for equal values', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.equals('123.45')).toBe(true);
-            });
-
-            it('should return false for different values', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.equals('123.46')).toBe(false);
-            });
-        });
-
-        describe('gt (greater than)', () => {
-            it('should return true when greater', () => {
-                const num = new PrecisionNumber('100');
-                expect(num.gt('50')).toBe(true);
-            });
-
-            it('should return false when not greater', () => {
-                const num = new PrecisionNumber('50');
-                expect(num.gt('100')).toBe(false);
-                expect(num.gt('50')).toBe(false);
-            });
-        });
-
-        describe('gte (greater than or equal)', () => {
-            it('should return true when greater or equal', () => {
-                const num = new PrecisionNumber('100');
-                expect(num.gte('50')).toBe(true);
-                expect(num.gte('100')).toBe(true);
-            });
-
-            it('should return false when less', () => {
-                const num = new PrecisionNumber('50');
-                expect(num.gte('100')).toBe(false);
-            });
-        });
-
-        describe('lt (less than)', () => {
-            it('should return true when less', () => {
-                const num = new PrecisionNumber('50');
-                expect(num.lt('100')).toBe(true);
-            });
-
-            it('should return false when not less', () => {
-                const num = new PrecisionNumber('100');
-                expect(num.lt('50')).toBe(false);
-                expect(num.lt('100')).toBe(false);
-            });
-        });
-
-        describe('lte (less than or equal)', () => {
-            it('should return true when less or equal', () => {
-                const num = new PrecisionNumber('50');
-                expect(num.lte('100')).toBe(true);
-                expect(num.lte('50')).toBe(true);
-            });
-
-            it('should return false when greater', () => {
-                const num = new PrecisionNumber('100');
-                expect(num.lte('50')).toBe(false);
-            });
-        });
-    });
-
-    describe('state checking methods', () => {
-        describe('isFinite', () => {
-            it('should return true for finite numbers', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.isFinite()).toBe(true);
-            });
-
-            it('should return false for infinity', () => {
-                const num = new PrecisionNumber('Infinity');
-                expect(num.isFinite()).toBe(false);
-            });
-        });
-
-        describe('isInteger', () => {
-            it('should return true for integers', () => {
-                const num = new PrecisionNumber('123.00');
-                expect(num.isInteger()).toBe(true);
-            });
-
-            it('should return false for non-integers', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.isInteger()).toBe(false);
-            });
-        });
-
-        describe('isNaN', () => {
-            it('should return false for valid numbers', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.isNaN()).toBe(false);
-            });
-
-            it('should return true for NaN', () => {
-                const num = new PrecisionNumber('NaN');
-                expect(num.isNaN()).toBe(true);
-            });
-        });
-
-        describe('isNegative', () => {
-            it('should return true for negative numbers', () => {
-                const num = new PrecisionNumber('-123.45');
-                expect(num.isNegative()).toBe(true);
-            });
-
-            it('should return false for positive numbers', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.isNegative()).toBe(false);
-            });
-
-            it('should return false for zero', () => {
-                const num = new PrecisionNumber('0');
-                expect(num.isNegative()).toBe(false);
-            });
-        });
-
-        describe('isPositive', () => {
-            it('should return true for positive numbers', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.isPositive()).toBe(true);
-            });
-
-            it('should return false for negative numbers', () => {
-                const num = new PrecisionNumber('-123.45');
-                expect(num.isPositive()).toBe(false);
-            });
-
-            it('should return true for zero', () => {
-                const num = new PrecisionNumber('0');
-                expect(num.isPositive()).toBe(true);
-            });
-        });
-
-        describe('isZero', () => {
-            it('should return true for zero', () => {
-                const num = new PrecisionNumber('0');
-                expect(num.isZero()).toBe(true);
-            });
-
-            it('should return false for non-zero', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.isZero()).toBe(false);
-            });
+            expect(() => value.clamp('4', '2')).toThrow('Invalid clamp range');
+            expect(() => value.toClamped('4', '2')).toThrow('Invalid clamp range');
+            expect(value.value).toBe('3.00');
         });
     });
 
-    describe('conversion methods', () => {
-        describe('clone', () => {
-            it('should return an independent instance with the same configuration', () => {
-                const num1 = new PrecisionNumber('1.234', 3, Decimal.ROUND_UP);
-                const num2 = num1.clone();
+    describe('comparison and predicates', () => {
+        it.for([
+            {
+                equals: false,
+                gt: false,
+                gte: false,
+                input: '49',
+                lt: true,
+                lte: true,
+            },
+            {
+                equals: true,
+                gt: false,
+                gte: true,
+                input: '50',
+                lt: false,
+                lte: true,
+            },
+            {
+                equals: false,
+                gt: true,
+                gte: true,
+                input: '51',
+                lt: false,
+                lte: false,
+            },
+        ])(
+            'should distinguish strict and inclusive comparisons for $input against 50',
+            (
+                {
+                    equals,
+                    gt,
+                    gte,
+                    input,
+                    lt,
+                    lte,
+                },
+                { expect },
+            ) => {
+                const value = new PrecisionNumber(input);
 
-                num2.plus('1');
+                expect(value.equals('50')).toBe(equals);
+                expect(value.gt('50')).toBe(gt);
+                expect(value.gte('50')).toBe(gte);
+                expect(value.lt('50')).toBe(lt);
+                expect(value.lte('50')).toBe(lte);
+            },
+        );
 
-                expect(num1.value).toBe('1.234');
-                expect(num2.value).toBe('2.234');
-                expect(num2.decimalPlaces).toBe(3);
-                expect(num2.rounding).toBe(Decimal.ROUND_UP);
-            });
-        });
+        it.for([
+            {
+                finite: true,
+                input: '1.25',
+                integer: false,
+                nan: false,
+                negative: false,
+                positive: true,
+                zero: false,
+            },
+            {
+                finite: true,
+                input: '-1',
+                integer: true,
+                nan: false,
+                negative: true,
+                positive: false,
+                zero: false,
+            },
+            {
+                finite: true,
+                input: '0',
+                integer: true,
+                nan: false,
+                negative: false,
+                positive: true,
+                zero: true,
+            },
+            {
+                finite: false,
+                input: 'Infinity',
+                integer: false,
+                nan: false,
+                negative: false,
+                positive: true,
+                zero: false,
+            },
+            {
+                finite: false,
+                input: 'NaN',
+                integer: false,
+                nan: true,
+                negative: false,
+                positive: false,
+                zero: false,
+            },
+        ])(
+            'should expose numeric state predicates for $input',
+            (
+                {
+                    finite,
+                    input,
+                    integer,
+                    nan,
+                    negative,
+                    positive,
+                    zero,
+                },
+                { expect },
+            ) => {
+                const value = new PrecisionNumber(input);
 
-        describe('toNumber', () => {
-            it('should return a native number representation', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.toNumber()).toBe(123.45);
-            });
-        });
-
-        describe('toString', () => {
-            it('should return string representation', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.toString()).toBe('123.45');
-            });
-        });
-
-        describe('toJSON', () => {
-            it('should return value for JSON serialization', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(num.toJSON()).toBe('123.45');
-            });
-
-            it('should work with JSON.stringify', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(JSON.stringify({ value: num })).toBe('{"value":"123.45"}');
-            });
-        });
-
-        describe('toFixed', () => {
-            it('should format with default decimal places', () => {
-                const num = new PrecisionNumber('123.456789', 4);
-                expect(num.toFixed()).toBe('123.4567');
-            });
-
-            it('should format with custom decimal places', () => {
-                const num = new PrecisionNumber('123.456789', 4);
-                expect(num.toFixed(3)).toBe('123.456');
-            });
-
-            it('should format with custom rounding', () => {
-                const num = new PrecisionNumber('123.456', 3);
-                expect(num.toFixed(2, Decimal.ROUND_UP)).toBe('123.46');
-            });
-        });
+                expect(value.isFinite()).toBe(finite);
+                expect(value.isInteger()).toBe(integer);
+                expect(value.isNaN()).toBe(nan);
+                expect(value.isNegative()).toBe(negative);
+                expect(value.isPositive()).toBe(positive);
+                expect(value.isZero()).toBe(zero);
+            },
+        );
     });
 
-    describe('symbol methods', () => {
-        describe('symbol.toPrimitive', () => {
-            it('should convert to number when hint is number', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(+num).toBe(123.45);
-            });
+    describe('conversion and formatting', () => {
+        it('should clone the value and configuration without sharing state', ({ expect }) => {
+            const original = new PrecisionNumber('1.234', 3, Decimal.ROUND_UP);
+            const copy = original.clone();
 
-            it('should convert to string when hint is string', () => {
-                const num = new PrecisionNumber('123.45');
-                expect(`${num}`).toBe('123.45');
-            });
+            copy.plus('1');
 
-            it('should work in arithmetic operations', () => {
-                const num = new PrecisionNumber('100.00');
-                expect(+num + 50).toBe(150);
-            });
-        });
-    });
-
-    describe('edge cases', () => {
-        it('should handle very large numbers', () => {
-            const num = new PrecisionNumber('999999999999.99');
-            expect(num.value).toBe('999999999999.99');
+            expect(original.value).toBe('1.234');
+            expect(copy.value).toBe('2.234');
+            expect(copy.decimalPlaces).toBe(3);
+            expect(copy.rounding).toBe(Decimal.ROUND_UP);
         });
 
-        it('should handle very small numbers', () => {
-            const num = new PrecisionNumber('0.0001', 4);
-            expect(num.value).toBe('0.0001');
+        it('should expose fixed text for serialization and numeric values for numeric coercion', ({ expect }) => {
+            const value = new PrecisionNumber('123.45');
+
+            expect(value.toNumber()).toBe(123.45);
+            expect(+value).toBe(123.45);
+            expect(value.toString()).toBe('123.45');
+            expect(`${value}`).toBe('123.45');
+            expect(inspect(value)).toBe('123.45');
+            expect(value.toJSON()).toBe('123.45');
+            expect(JSON.stringify({ value })).toBe('{"value":"123.45"}');
         });
 
-        it('should handle scientific notation', () => {
-            const num = new PrecisionNumber('1.23e+2');
-            expect(num.value).toBe('123.00');
+        it('should format with per-call precision and rounding without changing stored configuration', ({ expect }) => {
+            const value = new PrecisionNumber('123.456', 3);
+
+            expect(value.toFixed()).toBe('123.456');
+            expect(value.toFixed(2)).toBe('123.45');
+            expect(value.toFixed(2, Decimal.ROUND_UP)).toBe('123.46');
+            expect(value.value).toBe('123.456');
+            expect(value.decimalPlaces).toBe(3);
+            expect(value.rounding).toBe(Decimal.ROUND_DOWN);
         });
 
-        it('should handle zero decimal places', () => {
-            const num = new PrecisionNumber('123.456', 0);
-            expect(num.value).toBe('123');
-        });
-
-        it('should maintain precision in complex calculations', () => {
-            const num = new PrecisionNumber('0.1', 10);
-            num.plus('0.2');
-            expect(num.value).toBe('0.3000000000');
+        it('should format static inputs using default or explicit configuration', ({ expect }) => {
+            expect(PrecisionNumber.toFixed(' 123.456 ')).toBe('123.45');
+            expect(PrecisionNumber.toFixed('123.456', 3)).toBe('123.456');
+            expect(PrecisionNumber.toFixed('123.456', 2, Decimal.ROUND_UP)).toBe('123.46');
         });
     });
 });

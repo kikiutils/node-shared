@@ -1,5 +1,6 @@
 import {
     afterEach,
+    beforeEach,
     describe,
     it,
     vi,
@@ -10,92 +11,98 @@ import {
     delayOrThrow,
 } from '../src/time';
 
-afterEach(() => {
-    vi.useRealTimers();
+beforeEach(() => {
+    vi.useFakeTimers();
 });
 
-describe.concurrent('delay', () => {
-    it('should resolve after specified milliseconds', async ({ expect }) => {
-        vi.useFakeTimers();
+afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+});
 
-        const promise = delay(100);
+describe('delay', () => {
+    it('should remain pending until the requested duration elapses', async ({ expect }) => {
+        const settled = vi.fn();
+        const promise = delay(100).then(settled);
 
-        await vi.advanceTimersByTimeAsync(100);
+        await vi.advanceTimersByTimeAsync(99);
+        expect(settled).not.toHaveBeenCalled();
+        await vi.advanceTimersByTimeAsync(1);
 
         await expect(promise).resolves.toBeUndefined();
+        expect(settled).toHaveBeenCalledOnce();
+        expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should resolve immediately when aborted', async ({ expect }) => {
-        vi.useFakeTimers();
-
+    it('should resolve on abort without keeping the timer', async ({ expect }) => {
         const controller = new AbortController();
         const promise = delay(1000, controller.signal);
 
-        controller.abort();
+        controller.abort(new Error('Canceled'));
 
         await expect(promise).resolves.toBeUndefined();
+        expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should resolve immediately when signal is already aborted', async ({ expect }) => {
-        vi.useFakeTimers();
+    it('should resolve an already aborted signal without scheduling a timer', async ({ expect }) => {
+        await expect(delay(1000, AbortSignal.abort())).resolves.toBeUndefined();
+        expect(vi.getTimerCount()).toBe(0);
+    });
 
+    it('should remove the abort listener on normal completion', async ({ expect }) => {
         const controller = new AbortController();
-        controller.abort();
-
-        await expect(delay(1000, controller.signal)).resolves.toBeUndefined();
-    });
-
-    it('should work without signal', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const promise = delay(50);
-
-        await vi.advanceTimersByTimeAsync(50);
-
-        await expect(promise).resolves.toBeUndefined();
-    });
-});
-
-describe.concurrent('delayOrThrow', () => {
-    it('should resolve after specified milliseconds', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const promise = delayOrThrow(100);
+        const remove = vi.spyOn(controller.signal, 'removeEventListener');
+        const promise = delay(100, controller.signal);
 
         await vi.advanceTimersByTimeAsync(100);
 
         await expect(promise).resolves.toBeUndefined();
+        expect(remove).toHaveBeenCalledExactlyOnceWith('abort', expect.any(Function));
     });
+});
 
-    it('should reject with abort reason when aborted', async ({ expect }) => {
-        vi.useFakeTimers();
+describe('delayOrThrow', () => {
+    it('should remain pending until the requested duration elapses', async ({ expect }) => {
+        const settled = vi.fn();
+        const promise = delayOrThrow(100).then(settled);
 
-        const controller = new AbortController();
-        const reason = new Error('aborted');
-        const promise = delayOrThrow(1000, controller.signal);
-
-        controller.abort(reason);
-
-        await expect(promise).rejects.toBe(reason);
-    });
-
-    it('should reject immediately when signal is already aborted', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const controller = new AbortController();
-        const reason = new Error('aborted');
-        controller.abort(reason);
-
-        await expect(delayOrThrow(1000, controller.signal)).rejects.toBe(reason);
-    });
-
-    it('should work without signal', async ({ expect }) => {
-        vi.useFakeTimers();
-
-        const promise = delayOrThrow(50);
-
-        await vi.advanceTimersByTimeAsync(50);
+        await vi.advanceTimersByTimeAsync(99);
+        expect(settled).not.toHaveBeenCalled();
+        await vi.advanceTimersByTimeAsync(1);
 
         await expect(promise).resolves.toBeUndefined();
+        expect(settled).toHaveBeenCalledOnce();
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should reject with the original abort reason and clear the timer', async ({ expect }) => {
+        const controller = new AbortController();
+        const reason = new Error('Canceled');
+        const promise = delayOrThrow(1000, controller.signal);
+        const rejection = expect(promise).rejects.toBe(reason);
+
+        controller.abort(reason);
+
+        await rejection;
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should reject an already aborted signal without scheduling a timer', async ({ expect }) => {
+        const reason = { code: 'Canceled' };
+
+        await expect(delayOrThrow(1000, AbortSignal.abort(reason))).rejects.toBe(reason);
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should remove the abort listener on normal completion', async ({ expect }) => {
+        const controller = new AbortController();
+        const remove = vi.spyOn(controller.signal, 'removeEventListener');
+        const promise = delayOrThrow(100, controller.signal);
+
+        await vi.advanceTimersByTimeAsync(100);
+
+        await expect(promise).resolves.toBeUndefined();
+        expect(remove).toHaveBeenCalledExactlyOnceWith('abort', expect.any(Function));
     });
 });

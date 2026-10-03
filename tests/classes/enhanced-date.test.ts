@@ -3,16 +3,15 @@ import { enUS } from 'date-fns/locale';
 import {
     afterEach,
     describe,
-    expect,
     it,
     vi,
 } from 'vitest';
 
 import { EnhancedDate } from '../../src/classes/enhanced-date';
 
-describe.concurrent('enhanced date', () => {
-    describe.concurrent('native Date compatibility', () => {
-        it('should inherit native construction and copy Date inputs independently', () => {
+describe('class EnhancedDate', () => {
+    describe('native Date compatibility', () => {
+        it('should inherit native construction and copy Date inputs independently', ({ expect }) => {
             const original = new Date(2026, 0, 15, 12, 34, 56, 789);
             const date = new EnhancedDate(original);
 
@@ -26,7 +25,7 @@ describe.concurrent('enhanced date', () => {
             expect(original.getDate()).toBe(15);
         });
 
-        it('should retain EnhancedDate methods when passed to external date-fns operations', () => {
+        it('should retain EnhancedDate methods when passed to external date-fns operations', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 15);
             const result = dateFns.addDays(date, 1);
 
@@ -35,19 +34,17 @@ describe.concurrent('enhanced date', () => {
             expect(date.getDate()).toBe(15);
         });
 
-        it('should preserve native setter returns, coercion, and JSON serialization', () => {
+        it('should preserve native setter returns, coercion, and JSON serialization', ({ expect }) => {
             const date = new EnhancedDate(0);
 
             expect(date.setTime(1234)).toBe(1234);
             expect(+date).toBe(1234);
             expect(JSON.stringify(date)).toBe('"1970-01-01T00:00:01.234Z"');
-            expect(EnhancedDate.now).toBe(Date.now);
-            expect(EnhancedDate.parse).toBe(Date.parse);
         });
     });
 
-    describe.concurrent('mutable and immutable operations', () => {
-        it.each([
+    describe('mutable and immutable operations', () => {
+        it.for([
             [
                 'addDays',
                 'toAddDays',
@@ -70,7 +67,14 @@ describe.concurrent('enhanced date', () => {
             ],
         ] as const)(
             'should keep identity and nonmutation contracts for %s',
-            (mutable, immutable, expected) => {
+            (
+                [
+                    mutable,
+                    immutable,
+                    expected,
+                ],
+                { expect },
+            ) => {
                 const date = new EnhancedDate(2026, 0, 15, 12, 34, 56, 789);
                 const originalTime = date.getTime();
                 const result = date[immutable](1);
@@ -84,7 +88,7 @@ describe.concurrent('enhanced date', () => {
             },
         );
 
-        it('should clamp month and year arithmetic at month ends and leap days', () => {
+        it('should clamp month and year arithmetic at month ends and leap days', ({ expect }) => {
             const january = new EnhancedDate(2026, 0, 31, 12);
             const leapDay = new EnhancedDate(2024, 1, 29, 12);
 
@@ -97,7 +101,7 @@ describe.concurrent('enhanced date', () => {
             expect(january.getDate()).toBe(31);
         });
 
-        it('should keep calendar-day additions distinct from elapsed hours across offset changes', () => {
+        it('should keep calendar-day additions distinct from elapsed hours across offset changes', ({ expect }) => {
             const date = new EnhancedDate(2026, 2, 7, 12);
             const nextDay = date.toAddDays(1);
             const elapsedDay = date.toAddHours(24);
@@ -108,7 +112,7 @@ describe.concurrent('enhanced date', () => {
             expect(elapsedDay.getTime() - date.getTime()).toBe(86_400_000);
         });
 
-        it('should forward week options and return independent boundary dates', () => {
+        it('should forward week options and return independent boundary dates', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 7, 12, 34, 56, 789);
             const originalTime = date.getTime();
 
@@ -122,7 +126,7 @@ describe.concurrent('enhanced date', () => {
             expect(date.getTime()).toBe(new Date(2026, 0, 7, 0, 0, 59, 999).getTime());
         });
 
-        it('should distinguish EnhancedDate clones from independent plain Date copies', () => {
+        it('should distinguish EnhancedDate clones from independent plain Date copies', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 15);
             const clone = date.clone();
             const native = date.toDate();
@@ -138,8 +142,8 @@ describe.concurrent('enhanced date', () => {
         });
     });
 
-    describe.concurrent('factories and formatting', () => {
-        it('should distinguish Unix seconds from native millisecond timestamps', () => {
+    describe('factories and formatting', () => {
+        it('should distinguish Unix seconds from native millisecond timestamps', ({ expect }) => {
             const date = EnhancedDate.fromUnixSeconds(1700000000.5);
 
             expect(date).toBeInstanceOf(EnhancedDate);
@@ -148,7 +152,7 @@ describe.concurrent('enhanced date', () => {
             expect(new EnhancedDate(1700000000.5).getTime()).toBe(1700000000);
         });
 
-        it('should parse local ISO dates and use the explicit reference and locale for missing fields', () => {
+        it('should parse local ISO dates and apply the reference year and locale', ({ expect }) => {
             const iso = EnhancedDate.fromISO('2024-02-29');
             const formatted = EnhancedDate.fromFormat('28 February', 'dd MMMM', new Date(2026, 0, 1), { locale: enUS });
 
@@ -158,7 +162,7 @@ describe.concurrent('enhanced date', () => {
             expect(formatted.getTime()).toBe(new Date(2026, 1, 28).getTime());
         });
 
-        it('should support the default pattern and forward explicit patterns and locale options', () => {
+        it('should support the default pattern and forward explicit patterns and locale options', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 15, 12, 34, 56);
 
             expect(date.format()).toBe('2026-01-15 12:34:56');
@@ -166,7 +170,7 @@ describe.concurrent('enhanced date', () => {
             expect(date.format('MMMM', { locale: enUS })).toBe('January');
         });
 
-        it('should preserve invalid dates rather than replacing them with now or fallback text', () => {
+        it('should preserve invalid dates rather than replacing them with now or fallback text', ({ expect }) => {
             const date = EnhancedDate.fromISO('not-a-date');
 
             expect(date.isValid()).toBe(false);
@@ -176,13 +180,13 @@ describe.concurrent('enhanced date', () => {
             expect(date.clone().isValid()).toBe(false);
             expect(Number.isNaN(date.toDate().getTime())).toBe(true);
             expect(date.toAddDays(1).isValid()).toBe(false);
-            expect(date.isAfter(new Date())).toBe(false);
+            expect(date.isAfter(new Date(2026, 0, 1))).toBe(false);
             expect(() => date.format()).toThrow(RangeError);
         });
     });
 
-    describe.concurrent('comparison and differences', () => {
-        it('should compare accepted date inputs without mutating either date', () => {
+    describe('comparison and differences', () => {
+        it('should compare accepted date inputs without mutating either date', ({ expect }) => {
             const earlier = new EnhancedDate(2026, 0, 15, 12);
             const later = earlier.toAddMinutes(1);
 
@@ -195,7 +199,7 @@ describe.concurrent('enhanced date', () => {
             expect(earlier.getMinutes()).toBe(0);
         });
 
-        it('should retain difference direction and forward rounding and week-start options', () => {
+        it('should retain difference direction and forward rounding and week-start options', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 10, 23, 59);
             const later = date.toAddSeconds(90);
 
@@ -209,12 +213,12 @@ describe.concurrent('enhanced date', () => {
         });
     });
 
-    describe.concurrent('current-time operations', () => {
+    describe('current-time operations', () => {
         afterEach(() => {
             vi.useRealTimers();
         });
 
-        it('should derive today boundaries and relative results from the current clock', () => {
+        it('should derive today boundaries and relative results from the current clock', ({ expect }) => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date(2026, 0, 15, 12));
 

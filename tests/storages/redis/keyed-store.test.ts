@@ -7,7 +7,7 @@ import {
 import { createRedisKeyedStore } from '../../../src/storages/redis/keyed-store';
 import type { RedisLikeStorage } from '../../../src/storages/redis/types';
 
-describe.concurrent('createRedisKeyedStore', () => {
+describe('createRedisKeyedStore', () => {
     it('should resolve keys and delegate every operation to the wrapped redis storage', async ({ expect }) => {
         const user = { name: 'Alice' };
         const getItem = vi.fn(() => Promise.resolve(user));

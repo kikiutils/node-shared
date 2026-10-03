@@ -1,67 +1,96 @@
 import {
+    afterEach,
     describe,
     it,
+    vi,
 } from 'vitest';
 
 import { randomString } from '../src/string';
 import type { RandomStringMode } from '../src/string';
 
-describe.concurrent('randomString', () => {
-    const DIGITS = '0123456789';
-    const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
-    const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const CHARSETS: Record<RandomStringMode, string> = {
-        'alphabetic': LOWERCASE + UPPERCASE,
-        'alphanumeric': DIGITS + LOWERCASE + UPPERCASE,
-        'lowercase': LOWERCASE,
-        'lowercase-numeric': DIGITS + LOWERCASE,
-        'numeric': DIGITS,
-        'uppercase': UPPERCASE,
-        'uppercase-numeric': DIGITS + UPPERCASE,
-    };
+afterEach(() => {
+    vi.restoreAllMocks();
+});
 
-    it('should generate a string of the specified length', ({ expect }) => {
-        expect(randomString(10)).toHaveLength(10);
+describe('randomString', () => {
+    it('should use the alphabetic character set by default', ({ expect }) => {
+        vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(1 - Number.EPSILON);
+
+        expect(randomString(2)).toBe('aZ');
     });
 
-    Object.entries(CHARSETS).forEach(([mode, charset]) => {
-        it(`should generate a valid ${mode} string of correct length`, ({ expect }) => {
-            const result = randomString(20, mode as RandomStringMode);
-            expect(result).toHaveLength(20);
-            for (const char of result) expect(charset).toContain(char);
-        });
+    it.for([
+        {
+            expected: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            mode: 'alphabetic',
+        },
+        {
+            expected: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            mode: 'alphanumeric',
+        },
+        {
+            expected: 'abcdefghijklmnopqrstuvwxyz',
+            mode: 'lowercase',
+        },
+        {
+            expected: '0123456789abcdefghijklmnopqrstuvwxyz',
+            mode: 'lowercase-numeric',
+        },
+        {
+            expected: '0123456789',
+            mode: 'numeric',
+        },
+        {
+            expected: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            mode: 'uppercase',
+        },
+        {
+            expected: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            mode: 'uppercase-numeric',
+        },
+    ] satisfies Array<{ expected: string; mode: RandomStringMode }>)(
+        'should select exactly the configured character set for $mode',
+        ({ expected, mode }, { expect }) => {
+            let index = 0;
+            // Sample one value inside every character bucket without relying on chance.
+            vi.spyOn(Math, 'random').mockImplementation(() => (index++ + 0.5) / expected.length);
 
-        it(`should NOT generate a ${mode} string with all same characters`, ({ expect }) => {
-            const result = randomString(20, mode as RandomStringMode);
-            const uniqueChars = new Set(result);
-            expect(uniqueChars.size).toBeGreaterThan(1);
-        });
+            const result = randomString(expected.length, mode);
 
-        it(`should generate different ${mode} strings on repeated calls`, ({ expect }) => {
-            const result1 = randomString(20, mode as RandomStringMode);
-            const result2 = randomString(20, mode as RandomStringMode);
-            expect(result1).not.toBe(result2);
-        });
+            expect(result).toHaveLength(expected.length);
+            expect(new Set(result)).toEqual(new Set(expected));
+        },
+    );
+
+    it('should sample each character and accept a length of one', ({ expect }) => {
+        const random = vi.spyOn(Math, 'random').mockReturnValue(0);
+
+        expect(randomString(1, 'numeric')).toBe('0');
+        expect(randomString(3, 'numeric')).toBe('000');
+        expect(random).toHaveBeenCalledTimes(4);
     });
 
-    it('should throw if length is zero', ({ expect }) => {
-        expect(() => randomString(0)).toThrow('Invalid length: 0. Must be a positive integer');
-    });
+    it.for([
+        0,
+        -1,
+        1.5,
+        Number.NaN,
+        Infinity,
+    ])(
+        'should reject invalid length %s',
+        (length, { expect }) => {
+            const random = vi.spyOn(Math, 'random');
 
-    it('should throw if length is negative', ({ expect }) => {
-        expect(() => randomString(-5)).toThrow('Invalid length: -5. Must be a positive integer');
-    });
+            expect(() => randomString(length)).toThrow('Must be a positive integer');
+            expect(random).not.toHaveBeenCalled();
+        },
+    );
 
-    it('should throw if length is not an integer', ({ expect }) => {
-        expect(() => randomString(4.5)).toThrow('Invalid length: 4.5. Must be a positive integer');
-    });
+    it('should reject an unsupported mode before sampling', ({ expect }) => {
+        const random = vi.spyOn(Math, 'random');
 
-    it('should throw if mode is unsupported', ({ expect }) => {
-        expect(() => randomString(5, 'invalid-mode' as any)).toThrow('Unsupported mode: invalid-mode');
-    });
-
-    it('should handle length 1', ({ expect }) => {
-        const result = randomString(1);
-        expect(result).toHaveLength(1);
+        // @ts-expect-error Exercise runtime validation of an unsupported mode.
+        expect(() => randomString(1, 'invalid-mode')).toThrow('Unsupported mode');
+        expect(random).not.toHaveBeenCalled();
     });
 });
