@@ -215,7 +215,8 @@ describe('class Path', () => {
             const directory = tempPath.join('recursive');
             const created = await directory.mkdir({ recursive: true });
             expectTypeOf(created).toEqualTypeOf<string | undefined>();
-            expect(created).toBe(directory.toString());
+            expect(created).toBeDefined();
+            expect(toNamespacedPath(created!)).toBe(toNamespacedPath(directory.toString()));
 
             const existing = await directory.mkdir({ recursive: true });
             expectTypeOf(existing).toEqualTypeOf<string | undefined>();
