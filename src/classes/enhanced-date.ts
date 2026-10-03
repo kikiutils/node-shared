@@ -40,6 +40,20 @@ export class EnhancedDate extends Date {
     }
 
     /**
+     * Returns a new instance at the end of tomorrow in the system time zone.
+     */
+    static endOfTomorrow() {
+        return new EnhancedDate(dateFns.endOfTomorrow());
+    }
+
+    /**
+     * Returns a new instance at the end of yesterday in the system time zone.
+     */
+    static endOfYesterday() {
+        return new EnhancedDate(dateFns.endOfYesterday());
+    }
+
+    /**
      * Parses a date using date-fns and an explicit reference for missing fields.
      *
      * @param value - Date string to parse.
@@ -80,10 +94,46 @@ export class EnhancedDate extends Date {
     }
 
     /**
+     * Returns the latest date as a new independent instance.
+     *
+     * @param dates - Dates or millisecond timestamps to compare.
+     *
+     * @returns A new `EnhancedDate`, or `Invalid Date` if the array is empty or contains an invalid date.
+     */
+    static max(dates: (Date | number)[]) {
+        return new EnhancedDate(dateFns.max(dates));
+    }
+
+    /**
+     * Returns the earliest date as a new independent instance.
+     *
+     * @param dates - Dates or millisecond timestamps to compare.
+     *
+     * @returns A new `EnhancedDate`, or `Invalid Date` if the array is empty or contains an invalid date.
+     */
+    static min(dates: (Date | number)[]) {
+        return new EnhancedDate(dateFns.min(dates));
+    }
+
+    /**
      * Returns a new instance at the start of today in the system time zone.
      */
     static startOfToday() {
         return new EnhancedDate(dateFns.startOfToday());
+    }
+
+    /**
+     * Returns a new instance at the start of tomorrow in the system time zone.
+     */
+    static startOfTomorrow() {
+        return new EnhancedDate(dateFns.startOfTomorrow());
+    }
+
+    /**
+     * Returns a new instance at the start of yesterday in the system time zone.
+     */
+    static startOfYesterday() {
+        return new EnhancedDate(dateFns.startOfYesterday());
     }
 
     // Public instance methods
