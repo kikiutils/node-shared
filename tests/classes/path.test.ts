@@ -10,6 +10,7 @@ import {
     mkdtemp,
     rm,
 } from 'node:fs/promises';
+import * as fsp from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import {
     dirname,
@@ -26,9 +27,12 @@ import {
     describe,
     expectTypeOf,
     it,
+    vi,
 } from 'vitest';
 
 import { Path } from '../../src/classes/path';
+
+vi.mock('node:fs/promises', { spy: true });
 
 let tempDir: string;
 let tempPath: Path;
@@ -39,6 +43,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+    vi.resetAllMocks();
     await rm(tempDir, {
         force: true,
         recursive: true,
@@ -186,6 +191,34 @@ describe('path fs promise operations', () => {
         const missing = tempPath.join('missing');
         await expect(missing.stat()).rejects.toMatchObject({ code: 'ENOENT' });
         await expect(missing.stat({ throwIfNoEntry: true })).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('should suppress ENOENT on runtimes without native throwIfNoEntry support', async ({ expect }) => {
+        const error = Object.assign(new Error('Missing path'), { code: 'ENOENT' });
+        const stat = vi.mocked(fsp.stat).mockRejectedValue(error);
+
+        await expect(tempPath.stat({ throwIfNoEntry: false })).resolves.toBeUndefined();
+        await expect(
+            tempPath.stat({
+                bigint: true,
+                throwIfNoEntry: false,
+            }),
+        ).resolves.toBeUndefined();
+
+        expect(stat).toHaveBeenLastCalledWith(tempPath.toString(), {
+            bigint: true,
+            throwIfNoEntry: false,
+        });
+
+        await expect(tempPath.stat()).rejects.toBe(error);
+        await expect(tempPath.stat({ throwIfNoEntry: true })).rejects.toBe(error);
+    });
+
+    it('should preserve other stat errors even when throwIfNoEntry is false', async ({ expect }) => {
+        const error = Object.assign(new Error('Permission denied'), { code: 'EACCES' });
+        vi.mocked(fsp.stat).mockRejectedValue(error);
+
+        await expect(tempPath.stat({ throwIfNoEntry: false })).rejects.toBe(error);
     });
 
     it('should infer optional stat metadata and return undefined for missing paths', async ({ expect }) => {

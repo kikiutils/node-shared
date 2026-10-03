@@ -489,8 +489,19 @@ export class Path {
     ): Promise<fs.BigIntStats | undefined>;
     stat(opts: fs.StatOptions & { throwIfNoEntry?: true }): Promise<fs.BigIntStats | fs.Stats>;
     stat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined>;
-    stat(...args: any): any {
-        return fsp.stat(this.#value, ...args);
+    async stat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined> {
+        try {
+            return await fsp.stat(this.#value, opts);
+        } catch (error) {
+            if (
+                opts?.throwIfNoEntry === false
+                && error instanceof Error
+                && 'code' in error
+                && error.code === 'ENOENT'
+            ) return undefined;
+
+            throw error;
+        }
     }
 
     /**
