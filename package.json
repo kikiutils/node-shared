@@ -75,6 +75,7 @@
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.4",
+    "file-type": "^22.1.1",
     "lru-cache": "^11.5.2",
     "millify": "^6.1.0",
     "msgpackr": "^2.0.5",
@@ -107,6 +108,9 @@
       "optional": true
     },
     "element-plus": {
+      "optional": true
+    },
+    "file-type": {
       "optional": true
     },
     "lru-cache": {
@@ -151,6 +155,7 @@
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.7",
     "eslint": "^10.12.0",
+    "file-type": "^22.1.1",
     "jsdom": "^30.1.1",
     "knip": "^6.39.0",
     "lru-cache": "^11.5.3",
