@@ -31,8 +31,10 @@ describe('toBuffer', () => {
         ]));
 
         bytes[0] = 30;
+
         expect(result[0]).toBe(30);
         result[1] = 40;
+
         expect(bytes[1]).toBe(40);
     });
 
@@ -56,8 +58,10 @@ describe('toBuffer', () => {
         ]));
 
         bytes[1] = 60;
+
         expect(result[0]).toBe(60);
         result[2] = 70;
+
         expect(bytes[3]).toBe(70);
     });
 

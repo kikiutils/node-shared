@@ -10,13 +10,10 @@ import {
     vi,
 } from 'vitest';
 
-import { appendRedirectParamToUrl } from '../src/url';
 import {
     appendRedirectParamFromCurrentLocationToUrl,
     assignUrlWithRedirectParamFromCurrentLocation,
 } from '../src/web';
-
-vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
 const assign = vi.fn();
 const originalLocation = Object.getOwnPropertyDescriptor(window, 'location')!;
@@ -49,8 +46,7 @@ describe('appendRedirectParamFromCurrentLocationToUrl', () => {
     it('should forward the full current path and return the generated URL', ({ expect }) => {
         const result = appendRedirectParamFromCurrentLocationToUrl('/login');
 
-        expect(appendRedirectParamToUrl).toHaveBeenCalledExactlyOnceWith('/login', '/profile?tab=settings#section');
-        expect(result).toBe('mocked-result');
+        expect(result).toBe('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
     });
 });
 
@@ -59,18 +55,32 @@ describe('assignUrlWithRedirectParamFromCurrentLocation', () => {
         const result = assignUrlWithRedirectParamFromCurrentLocation('/login');
 
         expect(result).toBeUndefined();
-        expect(assign).toHaveBeenCalledExactlyOnceWith('mocked-result');
+        expect(assign).toHaveBeenCalledExactlyOnceWith('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
         expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should assign only after the requested delay', ({ expect }) => {
+    it('should defer navigation when the supplied delay is zero', ({ expect }) => {
+        const timer = assignUrlWithRedirectParamFromCurrentLocation('/login', 0);
+
+        expect(timer).toBeDefined();
+        expect(assign).not.toHaveBeenCalled();
+        vi.advanceTimersByTime(0);
+
+        expect(assign).toHaveBeenCalledExactlyOnceWith('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('should read the latest location only after the requested delay', ({ expect }) => {
         assignUrlWithRedirectParamFromCurrentLocation('/login', 1000);
 
         expect(assign).not.toHaveBeenCalled();
         vi.advanceTimersByTime(999);
+
         expect(assign).not.toHaveBeenCalled();
+        window.location.pathname = '/updated';
         vi.advanceTimersByTime(1);
-        expect(assign).toHaveBeenCalledExactlyOnceWith('mocked-result');
+
+        expect(assign).toHaveBeenCalledExactlyOnceWith('/login?redirect=%2Fupdated%3Ftab%3Dsettings%23section');
         expect(vi.getTimerCount()).toBe(0);
     });
 
@@ -82,5 +92,9 @@ describe('assignUrlWithRedirectParamFromCurrentLocation', () => {
 
         expect(assign).not.toHaveBeenCalled();
         expect(vi.getTimerCount()).toBe(0);
+
+        assignUrlWithRedirectParamFromCurrentLocation('/login');
+
+        expect(assign).toHaveBeenCalledExactlyOnceWith('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
     });
 });

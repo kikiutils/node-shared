@@ -42,8 +42,10 @@ describe.each([
     },
 );
 
-describe('sha3256 UTF-8 input', () => {
-    it('should hash Unicode text as UTF-8 rather than UTF-16 code units', ({ expect }) => {
-        expect(sha3256('世界')).toBe('cd055ec40460aa5c58e3bbeeff26a75f91bc739ba79e95af7a8cc804f8ad3645');
+describe('sha3256', () => {
+    describe('unicode input', () => {
+        it('should hash Unicode text as UTF-8 rather than UTF-16 code units', ({ expect }) => {
+            expect(sha3256('世界')).toBe('cd055ec40460aa5c58e3bbeeff26a75f91bc739ba79e95af7a8cc804f8ad3645');
+        });
     });
 });

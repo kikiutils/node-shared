@@ -104,6 +104,7 @@ describe('getDateRangeFromDate', () => {
             expect(result.startDate.getTime()).toBe(start.getTime());
             expect(result.endDate.getTime()).toBe(end.getTime());
             result.startDate.addDays(1);
+
             expect(input.getTime()).toBe(originalTime);
             expect(result.endDate.getTime()).toBe(end.getTime());
         },

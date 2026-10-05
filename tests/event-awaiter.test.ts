@@ -9,17 +9,26 @@ import {
 import { EventAwaiter } from '../src/event-awaiter';
 
 let awaiter: EventAwaiter<string>;
+let controllers: AbortController[];
 
 beforeEach(() => {
     vi.useFakeTimers();
     awaiter = new EventAwaiter<string>();
+    controllers = [];
 });
 
 afterEach(() => {
+    controllers.forEach((controller) => controller.abort());
     awaiter.triggerAll();
     vi.clearAllTimers();
     vi.useRealTimers();
 });
+
+function createController() {
+    const controller = new AbortController();
+    controllers.push(controller);
+    return controller;
+}
 
 describe('class EventAwaiter', () => {
     describe('trigger', () => {
@@ -44,6 +53,7 @@ describe('class EventAwaiter', () => {
             expect(otherSettled).not.toHaveBeenCalled();
             awaiter.trigger('other', 'separate');
             await other;
+
             expect(otherSettled).toHaveBeenCalledExactlyOnceWith('separate');
         });
 
@@ -60,13 +70,16 @@ describe('class EventAwaiter', () => {
             const settled = vi.fn();
             const first = awaiter.wait('key').then(settled);
             await Promise.resolve();
+
             expect(settled).not.toHaveBeenCalled();
 
             awaiter.trigger('key', 'first');
             await first;
+
             expect(settled).toHaveBeenCalledExactlyOnceWith('first');
             const next = awaiter.waitExclusive('key');
             awaiter.trigger('key', 'next');
+
             await expect(next).resolves.toBe('next');
         });
     });
@@ -96,6 +109,7 @@ describe('class EventAwaiter', () => {
 
                 const next = awaiter.waitExclusive('first');
                 awaiter.trigger('first', 'next');
+
                 await expect(next).resolves.toBe('next');
             },
         );
@@ -113,6 +127,7 @@ describe('class EventAwaiter', () => {
                 const survivor = awaiter.wait('key');
                 if (timeout > 0) {
                     await vi.advanceTimersByTimeAsync(timeout - 1);
+
                     expect(timedSettled).not.toHaveBeenCalled();
                 }
 
@@ -121,12 +136,13 @@ describe('class EventAwaiter', () => {
                 await expect(timed).resolves.toBeUndefined();
                 expect(timedSettled).toHaveBeenCalledExactlyOnceWith(undefined);
                 awaiter.trigger('key', 'survivor');
+
                 await expect(survivor).resolves.toBe('survivor');
             },
         );
 
         it('should cancel only the waiter associated with an aborted signal', async ({ expect }) => {
-            const controller = new AbortController();
+            const controller = createController();
             const canceled = awaiter.wait('key', undefined, undefined, controller.signal);
             const survivor = awaiter.wait('key');
 
@@ -134,6 +150,7 @@ describe('class EventAwaiter', () => {
 
             await expect(canceled).resolves.toBeUndefined();
             awaiter.trigger('key', 'survivor');
+
             await expect(survivor).resolves.toBe('survivor');
         });
 
@@ -145,6 +162,7 @@ describe('class EventAwaiter', () => {
             await expect(expired).resolves.toBeUndefined();
             const next = awaiter.waitExclusive('key');
             awaiter.trigger('key', 'next');
+
             await expect(next).resolves.toBe('next');
         });
 
@@ -160,9 +178,10 @@ describe('class EventAwaiter', () => {
         });
 
         it('should not cancel a later registration when an earlier signal aborts', async ({ expect }) => {
-            const controller = new AbortController();
+            const controller = createController();
             const first = awaiter.wait('key', undefined, undefined, controller.signal);
             awaiter.trigger('key', 'first');
+
             await expect(first).resolves.toBe('first');
             const next = awaiter.waitExclusive('key');
 
@@ -207,24 +226,37 @@ describe('class EventAwaiter', () => {
 
     describe('waitExclusive', () => {
         it('should reject duplicate registrations and forward cancellation', async ({ expect }) => {
-            const controller = new AbortController();
+            const controller = createController();
             const original = awaiter.waitExclusive('key', undefined, controller.signal);
 
             await expect(awaiter.waitExclusive('key')).rejects.toThrow('Duplicate wait detected for key: key');
             controller.abort();
+
             await expect(original).resolves.toBeUndefined();
+            const next = awaiter.waitExclusive('key');
+            awaiter.trigger('key', 'next');
+
+            await expect(next).resolves.toBe('next');
         });
     });
 
     describe('waitLatest', () => {
         it('should replace the previous waiter and forward the timeout', async ({ expect }) => {
             const first = awaiter.waitLatest('key');
-            const latest = awaiter.waitLatest('key', 100);
+            const settled = vi.fn();
+            const latest = awaiter.waitLatest('key', 100).then(settled);
 
             await expect(first).resolves.toBeUndefined();
-            await vi.advanceTimersByTimeAsync(100);
+            await vi.advanceTimersByTimeAsync(99);
+
+            expect(settled).not.toHaveBeenCalled();
+            await vi.advanceTimersByTimeAsync(1);
 
             await expect(latest).resolves.toBeUndefined();
+            const next = awaiter.waitLatest('key');
+            awaiter.trigger('key', 'next');
+
+            await expect(next).resolves.toBe('next');
         });
     });
 });

@@ -29,6 +29,7 @@ describe('createRedisScriptRunner', () => {
         const execute = createRedisScriptRunner<{ count: number }>({ send }, source);
 
         const result = await execute(keys, args);
+
         expectTypeOf(result).toEqualTypeOf<{ count: number }>();
         expect(result).toBe(firstResult);
         await expect(execute(keys, args)).resolves.toBe(secondResult);
@@ -133,6 +134,7 @@ describe('createRedisScriptRunner', () => {
         expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(1);
 
         loaded = false;
+
         await expect(execute([], [])).resolves.toBe(1);
         expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(2);
     });
@@ -175,6 +177,7 @@ describe('createRedisScriptRunner', () => {
         expect(send.mock.calls.filter(([command]) => command === 'EVALSHA')).toHaveLength(2);
 
         loadFails = false;
+
         await expect(execute([], [])).resolves.toBe(1);
         expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(2);
     });

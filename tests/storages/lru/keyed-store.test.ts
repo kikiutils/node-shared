@@ -28,21 +28,21 @@ describe('createLruKeyedStore', () => {
         expect(store.getItem('acme', 1)).toBeNull();
     });
 
-    it('should preserve falsy cached values rather than treating them as missing', ({ expect }) => {
-        const cache = new LRUCache<string, boolean | number | string>({ max: 3 });
-        const store = createLruKeyedStore<boolean | number | string>(cache)((id: string) => id);
+    it.for([
+        0,
+        false,
+        '',
+    ])(
+        'should preserve falsy cached value %j rather than treating it as missing',
+        (value, { expect }) => {
+            const cache = new LRUCache<string, boolean | number | string>({ max: 1 });
+            const store = createLruKeyedStore<boolean | number | string>(cache)((id: string) => id);
 
-        for (
-            const value of [
-                0,
-                false,
-                '',
-            ]
-        ) {
             store.setItem(value, 'key');
+
             expect(store.getItem('key')).toBe(value);
-        }
-    });
+        },
+    );
 
     it('should expose remaining TTL in milliseconds and return null after expiry', ({ expect }) => {
         let now = 1000;
@@ -58,8 +58,10 @@ describe('createLruKeyedStore', () => {
 
         expect(store.getItemTtl(1)).toBe(1000);
         now += 400;
+
         expect(store.getItemTtl(1)).toBe(600);
         now += 601;
+
         expect(store.getItem(1)).toBeNull();
         expect(store.hasItem(1)).toBe(false);
     });

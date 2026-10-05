@@ -79,6 +79,6 @@ describe('toPercentageString', () => {
     );
 
     it('should propagate invalid decimal input instead of returning the non-finite fallback', ({ expect }) => {
-        expect(() => toPercentageString('not-a-number', 1)).toThrow();
+        expect(() => toPercentageString('not-a-number', 1)).toThrow(Error);
     });
 });

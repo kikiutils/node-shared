@@ -57,6 +57,7 @@ describe('copyBlobToClipboard', () => {
         await expect(copyBlobToClipboard(blob, options)).resolves.toEqual({ ok: true });
         expect(write).toHaveBeenCalledTimes(1);
         const items = write.mock.calls[0]![0];
+
         expect(items).toHaveLength(1);
         expect(items[0]).toBeInstanceOf(TestClipboardItem);
         expect(items[0]!.data).toEqual({ 'text/plain': blob });

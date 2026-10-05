@@ -6,6 +6,7 @@ import {
 import {
     getEnumNumberValues,
     getEnumStringValues,
+    getEnumValues,
 } from '../src/enum';
 
 enum MixedEnum {
@@ -15,83 +16,153 @@ enum MixedEnum {
     Unknown = 'unknown',
 }
 
+enum NumericEnum {
+    Zero,
+    One,
+}
+
+enum StringEnum {
+    Same = 'Same',
+    Unknown = 'unknown',
+}
+
 describe('getEnumNumberValues', () => {
-    it('should extract numeric values from an enum', ({ expect }) => {
-        const result = getEnumNumberValues(MixedEnum);
-        expect(result).toEqual([
-            0,
-            1,
-        ]);
-    });
-
-    it('should return an empty array if no numeric values are present', ({ expect }) => {
-        enum EnumWithoutNumbers {
-            One = 'one',
-            Three = 'three',
-            Two = 'two',
-        }
-
-        const result = getEnumNumberValues(EnumWithoutNumbers);
-        expect(result).toEqual([]);
-    });
-
-    it('should extract numeric values from mixed object', ({ expect }) => {
-        const input = {
-            A: 0,
-            B: 'string',
-            C: 1,
-            D: 'anotherString',
-        };
-
-        const result = getEnumNumberValues(input);
-        expect(result).toEqual([
-            0,
-            1,
-        ]);
-    });
-
-    it('should return empty array for empty object', ({ expect }) => {
-        expect(getEnumNumberValues({})).toEqual([]);
-    });
+    it.for([
+        {
+            expected: [
+                0,
+                1,
+            ],
+            input: MixedEnum,
+            name: 'a mixed enum',
+        },
+        {
+            expected: [
+                0,
+                1,
+            ],
+            input: NumericEnum,
+            name: 'a numeric enum',
+        },
+        {
+            expected: [],
+            input: StringEnum,
+            name: 'a string enum',
+        },
+        {
+            expected: [
+                0,
+                1,
+            ],
+            input: {
+                A: 0,
+                B: 'text',
+                C: 1,
+            },
+            name: 'an enum-like object',
+        },
+        {
+            expected: [],
+            input: {},
+            name: 'an empty object',
+        },
+    ])(
+        'should select values from $name without numeric reverse mappings',
+        ({ expected, input }, { expect }) => expect(getEnumNumberValues(input)).toEqual(expected),
+    );
 });
 
 describe('getEnumStringValues', () => {
-    it('should extract string values from an enum', ({ expect }) => {
-        const result = getEnumStringValues(MixedEnum);
-        expect(result).toEqual([
-            'Same',
-            'unknown',
-        ]);
-    });
+    it.for([
+        {
+            expected: [
+                'Same',
+                'unknown',
+            ],
+            input: MixedEnum,
+            name: 'a mixed enum',
+        },
+        {
+            expected: [
+                'Same',
+                'unknown',
+            ],
+            input: StringEnum,
+            name: 'a string enum',
+        },
+        {
+            expected: [],
+            input: NumericEnum,
+            name: 'a numeric enum',
+        },
+        {
+            expected: ['text'],
+            input: {
+                A: 0,
+                B: 'text',
+                C: 1,
+            },
+            name: 'an enum-like object',
+        },
+        {
+            expected: [],
+            input: {},
+            name: 'an empty object',
+        },
+    ])(
+        'should select values from $name without numeric reverse mappings',
+        ({ expected, input }, { expect }) => expect(getEnumStringValues(input)).toEqual(expected),
+    );
+});
 
-    it('should return an empty array if no string values are present', ({ expect }) => {
-        enum EnumWithoutStrings {
-            One = 1,
-            Two = 2,
-            Zero = 0,
-        }
-
-        const result = getEnumStringValues(EnumWithoutStrings);
-        expect(result).toEqual([]);
-    });
-
-    it('should extract string values from mixed object', ({ expect }) => {
-        const input = {
-            A: 0,
-            B: 'string',
-            C: 1,
-            D: 'anotherString',
-        };
-
-        const result = getEnumStringValues(input);
-        expect(result).toEqual([
-            'string',
-            'anotherString',
-        ]);
-    });
-
-    it('should return empty array for empty object', ({ expect }) => {
-        const result = getEnumStringValues({});
-        expect(result).toEqual([]);
-    });
+describe('getEnumValues', () => {
+    it.for([
+        {
+            expected: [
+                0,
+                'Same',
+                1,
+                'unknown',
+            ],
+            input: MixedEnum,
+            name: 'a mixed enum',
+        },
+        {
+            expected: [
+                0,
+                1,
+            ],
+            input: NumericEnum,
+            name: 'a numeric enum',
+        },
+        {
+            expected: [
+                'Same',
+                'unknown',
+            ],
+            input: StringEnum,
+            name: 'a string enum',
+        },
+        {
+            expected: [
+                0,
+                'text',
+                1,
+            ],
+            input: {
+                A: 0,
+                B: 'text',
+                C: 1,
+            },
+            name: 'an enum-like object',
+        },
+        {
+            expected: [],
+            input: {},
+            name: 'an empty object',
+        },
+    ])(
+        'should select values from $name without numeric reverse mappings',
+        ({ expected, input }, { expect }) => expect(getEnumValues(input)).toEqual(expected),
+    );
 });

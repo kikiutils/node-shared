@@ -24,6 +24,7 @@ describe('createRedisKeyedStore', () => {
             setItem,
             setItemWithTtl,
         };
+
         const store = createRedisKeyedStore<{ name: string }>(storage)(
             (tenant: string, id: number) => `${tenant}:user:${id}`,
         );

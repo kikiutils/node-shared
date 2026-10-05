@@ -22,6 +22,7 @@ describe('class EnhancedDate', () => {
             expect(new EnhancedDate(original.toISOString()).getTime()).toBe(original.getTime());
 
             date.addDays(1);
+
             expect(original.getDate()).toBe(15);
         });
 
@@ -101,16 +102,29 @@ describe('class EnhancedDate', () => {
             expect(january.getDate()).toBe(31);
         });
 
-        it('should keep calendar-day additions distinct from elapsed hours across offset changes', ({ expect }) => {
-            const date = new EnhancedDate(2026, 2, 7, 12);
-            const nextDay = date.toAddDays(1);
-            const elapsedDay = date.toAddHours(24);
-            const offsetChangeMs = (nextDay.getTimezoneOffset() - date.getTimezoneOffset()) * 60_000;
+        it.for([
+            {
+                input: new Date(2026, 2, 7, 12),
+                name: 'spring-forward transition',
+                next: new Date(2026, 2, 8, 12),
+            },
+            {
+                input: new Date(2026, 9, 31, 12),
+                name: 'fall-back transition',
+                next: new Date(2026, 10, 1, 12),
+            },
+        ])(
+            'should preserve calendar time across the $name',
+            ({ input, next }, { expect }) => {
+                const date = new EnhancedDate(input);
+                const nextDay = date.toAddDays(1);
+                const elapsedDay = date.toAddHours(24);
 
-            expect(nextDay.getTime()).toBe(new Date(2026, 2, 8, 12).getTime());
-            expect(nextDay.getTime() - date.getTime()).toBe(86_400_000 + offsetChangeMs);
-            expect(elapsedDay.getTime() - date.getTime()).toBe(86_400_000);
-        });
+                expect(nextDay.getTime()).toBe(next.getTime());
+                expect(elapsedDay.getTime()).toBe(input.getTime() + 86_400_000);
+                expect(date.getTime()).toBe(input.getTime());
+            },
+        );
 
         it('should forward week options and return independent boundary dates', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 7, 12, 34, 56, 789);
@@ -138,6 +152,7 @@ describe('class EnhancedDate', () => {
 
             clone.addDays(1);
             native.setDate(17);
+
             expect(date.getDate()).toBe(15);
         });
     });

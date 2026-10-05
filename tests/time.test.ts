@@ -27,6 +27,7 @@ describe('delay', () => {
         const promise = delay(100).then(settled);
 
         await vi.advanceTimersByTimeAsync(99);
+
         expect(settled).not.toHaveBeenCalled();
         await vi.advanceTimersByTimeAsync(1);
 
@@ -68,6 +69,7 @@ describe('delayOrThrow', () => {
         const promise = delayOrThrow(100).then(settled);
 
         await vi.advanceTimersByTimeAsync(99);
+
         expect(settled).not.toHaveBeenCalled();
         await vi.advanceTimersByTimeAsync(1);
 
@@ -85,6 +87,7 @@ describe('delayOrThrow', () => {
         controller.abort(reason);
 
         await rejection;
+
         expect(vi.getTimerCount()).toBe(0);
     });
 

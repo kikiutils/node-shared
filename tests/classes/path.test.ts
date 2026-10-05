@@ -165,6 +165,7 @@ describe('class Path', () => {
 
             await unlinked.unlink();
             await removed.rm();
+
             expect(await directory.readdir()).toEqual([]);
             await directory.rmdir();
 
@@ -186,14 +187,17 @@ describe('class Path', () => {
             await tempPath.join('entry.txt').writeFile('hello');
 
             const names = await tempPath.readdir('utf8');
+
             expectTypeOf(names).toEqualTypeOf<string[]>();
             expect(names).toEqual(['entry.txt']);
 
             const buffers = await tempPath.readdir('buffer');
+
             expectTypeOf(buffers).toEqualTypeOf<Buffer[]>();
             expect(buffers.map((entry) => entry.toString())).toEqual(['entry.txt']);
 
             const entries = await tempPath.readdir({ withFileTypes: true });
+
             expectTypeOf(entries).toEqualTypeOf<Dirent[]>();
             expect(entries.map((entry) => entry.name)).toEqual(['entry.txt']);
             expect(entries[0]?.isFile()).toBe(true);
@@ -214,30 +218,36 @@ describe('class Path', () => {
         it('should return the created directory or undefined for recursive mkdir', async ({ expect }) => {
             const directory = tempPath.join('recursive');
             const created = await directory.mkdir({ recursive: true });
+
             expectTypeOf(created).toEqualTypeOf<string | undefined>();
             expect(created).toBeDefined();
             expect(toNamespacedPath(created!)).toBe(toNamespacedPath(directory.toString()));
 
             const existing = await directory.mkdir({ recursive: true });
+
             expectTypeOf(existing).toEqualTypeOf<string | undefined>();
             expect(existing).toBeUndefined();
         });
 
         it('should infer stat metadata types when missing paths reject', async ({ expect }) => {
             const stats = await tempPath.stat();
+
             expectTypeOf(stats).toEqualTypeOf<Stats>();
             expect(stats.isDirectory()).toBe(true);
 
             const bigintStats = await tempPath.stat({ bigint: true });
+
             expectTypeOf(bigintStats).toEqualTypeOf<BigIntStats>();
             expect(typeof bigintStats.size).toBe('bigint');
 
             const options: StatOptions & { throwIfNoEntry: true } = { throwIfNoEntry: true };
             const metadata = await tempPath.stat(options);
+
             expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats>();
             expect(metadata.isDirectory()).toBe(true);
 
             const missing = tempPath.join('missing');
+
             await expect(missing.stat()).rejects.toMatchObject({ code: 'ENOENT' });
             await expect(missing.stat({ throwIfNoEntry: true })).rejects.toMatchObject({ code: 'ENOENT' });
         });
@@ -275,6 +285,7 @@ describe('class Path', () => {
 
         it('should infer optional stat metadata and return undefined for missing paths', async ({ expect }) => {
             const stats = await tempPath.stat({ throwIfNoEntry: false });
+
             expectTypeOf(stats).toEqualTypeOf<Stats | undefined>();
             expect(stats?.isDirectory()).toBe(true);
 
@@ -287,6 +298,7 @@ describe('class Path', () => {
             expect(typeof bigintStats?.size).toBe('bigint');
 
             const missing = tempPath.join('missing');
+
             await expect(missing.stat({ throwIfNoEntry: false })).resolves.toBeUndefined();
             await expect(
                 missing.stat({
@@ -297,6 +309,7 @@ describe('class Path', () => {
 
             const options: StatOptions = { throwIfNoEntry: false };
             const metadata = await missing.stat(options);
+
             expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats | undefined>();
             expect(metadata).toBeUndefined();
         });

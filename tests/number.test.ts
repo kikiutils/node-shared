@@ -1,6 +1,6 @@
 import { millify } from 'millify';
 import {
-    beforeEach,
+    afterEach,
     describe,
     it,
     vi,
@@ -8,26 +8,16 @@ import {
 
 import { toCompactNumberString } from '../src/number';
 
-vi.mock('millify');
+vi.mock('millify', { spy: true });
 
-beforeEach(() => {
-    vi.resetAllMocks();
+afterEach(() => {
+    // Reset a module mock explicitly; restoreAllMocks does not reset its implementation.
+    vi.mocked(millify).mockReset();
 });
 
 describe('toCompactNumberString', () => {
-    it('should forward the value with default precision and lowercase units', ({ expect }) => {
-        vi.mocked(millify).mockReturnValue('1.23m');
-
-        const result = toCompactNumberString(1234567);
-
-        expect(result).toBe('1.23m');
-        expect(millify).toHaveBeenCalledExactlyOnceWith(
-            1234567,
-            {
-                lowercase: true,
-                precision: 2,
-            },
-        );
+    it('should format the value with default precision and lowercase units', ({ expect }) => {
+        expect(toCompactNumberString(1234567)).toBe('1.23m');
     });
 
     it('should let explicit options override defaults without mutating them', ({ expect }) => {
@@ -36,12 +26,11 @@ describe('toCompactNumberString', () => {
             precision: 3,
         });
 
-        vi.mocked(millify).mockReturnValue('1.235M');
-
-        const result = toCompactNumberString(1234567, options);
-
-        expect(result).toBe('1.235M');
-        expect(millify).toHaveBeenCalledExactlyOnceWith(1234567, options);
+        expect(toCompactNumberString(1234567, options)).toBe('1.235M');
+        expect(options).toEqual({
+            lowercase: false,
+            precision: 3,
+        });
     });
 
     it('should propagate formatter errors unchanged', ({ expect }) => {

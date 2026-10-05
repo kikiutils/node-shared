@@ -72,7 +72,7 @@ describe('class PrecisionNumber', () => {
         });
 
         it('should reject invalid decimal text', ({ expect }) => {
-            expect(() => new PrecisionNumber('not-a-number')).toThrow();
+            expect(() => new PrecisionNumber('not-a-number')).toThrow(Error);
         });
     });
 

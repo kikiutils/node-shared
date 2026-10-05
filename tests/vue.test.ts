@@ -5,9 +5,11 @@ import {
     it,
     vi,
 } from 'vitest';
-import { ref } from 'vue';
+import {
+    ref,
+    shallowRef,
+} from 'vue';
 
-import { appendRedirectParamToUrl } from '../src/url';
 import {
     appendRedirectParamFromCurrentRouteToUrl,
     clearIntervalRef,
@@ -15,25 +17,24 @@ import {
     usePreserveScroll,
 } from '../src/vue';
 
-const lifecycleCallbacks = {
+// Hoisted state is required by the module mock factories.
+const lifecycleCallbacks = vi.hoisted(() => ({
     activated: [] as Array<() => void>,
     beforeRouteLeave: [] as Array<() => void>,
-};
+}));
 
 vi.mock('vue', async (importActual) => {
     const actual = await importActual<typeof import('vue')>();
     return {
         ...actual,
-        onActivated: vi.fn((callback: () => void) => lifecycleCallbacks.activated.push(callback)),
+        onActivated: (callback: () => void) => lifecycleCallbacks.activated.push(callback),
     };
 });
 
 vi.mock('vue-router', () => ({
-    onBeforeRouteLeave: vi.fn((callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback)),
-    useRoute: vi.fn(() => ({ fullPath: '/profile?tab=settings#section' })),
+    onBeforeRouteLeave: (callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback),
+    useRoute: () => ({ fullPath: '/profile?tab=settings#section' }),
 }));
-
-vi.mock('../src/url', () => ({ appendRedirectParamToUrl: vi.fn(() => 'mocked-result') }));
 
 beforeEach(() => {
     vi.clearAllMocks();
@@ -51,8 +52,8 @@ afterEach(() => {
 describe('appendRedirectParamFromCurrentRouteToUrl', () => {
     it('should append route fullPath as redirect param', ({ expect }) => {
         const result = appendRedirectParamFromCurrentRouteToUrl('/login');
-        expect(appendRedirectParamToUrl).toHaveBeenCalledWith('/login', '/profile?tab=settings#section');
-        expect(result).toBe('mocked-result');
+
+        expect(result).toBe('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
     });
 });
 
@@ -69,10 +70,11 @@ describe('clearIntervalRef', () => {
         expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should not throw if ref is already null', ({ expect }) => {
+    it('should preserve a null timer ref', ({ expect }) => {
         const intervalRef = ref<null | ReturnType<typeof setInterval>>(null);
 
-        expect(() => clearIntervalRef(intervalRef)).not.toThrow();
+        clearIntervalRef(intervalRef);
+
         expect(intervalRef.value).toBeNull();
     });
 });
@@ -90,10 +92,11 @@ describe('clearTimeoutRef', () => {
         expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should not throw if ref is already null', ({ expect }) => {
+    it('should preserve a null timer ref', ({ expect }) => {
         const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(null);
 
-        expect(() => clearTimeoutRef(timeoutRef)).not.toThrow();
+        clearTimeoutRef(timeoutRef);
+
         expect(timeoutRef.value).toBeNull();
     });
 });
@@ -103,11 +106,14 @@ describe('usePreserveScroll', () => {
         const element = {
             scrollLeft: 12,
             scrollTop: 34,
-        } as HTMLElement;
+        };
 
-        const containerRef = ref<HTMLElement | null>(element);
+        // Only scroll offsets are consumed; shallowRef preserves the fixture identity.
+
+        const containerRef = shallowRef(element as HTMLElement);
 
         usePreserveScroll(containerRef);
+
         expect(lifecycleCallbacks.activated).toHaveLength(1);
         expect(lifecycleCallbacks.beforeRouteLeave).toHaveLength(1);
 
@@ -125,7 +131,19 @@ describe('usePreserveScroll', () => {
 
         usePreserveScroll(containerRef);
 
-        expect(() => lifecycleCallbacks.beforeRouteLeave[0]!()).not.toThrow();
-        expect(() => lifecycleCallbacks.activated[0]!()).not.toThrow();
+        lifecycleCallbacks.beforeRouteLeave[0]!();
+        lifecycleCallbacks.activated[0]!();
+
+        // Saving with no element resets the offsets used by a later activation.
+        const element = {
+            scrollLeft: 12,
+            scrollTop: 34,
+        };
+
+        containerRef.value = element as HTMLElement;
+        lifecycleCallbacks.activated[0]!();
+
+        expect(containerRef.value.scrollLeft).toBe(0);
+        expect(containerRef.value.scrollTop).toBe(0);
     });
 });
