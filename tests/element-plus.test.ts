@@ -65,11 +65,14 @@ describe('createElFormItemRuleWithDefaults', () => {
     );
 
     it('should preserve explicitly supplied falsy overrides', ({ expect }) => {
-        const result = createElFormItemRuleWithDefaults('Custom', {
-            required: false,
-            trigger: '',
-            type: '' as RuleType,
-        });
+        const result = createElFormItemRuleWithDefaults(
+            'Custom',
+            {
+                required: false,
+                trigger: '',
+                type: '' as RuleType,
+            },
+        );
 
         expect(result).toEqual({
             message: 'Custom',

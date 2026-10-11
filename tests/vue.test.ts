@@ -23,18 +23,24 @@ const lifecycleCallbacks = vi.hoisted(() => ({
     beforeRouteLeave: [] as Array<() => void>,
 }));
 
-vi.mock('vue', async (importActual) => {
-    const actual = await importActual<typeof import('vue')>();
-    return {
-        ...actual,
-        onActivated: (callback: () => void) => lifecycleCallbacks.activated.push(callback),
-    };
-});
+vi.mock(
+    'vue',
+    async (importActual) => {
+        const actual = await importActual<typeof import('vue')>();
+        return {
+            ...actual,
+            onActivated: (callback: () => void) => lifecycleCallbacks.activated.push(callback),
+        };
+    },
+);
 
-vi.mock('vue-router', () => ({
-    onBeforeRouteLeave: (callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback),
-    useRoute: () => ({ fullPath: '/profile?tab=settings#section' }),
-}));
+vi.mock(
+    'vue-router',
+    () => ({
+        onBeforeRouteLeave: (callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback),
+        useRoute: () => ({ fullPath: '/profile?tab=settings#section' }),
+    }),
+);
 
 beforeEach(() => {
     vi.clearAllMocks();

@@ -203,10 +203,13 @@ describe('createRedisScriptRunner', () => {
             await expect(execute([], [])).rejects.toBe(errors[limit - 1]);
             expect(send.mock.calls.map(([command]) => command)).toEqual([
                 ...Array
-                    .from({ length: limit - 1 }, () => [
-                        'EVALSHA',
-                        'SCRIPT',
-                    ])
+                    .from(
+                        { length: limit - 1 },
+                        () => [
+                            'EVALSHA',
+                            'SCRIPT',
+                        ],
+                    )
                     .flat(),
                 'EVALSHA',
             ]);
@@ -227,10 +230,13 @@ describe('createRedisScriptRunner', () => {
             const execute = createRedisScriptRunner({ send }, source);
 
             await expect(execute([], [])).rejects.toBe(error);
-            expect(send).toHaveBeenCalledExactlyOnceWith('EVALSHA', [
-                digest,
-                '0',
-            ]);
+            expect(send).toHaveBeenCalledExactlyOnceWith(
+                'EVALSHA',
+                [
+                    digest,
+                    '0',
+                ],
+            );
         },
     );
 
