@@ -1,5 +1,33 @@
 # Changelog
 
+## v18.3.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v18.2.0...v18.3.0)
+
+### 🚀 Enhancements
+
+- **file:** Add binary content MIME detection ([0233718](https://github.com/kikiutils/node-shared/commit/0233718))
+- **storage:** Add per-item TTL to LRU keyed store ([57e7a10](https://github.com/kikiutils/node-shared/commit/57e7a10))
+
+### 🩹 Fixes
+
+- **deps:** Pin TypeScript ESLint plugin to avoid false positives ([eadca5a](https://github.com/kikiutils/node-shared/commit/eadca5a))
+
+### 🏡 Chore
+
+- Update `modify-files-permissions.sh` ([e5d2bee](https://github.com/kikiutils/node-shared/commit/e5d2bee))
+- Lint code ([93a4997](https://github.com/kikiutils/node-shared/commit/93a4997))
+- Update `pnpm-workspace.yaml` ([307ba57](https://github.com/kikiutils/node-shared/commit/307ba57))
+
+### ✅ Tests
+
+- **path:** Fix recursive mkdir path comparison on Windows ([864a993](https://github.com/kikiutils/node-shared/commit/864a993))
+- Align unit tests with updated testing standards ([a5a101a](https://github.com/kikiutils/node-shared/commit/a5a101a))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v18.2.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v18.1.0...v18.2.0)
