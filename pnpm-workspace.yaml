@@ -1,11 +1,13 @@
+minimumReleaseAge: 1440
 minimumReleaseAgeExcludePrune: true
+# minimumReleaseAgeExclude:
 
+resolutionMode: highest
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - semver@6.3.1
-  - why-is-node-running@3.2.2
-
+strictSsl: true
+preferFrozenLockfile: true
 shellEmulator: true
+updateNotifier: false
 
 overrides:
   '@typescript-eslint/eslint-plugin': 8.71.0
