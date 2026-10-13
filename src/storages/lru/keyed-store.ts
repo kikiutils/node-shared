@@ -7,6 +7,7 @@ import type { LRUCache } from 'lru-cache';
  * The key resolver is called synchronously once per operation, and its exceptions propagate.
  * Reads return the cached value without copying it, or `null` for missing or nullish values.
  * `getItemTtl` exposes the underlying remaining TTL in milliseconds; `setItem` returns the underlying cache.
+ * `setItemWithTtl` accepts its TTL in milliseconds before the value and key arguments and returns the cache.
  * The facade does not dispose the supplied cache, and LRU defaults remain those of the supplied instance.
  *
  * @typeParam D - The stored value type used by reads and writes.
@@ -46,5 +47,8 @@ export function createLruKeyedStore<D = unknown>(lruInstance: LRUCache<any, any,
          */
         resolveKey: (...args: P) => keyFn(...args),
         setItem: (value: D, ...args: P) => lruInstance.set(keyFn(...args), value),
+        setItemWithTtl(ttlMilliseconds: number, value: D, ...args: P) {
+            return lruInstance.set(keyFn(...args), value, { ttl: ttlMilliseconds });
+        },
     });
 }

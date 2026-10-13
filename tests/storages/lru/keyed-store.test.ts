@@ -44,6 +44,50 @@ describe('createLruKeyedStore', () => {
         },
     );
 
+    it('should override the default TTL per item in milliseconds and resolve composite keys', ({ expect }) => {
+        let now = 1000;
+        const cache = new LRUCache<string, string>({
+            max: 2,
+            perf: { now: () => now },
+            ttl: 5000,
+            ttlResolution: 0,
+        });
+
+        const store = createLruKeyedStore<string>(cache)(
+            (tenant: string, id: number) => `${tenant}:item:${id}`,
+        );
+
+        expect(store.setItemWithTtl(1000, 'value', 'acme', 1)).toBe(cache);
+        expect(cache.get('acme:item:1')).toBe('value');
+        expect(store.getItemTtl('acme', 1)).toBe(1000);
+        store.setItem('default', 'acme', 2);
+        expect(store.getItemTtl('acme', 2)).toBe(5000);
+
+        now += 400;
+        expect(store.getItemTtl('acme', 1)).toBe(600);
+        now += 601;
+        expect(store.getItem('acme', 1)).toBeNull();
+        expect(store.hasItem('acme', 1)).toBe(false);
+        expect(store.getItem('acme', 2)).toBe('default');
+    });
+
+    it('should disable expiry with a zero TTL even when the cache has a default TTL', ({ expect }) => {
+        let now = 1000;
+        const cache = new LRUCache<string, string>({
+            max: 1,
+            perf: { now: () => now },
+            ttl: 1000,
+            ttlResolution: 0,
+        });
+
+        const store = createLruKeyedStore<string>(cache)((id: number) => `item:${id}`);
+        store.setItemWithTtl(0, 'value', 1);
+
+        now += 1001;
+        expect(store.getItemTtl(1)).toBe(Infinity);
+        expect(store.getItem(1)).toBe('value');
+    });
+
     it('should expose remaining TTL in milliseconds and return null after expiry', ({ expect }) => {
         let now = 1000;
         const cache = new LRUCache<string, string>({
