@@ -7,11 +7,6 @@ import type {
 export type { FilteredKeyPath } from './filtered-key-path';
 
 /**
- * A generic string-keyed object for utility APIs that intentionally accept any value shape.
- */
-export type AnyRecord = Record<string, any>;
-
-/**
  * Binary-like inputs accepted by `toBuffer` across browser and Node.js runtimes.
  */
 export type BinaryInput = ArrayBuffer | Blob | Buffer | File | NodeBlob | NodeFile | Uint8Array;
@@ -30,11 +25,6 @@ export type MaybePartial<T> = Partial<T> | T;
  * Accepts either a mutable value or a readonly view of that value.
  */
 export type MaybeReadonly<T> = Readonly<T> | T;
-
-/**
- * Number-like value represented as a number or a numeric string.
- */
-export type Numberish = number | string;
 
 /**
  * A `Record` where every key is optional.
