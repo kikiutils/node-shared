@@ -1,6 +1,7 @@
 minimumReleaseAge: 1440
 minimumReleaseAgeExcludePrune: true
-# minimumReleaseAgeExclude:
+minimumReleaseAgeExclude:
+  - '@kikiutils/eslint-config' # TODO: remove it
 
 resolutionMode: highest
 trustPolicy: no-downgrade
@@ -9,10 +10,5 @@ preferFrozenLockfile: true
 shellEmulator: true
 updateNotifier: false
 
-overrides:
-  '@typescript-eslint/eslint-plugin': 8.71.0
-
 allowBuilds:
-  cpu-features: true
   msgpackr-extract: true
-  ssh2: true
