@@ -16,7 +16,6 @@ A lightweight, modular TypeScript utility library for Node.js and browser projec
 - 🔁 General helpers — normalize single-or-array values with `extractFirstValue`.
 - 🧬 Binary helpers — convert `Blob`, `File`, `ArrayBuffer`, `Uint8Array`, and `Buffer` to Node `Buffer`.
 - 🔒 Hashing helpers — SHA-3 helpers for universal usage and Node `crypto` MD5/SHA-3 helpers.
-- 📜 Logging helpers — preconfigured Consola and Pino logger instances with env-based levels.
 - 📅 Date helpers — format dates and compute common ranges such as today, this week, and last month.
 - 🔢 Number and math helpers — compact number display, precise percentages, and fixed-decimal arithmetic.
 - 🔤 String/random helpers — random strings and randomized-length value generation.
@@ -52,7 +51,6 @@ You can also use `npm`, `yarn`, or `bun`.
 Import individual modules to keep dependency usage explicit:
 
 ```typescript
-import { logger } from '@kikiutils/shared/consola';
 import { extractFirstValue } from '@kikiutils/shared/general';
 
 const value = extractFirstValue([
@@ -69,7 +67,6 @@ logger.info(value); // 0
 | --- | --- | --- | --- |
 | `buffer` | Node/browser-compatible inputs, Node output | `toBuffer` | Convert `Blob`, `File`, `ArrayBuffer`, `Uint8Array`, or `Buffer` to Node `Buffer`. |
 | `clipboard` | Browser | `copyTextToClipboard`, `copyBlobToClipboard` | Safe result wrappers around the modern Clipboard API. |
-| `consola` | Node/browser | `consolaLogger`, `logger` | Shared Consola instance with env-based log level. |
 | `crypto-hash` | Node | `cryptoMd5`, `cryptoSha3*`, `*ToBuffer` | Node `crypto` MD5/SHA-3 helpers with text or raw-buffer output. |
 | `datetime` | Node/browser | `formatDate`, `getDateRangeFromDate`, `getMidnightDateFromToday` | Date formatting and common date-range calculations via `date-fns`. |
 | `element-plus` | Vue/browser | `createElFormItemRuleWithDefaults` | Create Element Plus form rules with default `required`, `trigger`, and `type`. |
@@ -81,7 +78,6 @@ logger.info(value); // 0
 | `math` | Any | `toPercentageString` | Precise percentage strings using `decimal.js`. |
 | `number` | Any | `toCompactNumberString` | Compact display strings using `millify`. |
 | `object` | Any | `stringifyObjectDeterministically` | Stable flattened object serialization for signatures/cache keys. |
-| `pino` | Node | `pinoLogger`, `logger` | Shared Pino logger with pretty output and env-based level. |
 | `random` | Any | `generateWithNestedRandomLength` | Generate values with a two-step randomized length. |
 | `string` | Any | `randomString` | Random strings from preset character sets. |
 | `time` | Any | `abortableDelay` | Promise delay that resolves early on abort. |
@@ -158,8 +154,6 @@ Most modules are tiny wrappers around platform APIs or optional peers. If your p
 | `element-plus` | `async-validator`, `element-plus` |
 | `classes/precision-number`, `math` | `decimal.js` |
 | `number` | `millify` |
-| `consola` | `consola` |
-| `pino` | `pino`, `pino-pretty` |
 | `storages/lru/keyed-store` | `lru-cache` |
 | `storages/redis/msgpack` | `msgpackr` |
 | `vue` | `vue`, `vue-router` |
