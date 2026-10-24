@@ -27,9 +27,7 @@
     "crypto",
     "hashing",
     "storage",
-    "logging",
-    "consola",
-    "pino"
+    "logging"
   ],
   "sideEffects": false,
   "exports": {
@@ -119,8 +117,8 @@
     }
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.5.1",
-    "@kikiutils/eslint-config": "^9.3.0",
+    "@antfu/eslint-config": "^10.0.0",
+    "@kikiutils/eslint-config": "^9.3.1",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.5",
@@ -132,15 +130,15 @@
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.7",
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "file-type": "^22.2.0",
     "jsdom": "^30.1.3",
-    "knip": "^6.41.0",
+    "knip": "^6.42.1",
     "lru-cache": "^11.5.3",
     "millify": "^6.1.0",
-    "msgpackr": "^2.1.0",
+    "msgpackr": "^2.1.2",
     "publint": "^0.3.25",
-    "tsdown": "^0.23.1",
+    "tsdown": "^0.23.2",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
     "vitest": "^5.0.5",
