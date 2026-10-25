@@ -77,7 +77,6 @@ logger.info(value); // 0
 | `hash` | Any | `sha3224`, `sha3256`, `sha3384`, `sha3512` | SHA-3 helpers backed by `@noble/hashes`; returns hex strings. |
 | `math` | Any | `toPercentageString` | Precise percentage strings using `decimal.js`. |
 | `number` | Any | `toCompactNumberString` | Compact display strings using `millify`. |
-| `object` | Any | `stringifyObjectDeterministically` | Stable flattened object serialization for signatures/cache keys. |
 | `random` | Any | `generateWithNestedRandomLength` | Generate values with a two-step randomized length. |
 | `string` | Any | `randomString` | Random strings from preset character sets. |
 | `time` | Any | `abortableDelay` | Promise delay that resolves early on abort. |
