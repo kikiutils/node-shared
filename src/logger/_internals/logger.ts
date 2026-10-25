@@ -31,7 +31,7 @@ const stringPresentationKeys = [
 
 /** A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters. */
 export function createDiagnosticReporter(
-    onError?: (event: LoggerDiagnostic) => void,
+    onError?: (event: Readonly<LoggerDiagnostic>) => void,
     fallback?: (message: string) => void,
 ): (event: LoggerDiagnostic) => void {
     let reporting = false;
@@ -75,7 +75,7 @@ export function createDiagnosticReporter(
             if (!callbackPending) {
                 try {
                     callbackPending = true;
-                    const result: unknown = onError?.(event);
+                    const result: unknown = onError?.(Object.freeze({ ...event }));
                     if (result !== null && (typeof result === 'object' || typeof result === 'function')) {
                         void Promise.resolve(result).then(
                             () => {
@@ -99,7 +99,7 @@ export function createDiagnosticReporter(
     };
 }
 
-export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Logger {
+export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Readonly<Logger> {
     validateLevel(options.level);
     validatePresentation(options);
     if (options.onError !== undefined && typeof options.onError !== 'function') {
@@ -189,7 +189,7 @@ export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Lo
         };
     }
 
-    return logger;
+    return Object.freeze(logger);
 }
 
 function getLevelSeverity(level: LoggerLevel | LoggerMethod): number {

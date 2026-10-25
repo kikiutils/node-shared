@@ -42,8 +42,8 @@ export interface NodeLogger extends Logger {
     /** Stop accepting records, finish accepted file writes, then release the stream. Not fsync. */
     close: () => Promise<void>;
 
-    /** A fresh snapshot. Dropped/failed records still resolve their logging promises. */
-    getStats: () => NodeLoggerStats;
+    /** A fresh, frozen file-output snapshot. Dropped/failed records still resolve their logging promises. */
+    getStats: () => Readonly<NodeLoggerStats>;
 }
 
 export interface NodeLoggerOptions extends LoggerOptions {

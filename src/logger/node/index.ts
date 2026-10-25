@@ -35,7 +35,7 @@ const consoleStreams = new WeakMap<NodeJS.WriteStream, ConsoleStreamState>();
  * persistence: overload drops the newest file record and failures are reported safely. Factory
  * validation/open failures reject. Call close explicitly; no process signal handlers are installed.
  */
-export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise<NodeLogger> {
+export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise<Readonly<NodeLogger>> {
     const report = createDiagnosticReporter(options.onError, (message) => writeSync(2, message));
     let writer: Awaited<ReturnType<typeof createFileWriter>> | undefined;
     let closed = false;
@@ -83,40 +83,38 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
 
     if (options.file !== undefined && options.file !== false) writer = await createFileWriter(options.file, report);
 
-    return Object.assign(
-        logger,
-        {
-            close() {
-                if (closePromise) return closePromise;
-                closed = true;
-                closePromise = (async () => {
-                    await Promise.all([
-                        writer?.close(),
-                        ...consoleWrites,
-                    ]);
+    return Object.freeze({
+        ...logger,
+        close() {
+            if (closePromise) return closePromise;
+            closed = true;
+            closePromise = (async () => {
+                await Promise.all([
+                    writer?.close(),
+                    ...consoleWrites,
+                ]);
 
-                    for (const target of consoleTargets) {
-                        const state = consoleStreams.get(target);
-                        if (!state) continue;
-                        state.owners.delete(consoleOwner);
-                        if (!state.owners.size) {
-                            target.off('error', state.onError);
-                            target.off('close', state.onClose);
-                            consoleStreams.delete(target);
-                        }
+                for (const target of consoleTargets) {
+                    const state = consoleStreams.get(target);
+                    if (!state) continue;
+                    state.owners.delete(consoleOwner);
+                    if (!state.owners.size) {
+                        target.off('error', state.onError);
+                        target.off('close', state.onClose);
+                        consoleStreams.delete(target);
                     }
+                }
 
-                    consoleTargets.clear();
-                })();
-                return closePromise;
-            },
-            getStats: () => writer?.getStats() ?? {
-                droppedCount: 0,
-                pendingBytes: 0,
-                writeErrorCount: 0,
-            },
+                consoleTargets.clear();
+            })();
+            return closePromise;
         },
-    );
+        getStats: () => writer?.getStats() ?? Object.freeze({
+            droppedCount: 0,
+            pendingBytes: 0,
+            writeErrorCount: 0,
+        }),
+    });
 }
 
 /** One error listener per shared output stream; retained until its last owning logger calls close(). */

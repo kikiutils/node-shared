@@ -17,7 +17,7 @@ import type {
 
 interface LoggerFileWriter {
     close: () => Promise<void>;
-    getStats: () => NodeLoggerStats;
+    getStats: () => Readonly<NodeLoggerStats>;
     write: (text: string) => Promise<void>;
 }
 
@@ -30,7 +30,7 @@ const defaultMaxPendingBytes = 8 * 1024 * 1024;
 export async function createFileWriter(
     options: LoggerFileOptions,
     report: (event: LoggerDiagnostic) => void,
-): Promise<LoggerFileWriter> {
+): Promise<Readonly<LoggerFileWriter>> {
     const {
         maxPendingBytes,
         path,
@@ -138,7 +138,7 @@ export async function createFileWriter(
         initializing = false;
     }
 
-    return {
+    return Object.freeze({
         close() {
             if (closePromise) return closePromise;
             closing = true;
@@ -158,12 +158,12 @@ export async function createFileWriter(
 
             return closePromise;
         },
-        getStats: () => ({
+        getStats: () => Object.freeze({
             droppedCount,
             pendingBytes,
             writeErrorCount,
         }),
-        write(text) {
+        write(text: string) {
             if (closing || closed || failed) {
                 report({
                     message: 'File output is closed or unavailable.',
@@ -210,7 +210,7 @@ export async function createFileWriter(
                 }
             });
         },
-    };
+    });
 }
 
 /** Validate before mkdir, stream creation, or other filesystem side effects. */

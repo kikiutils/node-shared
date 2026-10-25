@@ -18,7 +18,7 @@ import type {
  * waits for the console invocation, not display or durable delivery. Unspecified
  * levels follow LOG_LEVEL when a process environment is available, otherwise info.
  */
-export function createLogger(options: LoggerOptions = {}): Logger {
+export function createLogger(options: LoggerOptions = {}): Readonly<Logger> {
     const target = globalThis.console;
     const fallback = target?.error?.bind(target);
     return createLoggerCore(

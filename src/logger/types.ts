@@ -9,6 +9,7 @@ export type LoggerMethod = 'success' | Exclude<LoggerLevel, 'silent'>;
  *
  * Awaiting a method waits for processing, not guaranteed successful delivery or fsync.
  * Configuration errors may throw from the factory, configure(), or setLevel().
+ * Factories freeze the API object; settings remain adjustable through its methods.
  */
 export interface Logger {
     configure: (options: Pick<LoggerOptions, 'console' | 'icons' | 'prefix' | 'suffix' | 'timestamp'>) => void;
@@ -27,7 +28,7 @@ export interface Logger {
     warn: (...args: unknown[]) => Promise<void>;
 }
 
-/** A recoverable logging failure, reported without throwing from log methods. */
+/** A shallow-frozen failure notification; nested error values retain their original ownership. */
 export interface LoggerDiagnostic {
     droppedCount?: number;
     error?: unknown;
@@ -50,7 +51,7 @@ export interface LoggerOptions {
     level?: 'env' | LoggerLevel;
 
     /** Best-effort, rate-limited notification; failures in this callback are contained. */
-    onError?: (event: LoggerDiagnostic) => void;
+    onError?: (event: Readonly<LoggerDiagnostic>) => void;
     prefix?: string;
     suffix?: string;
 
