@@ -1,5 +1,36 @@
 # Changelog
 
+## v19.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v18.3.0...v19.0.0)
+
+### 🚀 Enhancements
+
+- **logger:** Add browser and Node.js loggers with file rotation ([b84190b](https://github.com/kikiutils/node-shared/commit/b84190b))
+
+### 💅 Refactors
+
+- ⚠️  Remove some classes, functions, files and types ([29078de](https://github.com/kikiutils/node-shared/commit/29078de))
+
+### 📖 Documentation
+
+- Update README ([e14d31d](https://github.com/kikiutils/node-shared/commit/e14d31d))
+- Update README ([179cd09](https://github.com/kikiutils/node-shared/commit/179cd09))
+
+### 🏡 Chore
+
+- Remove `@typescript-eslint/eslint-plugin` from `overrides` ([9a7922a](https://github.com/kikiutils/node-shared/commit/9a7922a))
+- Update `minimumReleaseAgeExcludes` ([362ebd7](https://github.com/kikiutils/node-shared/commit/362ebd7))
+- Upgrade deps ([d850636](https://github.com/kikiutils/node-shared/commit/d850636))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove some classes, functions, files and types ([29078de](https://github.com/kikiutils/node-shared/commit/29078de))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v18.3.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v18.2.0...v18.3.0)
