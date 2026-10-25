@@ -31,6 +31,56 @@
   ],
   "sideEffects": false,
   "exports": {
+    "./logger": {
+      "types": "./dist/logger/index.d.ts",
+      "import": "./dist/logger/index.js",
+      "require": null
+    },
+    "./logger/_internals/formatter": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/_internals/levels": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/_internals/logger": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/_internals/types": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/node": {
+      "types": "./dist/logger/node/index.d.ts",
+      "import": "./dist/logger/node/index.js",
+      "require": null
+    },
+    "./logger/node/_internals/file-writer": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/node/_internals/formatter": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./logger/node/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./package.json": "./package.json",
     "./types": {
       "types": "./dist/types/index.d.ts",
@@ -75,6 +125,7 @@
     "lru-cache": "^11.5.3",
     "millify": "^6.1.0",
     "msgpackr": "^2.1.0",
+    "rotating-file-stream": "^3.2.10",
     "vue": "^3.5.44",
     "vue-router": ">= 4.6.4"
   },
@@ -109,6 +160,9 @@
     "msgpackr": {
       "optional": true
     },
+    "rotating-file-stream": {
+      "optional": true
+    },
     "vue": {
       "optional": true
     },
@@ -138,6 +192,7 @@
     "millify": "^6.1.0",
     "msgpackr": "^2.1.2",
     "publint": "^0.3.25",
+    "rotating-file-stream": "^3.2.10",
     "tsdown": "^0.23.2",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
