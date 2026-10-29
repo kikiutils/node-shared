@@ -10,19 +10,23 @@ import type { RedisLikeStorage } from '../../../src/storages/redis/types';
 describe('createRedisKeyedStore', () => {
     it('should resolve keys and delegate every operation to the wrapped redis storage', async ({ expect }) => {
         const user = { name: 'Alice' };
+        const getAndRemoveItem = vi.fn(() => Promise.resolve(user));
         const getItem = vi.fn(() => Promise.resolve(user));
         const getItemTtl = vi.fn(() => Promise.resolve(30));
         const hasItem = vi.fn(() => Promise.resolve(true));
         const removeItem = vi.fn(() => Promise.resolve(true));
         const setItem = vi.fn(() => Promise.resolve(true));
         const setItemWithTtl = vi.fn(() => Promise.resolve(true));
+        const setItemWithTtlIfAbsent = vi.fn(() => Promise.resolve(true));
         const storage: RedisLikeStorage = {
+            getAndRemoveItem: getAndRemoveItem as RedisLikeStorage['getAndRemoveItem'],
             getItem: getItem as RedisLikeStorage['getItem'],
             getItemTtl,
             hasItem,
             removeItem,
             setItem,
             setItemWithTtl,
+            setItemWithTtlIfAbsent,
         };
 
         const store = createRedisKeyedStore<{ name: string }>(storage)(
@@ -33,14 +37,18 @@ describe('createRedisKeyedStore', () => {
         expect(store.resolveKey('acme', 1)).toBe('acme:user:1');
         await expect(store.setItem(user, 'acme', 1)).resolves.toBe(true);
         await expect(store.setItemWithTtl(60, user, 'acme', 1)).resolves.toBe(true);
+        await expect(store.setItemWithTtlIfAbsent(60, user, 'acme', 1)).resolves.toBe(true);
         await expect(store.getItem('acme', 1)).resolves.toEqual(user);
+        await expect(store.getAndRemoveItem('acme', 1)).resolves.toEqual(user);
         await expect(store.getItemTtl('acme', 1)).resolves.toBe(30);
         await expect(store.hasItem('acme', 1)).resolves.toBe(true);
         await expect(store.removeItem('acme', 1)).resolves.toBe(true);
 
         expect(setItem).toHaveBeenCalledWith('acme:user:1', user);
         expect(setItemWithTtl).toHaveBeenCalledWith('acme:user:1', 60, user);
+        expect(setItemWithTtlIfAbsent).toHaveBeenCalledWith('acme:user:1', 60, user);
         expect(getItem).toHaveBeenCalledWith('acme:user:1');
+        expect(getAndRemoveItem).toHaveBeenCalledWith('acme:user:1');
         expect(getItemTtl).toHaveBeenCalledWith('acme:user:1');
         expect(hasItem).toHaveBeenCalledWith('acme:user:1');
         expect(removeItem).toHaveBeenCalledWith('acme:user:1');

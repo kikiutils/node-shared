@@ -17,6 +17,12 @@ export interface RedisLikeAdapter {
     getBuffer: (key: string) => Promise<null | Uint8Array>;
 
     /**
+     * Atomically reads and deletes a key, such as with Redis `GETDEL`,
+     * and resolves to its raw bytes, or `null` when the key is missing.
+     */
+    getBufferAndDelete: (key: string) => Promise<null | Uint8Array>;
+
+    /**
      * Checks a key and resolves to whether it exists.
      */
     has: (key: string) => Promise<boolean>;
@@ -36,6 +42,16 @@ export interface RedisLikeAdapter {
     setBufferEx: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | void>;
 
     /**
+     * Writes raw bytes with an expiry only when the key is missing, such as with Redis `SET key value EX ttl NX`,
+     * and resolves to the backend acknowledgment, or `null` or no value when the key already exists.
+     *
+     * @param key - The storage key.
+     * @param ttlSeconds - The expiry duration in seconds.
+     * @param value - The raw bytes to store.
+     */
+    setBufferExNx: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | null | void>;
+
+    /**
      * Reads a key's remaining TTL in seconds, or `-1` for no expiry and `-2` for a missing key.
      */
     ttl: (key: string) => Promise<number>;
@@ -49,6 +65,14 @@ export interface RedisLikeAdapter {
  * `-1` means no expiry, and `-2` means the key is missing. Connection cleanup remains caller-owned.
  */
 export interface RedisLikeStorage {
+    /**
+     * Atomically reads and removes a deserialized value and resolves to `null` when the key is missing.
+     * Concurrent callers on the same key receive the value at most once.
+     *
+     * @typeParam T - The expected value type; deserialization does not validate this type.
+     */
+    getAndRemoveItem: <T = unknown>(key: string) => Promise<null | T>;
+
     /**
      * Reads a deserialized value and resolves to `null` when the key is missing.
      *
@@ -84,4 +108,14 @@ export interface RedisLikeStorage {
      * @param value - The value to serialize and store.
      */
     setItemWithTtl: (key: string, ttlSeconds: number, value: any) => Promise<boolean>;
+
+    /**
+     * Atomically stores a value with an expiry only when the key is missing
+     * and resolves to whether the backend acknowledges the write.
+     *
+     * @param key - The storage key.
+     * @param ttlSeconds - The expiry duration in seconds.
+     * @param value - The value to serialize and store.
+     */
+    setItemWithTtlIfAbsent: (key: string, ttlSeconds: number, value: any) => Promise<boolean>;
 }

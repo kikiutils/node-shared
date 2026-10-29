@@ -21,12 +21,23 @@ describe('createRedisMsgpackStorage', () => {
         adapter = {
             delete: (key: string) => Promise.resolve(buffers.delete(key) ? 1 : 0),
             getBuffer: vi.fn((key: string) => Promise.resolve(buffers.get(key) ?? null)),
+            getBufferAndDelete: vi.fn((key: string) => {
+                const value = buffers.get(key) ?? null;
+                buffers.delete(key);
+                return Promise.resolve(value);
+            }),
             has: (key: string) => Promise.resolve(buffers.has(key)),
             setBuffer: vi.fn((key: string, value: Uint8Array) => {
                 buffers.set(key, value);
                 return Promise.resolve(ok);
             }),
             setBufferEx: vi.fn((key: string, ttlSeconds: number, value: Uint8Array) => {
+                buffers.set(key, value);
+                ttls.set(key, ttlSeconds);
+                return Promise.resolve(ok);
+            }),
+            setBufferExNx: vi.fn((key: string, ttlSeconds: number, value: Uint8Array) => {
+                if (buffers.has(key)) return Promise.resolve(null);
                 buffers.set(key, value);
                 ttls.set(key, ttlSeconds);
                 return Promise.resolve(ok);
@@ -75,6 +86,26 @@ describe('createRedisMsgpackStorage', () => {
         await expect(storage.getItemTtl('session')).resolves.toBe(60);
         await expect(storage.removeItem('session')).resolves.toBe(true);
         await expect(storage.hasItem('session')).resolves.toBe(false);
+    });
+
+    it('should write ttl-aware values only when the key is missing', async ({ expect }) => {
+        const storage = createRedisMsgpackStorage(adapter);
+
+        await expect(storage.setItemWithTtlIfAbsent('cooldown', 60, 1)).resolves.toBe(true);
+        expect(adapter.setBufferExNx).toHaveBeenCalledWith('cooldown', 60, expect.any(Uint8Array));
+        await expect(storage.setItemWithTtlIfAbsent('cooldown', 30, 2)).resolves.toBe(false);
+        await expect(storage.getItem('cooldown')).resolves.toBe(1);
+        await expect(storage.getItemTtl('cooldown')).resolves.toBe(60);
+    });
+
+    it('should read and remove values through a single adapter call', async ({ expect }) => {
+        const storage = createRedisMsgpackStorage(adapter);
+
+        await storage.setItem('token', { id: 1 });
+        await expect(storage.getAndRemoveItem('token')).resolves.toEqual({ id: 1 });
+        expect(adapter.getBufferAndDelete).toHaveBeenCalledExactlyOnceWith('token');
+        await expect(storage.getAndRemoveItem('token')).resolves.toBeNull();
+        await expect(storage.hasItem('token')).resolves.toBe(false);
     });
 
     it('should preserve adapter rejections on reads and writes', async ({ expect }) => {

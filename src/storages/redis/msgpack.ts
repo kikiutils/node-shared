@@ -18,7 +18,8 @@ if (!isNativeAccelerationEnabled) {
  *
  * @remarks
  * Adapter rejections and MessagePack serialization errors propagate to the caller.
- * Reads resolve to `null` when no raw value exists. Writes resolve to `true` only when the adapter returns `OK`;
+ * Reads resolve to `null` when no raw value exists; `getAndRemoveItem` reads and deletes in one atomic adapter call.
+ * Writes resolve to `true` only when the adapter returns `OK`;
  * removal resolves to `true` only when exactly one key is deleted.
  * The adapter remains caller-owned; creating the facade does not open or close a connection.
  *
@@ -37,12 +38,20 @@ if (!isNativeAccelerationEnabled) {
  * const adapter: RedisLikeAdapter = {
  *     delete: async (key) => values.delete(key) ? 1 : 0,
  *     getBuffer: async (key) => values.get(key) ?? null,
+ *     getBufferAndDelete: async (key) => {
+ *         const value = values.get(key) ?? null;
+ *         values.delete(key);
+ *         return value;
+ *     },
  *     has: async (key) => values.has(key),
  *     setBuffer: async (key, value) => {
  *         values.set(key, value);
  *         return 'OK';
  *     },
  *     setBufferEx: async () => {
+ *         throw new Error('TTL writes are not supported by this example adapter');
+ *     },
+ *     setBufferExNx: async () => {
  *         throw new Error('TTL writes are not supported by this example adapter');
  *     },
  *     ttl: async (key) => values.has(key) ? -1 : -2,
@@ -56,6 +65,10 @@ if (!isNativeAccelerationEnabled) {
  */
 export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
     return Object.freeze({
+        async getAndRemoveItem<T = unknown>(key: string) {
+            const rawValue = await adapter.getBufferAndDelete(key);
+            return rawValue ? decode(rawValue) as T : null;
+        },
         async getItem<T = unknown>(key: string) {
             const rawValue = await adapter.getBuffer(key);
             return rawValue ? decode(rawValue) as T : null;
@@ -66,6 +79,9 @@ export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<R
         setItem: async (key: string, value: any) => await adapter.setBuffer(key, encode(value)) === 'OK',
         async setItemWithTtl(key: string, ttlSeconds: number, value: any) {
             return await adapter.setBufferEx(key, ttlSeconds, encode(value)) === 'OK';
+        },
+        async setItemWithTtlIfAbsent(key: string, ttlSeconds: number, value: any) {
+            return await adapter.setBufferExNx(key, ttlSeconds, encode(value)) === 'OK';
         },
     });
 }
