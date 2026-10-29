@@ -1,5 +1,29 @@
 # Changelog
 
+## v20.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v19.0.0...v20.0.0)
+
+### 🚀 Enhancements
+
+- **storage:** ⚠️  Add atomic get-and-remove and set-if-absent to Redis storage ([0c7ee34](https://github.com/kikiutils/node-shared/commit/0c7ee34))
+
+### 💅 Refactors
+
+- **logger:** Freeze logger APIs and snapshots ([e6d15d9](https://github.com/kikiutils/node-shared/commit/e6d15d9))
+
+### 🏡 Chore
+
+- Upgrade deps ([2254e3c](https://github.com/kikiutils/node-shared/commit/2254e3c))
+
+#### ⚠️ Breaking Changes
+
+- **storage:** ⚠️  Add atomic get-and-remove and set-if-absent to Redis storage ([0c7ee34](https://github.com/kikiutils/node-shared/commit/0c7ee34))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v19.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v18.3.0...v19.0.0)
