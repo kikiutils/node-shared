@@ -1,5 +1,23 @@
 # Changelog
 
+## v20.0.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v20.0.0...v20.0.1)
+
+### 📦 Build
+
+- Pin TypeScript override and organize maintenance scripts ([b878c55](https://github.com/kikiutils/node-shared/commit/b878c55))
+- Simplify tsdown configuration and add type validation ([5ba0dcb](https://github.com/kikiutils/node-shared/commit/5ba0dcb))
+
+### 🏡 Chore
+
+- Update pnpm config ([17fefba](https://github.com/kikiutils/node-shared/commit/17fefba))
+- Refresh `exports` defines ([3fad4a4](https://github.com/kikiutils/node-shared/commit/3fad4a4))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v20.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v19.0.0...v20.0.0)
