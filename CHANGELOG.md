@@ -1,5 +1,24 @@
 # Changelog
 
+## v20.1.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v20.0.1...v20.1.0)
+
+### 🚀 Enhancements
+
+- **logger:** Mark log method results as SafePromise ([5c5f62c](https://github.com/kikiutils/node-shared/commit/5c5f62c))
+
+### 🏡 Chore
+
+- Refine template export exclusions and script entrypoint ([4ffddaa](https://github.com/kikiutils/node-shared/commit/4ffddaa))
+- Upgrade deps ([57ed9ca](https://github.com/kikiutils/node-shared/commit/57ed9ca))
+- Resolve ESLint diagnostics ([c5742eb](https://github.com/kikiutils/node-shared/commit/c5742eb))
+- Lint code ([1c5c42d](https://github.com/kikiutils/node-shared/commit/1c5c42d))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v20.0.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v20.0.0...v20.0.1)
