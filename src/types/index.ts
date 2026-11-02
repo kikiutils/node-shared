@@ -40,3 +40,9 @@ export type ReadonlyPartialRecord<K extends keyof any, T> = Readonly<PartialReco
  * A readonly `Record`.
  */
 export type ReadonlyRecord<K extends keyof any, T> = Readonly<Record<K, T>>;
+
+/**
+ * A promise whose rejection is handled internally and can safely be left unawaited.
+ * This type only marks that contract; it does not add runtime rejection handling.
+ */
+export type SafePromise<T> = Promise<T> & { readonly __safePromise?: true };

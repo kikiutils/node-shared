@@ -1,3 +1,5 @@
+import type { SafePromise } from '../types';
+
 /**
  * Minimum severity to emit; `success` uses the same threshold as `info`.
  */
@@ -17,10 +19,10 @@ export type LoggerMethod = 'success' | Exclude<LoggerLevel, 'silent'>;
  */
 export interface Logger {
     configure: (options: Pick<LoggerOptions, 'console' | 'icons' | 'prefix' | 'suffix' | 'timestamp'>) => void;
-    debug: (...args: unknown[]) => Promise<void>;
-    error: (...args: unknown[]) => Promise<void>;
-    fatal: (...args: unknown[]) => Promise<void>;
-    info: (...args: unknown[]) => Promise<void>;
+    debug: (...args: unknown[]) => SafePromise<void>;
+    error: (...args: unknown[]) => SafePromise<void>;
+    fatal: (...args: unknown[]) => SafePromise<void>;
+    info: (...args: unknown[]) => SafePromise<void>;
 
     /**
      * Accepts success as an informational method; it is not a configurable threshold.
@@ -31,9 +33,9 @@ export interface Logger {
      * Sets a severity threshold (not success); env restores environment-driven filtering.
      */
     setLevel: (level: 'env' | LoggerLevel) => void;
-    success: (...args: unknown[]) => Promise<void>;
-    trace: (...args: unknown[]) => Promise<void>;
-    warn: (...args: unknown[]) => Promise<void>;
+    success: (...args: unknown[]) => SafePromise<void>;
+    trace: (...args: unknown[]) => SafePromise<void>;
+    warn: (...args: unknown[]) => SafePromise<void>;
 }
 
 /**
