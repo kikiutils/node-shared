@@ -47,7 +47,7 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
         options,
         {
             report,
-            write(record) {
+            async write(record) {
                 if (closed) {
                     report({
                         message: 'Logger is closed.',
@@ -69,14 +69,14 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
                     void completion.then(() => consoleWrites.delete(completion));
                     const fileCompletion = writer?.write(`${stripVTControlCharacters(text)}\n`);
                     return fileCompletion
-                        ? Promise.all([
+                        ? await Promise.all([
                             completion,
                             fileCompletion,
                         ]).then(() => {})
-                        : completion;
+                        : await completion;
                 }
 
-                return writer?.write(`${stripVTControlCharacters(text)}\n`);
+                return await writer?.write(`${stripVTControlCharacters(text)}\n`);
             },
         },
     );
@@ -85,8 +85,8 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
 
     return Object.freeze({
         ...logger,
-        close() {
-            if (closePromise) return closePromise;
+        async close() {
+            if (closePromise) return await closePromise;
             closed = true;
             closePromise = (async () => {
                 await Promise.all([
@@ -108,7 +108,7 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
                 consoleTargets.clear();
             })();
 
-            return closePromise;
+            return await closePromise;
         },
         getStats: () => writer?.getStats() ?? Object.freeze({
             droppedCount: 0,
@@ -121,7 +121,7 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
 /**
  * One error listener per shared output stream; retained until its last owning logger calls close().
  */
-function writeConsole(
+async function writeConsole(
     target: NodeJS.WriteStream,
     text: string,
     report: (event: LoggerDiagnostic) => void,
@@ -149,7 +149,7 @@ function writeConsole(
 
     state.owners.add(owner);
     const current = state;
-    return new Promise<void>((resolveWritten) => {
+    return await new Promise<void>((resolveWritten) => {
         let settled = false;
         const settle = (error?: Error | null) => {
             if (settled) return;

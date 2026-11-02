@@ -19,30 +19,30 @@ describe('createRedisMsgpackStorage', () => {
         buffers.clear();
         ttls.clear();
         adapter = {
-            delete: (key: string) => Promise.resolve(buffers.delete(key) ? 1 : 0),
-            getBuffer: vi.fn((key: string) => Promise.resolve(buffers.get(key) ?? null)),
-            getBufferAndDelete: vi.fn((key: string) => {
+            delete: async (key: string) => await Promise.resolve(buffers.delete(key) ? 1 : 0),
+            getBuffer: vi.fn(async (key: string) => await Promise.resolve(buffers.get(key) ?? null)),
+            getBufferAndDelete: vi.fn(async (key: string) => {
                 const value = buffers.get(key) ?? null;
                 buffers.delete(key);
-                return Promise.resolve(value);
+                return await Promise.resolve(value);
             }),
-            has: (key: string) => Promise.resolve(buffers.has(key)),
-            setBuffer: vi.fn((key: string, value: Uint8Array) => {
+            has: async (key: string) => await Promise.resolve(buffers.has(key)),
+            setBuffer: vi.fn(async (key: string, value: Uint8Array) => {
                 buffers.set(key, value);
-                return Promise.resolve(ok);
+                return await Promise.resolve(ok);
             }),
-            setBufferEx: vi.fn((key: string, ttlSeconds: number, value: Uint8Array) => {
-                buffers.set(key, value);
-                ttls.set(key, ttlSeconds);
-                return Promise.resolve(ok);
-            }),
-            setBufferExNx: vi.fn((key: string, ttlSeconds: number, value: Uint8Array) => {
-                if (buffers.has(key)) return Promise.resolve(null);
+            setBufferEx: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
                 buffers.set(key, value);
                 ttls.set(key, ttlSeconds);
-                return Promise.resolve(ok);
+                return await Promise.resolve(ok);
             }),
-            ttl: (key: string) => Promise.resolve(ttls.get(key) ?? -1),
+            setBufferExNx: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
+                if (buffers.has(key)) return await Promise.resolve(null);
+                buffers.set(key, value);
+                ttls.set(key, ttlSeconds);
+                return await Promise.resolve(ok);
+            }),
+            ttl: async (key: string) => await Promise.resolve(ttls.get(key) ?? -1),
         };
     });
 
@@ -67,9 +67,9 @@ describe('createRedisMsgpackStorage', () => {
     it('should return null for missing values and false for unsuccessful writes/removals', async ({ expect }) => {
         const storage = createRedisMsgpackStorage({
             ...adapter,
-            delete: () => Promise.resolve(0),
-            setBuffer: () => Promise.resolve(undefined),
-            setBufferEx: () => Promise.resolve(undefined),
+            delete: async () => await Promise.resolve(0),
+            setBuffer: async () => await Promise.resolve(undefined),
+            setBufferEx: async () => await Promise.resolve(undefined),
         });
 
         await expect(storage.getItem('missing')).resolves.toBeNull();

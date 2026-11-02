@@ -122,7 +122,7 @@ describe('toBuffer', () => {
 
     it('should preserve a failure from the binary reader', async ({ expect }) => {
         const error = new Error('Read failed');
-        const input = { arrayBuffer: () => Promise.reject(error) };
+        const input = { arrayBuffer: async () => await Promise.reject(error) };
 
         // @ts-expect-error A minimal reader isolates the asynchronous error contract.
         await expect(toBuffer(input)).rejects.toBe(error);

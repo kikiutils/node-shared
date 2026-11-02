@@ -10,14 +10,14 @@ import type { RedisLikeStorage } from '../../../src/storages/redis/types';
 describe('createRedisKeyedStore', () => {
     it('should resolve keys and delegate every operation to the wrapped redis storage', async ({ expect }) => {
         const user = { name: 'Alice' };
-        const getAndRemoveItem = vi.fn(() => Promise.resolve(user));
-        const getItem = vi.fn(() => Promise.resolve(user));
-        const getItemTtl = vi.fn(() => Promise.resolve(30));
-        const hasItem = vi.fn(() => Promise.resolve(true));
-        const removeItem = vi.fn(() => Promise.resolve(true));
-        const setItem = vi.fn(() => Promise.resolve(true));
-        const setItemWithTtl = vi.fn(() => Promise.resolve(true));
-        const setItemWithTtlIfAbsent = vi.fn(() => Promise.resolve(true));
+        const getAndRemoveItem = vi.fn(async () => await Promise.resolve(user));
+        const getItem = vi.fn(async () => await Promise.resolve(user));
+        const getItemTtl = vi.fn(async () => await Promise.resolve(30));
+        const hasItem = vi.fn(async () => await Promise.resolve(true));
+        const removeItem = vi.fn(async () => await Promise.resolve(true));
+        const setItem = vi.fn(async () => await Promise.resolve(true));
+        const setItemWithTtl = vi.fn(async () => await Promise.resolve(true));
+        const setItemWithTtlIfAbsent = vi.fn(async () => await Promise.resolve(true));
         const storage: RedisLikeStorage = {
             getAndRemoveItem: getAndRemoveItem as RedisLikeStorage['getAndRemoveItem'],
             getItem: getItem as RedisLikeStorage['getItem'],

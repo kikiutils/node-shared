@@ -58,8 +58,8 @@ export class EventAwaiter<T> {
      *
      * @throws Error through promise rejection if `strict` mode encounters an existing waiter.
      */
-    wait(key: string, timeoutMs?: number, mode?: 'override' | 'strict', signal?: AbortSignal) {
-        return new Promise<T | undefined>((resolve) => {
+    async wait(key: string, timeoutMs?: number, mode?: 'override' | 'strict', signal?: AbortSignal) {
+        return await new Promise<T | undefined>((resolve) => {
             const resolvers = this.#promiseResolvers.get(key) || [];
             if (resolvers.length) {
                 switch (mode) {
@@ -122,8 +122,8 @@ export class EventAwaiter<T> {
      *
      * @see {@link EventAwaiter.wait}
      */
-    waitExclusive(key: string, timeoutMs?: number, signal?: AbortSignal) {
-        return this.wait(key, timeoutMs, 'strict', signal);
+    async waitExclusive(key: string, timeoutMs?: number, signal?: AbortSignal) {
+        return await this.wait(key, timeoutMs, 'strict', signal);
     }
 
     /**
@@ -140,7 +140,7 @@ export class EventAwaiter<T> {
      *
      * @see {@link EventAwaiter.wait}
      */
-    waitLatest(key: string, timeoutMs?: number, signal?: AbortSignal) {
-        return this.wait(key, timeoutMs, 'override', signal);
+    async waitLatest(key: string, timeoutMs?: number, signal?: AbortSignal) {
+        return await this.wait(key, timeoutMs, 'override', signal);
     }
 }

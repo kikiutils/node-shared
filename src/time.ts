@@ -18,8 +18,8 @@
  * await delay(5000, controller.signal);
  * ```
  */
-export function delay(ms: number, signal?: AbortSignal): Promise<void> {
-    return new Promise((resolve) => {
+export async function delay(ms: number, signal?: AbortSignal): Promise<void> {
+    return await new Promise((resolve) => {
         if (signal?.aborted) {
             resolve();
             return;
@@ -61,8 +61,8 @@ export function delay(ms: number, signal?: AbortSignal): Promise<void> {
  * }
  * ```
  */
-export function delayOrThrow(ms: number, signal?: AbortSignal): Promise<void> {
-    return new Promise((resolve, reject) => {
+export async function delayOrThrow(ms: number, signal?: AbortSignal): Promise<void> {
+    return await new Promise((resolve, reject) => {
         if (signal?.aborted) {
             reject(signal.reason);
             return;

@@ -49,7 +49,7 @@ describe('getFileMimeType', () => {
         },
     ])(
         'should detect JPEG content from $name',
-        async ({ input }, { expect }) => expect(getFileMimeType(input)).resolves.toBe('image/jpeg'),
+        async ({ input }, { expect }) => await expect(getFileMimeType(input)).resolves.toBe('image/jpeg'),
     );
 
     it('should return undefined for unknown content', async ({ expect }) => {
@@ -63,7 +63,7 @@ describe('getFileMimeType', () => {
         const error = new Error('Read failed');
         const input = new Blob([jpeg]);
         const slice = new Blob([jpeg]);
-        slice.arrayBuffer = () => Promise.reject(error);
+        slice.arrayBuffer = async () => await Promise.reject(error);
         vi.spyOn(input, 'slice').mockReturnValue(slice);
 
         await expect(getFileMimeType(input)).rejects.toBe(error);

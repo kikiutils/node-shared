@@ -73,8 +73,8 @@ export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<R
             const rawValue = await adapter.getBuffer(key);
             return rawValue ? decode(rawValue) as T : null;
         },
-        getItemTtl: (key: string) => adapter.ttl(key),
-        hasItem: (key: string) => adapter.has(key),
+        getItemTtl: async (key: string) => await adapter.ttl(key),
+        hasItem: async (key: string) => await adapter.has(key),
         removeItem: async (key: string) => await adapter.delete(key) === 1,
         setItem: async (key: string, value: any) => await adapter.setBuffer(key, encode(value)) === 'OK',
         async setItemWithTtl(key: string, ttlSeconds: number, value: any) {

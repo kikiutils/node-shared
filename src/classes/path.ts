@@ -241,8 +241,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.access}
      */
-    access(...args: DropFirstParameters<typeof fsp.access>) {
-        return fsp.access(this.#value, ...args);
+    async access(...args: DropFirstParameters<typeof fsp.access>) {
+        return await fsp.access(this.#value, ...args);
     }
 
     /**
@@ -253,8 +253,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.appendFile}
      */
-    appendFile(...args: DropFirstParameters<typeof fsp.appendFile>) {
-        return fsp.appendFile(this.#value, ...args);
+    async appendFile(...args: DropFirstParameters<typeof fsp.appendFile>) {
+        return await fsp.appendFile(this.#value, ...args);
     }
 
     /**
@@ -265,8 +265,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.chmod}
      */
-    chmod(...args: DropFirstParameters<typeof fsp.chmod>) {
-        return fsp.chmod(this.#value, ...args);
+    async chmod(...args: DropFirstParameters<typeof fsp.chmod>) {
+        return await fsp.chmod(this.#value, ...args);
     }
 
     /**
@@ -277,8 +277,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.chown}
      */
-    chown(...args: DropFirstParameters<typeof fsp.chown>) {
-        return fsp.chown(this.#value, ...args);
+    async chown(...args: DropFirstParameters<typeof fsp.chown>) {
+        return await fsp.chown(this.#value, ...args);
     }
 
     /**
@@ -289,8 +289,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.copyFile}
      */
-    copyFile(...args: DropFirstParameters<typeof fsp.copyFile>) {
-        return fsp.copyFile(this.#value, ...args);
+    async copyFile(...args: DropFirstParameters<typeof fsp.copyFile>) {
+        return await fsp.copyFile(this.#value, ...args);
     }
 
     /**
@@ -310,8 +310,8 @@ export class Path {
           | null,
     ): Promise<void>;
     mkdir(options?: fs.MakeDirectoryOptions | fs.Mode | null): Promise<string | undefined>;
-    mkdir(...args: any): any {
-        return fsp.mkdir(this.#value, ...args);
+    async mkdir(...args: any): any {
+        return await fsp.mkdir(this.#value, ...args);
     }
 
     /**
@@ -322,8 +322,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.open}
      */
-    open(...args: DropFirstParameters<typeof fsp.open>) {
-        return fsp.open(this.#value, ...args);
+    async open(...args: DropFirstParameters<typeof fsp.open>) {
+        return await fsp.open(this.#value, ...args);
     }
 
     /**
@@ -374,8 +374,8 @@ export class Path {
             withFileTypes: true;
         },
     ): Promise<Array<fs.Dirent<Buffer>>>;
-    readdir(...args: any): any {
-        return fsp.readdir(this.#value, ...args);
+    async readdir(...args: any): any {
+        return await fsp.readdir(this.#value, ...args);
     }
 
     /**
@@ -412,8 +412,8 @@ export class Path {
             | BufferEncoding
             | null,
     ): Promise<Buffer | string>;
-    readFile(...args: any): any {
-        return fsp.readFile(this.#value, ...args);
+    async readFile(...args: any): any {
+        return await fsp.readFile(this.#value, ...args);
     }
 
     /**
@@ -426,8 +426,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.rename}
      */
-    rename(newPath: PathLike) {
-        return fsp.rename(this.#value, newPath.toString());
+    async rename(newPath: PathLike) {
+        return await fsp.rename(this.#value, newPath.toString());
     }
 
     /**
@@ -438,8 +438,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.rm}
      */
-    rm(...args: DropFirstParameters<typeof fsp.rm>) {
-        return fsp.rm(this.#value, ...args);
+    async rm(...args: DropFirstParameters<typeof fsp.rm>) {
+        return await fsp.rm(this.#value, ...args);
     }
 
     /**
@@ -450,8 +450,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.rmdir}
      */
-    rmdir(...args: DropFirstParameters<typeof fsp.rmdir>) {
-        return fsp.rmdir(this.#value, ...args);
+    async rmdir(...args: DropFirstParameters<typeof fsp.rmdir>) {
+        return await fsp.rmdir(this.#value, ...args);
     }
 
     /**
@@ -512,8 +512,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.truncate}
      */
-    truncate(...args: DropFirstParameters<typeof fsp.truncate>) {
-        return fsp.truncate(this.#value, ...args);
+    async truncate(...args: DropFirstParameters<typeof fsp.truncate>) {
+        return await fsp.truncate(this.#value, ...args);
     }
 
     /**
@@ -524,8 +524,8 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.unlink}
      */
-    unlink() {
-        return fsp.unlink(this.#value);
+    async unlink() {
+        return await fsp.unlink(this.#value);
     }
 
     /**
@@ -536,7 +536,7 @@ export class Path {
      *
      * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.writeFile}
      */
-    writeFile(...args: DropFirstParameters<typeof fsp.writeFile>) {
-        return fsp.writeFile(this.#value, ...args);
+    async writeFile(...args: DropFirstParameters<typeof fsp.writeFile>) {
+        return await fsp.writeFile(this.#value, ...args);
     }
 }

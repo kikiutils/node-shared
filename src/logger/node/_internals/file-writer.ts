@@ -141,8 +141,8 @@ export async function createFileWriter(
     }
 
     return Object.freeze({
-        close() {
-            if (closePromise) return closePromise;
+        async close() {
+            if (closePromise) return await closePromise;
             closing = true;
             closePromise = new Promise<void>((resolveClosed) => {
                 if (closed) {
@@ -158,21 +158,21 @@ export async function createFileWriter(
                 }
             });
 
-            return closePromise;
+            return await closePromise;
         },
         getStats: () => Object.freeze({
             droppedCount,
             pendingBytes,
             writeErrorCount,
         }),
-        write(text: string) {
+        async write(text: string) {
             if (closing || closed || failed) {
                 report({
                     message: 'File output is closed or unavailable.',
                     type: 'closed',
                 });
 
-                return Promise.resolve();
+                return await Promise.resolve();
             }
 
             const bytes = Buffer.byteLength(text);
@@ -184,11 +184,11 @@ export async function createFileWriter(
                     type: 'overflow',
                 });
 
-                return Promise.resolve();
+                return await Promise.resolve();
             }
 
             pendingBytes += bytes;
-            return new Promise<void>((resolveWritten) => {
+            return await new Promise<void>((resolveWritten) => {
                 let settled = false;
                 const settle = () => {
                     if (settled) return;
