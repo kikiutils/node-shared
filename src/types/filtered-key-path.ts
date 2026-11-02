@@ -22,7 +22,7 @@ type DefaultPath<
 export type FilteredKeyPath<T, U = never> = T extends ReadonlyArray<infer V> ? (IsTuple<T> extends true ? { [K in TupleKey<T>]-?: PathImpl<Exclude<K, symbol>, T[K], U> }[TupleKey<T>] : PathImpl<number, V, U>) : { [K in keyof T]-?: PathImpl<Exclude<K, symbol>, T[K], U> }[keyof T];
 /* eslint-enable style/max-len */
 
-type IsTuple<T extends ReadonlyArray<any>> = number extends T['length'] ? false : true;
+type IsTuple<T extends readonly any[]> = number extends T['length'] ? false : true;
 type PathImpl<K extends number | string, V, U> = [U] extends [never] ? DefaultPath<K, V> : ConditionalPath<K, V, U>;
 type TerminalType =
   | bigint
@@ -38,4 +38,4 @@ type TerminalType =
   | symbol
   | undefined;
 
-type TupleKey<T extends ReadonlyArray<any>> = Exclude<keyof T, keyof any[]>;
+type TupleKey<T extends readonly any[]> = Exclude<keyof T, keyof any[]>;

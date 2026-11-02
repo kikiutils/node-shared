@@ -100,7 +100,7 @@ export class EnhancedDate extends Date {
      *
      * @returns A new `EnhancedDate`, or `Invalid Date` if the array is empty or contains an invalid date.
      */
-    static max(dates: (Date | number)[]) {
+    static max(dates: Array<Date | number>) {
         return new EnhancedDate(dateFns.max(dates));
     }
 
@@ -111,7 +111,7 @@ export class EnhancedDate extends Date {
      *
      * @returns A new `EnhancedDate`, or `Invalid Date` if the array is empty or contains an invalid date.
      */
-    static min(dates: (Date | number)[]) {
+    static min(dates: Array<Date | number>) {
         return new EnhancedDate(dateFns.min(dates));
     }
 

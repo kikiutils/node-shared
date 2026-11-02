@@ -373,7 +373,7 @@ export class Path {
             recursive?: boolean;
             withFileTypes: true;
         },
-    ): Promise<fs.Dirent<Buffer>[]>;
+    ): Promise<Array<fs.Dirent<Buffer>>>;
     readdir(...args: any): any {
         return fsp.readdir(this.#value, ...args);
     }

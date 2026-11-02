@@ -82,11 +82,10 @@ describe('delayOrThrow', () => {
         const controller = new AbortController();
         const reason = new Error('Canceled');
         const promise = delayOrThrow(1000, controller.signal);
-        const rejection = expect(promise).rejects.toBe(reason);
 
         controller.abort(reason);
 
-        await rejection;
+        await expect(promise).rejects.toBe(reason);
 
         expect(vi.getTimerCount()).toBe(0);
     });

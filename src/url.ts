@@ -12,7 +12,6 @@
  * @throws Error if `redirectPath` is not a safe same-origin application path.
  */
 export function appendRedirectParamToUrl(url: string, redirectPath: string) {
-    // eslint-disable-next-line style/max-len
     if (!isSafeRedirectPath(redirectPath)) throw new Error(`Invalid redirect path: "${redirectPath}". Redirect paths must be safe same-origin paths starting with '/'.`);
 
     const [baseAndHash, rawQuery = ''] = url.split('?');

@@ -5,7 +5,9 @@ import type { LoggerRecord } from '../../_internals/types';
 
 // Functions
 
-/** Preserve user ANSI for console output without invoking custom inspect callbacks/getters. */
+/**
+ * Preserve user ANSI for console output without invoking custom inspect callbacks/getters.
+ */
 export function formatNodeLoggerRecord(record: LoggerRecord, colors = false) {
     const message = record.args.map(
         (arg) => typeof arg === 'string'

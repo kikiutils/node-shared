@@ -10,7 +10,9 @@ import { loggerMethods } from './levels';
 import type { LoggerRecord } from './types';
 
 interface LoggerHooks {
-    /** A non-throwing reporter created by createDiagnosticReporter. */
+    /**
+     * A non-throwing reporter created by createDiagnosticReporter.
+     */
     report: (event: LoggerDiagnostic) => void;
     write: (record: LoggerRecord) => Promise<void> | void;
 }
@@ -29,7 +31,9 @@ const stringPresentationKeys = [
 
 // Functions
 
-/** A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters. */
+/**
+ * A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters.
+ */
 export function createDiagnosticReporter(
     onError?: (event: Readonly<LoggerDiagnostic>) => void,
     fallback?: (message: string) => void,

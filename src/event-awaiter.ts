@@ -11,7 +11,7 @@
  */
 export class EventAwaiter<T> {
     // Private instance properties
-    #promiseResolvers = new Map<string, ((value: PromiseLike<T | undefined> | T | undefined) => void)[]>();
+    #promiseResolvers = new Map<string, Array<(value: PromiseLike<T | undefined> | T | undefined) => void>>();
 
     // Public instance methods
 
@@ -69,6 +69,8 @@ export class EventAwaiter<T> {
                         break;
                     case 'strict':
                         throw new Error(`Duplicate wait detected for key: ${key}`);
+                    case undefined:
+                        break;
                 }
             }
 

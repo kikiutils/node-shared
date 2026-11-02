@@ -6,7 +6,9 @@ import type { LoggerRecord } from './types';
 
 // Functions
 
-/** Native console formatting keeps user strings literal and objects expandable. */
+/**
+ * Native console formatting keeps user strings literal and objects expandable.
+ */
 export function formatLoggerConsoleArgs(record: LoggerRecord): unknown[] {
     if (typeof process !== 'undefined' && process.versions?.node) {
         const target = process[getLoggerStreamName(record.type)];
@@ -39,7 +41,9 @@ export function formatLoggerConsoleArgs(record: LoggerRecord): unknown[] {
     ];
 }
 
-/** Keeps data arguments intact so browser developer tools can expand objects. */
+/**
+ * Keeps data arguments intact so browser developer tools can expand objects.
+ */
 export function formatLoggerParts(record: LoggerRecord, colors = false): unknown[] {
     const parts: unknown[] = [];
     const paint = (text: string, color: string) => colors ? `\u001B[${color}m${text}\u001B[0m` : text;
@@ -51,7 +55,9 @@ export function formatLoggerParts(record: LoggerRecord, colors = false): unknown
     return parts;
 }
 
-/** Fixed local-time representation, deliberately without a per-second cache. */
+/**
+ * Fixed local-time representation, deliberately without a per-second cache.
+ */
 export function formatLoggerTime(date: Date): string {
     const pad = (value: number, width = 2) => String(value).padStart(width, '0');
     const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -59,7 +65,9 @@ export function formatLoggerTime(date: Date): string {
     return `[${day} ${time}.${pad(date.getMilliseconds(), 3)}]`;
 }
 
-/** Use native terminal detection; redirected streams still honor FORCE_COLOR. */
+/**
+ * Use native terminal detection; redirected streams still honor FORCE_COLOR.
+ */
 export function supportsLoggerColor(target: { hasColors?: () => boolean; isTTY?: boolean }): boolean {
     if (target.hasColors) return target.hasColors();
     const forced = process.env.FORCE_COLOR;

@@ -107,6 +107,7 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
 
                 consoleTargets.clear();
             })();
+
             return closePromise;
         },
         getStats: () => writer?.getStats() ?? Object.freeze({
@@ -117,7 +118,9 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
     });
 }
 
-/** One error listener per shared output stream; retained until its last owning logger calls close(). */
+/**
+ * One error listener per shared output stream; retained until its last owning logger calls close().
+ */
 function writeConsole(
     target: NodeJS.WriteStream,
     text: string,

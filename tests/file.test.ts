@@ -49,7 +49,7 @@ describe('getFileMimeType', () => {
         },
     ])(
         'should detect JPEG content from $name',
-        async ({ input }, { expect }) => await expect(getFileMimeType(input)).resolves.toBe('image/jpeg'),
+        async ({ input }, { expect }) => expect(getFileMimeType(input)).resolves.toBe('image/jpeg'),
     );
 
     it('should return undefined for unknown content', async ({ expect }) => {

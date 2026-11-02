@@ -207,7 +207,7 @@ describe('class Path', () => {
                 withFileTypes: true,
             });
 
-            expectTypeOf(bufferEntries).toEqualTypeOf<Dirent<Buffer>[]>();
+            expectTypeOf(bufferEntries).toEqualTypeOf<Array<Dirent<Buffer>>>();
             expect(bufferEntries.map((entry) => entry.name.toString())).toEqual(['entry.txt']);
         });
 

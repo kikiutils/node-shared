@@ -14,7 +14,7 @@ import { createHash } from 'node:crypto';
  *
  * @returns A promise resolving to the Redis script result after execution completes.
  */
-export type RedisScriptRunner<T = unknown> = (keys: readonly string[], args: readonly (number | string)[]) => Promise<
+export type RedisScriptRunner<T = unknown> = (keys: readonly string[], args: ReadonlyArray<number | string>) => Promise<
     T
 >;
 

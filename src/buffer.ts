@@ -36,6 +36,5 @@ export async function toBuffer(input: BinaryInput) {
     if (input instanceof ArrayBuffer) return Buffer.from(input);
     if (input instanceof Uint8Array) return Buffer.from(input.buffer, input.byteOffset, input.byteLength);
     if (typeof input.arrayBuffer === 'function') return Buffer.from(await input.arrayBuffer());
-    // eslint-disable-next-line style/max-len
     throw new TypeError('The provided input is not a supported binary type (Blob, Buffer, File, ArrayBuffer, or Uint8Array).');
 }
