@@ -1,5 +1,27 @@
 # Changelog
 
+## v20.1.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.0...v20.1.1)
+
+### 💅 Refactors
+
+- Adopt ts-extras and type-fest utilities ([d950147](https://github.com/kikiutils/node-shared/commit/d950147))
+
+### 🏡 Chore
+
+- Lint code ([c38fa58](https://github.com/kikiutils/node-shared/commit/c38fa58))
+- Lint code ([ee81f39](https://github.com/kikiutils/node-shared/commit/ee81f39))
+- Resolve type errors ([e45524b](https://github.com/kikiutils/node-shared/commit/e45524b))
+
+### ✅ Tests
+
+- **random:** Preserve promise identity in generator mock ([3413dd8](https://github.com/kikiutils/node-shared/commit/3413dd8))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v20.1.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v20.0.1...v20.1.0)
