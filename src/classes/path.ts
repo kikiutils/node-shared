@@ -310,7 +310,7 @@ export class Path {
           | null,
     ): Promise<void>;
     mkdir(options?: fs.MakeDirectoryOptions | fs.Mode | null): Promise<string | undefined>;
-    async mkdir(...args: any): any {
+    async mkdir(...args: any): Promise<any> {
         return await fsp.mkdir(this.#value, ...args);
     }
 
@@ -374,7 +374,7 @@ export class Path {
             withFileTypes: true;
         },
     ): Promise<Array<fs.Dirent<Buffer>>>;
-    async readdir(...args: any): any {
+    async readdir(...args: any): Promise<any> {
         return await fsp.readdir(this.#value, ...args);
     }
 
@@ -412,7 +412,7 @@ export class Path {
             | BufferEncoding
             | null,
     ): Promise<Buffer | string>;
-    async readFile(...args: any): any {
+    async readFile(...args: any): Promise<any> {
         return await fsp.readFile(this.#value, ...args);
     }
 
