@@ -1,3 +1,8 @@
+import {
+    objectHasOwn,
+    objectKeys,
+} from 'ts-extras';
+
 import type {
     Logger,
     LoggerDiagnostic,
@@ -172,7 +177,7 @@ export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Re
         },
     } as Logger;
 
-    for (const type of Object.keys(loggerMethods) as LoggerMethod[]) {
+    for (const type of objectKeys(loggerMethods) as LoggerMethod[]) {
         logger[type] = async (...args: unknown[]) => {
             try {
                 refreshLevel();
@@ -202,7 +207,7 @@ function getLevelSeverity(level: LoggerLevel | LoggerMethod): number {
 
 function isLevel(value: unknown): value is LoggerLevel {
     return typeof value === 'string'
-      && (value === 'silent' || (value !== 'success' && Object.hasOwn(loggerMethods, value)));
+      && (value === 'silent' || (value !== 'success' && objectHasOwn(loggerMethods, value)));
 }
 
 function readEnvironmentLevel(): string | undefined {

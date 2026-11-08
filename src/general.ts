@@ -1,3 +1,5 @@
+import type { Arrayable } from 'type-fest';
+
 /* eslint-disable jsdoc/check-param-names */
 
 /**
@@ -31,9 +33,9 @@
  * console.log(extractFirstValue(undefined, 'fallback')); // => 'fallback'
  * ```
  */
-export function extractFirstValue<T>(value: T | T[]): T | undefined;
-export function extractFirstValue<T, D>(value: T | T[], defaultValue: D): D | NonNullable<T>;
-export function extractFirstValue<T, D>(value: T | T[], defaultValue?: D) {
+export function extractFirstValue<T>(value: Arrayable<T>): T | undefined;
+export function extractFirstValue<T, D>(value: Arrayable<T>, defaultValue: D): D | NonNullable<T>;
+export function extractFirstValue<T, D>(value: Arrayable<T>, defaultValue?: D) {
     return (Array.isArray(value) ? value[0] : value) ?? defaultValue;
 }
 
