@@ -54,7 +54,7 @@ describe('generateWithNestedRandomLength', () => {
 
     it('should pass equal bounds to the generator and return its promise unchanged', async ({ expect }) => {
         const value = Promise.resolve('value');
-        const generator = vi.fn(async () => await value);
+        const generator = vi.fn().mockReturnValue(value);
 
         const result = generateWithNestedRandomLength(generator, 10, 10, 10, 10);
 
