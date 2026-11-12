@@ -1,5 +1,26 @@
 # Changelog
 
+## v20.1.2
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.1...v20.1.2)
+
+### 💅 Refactors
+
+- **scripts:** Rename peer dependency metadata updater to sync ([cc094ef](https://github.com/kikiutils/node-shared/commit/cc094ef))
+
+### 📦 Build
+
+- Generate scoped wildcard package exports from entries ([051558a](https://github.com/kikiutils/node-shared/commit/051558a))
+- Regenerate package exports with scoped wildcards ([3bdde55](https://github.com/kikiutils/node-shared/commit/3bdde55))
+
+### 🏡 Chore
+
+- Update ignore files ([aceb847](https://github.com/kikiutils/node-shared/commit/aceb847))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v20.1.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.0...v20.1.1)
