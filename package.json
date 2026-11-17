@@ -166,7 +166,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
     "@arethetypeswrong/core": "^0.18.5",
-    "@kikiutils/eslint-config": "^11.0.1",
+    "@kikiutils/eslint-config": "^11.1.0",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.6",
@@ -178,9 +178,9 @@
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.8",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "file-type": "^22.3.0",
-    "jsdom": "^31.0.0",
+    "jsdom": "^31.0.1",
     "knip": "^6.45.1",
     "lru-cache": "^11.5.3",
     "millify": "^6.1.0",
@@ -192,6 +192,6 @@
     "unplugin-unused": "^0.6.0",
     "vitest": "^5.1.0",
     "vue": "^3.5.45",
-    "vue-router": "^5.5.0"
+    "vue-router": "^5.5.1"
   }
 }
