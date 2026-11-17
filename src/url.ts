@@ -1,3 +1,8 @@
+// Constants
+const redirectPathBaseOrigin = 'http://redirect-path.invalid';
+
+// Functions
+
 /**
  * Appends or updates the `redirect` query parameter on a given URL.
  *
@@ -28,7 +33,11 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
  * @remarks
  * Safe redirect paths are absolute application paths such as `/dashboard`.
  * Protocol-relative URLs (`//example.com`), absolute URLs, backslash paths,
- * and non-string values are rejected.
+ * paths containing control characters, and non-string values are rejected.
+ *
+ * URL parsers remove tabs and line breaks before parsing, so `/\n/example.com`
+ * would otherwise be read as `//example.com`. The path is therefore also
+ * resolved the way a browser would, and must stay on the base origin.
  *
  * @param value - The value to check.
  *
@@ -39,7 +48,13 @@ export function isSafeRedirectPath(value: unknown): value is string {
     if (!value.startsWith('/')) return false;
     if (value.startsWith('//')) return false;
     if (value.includes('\\')) return false;
-    return true;
+    // eslint-disable-next-line no-control-regex
+    if (/[\0-\x1F\x7F]/.test(value)) return false;
+    try {
+        return new URL(value, redirectPathBaseOrigin).origin === redirectPathBaseOrigin;
+    } catch {
+        return false;
+    }
 }
 
 /**
