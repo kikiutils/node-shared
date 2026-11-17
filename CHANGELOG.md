@@ -1,5 +1,21 @@
 # Changelog
 
+## v20.1.3
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.2...v20.1.3)
+
+### 🩹 Fixes
+
+- **url:** Reject redirect paths containing control characters ([9e5e52d](https://github.com/kikiutils/node-shared/commit/9e5e52d))
+
+### 🏡 Chore
+
+- Upgrade deps ([0569f00](https://github.com/kikiutils/node-shared/commit/0569f00))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v20.1.2
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.1...v20.1.2)
