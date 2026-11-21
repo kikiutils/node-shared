@@ -1,4 +1,3 @@
-import type { RuleType } from 'async-validator';
 import type { FormItemRule } from 'element-plus';
 import {
     describe,
@@ -70,7 +69,7 @@ describe('createElFormItemRuleWithDefaults', () => {
             {
                 required: false,
                 trigger: '',
-                type: '' as RuleType,
+                type: '' as NonNullable<FormItemRule['type']>,
             },
         );
 

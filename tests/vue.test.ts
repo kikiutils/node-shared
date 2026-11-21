@@ -10,12 +10,7 @@ import {
     shallowRef,
 } from 'vue';
 
-import {
-    appendRedirectParamFromCurrentRouteToUrl,
-    clearIntervalRef,
-    clearTimeoutRef,
-    usePreserveScroll,
-} from '../src/vue';
+import { usePreserveScroll } from '../src/vue';
 
 // Hoisted state is required by the module mock factories.
 const lifecycleCallbacks = vi.hoisted(() => ({
@@ -36,75 +31,17 @@ vi.mock(
 
 vi.mock(
     'vue-router',
-    () => ({
-        onBeforeRouteLeave: (callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback),
-        useRoute: () => ({ fullPath: '/profile?tab=settings#section' }),
-    }),
+    () => ({ onBeforeRouteLeave: (callback: () => void) => lifecycleCallbacks.beforeRouteLeave.push(callback) }),
 );
 
 beforeEach(() => {
     vi.clearAllMocks();
-    vi.useFakeTimers();
     lifecycleCallbacks.activated.length = 0;
     lifecycleCallbacks.beforeRouteLeave.length = 0;
 });
 
 afterEach(() => {
-    vi.clearAllTimers();
-    vi.useRealTimers();
     vi.restoreAllMocks();
-});
-
-describe('appendRedirectParamFromCurrentRouteToUrl', () => {
-    it('should append route fullPath as redirect param', ({ expect }) => {
-        const result = appendRedirectParamFromCurrentRouteToUrl('/login');
-
-        expect(result).toBe('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
-    });
-});
-
-describe('clearIntervalRef', () => {
-    it('should clear the interval and set ref to null', ({ expect }) => {
-        const clearSpy = vi.spyOn(globalThis, 'clearInterval');
-        const intervalRef = ref<null | ReturnType<typeof setInterval>>(setInterval(() => {}, 1000));
-        const interval = intervalRef.value;
-
-        clearIntervalRef(intervalRef);
-
-        expect(clearSpy).toHaveBeenCalledWith(interval);
-        expect(intervalRef.value).toBeNull();
-        expect(vi.getTimerCount()).toBe(0);
-    });
-
-    it('should preserve a null timer ref', ({ expect }) => {
-        const intervalRef = ref<null | ReturnType<typeof setInterval>>(null);
-
-        clearIntervalRef(intervalRef);
-
-        expect(intervalRef.value).toBeNull();
-    });
-});
-
-describe('clearTimeoutRef', () => {
-    it('should clear the timeout and set ref to null', ({ expect }) => {
-        const clearSpy = vi.spyOn(globalThis, 'clearTimeout');
-        const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(setTimeout(() => {}, 1000));
-        const timeout = timeoutRef.value;
-
-        clearTimeoutRef(timeoutRef);
-
-        expect(clearSpy).toHaveBeenCalledWith(timeout);
-        expect(timeoutRef.value).toBeNull();
-        expect(vi.getTimerCount()).toBe(0);
-    });
-
-    it('should preserve a null timer ref', ({ expect }) => {
-        const timeoutRef = ref<null | ReturnType<typeof setTimeout>>(null);
-
-        clearTimeoutRef(timeoutRef);
-
-        expect(timeoutRef.value).toBeNull();
-    });
 });
 
 describe('usePreserveScroll', () => {

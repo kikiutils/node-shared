@@ -38,7 +38,6 @@
     "./element-plus": "./dist/element-plus.js",
     "./enum": "./dist/enum.js",
     "./env": "./dist/env.js",
-    "./event-awaiter": "./dist/event-awaiter.js",
     "./file": "./dist/file.js",
     "./general": "./dist/general.js",
     "./hash": "./dist/hash.js",
@@ -54,7 +53,6 @@
     },
     "./math": "./dist/math.js",
     "./number": "./dist/number.js",
-    "./random": "./dist/random.js",
     "./storages/redis/types": {
       "types": "./dist/storages/redis/types.d.ts",
       "default": null
@@ -105,8 +103,6 @@
   },
   "peerDependencies": {
     "@noble/hashes": "^2.4.0",
-    "async-validator": "^4.2.5",
-    "bson": "^7.3.3",
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.7",
@@ -120,12 +116,6 @@
   },
   "peerDependenciesMeta": {
     "@noble/hashes": {
-      "optional": true
-    },
-    "async-validator": {
-      "optional": true
-    },
-    "bson": {
       "optional": true
     },
     "date-fns": {
@@ -171,8 +161,6 @@
     "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.1",
-    "async-validator": "^4.2.5",
-    "bson": "^7.3.4",
     "changelogen": "^0.6.2",
     "cross-env": "^10.1.0",
     "date-fns": "^4.4.0",

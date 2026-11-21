@@ -4,8 +4,6 @@ import type {
     File as NodeFile,
 } from 'node:buffer';
 
-export type { FilteredKeyPath } from './filtered-key-path';
-
 /**
  * Binary-like inputs accepted by `toBuffer` across browser and Node.js runtimes.
  */

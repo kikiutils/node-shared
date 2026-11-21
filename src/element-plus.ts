@@ -1,7 +1,4 @@
-import type { RuleType } from 'async-validator';
 import type { FormItemRule } from 'element-plus';
-
-export type DoNotRemoveOrUseThisType = RuleType;
 
 /**
  * Creates a new Element Plus form validation rule with overridable defaults.
