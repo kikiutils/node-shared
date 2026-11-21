@@ -160,17 +160,17 @@
     }
   },
   "dependencies": {
-    "ts-extras": "^2.0.0",
-    "type-fest": "^5.10.0"
+    "ts-extras": "^3.0.0",
+    "type-fest": "^6.0.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
     "@arethetypeswrong/core": "^0.18.5",
-    "@kikiutils/eslint-config": "^11.1.0",
+    "@kikiutils/eslint-config": "^11.2.0",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.6",
-    "@vitest/coverage-v8": "^5.1.0",
+    "@vitest/coverage-v8": "^5.1.1",
     "async-validator": "^4.2.5",
     "bson": "^7.3.4",
     "changelogen": "^0.6.2",
@@ -181,7 +181,7 @@
     "eslint": "^10.15.0",
     "file-type": "^22.3.0",
     "jsdom": "^31.0.1",
-    "knip": "^6.45.1",
+    "knip": "^6.47.0",
     "lru-cache": "^11.5.3",
     "millify": "^6.1.0",
     "msgpackr": "^2.1.4",
@@ -190,8 +190,8 @@
     "tsdown": "^0.23.7",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
-    "vitest": "^5.1.0",
-    "vue": "^3.5.45",
+    "vitest": "^5.1.1",
+    "vue": "^3.5.46",
     "vue-router": "^5.5.1"
   }
 }
