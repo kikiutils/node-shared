@@ -39,12 +39,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^5.1.1
         version: 5.1.1(vitest@5.1.1)
-      async-validator:
-        specifier: ^4.2.5
-        version: 4.2.5
-      bson:
-        specifier: ^7.3.4
-        version: 7.3.4
       changelogen:
         specifier: ^0.6.2
         version: 0.6.2(magicast@0.5.5)
@@ -1477,10 +1471,6 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  bson@7.3.4:
-    resolution: {integrity: sha512-eb33j2Ha6xgygjJ8bhI3sYaI9cLAbSaopZLRJQ5/rxk32XyBSoVVcbeHIzVGJx1SyQpyyoElkoEZgQrg+RVVoA==}
-    engines: {node: '>=20.19.0'}
-
   builtin-modules@5.5.0:
     resolution: {integrity: sha512-2uhx+Lkzc2fnAcNEpzbJziSzwdv6cJjxxsi9oByBhSuy2wffAPzmazVDiWJk2xDKULFONl5gNOEOLOupQ8gsPg==}
     engines: {node: '>=18.20'}
@@ -1875,8 +1865,8 @@ packages:
     peerDependencies:
       eslint: '>=9.38.0'
 
-  eslint-plugin-typefest@1.6.0:
-    resolution: {integrity: sha512-H12e7X9WObmRJmnBrN3T6nLS4ePbOjwVLi3mz7EGfTU81Yx3YhWwceXPrPQm6vGkf7M5kmWZJZDll4bEPHbScA==}
+  eslint-plugin-typefest@1.7.0:
+    resolution: {integrity: sha512-K9mbjKv9Em2BcD5Tc3LXbhlsBarkHpGJx20QIhTLEHNV0U167nn2/eK+RXiELk1Z6ndyLwbuBHyptqmqTwUpfQ==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       eslint: ^9.0.0 || ^10.7.0
@@ -3072,8 +3062,8 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  undici@8.13.0:
-    resolution: {integrity: sha512-mxbeyRlRhHUTWE1zf/FwDOXTKMhE1vMQRz/o2oOir/5fIWsB79TeZrByMkj019EdDuxPg03jprCjFLxLkmxTCQ==}
+  undici@8.13.1:
+    resolution: {integrity: sha512-Kt7EaPjh0s93lJH/PmW3d5rhkcpUa6fS3jqZ7+YGxNd9L7Xy/i827xe4C2uhhq+pJebM4tQOl5AgHmW11G5Skg==}
     engines: {node: '>=22.19.0'}
 
   unist-util-is@6.0.1:
@@ -3763,7 +3753,7 @@ snapshots:
       eslint-plugin-better-tailwindcss: 4.11.0(@eslint/css@2.0.1)(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(tailwindcss@4.3.5)(typescript@6.0.3)
       eslint-plugin-format: 2.0.1(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))
       eslint-plugin-promise: 7.3.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))
-      eslint-plugin-typefest: 1.6.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      eslint-plugin-typefest: 1.7.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       tailwind-csstree: 0.4.2(@eslint/css@2.0.1)
       ts-extras: 3.0.0
       type-fest: 6.0.3
@@ -4533,8 +4523,6 @@ snapshots:
       node-releases: 2.0.65
       update-browserslist-db: 1.4.0(browserslist@4.29.6)
 
-  bson@7.3.4: {}
-
   builtin-modules@5.5.0: {}
 
   bundle-name@4.1.1:
@@ -4959,7 +4947,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-typefest@1.6.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3):
+  eslint-plugin-typefest@1.7.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3):
     dependencies:
       '@typescript-eslint/parser': 8.73.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@typescript-eslint/type-utils': 8.73.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
@@ -5323,7 +5311,7 @@ snapshots:
       parse5-parser-stream: 8.1.1
       saxes: 6.0.0
       tough-cookie: 6.1.0
-      undici: 8.13.0
+      undici: 8.13.1
       w3c-xmlserializer: 6.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -6385,7 +6373,7 @@ snapshots:
 
   undici-types@8.9.0: {}
 
-  undici@8.13.0: {}
+  undici@8.13.1: {}
 
   unist-util-is@6.0.1:
     dependencies:
