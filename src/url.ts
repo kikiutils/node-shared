@@ -19,12 +19,14 @@ const redirectPathBaseOrigin = 'http://redirect-path.invalid';
 export function appendRedirectParamToUrl(url: string, redirectPath: string) {
     if (!isSafeRedirectPath(redirectPath)) throw new Error(`Invalid redirect path: "${redirectPath}". Redirect paths must be safe same-origin paths starting with '/'.`);
 
-    const [baseAndHash, rawQuery = ''] = url.split('?');
-    const [base, hash] = (baseAndHash || '').split('#');
-    const searchParams = new URLSearchParams(rawQuery);
+    const hashIndex = url.indexOf('#');
+    const fragment = hashIndex === -1 ? '' : url.slice(hashIndex);
+    const urlWithoutFragment = hashIndex === -1 ? url : url.slice(0, hashIndex);
+    const queryIndex = urlWithoutFragment.indexOf('?');
+    const base = queryIndex === -1 ? urlWithoutFragment : urlWithoutFragment.slice(0, queryIndex);
+    const searchParams = new URLSearchParams(queryIndex === -1 ? '' : urlWithoutFragment.slice(queryIndex + 1));
     searchParams.set('redirect', redirectPath);
-    const queryString = searchParams.toString();
-    return hash ? `${base}?${queryString}#${hash}` : `${base}?${queryString}`;
+    return `${base}?${searchParams.toString()}${fragment}`;
 }
 
 /**

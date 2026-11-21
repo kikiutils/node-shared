@@ -8,6 +8,8 @@ import {
 import {
     cryptoMd5,
     cryptoMd5ToBuffer,
+    cryptoSha256,
+    cryptoSha256ToBuffer,
     cryptoSha3224,
     cryptoSha3224ToBuffer,
     cryptoSha3256,
@@ -24,6 +26,12 @@ describe.each([
         hash: cryptoMd5,
         name: 'cryptoMd5',
         raw: cryptoMd5ToBuffer,
+    },
+    {
+        expected: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+        hash: cryptoSha256,
+        name: 'cryptoSha256',
+        raw: cryptoSha256ToBuffer,
     },
     {
         expected: '3797bf0afbbfca4a7bbba7602a2b552746876517a7f9b7ce2db0ae7b',

@@ -31,6 +31,18 @@ describe('appendRedirectParamToUrl', () => {
             expected: '?foo=bar&redirect=%2Fdashboard',
             url: '?foo=bar',
         },
+        {
+            expected: '/login?foo=bar&redirect=%2Fdashboard#section',
+            url: '/login?foo=bar#section',
+        },
+        {
+            expected: '/login?foo=bar%3Fbaz&redirect=%2Fdashboard',
+            url: '/login?foo=bar?baz',
+        },
+        {
+            expected: '/login?redirect=%2Fdashboard#section?tab=home',
+            url: '/login#section?tab=home',
+        },
     ])(
         'should update the redirect parameter of $url',
         ({ expected, url }, { expect }) => {
@@ -56,9 +68,6 @@ describe('appendRedirectParamToUrl', () => {
             expect(() => appendRedirectParamToUrl('/login', redirect)).toThrow('Invalid redirect path');
         },
     );
-
-    // The current parser includes a trailing fragment in rawQuery; see docs/todo.md.
-    it.todo('should preserve the URL fragment when the target already has a query');
 });
 
 describe('isSafeRedirectPath', () => {

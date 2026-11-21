@@ -40,3 +40,27 @@ export function extractFirstValue<T, D>(value: Arrayable<T>, defaultValue?: D) {
 }
 
 /* eslint-enable jsdoc/check-param-names */
+
+/**
+ * Returns a readable message for a caught value.
+ *
+ * @remarks
+ * `Error` instances, including subclasses, yield their `message`; any other value is converted with `String`.
+ *
+ * @param error - The caught value, typically from a `catch` clause.
+ *
+ * @returns The error message or the stringified value.
+ *
+ * @example
+ *
+ * ```ts
+ * import { getErrorMessage } from '@kikiutils/shared/general';
+ *
+ * console.log(getErrorMessage(new Error('Failed'))); // => 'Failed'
+ * console.log(getErrorMessage('timeout')); // => 'timeout'
+ * console.log(getErrorMessage(undefined)); // => 'undefined'
+ * ```
+ */
+export function getErrorMessage(error: unknown) {
+    return error instanceof Error ? error.message : String(error);
+}

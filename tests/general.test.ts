@@ -3,7 +3,10 @@ import {
     it,
 } from 'vitest';
 
-import { extractFirstValue } from '../src/general';
+import {
+    extractFirstValue,
+    getErrorMessage,
+} from '../src/general';
 
 describe('extractFirstValue', () => {
     it('should select the first array element or scalar without copying it', ({ expect }) => {
@@ -62,6 +65,43 @@ describe('extractFirstValue', () => {
         (value, { expect }) => {
             expect(extractFirstValue(value, 'fallback')).toBe(value);
             expect(extractFirstValue([value], 'fallback')).toBe(value);
+        },
+    );
+});
+
+describe('getErrorMessage', () => {
+    it('should return the message of errors and their subclasses', ({ expect }) => {
+        expect(getErrorMessage(new Error('Failed'))).toBe('Failed');
+        expect(getErrorMessage(new TypeError('Bad type'))).toBe('Bad type');
+    });
+
+    it.for([
+        {
+            expected: 'timeout',
+            input: 'timeout',
+        },
+        {
+            expected: '42',
+            input: 42,
+        },
+        {
+            expected: 'undefined',
+            input: undefined,
+        },
+        {
+            expected: '[object Object]',
+            input: { message: 'not an error' },
+        },
+    ])(
+        'should stringify non-error value $input',
+        (
+            {
+                expected,
+                input,
+            },
+            { expect },
+        ) => {
+            expect(getErrorMessage(input)).toBe(expected);
         },
     );
 });
