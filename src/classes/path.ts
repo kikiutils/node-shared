@@ -217,13 +217,16 @@ export class Path {
     /**
      * Converts this path to the Windows namespace form when applicable.
      *
-     * @returns The namespace-converted path string; this instance is unchanged.
-     * On non-Windows platforms, the path text is unchanged.
+     * @remarks
+     * On non-Windows platforms, the path text is unchanged. This instance is unchanged; use `.value` or `.toString()`
+     * on the result for the string form.
+     *
+     * @returns A new `Path` with the namespace-converted path.
      *
      * @see {@link https://nodejs.org/api/path.html | Node.js path.toNamespacedPath}
      */
     toNamespacedPath() {
-        return nodePath.toNamespacedPath(this.#value);
+        return this.#newInstance(nodePath.toNamespacedPath(this.#value));
     }
 
     /**

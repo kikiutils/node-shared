@@ -86,13 +86,51 @@ describe('class Path', () => {
             expect(original.value).toBe(join('/tmp', 'foo'));
         });
 
-        it('should return the current platform namespace string without changing the instance', ({ expect }) => {
+        it('should return a new current-platform namespaced Path without changing the instance', ({ expect }) => {
             const text = resolve('src');
             const path = new Path(text);
+            const namespaced = path.toNamespacedPath();
 
-            expect(path.toNamespacedPath()).toBe(toNamespacedPath(text));
+            expectTypeOf(namespaced).toEqualTypeOf<Path>();
+            expect(namespaced).toBeInstanceOf(Path);
+            expect(namespaced).not.toBe(path);
+            expect(namespaced.value).toBe(toNamespacedPath(text));
             expect(path.value).toBe(text);
         });
+
+        it.for([
+            {
+                expected: String.raw`\\?\C:\foo\bar`,
+                input: String.raw`C:\foo\bar`,
+            },
+            {
+                expected: String.raw`\\?\UNC\server\share\dir`,
+                input: String.raw`\\server\share\dir`,
+            },
+        ])(
+            'should preserve the Windows namespace prefix of $input',
+            async (
+                {
+                    expected,
+                    input,
+                },
+                { expect },
+            ) => {
+                vi.resetModules();
+                vi.doMock('node:path', async () => (await vi.importActual<typeof import('node:path')>('node:path')).win32);
+                try {
+                    const { Path: WindowsPath } = await import('../../src/classes/path');
+                    const namespaced = new WindowsPath(input).toNamespacedPath();
+
+                    expect(namespaced).toBeInstanceOf(WindowsPath);
+                    expect(namespaced.value).toBe(expected);
+                    expect(namespaced.join('file.txt').value).toBe(`${expected}\\file.txt`);
+                } finally {
+                    vi.doUnmock('node:path');
+                    vi.resetModules();
+                }
+            },
+        );
 
         it('should accept Path instances as constructor and join inputs', ({ expect }) => {
             const base = new Path('/tmp');
