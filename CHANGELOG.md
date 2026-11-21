@@ -1,5 +1,34 @@
 # Changelog
 
+## v21.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.3...v21.0.0)
+
+### 🚀 Enhancements
+
+- Add `getErrorMessage`, `joinCjkText` and SHA-256 helpers ([0ef039c](https://github.com/kikiutils/node-shared/commit/0ef039c))
+- **path:** ⚠️  Return a `Path` from `toNamespacedPath` ([7bed4cc](https://github.com/kikiutils/node-shared/commit/7bed4cc))
+
+### 💅 Refactors
+
+- ⚠️  Remove unused modules, helpers and types ([5c4d1dc](https://github.com/kikiutils/node-shared/commit/5c4d1dc))
+- ⚠️  Rename date and env helpers ([f849c38](https://github.com/kikiutils/node-shared/commit/f849c38))
+
+### 🏡 Chore
+
+- Upgrade deps ([2ce3dc2](https://github.com/kikiutils/node-shared/commit/2ce3dc2))
+- Upgrade deps ([8d7de24](https://github.com/kikiutils/node-shared/commit/8d7de24))
+
+#### ⚠️ Breaking Changes
+
+- **path:** ⚠️  Return a `Path` from `toNamespacedPath` ([7bed4cc](https://github.com/kikiutils/node-shared/commit/7bed4cc))
+- ⚠️  Remove unused modules, helpers and types ([5c4d1dc](https://github.com/kikiutils/node-shared/commit/5c4d1dc))
+- ⚠️  Rename date and env helpers ([f849c38](https://github.com/kikiutils/node-shared/commit/f849c38))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v20.1.3
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.2...v20.1.3)
