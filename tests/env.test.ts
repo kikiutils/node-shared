@@ -6,8 +6,8 @@ import {
 } from 'vitest';
 
 import {
-    checkAndGetEnvValue,
     EnvironmentNotFoundError,
+    getRequiredEnv,
 } from '../src/env';
 
 afterEach(() => {
@@ -25,7 +25,7 @@ describe('class EnvironmentNotFoundError', () => {
     });
 });
 
-describe('checkAndGetEnvValue', () => {
+describe('getRequiredEnv', () => {
     it.for([
         'value',
         '',
@@ -36,15 +36,15 @@ describe('checkAndGetEnvValue', () => {
         (value, { expect }) => {
             vi.stubEnv('KIKIUTILS_TEST_VALUE', value);
 
-            expect(checkAndGetEnvValue('KIKIUTILS_TEST_VALUE')).toBe(value);
+            expect(getRequiredEnv('KIKIUTILS_TEST_VALUE')).toBe(value);
         },
     );
 
     it('should reject an undefined variable with its key', ({ expect }) => {
         vi.stubEnv('KIKIUTILS_TEST_VALUE', undefined);
 
-        expect(() => checkAndGetEnvValue('KIKIUTILS_TEST_VALUE')).toThrow(EnvironmentNotFoundError);
-        expect(() => checkAndGetEnvValue('KIKIUTILS_TEST_VALUE')).toThrow(
+        expect(() => getRequiredEnv('KIKIUTILS_TEST_VALUE')).toThrow(EnvironmentNotFoundError);
+        expect(() => getRequiredEnv('KIKIUTILS_TEST_VALUE')).toThrow(
             'Missing environment variable: KIKIUTILS_TEST_VALUE',
         );
     });

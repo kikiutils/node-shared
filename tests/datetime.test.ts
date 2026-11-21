@@ -153,7 +153,7 @@ describe('getDateRangeFromDate', () => {
     });
 });
 
-describe('getMidnightDateFromToday', () => {
+describe('getStartOfDayFromToday', () => {
     it.for([
         {
             expected: new Date(2024, 1, 28),
@@ -168,14 +168,14 @@ describe('getMidnightDateFromToday', () => {
             offset: 1,
         },
     ])(
-        'should return local midnight with offset $offset',
+        'should return the start of the local day with offset $offset',
         async ({ expected, offset }, { expect }) => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date(2024, 1, 29, 12, 34, 56));
 
             // A Date subclass captures its base constructor at module evaluation time.
             vi.resetModules();
-            const { getMidnightDateFromToday: fromClock } = await import('../src/datetime');
+            const { getStartOfDayFromToday: fromClock } = await import('../src/datetime');
             const { EnhancedDate: ClockDate } = await import('../src/classes/enhanced-date');
 
             const result = fromClock(offset);

@@ -124,12 +124,12 @@ export function getDateRangeFromDate(
 /* eslint-enable jsdoc/check-param-names */
 
 /**
- * Returns a new date at local midnight with an optional calendar-day offset from today.
+ * Returns a new date at the start of the local day, with an optional calendar-day offset from today.
  *
  * @param offsetDays - The calendar days to add; negative values select earlier days.
  *
- * @returns A new `EnhancedDate` at local midnight on the selected day.
+ * @returns A new `EnhancedDate` at the start of the selected local day.
  */
-export function getMidnightDateFromToday(offsetDays: number = 0) {
+export function getStartOfDayFromToday(offsetDays: number = 0) {
     return new EnhancedDate().addDays(offsetDays).startOfDay();
 }

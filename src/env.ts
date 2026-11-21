@@ -37,22 +37,22 @@ export class EnvironmentNotFoundError extends Error {
  *
  * ```ts
  * import {
- *     checkAndGetEnvValue,
+ *     getRequiredEnv,
  *     EnvironmentNotFoundError,
  * } from '@kikiutils/shared/env';
  *
  * process.env.API_KEY = '';
- * checkAndGetEnvValue('API_KEY'); // => ''
+ * getRequiredEnv('API_KEY'); // => ''
  *
  * delete process.env.API_KEY;
  * try {
- *     checkAndGetEnvValue('API_KEY');
+ *     getRequiredEnv('API_KEY');
  * } catch (error) {
  *     console.log(error instanceof EnvironmentNotFoundError); // => true
  * }
  * ```
  */
-export function checkAndGetEnvValue(key: string) {
+export function getRequiredEnv(key: string) {
     if (process.env[key] === undefined) throw new EnvironmentNotFoundError(key);
     return process.env[key];
 }
