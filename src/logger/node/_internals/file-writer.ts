@@ -172,7 +172,7 @@ export async function createFileWriter(
                     type: 'closed',
                 });
 
-                return await Promise.resolve();
+                return;
             }
 
             const bytes = Buffer.byteLength(text);
@@ -184,7 +184,7 @@ export async function createFileWriter(
                     type: 'overflow',
                 });
 
-                return await Promise.resolve();
+                return;
             }
 
             pendingBytes += bytes;

@@ -194,8 +194,8 @@ describe('createRedisScriptRunner', () => {
             const errors = Array.from({ length: limit }, (_, index) => new Error(`NOSCRIPT attempt ${index + 1}`));
             let attempts = 0;
             const send = vi.fn(async (command: string) => {
-                if (command === 'SCRIPT') return await Promise.resolve(digest);
-                return await Promise.reject(errors[attempts++]);
+                if (command === 'SCRIPT') return digest;
+                throw errors[attempts++]!;
             });
 
             const execute = createRedisScriptRunner({ send }, source, maxAttempts);

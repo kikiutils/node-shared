@@ -438,7 +438,7 @@ describe('class PrecisionNumber', () => {
             expect(value.toNumber()).toBe(123.45);
             expect(+value).toBe(123.45);
             expect(value.toString()).toBe('123.45');
-            expect(`${value}`).toBe('123.45');
+            expect(String(value)).toBe('123.45');
             expect(inspect(value)).toBe('123.45');
             expect(value.toJSON()).toBe('123.45');
             expect(JSON.stringify({ value })).toBe('{"value":"123.45"}');

@@ -39,7 +39,7 @@ afterEach(() => {
 
 describe('copyBlobToClipboard', () => {
     it('should copy a blob with ClipboardItem', async ({ expect }) => {
-        const write = vi.fn(async (items: TestClipboardItem[]) => await Promise.resolve(items));
+        const write = vi.fn(async (items: TestClipboardItem[]) => items);
         Object.defineProperty(
             navigator,
             'clipboard',
@@ -113,7 +113,11 @@ describe('copyBlobToClipboard', () => {
             'clipboard',
             {
                 configurable: true,
-                value: { write: vi.fn(async () => await Promise.reject(error)) },
+                value: {
+                    write: vi.fn(async () => {
+                        throw error;
+                    }),
+                },
             },
         );
 
@@ -126,7 +130,7 @@ describe('copyBlobToClipboard', () => {
 
 describe('copyTextToClipboard', () => {
     it('should copy text with navigator clipboard', async ({ expect }) => {
-        const writeText = vi.fn(async () => await Promise.resolve());
+        const writeText = vi.fn(async () => undefined);
         Object.defineProperty(
             navigator,
             'clipboard',
@@ -165,7 +169,11 @@ describe('copyTextToClipboard', () => {
             'clipboard',
             {
                 configurable: true,
-                value: { writeText: vi.fn(async () => await Promise.reject(error)) },
+                value: {
+                    writeText: vi.fn(async () => {
+                        throw error;
+                    }),
+                },
             },
         );
 

@@ -19,30 +19,30 @@ describe('createRedisMsgpackStorage', () => {
         buffers.clear();
         ttls.clear();
         adapter = {
-            delete: async (key: string) => await Promise.resolve(buffers.delete(key) ? 1 : 0),
-            getBuffer: vi.fn(async (key: string) => await Promise.resolve(buffers.get(key) ?? null)),
+            delete: async (key: string) => buffers.delete(key) ? 1 : 0,
+            getBuffer: vi.fn(async (key: string) => buffers.get(key) ?? null),
             getBufferAndDelete: vi.fn(async (key: string) => {
                 const value = buffers.get(key) ?? null;
                 buffers.delete(key);
-                return await Promise.resolve(value);
+                return value;
             }),
-            has: async (key: string) => await Promise.resolve(buffers.has(key)),
+            has: async (key: string) => buffers.has(key),
             setBuffer: vi.fn(async (key: string, value: Uint8Array) => {
                 buffers.set(key, value);
-                return await Promise.resolve(ok);
+                return ok;
             }),
             setBufferEx: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
                 buffers.set(key, value);
                 ttls.set(key, ttlSeconds);
-                return await Promise.resolve(ok);
+                return ok;
             }),
             setBufferExNx: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
-                if (buffers.has(key)) return await Promise.resolve(null);
+                if (buffers.has(key)) return null;
                 buffers.set(key, value);
                 ttls.set(key, ttlSeconds);
-                return await Promise.resolve(ok);
+                return ok;
             }),
-            ttl: async (key: string) => await Promise.resolve(ttls.get(key) ?? -1),
+            ttl: async (key: string) => ttls.get(key) ?? -1,
         };
     });
 
@@ -67,9 +67,9 @@ describe('createRedisMsgpackStorage', () => {
     it('should return null for missing values and false for unsuccessful writes/removals', async ({ expect }) => {
         const storage = createRedisMsgpackStorage({
             ...adapter,
-            delete: async () => await Promise.resolve(0),
-            setBuffer: async () => await Promise.resolve(undefined),
-            setBufferEx: async () => await Promise.resolve(undefined),
+            delete: async () => 0,
+            setBuffer: async () => undefined,
+            setBufferEx: async () => undefined,
         });
 
         await expect(storage.getItem('missing')).resolves.toBeNull();

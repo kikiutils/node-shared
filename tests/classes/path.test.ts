@@ -44,7 +44,7 @@ describe('class Path', () => {
 
             expect(path.value).toBe(expected);
             expect(path.toString()).toBe(expected);
-            expect(`${path}`).toBe(expected);
+            expect(String(path)).toBe(expected);
             expect(path.toJSON()).toBe(expected);
             expect(inspect(path)).toBe(expected);
             expect(() => Number(path)).toThrow(TypeError);

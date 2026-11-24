@@ -63,7 +63,10 @@ describe('getFileMimeType', () => {
         const error = new Error('Read failed');
         const input = new Blob([jpeg]);
         const slice = new Blob([jpeg]);
-        slice.arrayBuffer = async () => await Promise.reject(error);
+        slice.arrayBuffer = async () => {
+            throw error;
+        };
+
         vi.spyOn(input, 'slice').mockReturnValue(slice);
 
         await expect(getFileMimeType(input)).rejects.toBe(error);
