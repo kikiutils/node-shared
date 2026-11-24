@@ -97,8 +97,8 @@
     "lint:fix": "eslint --cache --concurrency=auto --fix --max-warnings 0",
     "prepack": "pnpm run build",
     "release": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --clean --hideAuthorEmail --push --release && npm publish",
-    "test": "cross-env TZ=UTC vitest run --coverage && cross-env TZ='America/New_York' vitest run tests/classes/enhanced-date.test.ts",
-    "test:watch": "cross-env TZ=UTC vitest watch --coverage",
+    "test": "TZ=UTC vitest run --coverage && TZ='America/New_York' vitest run tests/classes/enhanced-date.test.ts",
+    "test:watch": "TZ=UTC vitest watch --coverage",
     "typecheck": "tsc -b --noEmit"
   },
   "peerDependencies": {
@@ -156,13 +156,12 @@
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
     "@arethetypeswrong/core": "^0.18.5",
-    "@kikiutils/eslint-config": "^11.2.1",
+    "@kikiutils/eslint-config": "^11.3.0",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.1",
     "changelogen": "^0.6.2",
-    "cross-env": "^10.1.0",
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.8",
