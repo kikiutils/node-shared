@@ -110,7 +110,6 @@
     "element-plus": "^2.14.7",
     "file-type": "^22.2.0",
     "lru-cache": "^11.5.3",
-    "millify": "^6.1.0",
     "msgpackr": "^2.1.0",
     "rotating-file-stream": "^4.0.0",
     "vue": "^3.5.44",
@@ -133,9 +132,6 @@
       "optional": true
     },
     "lru-cache": {
-      "optional": true
-    },
-    "millify": {
       "optional": true
     },
     "msgpackr": {
@@ -172,7 +168,6 @@
     "jsdom": "^31.0.1",
     "knip": "^6.48.0",
     "lru-cache": "^11.5.3",
-    "millify": "^6.1.0",
     "msgpackr": "^2.1.4",
     "publint": "^0.3.25",
     "rotating-file-stream": "^4.0.0",
