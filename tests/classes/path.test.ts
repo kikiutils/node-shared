@@ -248,6 +248,87 @@ describe('class Path', () => {
             expect(buffer.toString()).toBe('hello');
         });
 
+        it('should apply file operations to the stored path through a file lifecycle', async ({ expect }) => {
+            const file = tempPath.join('lifecycle.txt');
+
+            const handle = await file.open('w');
+            await handle.writeFile('hello world');
+            await handle.close();
+
+            await expect(file.readFile('utf8')).resolves.toBe('hello world');
+
+            await file.truncate(5);
+
+            await expect(file.readFile('utf8')).resolves.toBe('hello');
+            await expect(file.access()).resolves.toBeUndefined();
+
+            const mtime = new Date(2020, 0, 2, 3, 4, 5);
+            await file.utimes(mtime, mtime);
+
+            expect((await file.stat()).mtimeMs).toBe(mtime.getTime());
+
+            const chunks: Buffer[] = [];
+            for await (const chunk of file.createReadStream()) chunks.push(chunk as Buffer);
+
+            expect(Buffer.concat(chunks).toString()).toBe('hello');
+
+            await file.unlink();
+
+            await expect(file.access()).rejects.toMatchObject({ code: 'ENOENT' });
+            await expect(file.exists()).resolves.toBe(false);
+        });
+
+        it.skipIf(process.platform === 'win32')(
+            'should apply chmod and chown to the stored path',
+            async ({ expect }) => {
+                const file = tempPath.join('permissions.txt');
+                await file.writeFile('');
+
+                await file.chmod(0o600);
+
+                expect((await file.stat()).mode & 0o777).toBe(0o600);
+
+                await file.chmod(0o640);
+
+                expect((await file.stat()).mode & 0o777).toBe(0o640);
+
+                const uid = process.getuid!();
+                const gid = process.getgid!();
+                await file.chown(uid, gid);
+                const stats = await file.stat();
+
+                expect(stats.uid).toBe(uid);
+                expect(stats.gid).toBe(gid);
+            },
+        );
+
+        it('should apply directory operations to the stored path', async ({ expect }) => {
+            const directory = tempPath.join('directory');
+            const emptyDirectory = tempPath.join('empty');
+            await directory.mkdir();
+            await emptyDirectory.mkdir();
+            await directory.join('a.txt').writeFile('');
+            await directory.join('b.txt').writeFile('');
+
+            const dir = await directory.opendir();
+            const names: string[] = [];
+            for await (const entry of dir) names.push(entry.name);
+
+            expect(names.toSorted()).toEqual([
+                'a.txt',
+                'b.txt',
+            ]);
+
+            await emptyDirectory.rmdir();
+
+            await expect(emptyDirectory.exists()).resolves.toBe(false);
+            await expect(directory.rmdir()).rejects.toThrow();
+
+            await directory.rm({ recursive: true });
+
+            await expect(directory.exists()).resolves.toBe(false);
+        });
+
         it('should accept Path and file URL destinations without changing the source Path', async ({ expect }) => {
             const file = tempPath.join('file.txt');
             const copy = tempPath.join('copy.txt');

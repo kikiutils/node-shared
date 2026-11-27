@@ -53,4 +53,43 @@ describe('createBunRedisAdapter', () => {
         await expect(adapter.setBufferWithTtlIfAbsent('key', 60, value)).resolves.toBeNull();
         expect(client.set).toHaveBeenCalledWith('key', value, 'EX', '60', 'NX');
     });
+
+    it('should pass key, value, and TTL operations through to the client', async ({ expect }) => {
+        const buffer = Buffer.from([
+            1,
+            2,
+        ]);
+
+        const client = createClient({
+            del: vi.fn(async () => 2),
+            exists: vi.fn(async () => false),
+            getBuffer: vi.fn().mockResolvedValueOnce(buffer).mockResolvedValueOnce(null),
+            ttl: vi.fn(async () => -2),
+        });
+
+        const adapter = createBunRedisAdapter(client);
+
+        await expect(adapter.delete('key')).resolves.toBe(2);
+        await expect(adapter.has('key')).resolves.toBe(false);
+        await expect(adapter.getBuffer('key')).resolves.toBe(buffer);
+        await expect(adapter.getBuffer('key')).resolves.toBeNull();
+        await expect(adapter.ttl('key')).resolves.toBe(-2);
+        expect(client.del).toHaveBeenCalledWith('key');
+        expect(client.exists).toHaveBeenCalledWith('key');
+        expect(client.getBuffer).toHaveBeenCalledWith('key');
+        expect(client.ttl).toHaveBeenCalledWith('key');
+    });
+
+    it('should map plain and TTL writes to the matching client commands', async ({ expect }) => {
+        const client = createClient({ set: vi.fn().mockResolvedValueOnce('OK').mockResolvedValueOnce(null) });
+        const adapter = createBunRedisAdapter(client);
+        const value = Uint8Array.of(1);
+
+        await expect(adapter.setBuffer('key', value)).resolves.toBe('OK');
+        await expect(adapter.setBuffer('key', value)).resolves.toBeUndefined();
+        expect(client.set).toHaveBeenCalledWith('key', value);
+
+        await expect(adapter.setBufferWithTtl('key', 30, value)).resolves.toBe('OK');
+        expect(client.setex).toHaveBeenCalledWith('key', 30, value);
+    });
 });

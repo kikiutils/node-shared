@@ -92,6 +92,99 @@ describe('class EnhancedDate', () => {
             },
         );
 
+        it.for([
+            {
+                args: [],
+                expected: new Date(2024, 1, 29, 23, 59, 59, 999),
+                immutable: 'toEndOfDay',
+                mutable: 'endOfDay',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 29, 23, 59, 59, 999),
+                immutable: 'toEndOfMonth',
+                mutable: 'endOfMonth',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 29, 13, 45, 59, 999),
+                immutable: 'toEndOfMinute',
+                mutable: 'endOfMinute',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 29, 13, 45),
+                immutable: 'toStartOfMinute',
+                mutable: 'startOfMinute',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 1),
+                immutable: 'toStartOfMonth',
+                mutable: 'startOfMonth',
+            },
+            {
+                args: [3],
+                expected: new Date(2024, 1, 26, 13, 45, 30, 123),
+                immutable: 'toSubDays',
+                mutable: 'subDays',
+            },
+            {
+                args: [2],
+                expected: new Date(2024, 1, 29, 11, 45, 30, 123),
+                immutable: 'toSubHours',
+                mutable: 'subHours',
+            },
+            {
+                args: [23],
+                expected: new Date(2024, 1, 29, 13, 45, 30, 100),
+                immutable: 'toSubMilliseconds',
+                mutable: 'subMilliseconds',
+            },
+            {
+                args: [2],
+                expected: new Date(2023, 11, 29, 13, 45, 30, 123),
+                immutable: 'toSubMonths',
+                mutable: 'subMonths',
+            },
+            {
+                args: [10],
+                expected: new Date(2024, 1, 29, 13, 45, 20, 123),
+                immutable: 'toSubSeconds',
+                mutable: 'subSeconds',
+            },
+            {
+                args: [4],
+                expected: new Date(2020, 1, 29, 13, 45, 30, 123),
+                immutable: 'toSubYears',
+                mutable: 'subYears',
+            },
+        ] as const)(
+            'should apply the matching date-fns operation in $mutable and $immutable',
+            (
+                {
+                    args,
+                    expected,
+                    immutable,
+                    mutable,
+                },
+                { expect },
+            ) => {
+                type Operation = (...values: readonly number[]) => EnhancedDate;
+
+                const date = new EnhancedDate(2024, 1, 29, 13, 45, 30, 123);
+                const originalTime = date.getTime();
+                const result = (date[immutable] as Operation)(...args);
+
+                expect(result).toBeInstanceOf(EnhancedDate);
+                expect(result).not.toBe(date);
+                expect(result.getTime()).toBe(expected.getTime());
+                expect(date.getTime()).toBe(originalTime);
+                expect((date[mutable] as Operation)(...args)).toBe(date);
+                expect(date.getTime()).toBe(expected.getTime());
+            },
+        );
+
         it('should clamp month and year arithmetic at month ends and leap days', ({ expect }) => {
             const january = new EnhancedDate(2026, 0, 31, 12);
             const leapDay = new EnhancedDate(2024, 1, 29, 12);
@@ -203,6 +296,29 @@ describe('class EnhancedDate', () => {
         });
     });
 
+    describe('static extremes', () => {
+        it('should return the latest and earliest of mixed Date and timestamp inputs', ({ expect }) => {
+            const early = new Date(2024, 0, 1, 8);
+            const middle = new Date(2024, 5, 15, 12);
+            const late = new Date(2025, 11, 31, 23);
+            const inputs = [
+                middle,
+                late.getTime(),
+                early,
+            ];
+
+            const latest = EnhancedDate.max(inputs);
+            const earliest = EnhancedDate.min(inputs);
+
+            expect(latest).toBeInstanceOf(EnhancedDate);
+            expect(earliest).toBeInstanceOf(EnhancedDate);
+            expect(latest.getTime()).toBe(late.getTime());
+            expect(earliest.getTime()).toBe(early.getTime());
+            expect(EnhancedDate.max([]).isValid()).toBe(false);
+            expect(EnhancedDate.min([]).isValid()).toBe(false);
+        });
+    });
+
     describe('comparison and differences', () => {
         it('should compare accepted date inputs without mutating either date', ({ expect }) => {
             const earlier = new EnhancedDate(2026, 0, 15, 12);
@@ -281,6 +397,18 @@ describe('class EnhancedDate', () => {
                     locale: enUS,
                 }),
             ).toBe('about 1 hour ago');
+        });
+
+        it('should derive tomorrow and yesterday boundaries from the current clock', ({ expect }) => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date(2024, 1, 29, 13, 45, 30, 123));
+
+            expect(EnhancedDate.startOfTomorrow()).toBeInstanceOf(EnhancedDate);
+            expect(EnhancedDate.startOfTomorrow().getTime()).toBe(new Date(2024, 2, 1).getTime());
+            expect(EnhancedDate.endOfTomorrow().getTime()).toBe(new Date(2024, 2, 1, 23, 59, 59, 999).getTime());
+            expect(EnhancedDate.startOfYesterday().getTime()).toBe(new Date(2024, 1, 28).getTime());
+            expect(EnhancedDate.endOfYesterday().getTime()).toBe(new Date(2024, 1, 28, 23, 59, 59, 999).getTime());
+            expect(EnhancedDate.endOfYesterday()).toBeInstanceOf(EnhancedDate);
         });
     });
 });
