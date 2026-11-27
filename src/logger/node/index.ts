@@ -16,39 +16,38 @@ import type {
     NodeLoggerOptions,
 } from './types';
 
-interface ConsoleStreamState {
-    onClose: () => void;
-    onError: (error: Error) => void;
-    owners: Set<object>;
-    pending: Set<(error?: Error | null) => void>;
-}
-
 // Constants/Variables
-const consoleStreams = new WeakMap<NodeJS.WriteStream, ConsoleStreamState>();
+
+/**
+ * Unsettled console writes, stored on each output stream so every loaded copy of this module shares them. Each stream
+ * gets one permanent `error`/`close` listener on first use: a failed stream can emit `error` after its write
+ * callback, so removing the listener could surface it as an uncaught exception.
+ */
+const pendingConsoleWritesKey = Symbol.for('@kikiutils/shared/logger/node/pending-console-writes');
 
 // Functions
 
 /**
  * Creates a Node.js/Bun logger with optional bounded, append-only file output and rotation.
  *
- * Log calls never throw or reject. Awaiting them waits for processing, not proof of successful
- * persistence: overload drops the newest file record and failures are reported safely. Factory
+ * Log calls never throw or reject for recoverable failures. Awaiting them waits for processing, not proof of
+ * successful persistence: overload drops the newest file record and failures are reported safely. Factory
  * validation/open failures reject. Call close explicitly; no process signal handlers are installed.
+ *
+ * Console output installs one permanent `error`/`close` listener per stdio stream, so stdio stream errors such as
+ * EPIPE no longer become uncaught exceptions once a logger has written to that stream.
  */
 export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise<Readonly<NodeLogger>> {
     const report = createDiagnosticReporter(options.onError, (message) => writeSync(2, message));
     let writer: Awaited<ReturnType<typeof createFileWriter>> | undefined;
-    let closed = false;
     let closePromise: Promise<void> | undefined;
-    const consoleOwner = {};
-    const consoleTargets = new Set<NodeJS.WriteStream>();
     const consoleWrites = new Set<Promise<void>>();
     const logger = createLoggerCore(
         options,
         {
             report,
             async write(record) {
-                if (closed) {
+                if (closePromise) {
                     report({
                         message: 'Logger is closed.',
                         type: 'closed',
@@ -59,24 +58,26 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
 
                 if (!record.console && !writer) return;
                 const target = process[getLoggerStreamName(record.type)];
+                const text = formatNodeLoggerRecord(
+                    record,
+                    record.console && supportsLoggerColor(target),
+                    (error) => report({
+                        error,
+                        message: 'Logger could not inspect an argument.',
+                        type: 'format',
+                    }),
+                );
 
-                const text = formatNodeLoggerRecord(record, record.console && supportsLoggerColor(target));
-                if (record.console) {
-                    const line = `${text}\n`;
-                    consoleTargets.add(target);
-                    const completion = writeConsole(target, line, report, consoleOwner);
-                    consoleWrites.add(completion);
-                    void completion.then(() => consoleWrites.delete(completion));
-                    const fileCompletion = writer?.write(`${stripVTControlCharacters(text)}\n`);
-                    return fileCompletion
-                        ? await Promise.all([
-                            completion,
-                            fileCompletion,
-                        ]).then(() => {})
-                        : await completion;
+                const consoleCompletion = record.console ? writeConsole(target, `${text}\n`, report) : undefined;
+                if (consoleCompletion) {
+                    consoleWrites.add(consoleCompletion);
+                    void consoleCompletion.then(() => consoleWrites.delete(consoleCompletion));
                 }
 
-                return await writer?.write(`${stripVTControlCharacters(text)}\n`);
+                await Promise.all([
+                    consoleCompletion,
+                    writer?.write(`${stripVTControlCharacters(text)}\n`),
+                ]);
             },
         },
     );
@@ -87,74 +88,44 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
         ...logger,
         async close() {
             if (closePromise) return await closePromise;
-            closed = true;
-            closePromise = (async () => {
-                await Promise.all([
-                    writer?.close(),
-                    ...consoleWrites,
-                ]);
-
-                for (const target of consoleTargets) {
-                    const state = consoleStreams.get(target);
-                    if (!state) continue;
-                    state.owners.delete(consoleOwner);
-                    if (!state.owners.size) {
-                        target.off('error', state.onError);
-                        target.off('close', state.onClose);
-                        consoleStreams.delete(target);
-                    }
-                }
-
-                consoleTargets.clear();
-            })();
+            closePromise = Promise.all([
+                writer?.close(),
+                ...consoleWrites,
+            ]).then(() => {});
 
             return await closePromise;
         },
         getStats: () => writer?.getStats() ?? Object.freeze({
             droppedCount: 0,
+            failedCount: 0,
             pendingBytes: 0,
             writeErrorCount: 0,
         }),
     });
 }
 
-/**
- * One error listener per shared output stream; retained until its last owning logger calls close().
- */
-async function writeConsole(
-    target: NodeJS.WriteStream,
-    text: string,
-    report: (event: LoggerDiagnostic) => void,
-    owner: object,
-) {
-    let state = consoleStreams.get(target);
-    if (!state) {
-        const pending = new Set<(error?: Error | null) => void>();
-        const onError = (error: Error) => {
-            for (const settle of pending) settle(error);
+async function writeConsole(target: NodeJS.WriteStream, text: string, report: (event: LoggerDiagnostic) => void) {
+    const stream = target as NodeJS.WriteStream & { [pendingConsoleWritesKey]?: Set<(error?: Error | null) => void> };
+    let pending = stream[pendingConsoleWritesKey];
+    if (!pending) {
+        const created = new Set<(error?: Error | null) => void>();
+        const settleAll = (error: Error) => {
+            for (const settle of created) settle(error);
         };
 
-        const onClose = () => onError(new Error('Console stream closed.'));
-        state = {
-            onClose,
-            onError,
-            owners: new Set(),
-            pending,
-        };
-
-        consoleStreams.set(target, state);
-        target.on('error', onError);
-        target.on('close', onClose);
+        target.on('error', settleAll);
+        target.on('close', () => settleAll(new Error('Console stream closed.')));
+        stream[pendingConsoleWritesKey] = created;
+        pending = created;
     }
 
-    state.owners.add(owner);
-    const current = state;
+    const current = pending;
     return await new Promise<void>((resolveWritten) => {
         let settled = false;
         const settle = (error?: Error | null) => {
             if (settled) return;
             settled = true;
-            current.pending.delete(settle);
+            current.delete(settle);
             if (error) {
                 report({
                     error,
@@ -166,7 +137,7 @@ async function writeConsole(
             resolveWritten();
         };
 
-        current.pending.add(settle);
+        current.add(settle);
         try {
             target.write(text, settle);
         } catch (error) {

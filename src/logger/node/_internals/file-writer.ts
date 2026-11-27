@@ -1,10 +1,4 @@
 import { Buffer } from 'node:buffer';
-import { createWriteStream } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
-import {
-    basename,
-    dirname,
-} from 'node:path';
 import type { Writable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
 
@@ -12,10 +6,14 @@ import { Path } from '../../../classes/path';
 import type { LoggerDiagnostic } from '../../types';
 import type {
     LoggerFileOptions,
+    LoggerRotationOptions,
     NodeLoggerStats,
 } from '../types';
 
 interface LoggerFileWriter {
+    /**
+     * Called once, by the memoized `NodeLogger.close()`.
+     */
     close: () => Promise<void>;
     getStats: () => Readonly<NodeLoggerStats>;
     write: (text: string) => Promise<void>;
@@ -39,11 +37,11 @@ export async function createFileWriter(
         rotate,
     } = validateFileOptions(options);
 
-    const createRotatingStream = rotate ? (await import('rotating-file-stream')).createStream : undefined;
-    await mkdir(dirname(path), { recursive: true });
+    const createRotatingStream = rotate ? await importRotatingFileStream() : undefined;
+    await path.parent.mkdir({ recursive: true });
     const stream: Writable = rotate && createRotatingStream
         ? createRotatingStream(
-            basename(path),
+            path.basename(),
             {
                 compress: rotate.compress === false ? false : 'gzip',
                 ...rotate.interval === undefined ? {} : { interval: rotate.interval === 'hourly' ? '1h' : '1d' },
@@ -51,25 +49,25 @@ export async function createFileWriter(
                 intervalUTC: false,
                 maxFiles: rotate.keepFiles ?? 30,
                 ...rotate.maxTotalSize === undefined ? {} : { maxSize: rotate.maxTotalSize },
-                path: dirname(path),
+                path: path.parent.value,
                 ...rotate.maxSize === undefined ? {} : { size: rotate.maxSize },
             },
         )
-        : createWriteStream(path, { flags: 'a' });
+        : path.createWriteStream({ flags: 'a' });
 
     let pendingBytes = 0;
     let droppedCount = 0;
+    let failedCount = 0;
     let writeErrorCount = 0;
     let failed = false;
     let closing = false;
     let closed = false;
-    let closePromise: Promise<void> | undefined;
     let initializing = true;
-    const unfinished = new Set<() => void>();
+    const unfinished = new Set<(written: boolean) => void>();
     let rejectInitialization: ((error: unknown) => void) | undefined;
 
     const settleAll = () => {
-        for (const settle of unfinished) settle();
+        for (const settle of unfinished) settle(false);
     };
 
     const fail = (error: unknown) => {
@@ -98,7 +96,7 @@ export async function createFileWriter(
             report({
                 error,
                 message: 'File rotation cleanup failed.',
-                type: 'file',
+                type: 'rotation',
             });
         },
     );
@@ -142,9 +140,8 @@ export async function createFileWriter(
 
     return Object.freeze({
         async close() {
-            if (closePromise) return await closePromise;
             closing = true;
-            closePromise = new Promise<void>((resolveClosed) => {
+            await new Promise<void>((resolveClosed) => {
                 if (closed) {
                     resolveClosed();
                     return;
@@ -157,21 +154,17 @@ export async function createFileWriter(
                     fail(error);
                 }
             });
-
-            return await closePromise;
         },
         getStats: () => Object.freeze({
             droppedCount,
+            failedCount,
             pendingBytes,
             writeErrorCount,
         }),
         async write(text: string) {
-            if (closing || closed || failed) {
-                report({
-                    message: 'File output is closed or unavailable.',
-                    type: 'closed',
-                });
-
+            // The failure itself was reported once; later records are only counted.
+            if (failed) {
+                failedCount++;
                 return;
             }
 
@@ -190,10 +183,11 @@ export async function createFileWriter(
             pendingBytes += bytes;
             return await new Promise<void>((resolveWritten) => {
                 let settled = false;
-                const settle = () => {
+                const settle = (written: boolean) => {
                     if (settled) return;
                     settled = true;
                     pendingBytes -= bytes;
+                    if (!written) failedCount++;
                     unfinished.delete(settle);
                     resolveWritten();
                 };
@@ -204,7 +198,7 @@ export async function createFileWriter(
                         text,
                         (error) => {
                             if (error) fail(error);
-                            settle();
+                            settle(!error);
                         },
                     );
                 } catch (error) {
@@ -213,6 +207,14 @@ export async function createFileWriter(
             });
         },
     });
+}
+
+async function importRotatingFileStream() {
+    try {
+        return (await import('rotating-file-stream')).createStream;
+    } catch (error) {
+        throw new Error('file.rotate requires the optional rotating-file-stream peer dependency', { cause: error });
+    }
 }
 
 /**
@@ -249,11 +251,20 @@ function validateFileOptions(options: LoggerFileOptions) {
         throw new RangeError('file.maxPendingBytes must be a positive safe integer');
     }
 
-    const rotate = options.rotate;
-    if (rotate !== undefined && rotate !== false) {
-        if (!rotate || typeof rotate !== 'object') {
+    let rotate: LoggerRotationOptions | undefined;
+    if (options.rotate !== undefined && options.rotate !== false) {
+        if (!options.rotate || typeof options.rotate !== 'object') {
             throw new TypeError('file.rotate must be false or an options object');
         }
+
+        // Validate and use one snapshot so later caller mutations or accessor results cannot diverge from it.
+        rotate = {
+            compress: options.rotate.compress,
+            interval: options.rotate.interval,
+            keepFiles: options.rotate.keepFiles,
+            maxSize: options.rotate.maxSize,
+            maxTotalSize: options.rotate.maxTotalSize,
+        } as LoggerRotationOptions;
 
         if (rotate.interval !== undefined && rotate.interval !== 'hourly' && rotate.interval !== 'daily') {
             throw new TypeError('file.rotate.interval must be hourly or daily');
@@ -278,7 +289,7 @@ function validateFileOptions(options: LoggerFileOptions) {
 
     return {
         maxPendingBytes,
-        path: Path.resolve(path).value,
+        path: Path.resolve(path),
         rotate,
     };
 }

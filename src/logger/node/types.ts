@@ -41,12 +41,13 @@ export type LoggerRotationOptions = {
 
 export interface LoggerFileOptions {
     /**
-     * Maximum unfinished payload bytes, including data already submitted to the stream.
+     * Maximum unfinished payload bytes, including data already submitted to the stream. Defaults to 8 MiB.
      */
     maxPendingBytes?: number;
 
     /**
-     * Resolved once at creation. The file is opened in append mode.
+     * Resolved once at creation. The file is opened in append mode and must have a single writer: another logger or
+     * process writing or rotating the same path can lose records.
      */
     path: PathLike;
 
@@ -58,12 +59,13 @@ export interface LoggerFileOptions {
 
 export interface NodeLogger extends Logger {
     /**
-     * Stop accepting records, finish accepted file writes, then release the stream. Not fsync.
+     * Stop accepting records, finish accepted console and file writes, and release the file stream. Not fsync.
+     * A stalled stdout or stderr reader delays it; the shared console stream listeners stay attached.
      */
     close: () => Promise<void>;
 
     /**
-     * A fresh, frozen file-output snapshot. Dropped/failed records still resolve their logging promises.
+     * A fresh, frozen file-output snapshot.
      */
     getStats: () => Readonly<NodeLoggerStats>;
 }
@@ -77,6 +79,16 @@ export interface NodeLoggerOptions extends LoggerOptions {
 
 export interface NodeLoggerStats {
     droppedCount: number;
+
+    /**
+     * Accepted or later records that were not written because file output failed.
+     */
+    failedCount: number;
     pendingBytes: number;
+
+    /**
+     * Failure events, not records: the failure that disables file output plus rotation cleanup warnings.
+     * `rotating-file-stream` treats a short write as success, so a nearly full disk can truncate a record unnoticed.
+     */
     writeErrorCount: number;
 }

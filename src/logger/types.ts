@@ -5,16 +5,13 @@ import type { SafePromise } from '../types';
  */
 export type LoggerLevel = 'debug' | 'error' | 'fatal' | 'info' | 'silent' | 'trace' | 'warn';
 
-/**
- * A logging method, including the informational success presentation.
- */
 export type LoggerMethod = 'success' | Exclude<LoggerLevel, 'silent'>;
 
 /**
  * A logger whose logging methods never throw or reject for recoverable failures.
  *
  * Awaiting a method waits for processing, not guaranteed successful delivery or fsync.
- * Configuration errors may throw from the factory, configure(), or setLevel().
+ * Configuration errors may throw from the factory, configure(), setLevel(), or isLevelEnabled().
  * Factories freeze the API object; settings remain adjustable through its methods.
  */
 export interface Logger {
@@ -50,20 +47,17 @@ export interface LoggerDiagnostic {
      * Same-type notifications suppressed since the previous emitted diagnostic.
      */
     suppressedCount?: number;
-    type: 'closed' | 'console' | 'file' | 'format' | 'invalid-level' | 'overflow';
+    type: 'closed' | 'console' | 'file' | 'format' | 'invalid-level' | 'overflow' | 'rotation';
 }
 
-/**
- * Configuration shared by browser and server loggers.
- */
 export interface LoggerOptions {
     /**
-     * Enables console output. Defaults to `true`.
+     * Controls record output only, not diagnostics. Defaults to `true`.
      */
     console?: boolean;
 
     /**
-     * Enables Unicode level icons. Defaults to `true`.
+     * Defaults to `true`.
      */
     icons?: boolean;
 
@@ -73,7 +67,8 @@ export interface LoggerOptions {
     level?: 'env' | LoggerLevel;
 
     /**
-     * Best-effort, rate-limited notification; failures in this callback are contained.
+     * Best-effort, rate-limited notification that replaces the stderr or `console.error` fallback; failures in this
+     * callback are contained.
      */
     onError?: (event: Readonly<LoggerDiagnostic>) => void;
     prefix?: string;

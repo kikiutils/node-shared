@@ -21,13 +21,32 @@ import type {
 export function createLogger(options: LoggerOptions = {}): Readonly<Logger> {
     const target = globalThis.console;
     const fallback = target?.error?.bind(target);
+    const report = createDiagnosticReporter(options.onError, (message) => fallback?.(message.trimEnd()));
+    const reportConsoleFailure = (error: unknown) => report({
+        error,
+        message: 'Console output failed.',
+        type: 'console',
+    });
+
     return createLoggerCore(
         options,
         {
-            report: createDiagnosticReporter(options.onError, (message) => fallback?.(message.trimEnd())),
+            report,
             write(record) {
                 if (!record.console) return;
-                target?.[loggerMethods[record.type].consoleMethod](...formatLoggerConsoleArgs(record));
+                try {
+                    const result: unknown = target?.[loggerMethods[record.type].consoleMethod](
+                        ...formatLoggerConsoleArgs(record),
+                    );
+
+                    // Console methods replaced by async functions are not awaited, so a slow one cannot stall log
+                    // calls, but their rejections are still contained.
+                    if (typeof (result as PromiseLike<unknown> | undefined)?.then === 'function') {
+                        Promise.resolve(result).catch(reportConsoleFailure);
+                    }
+                } catch (error) {
+                    reportConsoleFailure(error);
+                }
             },
         },
     );

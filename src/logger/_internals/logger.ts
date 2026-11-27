@@ -37,20 +37,36 @@ const stringPresentationKeys = [
 // Functions
 
 /**
+ * Contains sync throws and async rejections from diagnostic sinks; the reporter prevents synchronous re-entry.
+ */
+function callContained<T>(callback: ((value: T) => unknown) | undefined, value: T) {
+    try {
+        const result: unknown = callback?.(value);
+        // A thenable check, not `instanceof Promise`, also covers promises from other realms such as `node:vm`.
+        if (typeof (result as PromiseLike<unknown> | undefined)?.then === 'function') {
+            Promise.resolve(result).catch(() => {
+                // A failed diagnostic callback has nowhere safer to report to.
+            });
+        }
+    } catch {
+        // Same as the rejection handler above.
+    }
+}
+
+/**
  * A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters.
  */
 export function createDiagnosticReporter(
     onError?: (event: Readonly<LoggerDiagnostic>) => void,
-    fallback?: (message: string) => void,
+    fallback?: (message: string) => unknown,
 ): (event: LoggerDiagnostic) => void {
     let reporting = false;
-    let callbackPending = false;
     const stateByType = new Map<LoggerDiagnostic['type'], { lastReportedAt: number; suppressedCount: number }>();
 
     return (event) => {
         if (reporting) return;
         try {
-            const now = Date.now();
+            const now = performance.now();
             const state = stateByType.get(event.type);
             if (state && now - state.lastReportedAt < 1000) {
                 state.suppressedCount++;
@@ -74,33 +90,12 @@ export function createDiagnosticReporter(
                 },
             );
 
-            try {
+            if (onError) {
+                // The per-type rate limit already bounds how often onError runs, so async callbacks may overlap.
+                callContained(onError, Object.freeze({ ...event }));
+            } else {
                 const summary = suppressedCount ? ` (${suppressedCount} similar diagnostics suppressed)` : '';
-                fallback?.(`[logger] ${event.message}${summary}\n`);
-            } catch {
-                // Diagnostics must never re-enter the normal logging pipeline.
-            }
-
-            if (!callbackPending) {
-                try {
-                    callbackPending = true;
-                    const result: unknown = onError?.(Object.freeze({ ...event }));
-                    if (result !== null && (typeof result === 'object' || typeof result === 'function')) {
-                        void Promise.resolve(result).then(
-                            () => {
-                                callbackPending = false;
-                            },
-                            () => {
-                                callbackPending = false;
-                            },
-                        );
-                    } else {
-                        callbackPending = false;
-                    }
-                } catch {
-                    callbackPending = false;
-                    // User diagnostic callbacks have the same non-throwing boundary.
-                }
+                callContained(fallback, `[logger] ${event.message}${summary}\n`);
             }
         } catch { /* Diagnostics must never escape into the logging pipeline. */ } finally {
             reporting = false;
@@ -140,7 +135,7 @@ export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Re
         currentLevel = isLevel(normalized) ? normalized : 'info';
         if (normalized !== undefined && !isLevel(normalized)) {
             report({
-                message: 'Invalid LOG_LEVEL; using info',
+                message: 'Invalid LOG_LEVEL; using info.',
                 type: 'invalid-level',
             });
         }
@@ -165,8 +160,7 @@ export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Re
             return level !== 'silent' && getLevelSeverity(level) >= getLevelSeverity(currentLevel);
         },
         setLevel(level) {
-            validateLevel(level);
-            if (level === undefined) throw new TypeError('Invalid logger level');
+            if (level !== 'env' && !isLevel(level)) throw new TypeError('Invalid logger level');
             override = level === 'env' ? undefined : level;
             environmentRead = false;
             if (override !== undefined) {
@@ -191,7 +185,7 @@ export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Re
             } catch (error) {
                 report({
                     error,
-                    message: 'Logger output failed',
+                    message: 'Logger output failed.',
                     type: 'format',
                 });
             }
