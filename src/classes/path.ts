@@ -70,46 +70,22 @@ export class Path {
     }
 
     // Public instance accessors
-
-    /**
-     * The parent directory as a new `Path`.
-     *
-     * @see {@link Path.dirname}
-     */
     get parent() {
         return this.dirname();
     }
 
     /**
-     * The final path component without its last extension.
-     *
-     * @remarks
-     * A leading dot does not start an extension, so `.env` keeps its full name.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.parse}
+     * The final path component without its last extension; a leading dot does not start one, so `.env` stays whole.
      */
     get stem() {
         return nodePath.parse(this.#value).name;
     }
 
-    /**
-     * The normalized path string stored by this instance.
-     */
     get value() {
         return this.#value;
     }
 
     // Public static methods
-
-    /**
-     * Creates a new path from a Node.js path object.
-     *
-     * @param pathObject - The path components to format.
-     *
-     * @returns A new normalized `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.format}
-     */
     static format(pathObject: nodePath.FormatInputPathObject) {
         return new Path(nodePath.format(pathObject));
     }
@@ -120,12 +96,6 @@ export class Path {
      * @remarks
      * Inputs are joined before resolution; unlike Node.js `path.resolve`,
      * later absolute segments do not reset the path.
-     *
-     * @param paths - The path segments to join.
-     *
-     * @returns A new absolute `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.resolve}
      */
     static resolve(...paths: PathLike[]) {
         return new Path(...paths).resolve();
@@ -141,105 +111,38 @@ export class Path {
         return this.#value;
     }
 
-    /**
-     * Returns the final component of this path.
-     *
-     * @param suffix - An optional exact suffix to remove.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.basename}
-     */
     basename(suffix?: string) {
         return nodePath.basename(this.#value, suffix);
     }
 
-    /**
-     * Returns the parent directory of this path.
-     *
-     * @returns A new `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.dirname}
-     */
     dirname() {
         return new Path(nodePath.dirname(this.#value));
     }
 
-    /**
-     * Returns the extension of the final path component.
-     *
-     * @returns The extension including its leading dot, or an empty string when absent.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.extname}
-     */
     extname() {
         return nodePath.extname(this.#value);
     }
 
-    /**
-     * Checks whether this path is absolute on the current platform.
-     *
-     * @returns Whether this path is absolute.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.isAbsolute}
-     */
     isAbsolute() {
         return nodePath.isAbsolute(this.#value);
     }
 
-    /**
-     * Normalizes separators and relative segments in this path.
-     *
-     * @returns A new `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.normalize}
-     */
     normalize() {
         return new Path(nodePath.normalize(this.#value));
     }
 
-    /**
-     * Joins additional segments onto this path.
-     *
-     * @param paths - The path segments to append.
-     *
-     * @returns A new normalized `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.join}
-     */
     join(...paths: PathLike[]) {
         return new Path(this.#value, ...paths);
     }
 
-    /**
-     * Parses this path into its root, directory, basename, extension, and name.
-     *
-     * @returns A new object containing the path components.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.parse}
-     */
     parse() {
         return nodePath.parse(this.#value);
     }
 
-    /**
-     * Computes a relative path from this path to the destination.
-     *
-     * @param to - The path to compute the relative path to.
-     *
-     * @returns A new `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.relative}
-     */
     relative(to: PathLike) {
         return new Path(nodePath.relative(this.#value, toPathString(to)));
     }
 
-    /**
-     * Resolves this path to an absolute path using the current working directory.
-     *
-     * @returns A new absolute `Path`.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.resolve}
-     */
     resolve() {
         return new Path(nodePath.resolve(this.#value));
     }
@@ -248,20 +151,10 @@ export class Path {
         return this.#value;
     }
 
-    /**
-     * Converts this path to the Windows namespace form when applicable.
-     *
-     * @returns A new `Path` with the namespace-converted path.
-     *
-     * @see {@link https://nodejs.org/api/path.html | Node.js path.toNamespacedPath}
-     */
     toNamespacedPath() {
         return new Path(nodePath.toNamespacedPath(this.#value));
     }
 
-    /**
-     * Returns the stored path as a string.
-     */
     toString() {
         return this.#value;
     }
@@ -270,8 +163,6 @@ export class Path {
      * Replaces the last extension of the final path component.
      *
      * @param extension - The new extension including its leading dot, or an empty string to remove the extension.
-     *
-     * @returns A new `Path`.
      *
      * @throws TypeError if a nonempty extension is `.`, lacks a leading dot, or contains a path separator;
      * if the resulting name is `.` or `..`; or if this path has no final component.
@@ -287,10 +178,6 @@ export class Path {
     /**
      * Replaces the final path component.
      *
-     * @param name - The new final component.
-     *
-     * @returns A new `Path`.
-     *
      * @throws TypeError if the name is empty, `.`, `..`, or contains a path separator,
      * or if this path has no final component.
      */
@@ -298,74 +185,34 @@ export class Path {
         return this.#withBase(name);
     }
 
-    /**
-     * Checks access permissions for the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.access}
-     */
     async access(...args: DropFirstParameters<typeof fsp.access>) {
         return await fsp.access(this.#value, ...args);
     }
 
-    /**
-     * Appends data to the file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.appendFile}
-     */
     async appendFile(...args: DropFirstParameters<typeof fsp.appendFile>) {
         return await fsp.appendFile(this.#value, ...args);
     }
 
-    /**
-     * Changes the permissions of the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.chmod}
-     */
     async chmod(...args: DropFirstParameters<typeof fsp.chmod>) {
         return await fsp.chmod(this.#value, ...args);
     }
 
-    /**
-     * Changes the owner and group of the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.chown}
-     */
     async chown(...args: DropFirstParameters<typeof fsp.chown>) {
         return await fsp.chown(this.#value, ...args);
     }
 
-    /**
-     * Copies the file at the stored path to a destination.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.copyFile}
-     */
     async copyFile(destination: PathLike, mode?: number) {
         return await fsp.copyFile(this.#value, toPathString(destination), mode);
     }
 
-    /**
-     * Copies the file or directory at the stored path to a destination.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.cp}
-     */
     async cp(destination: PathLike, opts?: fs.CopyOptions) {
         return await fsp.cp(this.#value, toPathString(destination), opts);
     }
 
-    /**
-     * Opens a readable stream for the file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fs.createReadStream}
-     */
     createReadStream(...args: DropFirstParameters<typeof createReadStream>) {
         return createReadStream(this.#value, ...args);
     }
 
-    /**
-     * Opens a writable stream for the file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fs.createWriteStream}
-     */
     createWriteStream(...args: DropFirstParameters<typeof createWriteStream>) {
         return createWriteStream(this.#value, ...args);
     }
@@ -386,8 +233,6 @@ export class Path {
      *
      * @remarks
      * The stored path is bound as `cwd`; relative patterns yield paths relative to it.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.glob}
      */
     glob(
         pattern: readonly string[] | string,
@@ -447,8 +292,6 @@ export class Path {
      * @remarks
      * If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`) resolves to `undefined` instead of
      * rejecting.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.lstat}
      */
     lstat(
         opts?: fs.StatOptions & {
@@ -480,11 +323,6 @@ export class Path {
         return await readStats(fsp.lstat, this.#value, opts);
     }
 
-    /**
-     * Creates a directory at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.mkdir}
-     */
     mkdir(options: fs.MakeDirectoryOptions & { recursive: true }): Promise<string | undefined>;
     mkdir(
         options?:
@@ -497,29 +335,14 @@ export class Path {
         return await fsp.mkdir(this.#value, ...args);
     }
 
-    /**
-     * Opens the file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.open}
-     */
     async open(...args: DropFirstParameters<typeof fsp.open>) {
         return await fsp.open(this.#value, ...args);
     }
 
-    /**
-     * Opens the directory at the stored path for iteration.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.opendir}
-     */
     async opendir(...args: DropFirstParameters<typeof fsp.opendir>) {
         return await fsp.opendir(this.#value, ...args);
     }
 
-    /**
-     * Reads the entries of the directory at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.readdir}
-     */
     readdir(
         options?:
           | BufferEncoding
@@ -564,11 +387,6 @@ export class Path {
         return await fsp.readdir(this.#value, ...args);
     }
 
-    /**
-     * Reads the entire file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.readFile}
-     */
     readFile(
         options?:
           | (Abortable & {
@@ -599,11 +417,6 @@ export class Path {
         return await fsp.readFile(this.#value, ...args);
     }
 
-    /**
-     * Reads the target of the symbolic link at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.readlink}
-     */
     readlink(options?: BufferEncoding | fs.ObjectEncodingOptions | null): Promise<string>;
     readlink(options: fs.BufferEncodingOption): Promise<Buffer>;
     readlink(
@@ -613,11 +426,6 @@ export class Path {
         return await fsp.readlink(this.#value, ...args);
     }
 
-    /**
-     * Resolves the stored path to its canonical absolute form.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.realpath}
-     */
     realpath(options?: BufferEncoding | fs.ObjectEncodingOptions | null): Promise<string>;
     realpath(options: fs.BufferEncodingOption): Promise<Buffer>;
     realpath(
@@ -627,29 +435,14 @@ export class Path {
         return await fsp.realpath(this.#value, ...args);
     }
 
-    /**
-     * Renames or moves the file or directory at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.rename}
-     */
     async rename(newPath: PathLike) {
         return await fsp.rename(this.#value, toPathString(newPath));
     }
 
-    /**
-     * Removes the file or directory at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.rm}
-     */
     async rm(...args: DropFirstParameters<typeof fsp.rm>) {
         return await fsp.rm(this.#value, ...args);
     }
 
-    /**
-     * Removes the directory at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.rmdir}
-     */
     async rmdir(...args: DropFirstParameters<typeof fsp.rmdir>) {
         return await fsp.rmdir(this.#value, ...args);
     }
@@ -660,8 +453,6 @@ export class Path {
      * @remarks
      * If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`) resolves to `undefined` instead of
      * rejecting.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.stat}
      */
     stat(
         opts?: fs.StatOptions & {
@@ -697,49 +488,25 @@ export class Path {
      * Creates a symbolic link at the stored path pointing to a target.
      *
      * @remarks
-     * The stored path is the new link; a relative target is resolved from the link's directory.
-     *
-     * @param target - The path the link points to.
-     * @param type - The link type, used only on Windows.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.symlink}
+     * The stored path is the new link; a relative target is resolved from the link's directory, and `type` only
+     * applies on Windows.
      */
     async symlink(target: PathLike, type?: 'dir' | 'file' | 'junction' | null) {
         return await fsp.symlink(toPathString(target), this.#value, type);
     }
 
-    /**
-     * Truncates or extends the file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.truncate}
-     */
     async truncate(...args: DropFirstParameters<typeof fsp.truncate>) {
         return await fsp.truncate(this.#value, ...args);
     }
 
-    /**
-     * Deletes the file or symbolic link at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.unlink}
-     */
     async unlink() {
         return await fsp.unlink(this.#value);
     }
 
-    /**
-     * Changes the access and modification times of the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.utimes}
-     */
     async utimes(...args: DropFirstParameters<typeof fsp.utimes>) {
         return await fsp.utimes(this.#value, ...args);
     }
 
-    /**
-     * Watches the stored path for changes.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.watch}
-     */
     watch(options?: BufferEncoding | PathWatchOptions): NodeJS.AsyncIterator<fsp.FileChangeInfo<string>> {
         // Node.js rejects string options and the `buffer` encoding here, although `@types/node` accepts both.
         return fsp.watch(
@@ -748,11 +515,6 @@ export class Path {
         );
     }
 
-    /**
-     * Writes data to the file at the stored path.
-     *
-     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.writeFile}
-     */
     async writeFile(...args: DropFirstParameters<typeof fsp.writeFile>) {
         return await fsp.writeFile(this.#value, ...args);
     }
