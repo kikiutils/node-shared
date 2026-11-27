@@ -5,14 +5,9 @@ import type { FormItemRule } from 'element-plus';
  *
  * @remarks
  * Defaults to `required: true`, `trigger: 'blur'`, and `type: 'string'`.
- * Non-nullish options override those defaults; `null` and `undefined` use the defaults.
+ * Options left `undefined` use those defaults.
  * The `message` argument takes precedence over `options.message`.
  * The options object is unchanged.
- *
- * @param message - The validation message displayed on failure.
- * @param options - Additional rule fields and non-nullish overrides for the defaults; `message` takes precedence.
- *
- * @returns A new `FormItemRule` object.
  *
  * @example
  *

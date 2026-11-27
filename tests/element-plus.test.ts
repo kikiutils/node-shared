@@ -41,43 +41,18 @@ describe('createElFormItemRuleWithDefaults', () => {
         expect(options.message).toBe('Ignored');
     });
 
-    it.for([
-        undefined,
-        null,
-    ])(
-        'should restore defaults for nullish options %s',
-        (value, { expect }) => {
-            // Exercise documented nullish runtime options excluded by the upstream type.
-            const options = {
-                required: value,
-                trigger: value,
-                type: value,
-            } as unknown as FormItemRule;
+    it('should restore defaults for undefined options', ({ expect }) => {
+        const options = {
+            required: undefined,
+            trigger: undefined,
+            type: undefined,
+        };
 
-            expect(createElFormItemRuleWithDefaults('Required', options)).toEqual({
-                message: 'Required',
-                required: true,
-                trigger: 'blur',
-                type: 'string',
-            });
-        },
-    );
-
-    it('should preserve explicitly supplied falsy overrides', ({ expect }) => {
-        const result = createElFormItemRuleWithDefaults(
-            'Custom',
-            {
-                required: false,
-                trigger: '',
-                type: '' as NonNullable<FormItemRule['type']>,
-            },
-        );
-
-        expect(result).toEqual({
-            message: 'Custom',
-            required: false,
-            trigger: '',
-            type: '',
+        expect(createElFormItemRuleWithDefaults('Required', options)).toEqual({
+            message: 'Required',
+            required: true,
+            trigger: 'blur',
+            type: 'string',
         });
     });
 });

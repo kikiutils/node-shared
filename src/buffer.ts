@@ -9,10 +9,6 @@ import type { BinaryInput } from './types';
  * An existing `Buffer` is returned unchanged. `ArrayBuffer` and `Uint8Array` inputs share their backing memory
  * with the result, so changes are visible through both views. `Blob` and `File` inputs are read asynchronously.
  *
- * @param input - The binary data to convert.
- *
- * @returns A promise resolving to the original buffer or a new buffer view after the input is available.
- *
  * @throws TypeError through promise rejection if the input is unsupported.
  *
  * @example
