@@ -12,6 +12,7 @@ import type { GlobalComponents } from 'vue';
  * const keepAliveRef = ref<ComponentRef<'KeepAlive'>>(null);
  * ```
  */
-export type ComponentRef<K extends keyof GlobalComponents> = GlobalComponents[K] extends abstract new (
-    ...args: any
-) => infer Instance ? Instance | null : never;
+export type ComponentRef<K extends keyof GlobalComponents> = ComponentRefTarget<GlobalComponents[K]> | null;
+
+// Vue sets template refs of non-stateful components to their root element.
+type ComponentRefTarget<C> = C extends abstract new (...args: any) => infer Instance ? Instance : Element;
