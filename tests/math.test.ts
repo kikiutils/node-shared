@@ -62,9 +62,9 @@ describe('toPercentageString', () => {
             numerator: 1,
         },
     ])(
-        'should ignore custom precision for the $name fallback',
+        'should format the $name fallback as zero with the configured precision',
         ({ denominator, numerator }, { expect }) => {
-            expect(toPercentageString(numerator, denominator, { decimalPlaces: 4 })).toBe('0.00%');
+            expect(toPercentageString(numerator, denominator)).toBe('0.00%');
             expect(
                 toPercentageString(
                     numerator,
@@ -74,9 +74,24 @@ describe('toPercentageString', () => {
                         withSymbol: false,
                     },
                 ),
-            ).toBe('0.00');
+            ).toBe('0.0000');
         },
     );
+
+    it('should round negative percentages and drop the sign when they round to zero', ({ expect }) => {
+        expect(toPercentageString(-1, 3)).toBe('-33.33%');
+        expect(toPercentageString('-0.00001', 1)).toBe('0.00%');
+    });
+
+    it('should ignore the global Decimal rounding configuration', ({ expect }) => {
+        const rounding = Decimal.rounding;
+        Decimal.set({ rounding: Decimal.ROUND_DOWN });
+        try {
+            expect(toPercentageString(2, 3)).toBe('66.67%');
+        } finally {
+            Decimal.set({ rounding });
+        }
+    });
 
     it('should propagate invalid decimal input instead of returning the non-finite fallback', ({ expect }) => {
         expect(() => toPercentageString('not-a-number', 1)).toThrow(Error);

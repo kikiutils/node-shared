@@ -2,38 +2,31 @@ import { Decimal } from 'decimal.js';
 
 type CalculableValue = Decimal.Value | { toString: () => string };
 
-/**
- * Options for configuring the output of `toPercentageString`.
- */
 export interface ToPercentageStringOptions {
     /**
-     * The number of decimal places to include in the result.
-     *
      * @defaultValue 2
      */
     decimalPlaces?: number;
 
     /**
-     * Whether to include the `%` symbol in the result.
-     *
      * @defaultValue true
      */
     withSymbol?: boolean;
 }
 
+// Isolated from `Decimal.set` calls elsewhere, with enough precision that only the final rounding affects results.
+const PercentageDecimal = Decimal.clone({
+    defaults: true,
+    precision: 100,
+});
+
 /**
  * Converts a numerator and denominator into a formatted percentage.
  *
  * @remarks
- * A `NaN` or infinite quotient produces `0.00`, regardless of the configured decimal places;
- * the percent symbol is appended according to `options.withSymbol`.
- * Invalid decimal input and formatting options propagate decimal.js exceptions.
- *
- * @param molecular - The numerator of the fraction.
- * @param denominator - The denominator of the fraction.
- * @param options - Output precision and percent-symbol settings.
- *
- * @returns The formatted percentage string.
+ * Values are read through their string form. A `NaN` or infinite quotient, such as a zero denominator, formats as
+ * zero, and results that round to zero never carry a minus sign. Rounding is half up. Invalid decimal input and
+ * formatting options propagate decimal.js exceptions.
  *
  * @example
  *
@@ -46,17 +39,15 @@ export interface ToPercentageStringOptions {
  * ```
  */
 export function toPercentageString(
-    molecular: CalculableValue,
+    numerator: CalculableValue,
     denominator: CalculableValue,
     options?: ToPercentageStringOptions,
 ) {
-    const molecularDecimal = new Decimal(molecular.toString());
-    const denominatorDecimal = new Decimal(denominator.toString());
-    const calculationResult = molecularDecimal.div(denominatorDecimal);
-
-    const result = calculationResult.isNaN() || !calculationResult.isFinite()
-        ? '0.00'
-        : calculationResult.times(100).toFixed(options?.decimalPlaces ?? 2);
+    const decimalPlaces = options?.decimalPlaces ?? 2;
+    // Scaling before dividing leaves the division as the only inexact step.
+    const percentage = new PercentageDecimal(numerator.toString()).times(100).div(denominator.toString());
+    const rounded = percentage.isFinite() ? percentage.toDecimalPlaces(decimalPlaces) : new PercentageDecimal(0);
+    const result = (rounded.isZero() ? rounded.absoluteValue() : rounded).toFixed(decimalPlaces);
 
     return options?.withSymbol ?? true ? `${result}%` : result;
 }
