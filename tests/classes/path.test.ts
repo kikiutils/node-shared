@@ -1,4 +1,4 @@
-import type { Buffer } from 'node:buffer';
+import { Buffer } from 'node:buffer';
 import type {
     BigIntStats,
     Dirent,
@@ -138,6 +138,12 @@ describe('class Path', () => {
             expect(new Path(url).value).toBe(base.join('child').value);
             expect(new Path(url, 'file.txt').value).toBe(base.join('child', 'file.txt').value);
             expect(base.relative(url).value).toBe('child');
+            expect(new Path(Buffer.from(base.value)).value).toBe(base.value);
+            expect(() => new Path(Buffer.from([0xFF]))).toThrow(TypeError);
+        });
+
+        it('should join later absolute segments instead of restarting at them in Path.resolve', ({ expect }) => {
+            expect(Path.resolve('/a', '/b', 'c').value).toBe(resolve('/a/b/c'));
         });
 
         it('should replace the extension or final component', ({ expect }) => {
@@ -184,18 +190,27 @@ describe('class Path', () => {
 
                 expect(path.withExtension('.md').value).toBe('C:foo.md');
                 expect(path.withName('bar.txt').value).toBe('C:bar.txt');
+                expect(() => path.withName(String.raw`a\b`)).toThrow(TypeError);
+                expect(() => path.withExtension(String.raw`.a\b`)).toThrow(TypeError);
             } finally {
                 vi.doUnmock('node:path');
                 vi.resetModules();
             }
         });
 
-        it('should reject replacing the final component of a root path', ({ expect }) => {
-            const root = new Path(parse(resolve('/')).root);
+        it.for([
+            parse(resolve('/')).root,
+            '.',
+            '..',
+        ])(
+            'should reject replacing the final component of %j',
+            (input, { expect }) => {
+                const path = new Path(input);
 
-            expect(() => root.withName('bar.txt')).toThrow(TypeError);
-            expect(() => root.withExtension('.txt')).toThrow(TypeError);
-        });
+                expect(() => path.withName('bar.txt')).toThrow(TypeError);
+                expect(() => path.withExtension('.txt')).toThrow(TypeError);
+            },
+        );
     });
 
     describe('file system operations', () => {
@@ -383,6 +398,7 @@ describe('class Path', () => {
 
             await expect(tempPath.exists()).rejects.toBe(error);
             await expect(tempPath.isDirectory()).rejects.toBe(error);
+            await expect(tempPath.isFile()).rejects.toBe(error);
             await expect(tempPath.isSymbolicLink()).rejects.toBe(error);
         });
 
@@ -391,12 +407,14 @@ describe('class Path', () => {
             await file.writeFile('hello');
             const watcher = file.watch('utf8');
 
-            expectTypeOf(watcher).toEqualTypeOf<NodeJS.AsyncIterator<fsp.FileChangeInfo<string>>>();
-            const next = watcher.next();
+            expectTypeOf(watcher).toEqualTypeOf<AsyncIterable<fsp.FileChangeInfo<string>>>();
+            const iterator = watcher[Symbol.asyncIterator]();
+            const next = iterator.next();
             await file.appendFile(' world');
+            const filename = (await next).value?.filename;
+            await iterator.return?.();
 
-            expect((await next).value?.filename).toBe('file.txt');
-            await watcher.return?.();
+            expect(filename).toBe('file.txt');
         });
 
         it('should glob relative to the stored path and infer entry types', async ({ expect }) => {
@@ -426,6 +444,12 @@ describe('class Path', () => {
 
             expectTypeOf(names).toEqualTypeOf<string[]>();
             expect(names).toEqual(['entry.txt']);
+
+            const withFileTypes = names.length < 0;
+
+            expectTypeOf(tempPath.readdir({ withFileTypes })).toEqualTypeOf<
+                Promise<Array<Dirent<Buffer>> | Buffer[] | Dirent[] | string[]>
+            >();
 
             const buffers = await tempPath.readdir('buffer');
 
@@ -533,7 +557,7 @@ describe('class Path', () => {
             expect(metadata).toBeUndefined();
         });
 
-        it('should resolve undefined only for ENOENT when throwIfNoEntry is false', async ({ expect }) => {
+        it('should resolve undefined only for missing-path errors when throwIfNoEntry is false', async ({ expect }) => {
             const missingError = Object.assign(new Error('Missing path'), { code: 'ENOENT' });
             const deniedError = Object.assign(new Error('Permission denied'), { code: 'EACCES' });
             vi.mocked(fsp.stat).mockRejectedValue(missingError);

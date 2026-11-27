@@ -1,4 +1,4 @@
-import type { Buffer } from 'node:buffer';
+import { Buffer } from 'node:buffer';
 import type { Abortable } from 'node:events';
 import {
     createReadStream,
@@ -12,7 +12,8 @@ import { fileURLToPath } from 'node:url';
 type DropFirstParameters<T extends (...args: any) => any> = Parameters<T> extends [any, ...infer R] ? R : never;
 
 /**
- * Values accepted wherever `Path` takes a path; `file:` URLs are converted to file system paths.
+ * Values accepted wherever `Path` takes a path; `file:` URL objects are converted to file system paths, while
+ * `file:` strings are plain path text. Buffers must contain valid UTF-8.
  */
 export type PathLike = fs.PathLike | Path;
 
@@ -40,8 +41,6 @@ export class Path {
 
     /**
      * Creates a normalized path value by joining the provided path segments.
-     *
-     * @param paths - Path segments; `file:` URLs are converted to file system paths.
      */
     constructor(...paths: PathLike[]) {
         this.#value = nodePath.join(...paths.map(toPathString));
@@ -50,23 +49,6 @@ export class Path {
     // Private instance methods
     #hasSeparator(value: string) {
         return value.includes('/') || value.includes(nodePath.sep);
-    }
-
-    #withBase(base: string) {
-        if (!base || base === '.' || base === '..' || this.#hasSeparator(base)) {
-            throw new TypeError(`Invalid final component: ${base}`);
-        }
-
-        const parsed = nodePath.parse(this.#value);
-        if (!parsed.base) throw new TypeError(`Path has no final component: ${this.#value}`);
-        // `format` keeps drive-relative roots such as `C:` intact, whereas `join` would anchor them.
-        return new Path(
-            nodePath.format({
-                base,
-                dir: parsed.dir,
-                root: parsed.root,
-            }),
-        );
     }
 
     // Public instance accessors
@@ -172,7 +154,7 @@ export class Path {
             throw new TypeError(`Invalid extension: ${extension}`);
         }
 
-        return this.#withBase(`${this.stem}${extension}`);
+        return this.withName(`${this.stem}${extension}`);
     }
 
     /**
@@ -182,7 +164,23 @@ export class Path {
      * or if this path has no final component.
      */
     withName(name: string) {
-        return this.#withBase(name);
+        if (!name || name === '.' || name === '..' || this.#hasSeparator(name)) {
+            throw new TypeError(`Invalid final component: ${name}`);
+        }
+
+        const parsed = nodePath.parse(this.#value);
+        if (!parsed.base || parsed.base === '.' || parsed.base === '..') {
+            throw new TypeError(`Path has no final component: ${this.#value}`);
+        }
+
+        // `format` keeps drive-relative roots such as `C:` intact, whereas `join` would anchor them.
+        return new Path(
+            nodePath.format({
+                base: name,
+                dir: parsed.dir,
+                root: parsed.root,
+            }),
+        );
     }
 
     async access(...args: DropFirstParameters<typeof fsp.access>) {
@@ -362,15 +360,6 @@ export class Path {
           },
     ): Promise<Buffer[]>;
     readdir(
-        options?:
-          | BufferEncoding
-          | (fs.ObjectEncodingOptions & {
-              recursive?: boolean;
-              withFileTypes?: false;
-          })
-          | null,
-    ): Promise<Buffer[] | string[]>;
-    readdir(
         options: fs.ObjectEncodingOptions & {
             recursive?: boolean;
             withFileTypes: true;
@@ -383,6 +372,16 @@ export class Path {
             withFileTypes: true;
         },
     ): Promise<Array<fs.Dirent<Buffer>>>;
+    readdir(
+        options?:
+          | 'buffer'
+          | ((fs.ObjectEncodingOptions | { encoding: 'buffer' }) & {
+              recursive?: boolean;
+              withFileTypes?: boolean;
+          })
+          | BufferEncoding
+          | null,
+    ): Promise<Array<fs.Dirent<Buffer>> | Buffer[] | fs.Dirent[] | string[]>;
     async readdir(...args: any): Promise<any> {
         return await fsp.readdir(this.#value, ...args);
     }
@@ -448,8 +447,6 @@ export class Path {
     }
 
     /**
-     * Reads file system metadata for the stored path.
-     *
      * @remarks
      * If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`) resolves to `undefined` instead of
      * rejecting.
@@ -507,7 +504,8 @@ export class Path {
         return await fsp.utimes(this.#value, ...args);
     }
 
-    watch(options?: BufferEncoding | PathWatchOptions): NodeJS.AsyncIterator<fsp.FileChangeInfo<string>> {
+    // Bun's watcher is iterable with `for await` but lacks `next()`/`return()`, so only `AsyncIterable` is promised.
+    watch(options?: BufferEncoding | PathWatchOptions): AsyncIterable<fsp.FileChangeInfo<string>> {
         // Node.js rejects string options and the `buffer` encoding here, although `@types/node` accepts both.
         return fsp.watch(
             this.#value,
@@ -542,5 +540,11 @@ async function readStats(
 function toPathString(path: PathLike) {
     if (path instanceof Path) return path.value;
     if (path instanceof URL) return fileURLToPath(path);
-    return path.toString();
+    const text = path.toString();
+    // `Path` stores text, so a non-UTF-8 buffer would silently point at a different file.
+    if (Buffer.isBuffer(path) && !Buffer.from(text).equals(path)) {
+        throw new TypeError('Path buffers must contain valid UTF-8');
+    }
+
+    return text;
 }
