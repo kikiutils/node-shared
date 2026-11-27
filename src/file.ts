@@ -6,7 +6,8 @@ import {
 import type { BinaryInput } from './types';
 
 /**
- * Detects a lowercase MIME type from binary content rather than its name or declared type.
+ * Detects a lowercase MIME type from binary content rather than its name or declared type, or `undefined` when the
+ * content is not recognized.
  *
  * @remarks
  * Requires the optional `file-type` peer dependency. Only formats supported by its binary detection
@@ -14,10 +15,6 @@ import type { BinaryInput } from './types';
  * Blob and File inputs are read through the detector's tokenizer instead of being fully buffered up front.
  * The amount of content inspected depends on its format; this does not impose a fixed read limit.
  * Detection and input-reading errors propagate to the caller.
- *
- * @param input - The binary content to inspect.
- *
- * @returns The detected lowercase MIME type, or `undefined` when the content is not recognized.
  *
  * @example
  *
