@@ -13,8 +13,11 @@ const BoundedDecimal = Decimal.clone({
     precision: 100,
 });
 
+// Bounds the length of the fixed-notation output, which `pow` and `Decimal` inputs could otherwise make unbounded.
+const maxIntegerDigits = 1000;
+
 // Plain decimal notation only: decimal.js would also accept hex, binary, octal, exponent notation, `NaN`, and
-// `Infinity`, and an unbounded exponent lets `toFixed` build an arbitrarily long string.
+// `Infinity`.
 const decimalStringPattern = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/;
 
 /**
@@ -35,7 +38,7 @@ export type PrecisionNumberValue = Decimal.Value | PrecisionNumber;
  * Addition, subtraction, multiplication, and remainders are exact before that rounding; division and powers keep
  * 100 significant digits. Results ignore the global `Decimal` configuration, and negative zero is stored as zero.
  * Invalid inputs throw `TypeError`, and operations whose result is not finite, such as division by zero, throw
- * `RangeError` without changing the value.
+ * `RangeError` without changing the value. Values and results are limited to 1000 integer digits.
  *
  * @example
  *
@@ -57,10 +60,6 @@ export class PrecisionNumber {
 
     /**
      * Creates a fixed-decimal number.
-     *
-     * @param value - Initial value (default: `'0'`).
-     * @param decimalPlaces - Decimal places retained after operations (default: `2`).
-     * @param rounding - Decimal.js rounding mode (default: `Decimal.ROUND_DOWN`).
      *
      * @throws TypeError if the value is not a finite plain decimal.
      */
@@ -87,7 +86,7 @@ export class PrecisionNumber {
         if (!Decimal.isDecimal(value)) return;
         try {
             const decimal = new ExactDecimal(value);
-            return decimal.isFinite() ? decimal : undefined;
+            return decimal.isFinite() && decimal.e < maxIntegerDigits ? decimal : undefined;
         } catch {
             // Objects that only imitate the Decimal brand cannot be converted.
         }
@@ -103,6 +102,7 @@ export class PrecisionNumber {
     #round(decimal: Decimal) {
         const rounded = new ExactDecimal(decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding));
         if (!rounded.isFinite()) throw new RangeError('Result is not finite');
+        if (rounded.e >= maxIntegerDigits) throw new RangeError('Result exceeds the supported magnitude');
         return rounded.isZero() ? new ExactDecimal(0) : rounded;
     }
 
@@ -131,10 +131,6 @@ export class PrecisionNumber {
 
     /**
      * Formats a value as an instance with the given configuration would.
-     *
-     * @param value - Value to format.
-     * @param decimalPlaces - Decimal places to output (default: `2`).
-     * @param rounding - Decimal.js rounding mode (default: `Decimal.ROUND_DOWN`).
      *
      * @throws TypeError if the value is not a finite plain decimal.
      */

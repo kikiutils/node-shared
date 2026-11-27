@@ -365,6 +365,33 @@ describe('class PrecisionNumber', () => {
             expect(value.value).toBe('3.0000000000');
         });
 
+        it('should reject results beyond 1000 integer digits without changing the value', ({ expect }) => {
+            const value = new PrecisionNumber('10');
+
+            expect(() => value.pow('100000000')).toThrow(RangeError);
+            expect(() => value.pow('1000000000000000')).toThrow(RangeError);
+            expect(() => value.toPow('1000')).toThrow(RangeError);
+            expect(() => new PrecisionNumber(`1${'0'.repeat(999)}`).times('10')).toThrow(RangeError);
+            expect(value.value).toBe('10.00');
+        });
+
+        it('should accept values with exactly 1000 integer digits', ({ expect }) => {
+            const digits = `1${'0'.repeat(999)}`;
+
+            expect(new PrecisionNumber(digits, 0).value).toBe(digits);
+            expect(new PrecisionNumber('10').pow('999').value).toBe(`${digits}.00`);
+            expect(() => new PrecisionNumber(`${digits}0`)).toThrow(RangeError);
+        });
+
+        it('should reject Decimal inputs beyond 1000 integer digits', ({ expect }) => {
+            const huge = new Decimal('1e1000');
+
+            expect(() => new PrecisionNumber(huge)).toThrow(TypeError);
+            expect(() => new PrecisionNumber('1').plus(huge)).toThrow(TypeError);
+            expect(PrecisionNumber.tryFrom(huge)).toBeUndefined();
+            expect(PrecisionNumber.tryFrom(new Decimal('1e999'))?.value).toBe(`1${'0'.repeat(999)}.00`);
+        });
+
         it.for([
             {
                 expected: '2.00',
