@@ -7,12 +7,8 @@ const redirectPathBaseOrigin = 'http://redirect-path.invalid';
  * Appends or updates the `redirect` query parameter on a given URL.
  *
  * @remarks
- * Typically used to preserve the user's current path for post-login navigation.
- *
- * @param url - The target URL to modify.
- * @param redirectPath - The safe same-origin application path starting with `/` to use as the redirect destination.
- *
- * @returns A new URL string with the `redirect` query parameter.
+ * Typically used to preserve the user's current path for post-login navigation. Existing query parameters and the
+ * fragment are kept.
  *
  * @throws Error if `redirectPath` is not a safe same-origin application path.
  */
@@ -40,10 +36,6 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
  * URL parsers remove tabs and line breaks before parsing, so `/\n/example.com`
  * would otherwise be read as `//example.com`. The path is therefore also
  * resolved the way a browser would, and must stay on the base origin.
- *
- * @param value - The value to check.
- *
- * @returns Whether the value is safe to use as an application redirect path.
  */
 export function isSafeRedirectPath(value: unknown): value is string {
     if (typeof value !== 'string') return false;
@@ -64,12 +56,7 @@ export function isSafeRedirectPath(value: unknown): value is string {
  *
  * @remarks
  * If an array is provided, the first value is checked. Unsafe values fall back
- * to the provided fallback path.
- *
- * @param value - The redirect value to normalize.
- * @param fallback - The caller-supplied safe fallback path; it is returned unchanged and is not validated.
- *
- * @returns The validated input path, or the unvalidated fallback path.
+ * to `fallback`, which is returned unchanged and not validated.
  */
 export function normalizeRedirectPath(value: unknown, fallback = '/') {
     const redirectPath = Array.isArray(value) ? value[0] : value;

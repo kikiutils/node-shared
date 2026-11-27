@@ -10,10 +10,6 @@ import { onBeforeRouteLeave } from 'vue-router';
  * Route leave saves the current offsets, and each activation restores them to the currently referenced element.
  * A missing element saves zero offsets and skips restoration. Without `KeepAlive`, unmounting discards the state.
  * The hooks follow the component lifecycle; there is no separate cleanup handle.
- *
- * @typeParam T - The scrollable element type.
- *
- * @param containerRef - The reference to the scrollable element, or `null` while it is unavailable.
  */
 export function usePreserveScroll<T extends Element = HTMLElement>(containerRef: Ref<null | T>) {
     let scrollLeft = 0;

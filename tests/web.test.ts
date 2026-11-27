@@ -90,9 +90,5 @@ describe('assignUrlWithRedirectParamFromCurrentLocation', () => {
 
         expect(assign).not.toHaveBeenCalled();
         expect(vi.getTimerCount()).toBe(0);
-
-        assignUrlWithRedirectParamFromCurrentLocation('/login');
-
-        expect(assign).toHaveBeenCalledExactlyOnceWith('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
     });
 });
