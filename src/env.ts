@@ -1,35 +1,19 @@
-/**
- * Custom error class for handling missing environment variables.
- *
- * @remarks
- * Extends the built-in `Error` class and includes the missing key.
- */
 export class EnvironmentNotFoundError extends Error {
     readonly key: string;
 
-    /**
-     * Creates an error identifying a missing environment variable.
-     *
-     * @param key - The missing environment variable key.
-     */
     constructor(key: string) {
         super(`Missing environment variable: ${key}`);
         this.key = key;
-        this.name = this.constructor.name;
-        Error.captureStackTrace?.(this, this.constructor);
+        // A literal survives minification, unlike `this.constructor.name`.
+        this.name = 'EnvironmentNotFoundError';
     }
 }
 
 /**
- * Retrieves the value of an environment variable, or throws an error if it is not defined.
+ * Returns an environment variable, throwing when it is not set.
  *
  * @remarks
- * Only checks for `process.env[key] === undefined`. An empty string (for example `''`) or any falsy string
- * value like `'0'` or `'false'` is considered a valid (defined) value.
- *
- * @param key - The environment variable key to retrieve.
- *
- * @returns The value of the environment variable.
+ * Only an unset variable is missing; empty and falsy-looking strings such as `''`, `'0'`, and `'false'` are returned.
  *
  * @throws EnvironmentNotFoundError if the environment variable is not defined.
  *
