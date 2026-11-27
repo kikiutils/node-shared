@@ -9,6 +9,8 @@ import {
 
 import { EnhancedDate } from '../../src/classes/enhanced-date';
 
+vi.mock('date-fns', { spy: true });
+
 describe('class EnhancedDate', () => {
     describe('native Date compatibility', () => {
         it('should inherit native construction and copy Date inputs independently', ({ expect }) => {
@@ -229,6 +231,157 @@ describe('class EnhancedDate', () => {
             expect(later.differenceInCalendarWeeks(date, { weekStartsOn: 0 })).toBe(1);
             expect(later.differenceInCalendarWeeks(date, { weekStartsOn: 1 })).toBe(0);
         });
+    });
+
+    describe('date-fns options', () => {
+        const options = { in: (value: dateFns.DateArg<Date> & {}) => new Date(value) };
+        const date = new EnhancedDate(2026, 0, 15, 12);
+
+        it.for([
+            [
+                'addDays',
+                () => date.toAddDays(1, options),
+            ],
+            [
+                'addHours',
+                () => date.toAddHours(1, options),
+            ],
+            [
+                'addMilliseconds',
+                () => date.toAddMilliseconds(1, options),
+            ],
+            [
+                'addMinutes',
+                () => date.toAddMinutes(1, options),
+            ],
+            [
+                'addMonths',
+                () => date.toAddMonths(1, options),
+            ],
+            [
+                'addSeconds',
+                () => date.toAddSeconds(1, options),
+            ],
+            [
+                'addWeeks',
+                () => date.toAddWeeks(1, options),
+            ],
+            [
+                'addYears',
+                () => date.toAddYears(1, options),
+            ],
+            [
+                'subDays',
+                () => date.toSubDays(1, options),
+            ],
+            [
+                'subHours',
+                () => date.toSubHours(1, options),
+            ],
+            [
+                'subMilliseconds',
+                () => date.toSubMilliseconds(1, options),
+            ],
+            [
+                'subMinutes',
+                () => date.toSubMinutes(1, options),
+            ],
+            [
+                'subMonths',
+                () => date.toSubMonths(1, options),
+            ],
+            [
+                'subSeconds',
+                () => date.toSubSeconds(1, options),
+            ],
+            [
+                'subWeeks',
+                () => date.toSubWeeks(1, options),
+            ],
+            [
+                'subYears',
+                () => date.toSubYears(1, options),
+            ],
+            [
+                'startOfDay',
+                () => date.toStartOfDay(options),
+            ],
+            [
+                'startOfMinute',
+                () => date.toStartOfMinute(options),
+            ],
+            [
+                'startOfMonth',
+                () => date.toStartOfMonth(options),
+            ],
+            [
+                'endOfDay',
+                () => date.toEndOfDay(options),
+            ],
+            [
+                'endOfMinute',
+                () => date.toEndOfMinute(options),
+            ],
+            [
+                'endOfMonth',
+                () => date.toEndOfMonth(options),
+            ],
+            [
+                'isSameDay',
+                () => date.isSameDay(date, options),
+            ],
+            [
+                'isToday',
+                () => date.isToday(options),
+            ],
+            [
+                'isTomorrow',
+                () => date.isTomorrow(options),
+            ],
+            [
+                'differenceInCalendarDays',
+                () => date.differenceInCalendarDays(date, options),
+            ],
+            [
+                'startOfToday',
+                () => EnhancedDate.startOfToday(options),
+            ],
+            [
+                'startOfTomorrow',
+                () => EnhancedDate.startOfTomorrow(options),
+            ],
+            [
+                'startOfYesterday',
+                () => EnhancedDate.startOfYesterday(options),
+            ],
+            [
+                'endOfToday',
+                () => EnhancedDate.endOfToday(options),
+            ],
+            [
+                'endOfTomorrow',
+                () => EnhancedDate.endOfTomorrow(options),
+            ],
+            [
+                'endOfYesterday',
+                () => EnhancedDate.endOfYesterday(options),
+            ],
+            [
+                'max',
+                () => EnhancedDate.max([date], options),
+            ],
+            [
+                'min',
+                () => EnhancedDate.min([date], options),
+            ],
+        ] as const)(
+            'should forward options to date-fns %s',
+            ([name, call], { expect }) => {
+                call();
+
+                expect(vi.mocked(dateFns[name]).mock.lastCall?.at(-1)).toBe(options);
+            },
+        );
     });
 
     describe('current-time operations', () => {

@@ -31,16 +31,16 @@ import * as dateFns from 'date-fns';
 export class EnhancedDate extends Date {
     // Public static methods
 
-    static endOfToday() {
-        return new EnhancedDate(dateFns.endOfToday());
+    static endOfToday(options?: dateFns.EndOfTodayOptions) {
+        return new EnhancedDate(dateFns.endOfToday(options));
     }
 
-    static endOfTomorrow() {
-        return new EnhancedDate(dateFns.endOfTomorrow());
+    static endOfTomorrow(options?: dateFns.EndOfTomorrowOptions) {
+        return new EnhancedDate(dateFns.endOfTomorrow(options));
     }
 
-    static endOfYesterday() {
-        return new EnhancedDate(dateFns.endOfYesterday());
+    static endOfYesterday(options?: dateFns.EndOfYesterdayOptions) {
+        return new EnhancedDate(dateFns.endOfYesterday(options));
     }
 
     /**
@@ -72,27 +72,27 @@ export class EnhancedDate extends Date {
     /**
      * Returns the latest date, or `Invalid Date` if the array is empty or contains an invalid date.
      */
-    static max(dates: Array<Date | number>) {
-        return new EnhancedDate(dateFns.max(dates));
+    static max(dates: Array<Date | number>, options?: dateFns.MaxOptions) {
+        return new EnhancedDate(dateFns.max(dates, options));
     }
 
     /**
      * Returns the earliest date, or `Invalid Date` if the array is empty or contains an invalid date.
      */
-    static min(dates: Array<Date | number>) {
-        return new EnhancedDate(dateFns.min(dates));
+    static min(dates: Array<Date | number>, options?: dateFns.MinOptions) {
+        return new EnhancedDate(dateFns.min(dates, options));
     }
 
-    static startOfToday() {
-        return new EnhancedDate(dateFns.startOfToday());
+    static startOfToday(options?: dateFns.StartOfTodayOptions) {
+        return new EnhancedDate(dateFns.startOfToday(options));
     }
 
-    static startOfTomorrow() {
-        return new EnhancedDate(dateFns.startOfTomorrow());
+    static startOfTomorrow(options?: dateFns.StartOfTomorrowOptions) {
+        return new EnhancedDate(dateFns.startOfTomorrow(options));
     }
 
-    static startOfYesterday() {
-        return new EnhancedDate(dateFns.startOfYesterday());
+    static startOfYesterday(options?: dateFns.StartOfYesterdayOptions) {
+        return new EnhancedDate(dateFns.startOfYesterday(options));
     }
 
     // Private instance methods
@@ -103,36 +103,36 @@ export class EnhancedDate extends Date {
 
     // Public instance methods
 
-    addDays(amount: number) {
-        return this.#set(dateFns.addDays(this, amount));
+    addDays(amount: number, options?: dateFns.AddDaysOptions) {
+        return this.#set(dateFns.addDays(this, amount, options));
     }
 
-    addHours(amount: number) {
-        return this.#set(dateFns.addHours(this, amount));
+    addHours(amount: number, options?: dateFns.AddHoursOptions) {
+        return this.#set(dateFns.addHours(this, amount, options));
     }
 
-    addMilliseconds(amount: number) {
-        return this.#set(dateFns.addMilliseconds(this, amount));
+    addMilliseconds(amount: number, options?: dateFns.AddMillisecondsOptions) {
+        return this.#set(dateFns.addMilliseconds(this, amount, options));
     }
 
-    addMinutes(amount: number) {
-        return this.#set(dateFns.addMinutes(this, amount));
+    addMinutes(amount: number, options?: dateFns.AddMinutesOptions) {
+        return this.#set(dateFns.addMinutes(this, amount, options));
     }
 
-    addMonths(amount: number) {
-        return this.#set(dateFns.addMonths(this, amount));
+    addMonths(amount: number, options?: dateFns.AddMonthsOptions) {
+        return this.#set(dateFns.addMonths(this, amount, options));
     }
 
-    addSeconds(amount: number) {
-        return this.#set(dateFns.addSeconds(this, amount));
+    addSeconds(amount: number, options?: dateFns.AddSecondsOptions) {
+        return this.#set(dateFns.addSeconds(this, amount, options));
     }
 
-    addWeeks(amount: number) {
-        return this.#set(dateFns.addWeeks(this, amount));
+    addWeeks(amount: number, options?: dateFns.AddWeeksOptions) {
+        return this.#set(dateFns.addWeeks(this, amount, options));
     }
 
-    addYears(amount: number) {
-        return this.#set(dateFns.addYears(this, amount));
+    addYears(amount: number, options?: dateFns.AddYearsOptions) {
+        return this.#set(dateFns.addYears(this, amount, options));
     }
 
     clone() {
@@ -142,8 +142,8 @@ export class EnhancedDate extends Date {
     /**
      * Returns the signed difference in calendar days: this date minus the other date.
      */
-    differenceInCalendarDays(other: dateFns.DateArg<Date>) {
-        return dateFns.differenceInCalendarDays(this, other);
+    differenceInCalendarDays(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInCalendarDaysOptions) {
+        return dateFns.differenceInCalendarDays(this, other, options);
     }
 
     /**
@@ -167,16 +167,16 @@ export class EnhancedDate extends Date {
         return dateFns.differenceInSeconds(this, other, options);
     }
 
-    endOfDay() {
-        return this.#set(dateFns.endOfDay(this));
+    endOfDay(options?: dateFns.EndOfDayOptions) {
+        return this.#set(dateFns.endOfDay(this, options));
     }
 
-    endOfMinute() {
-        return this.#set(dateFns.endOfMinute(this));
+    endOfMinute(options?: dateFns.EndOfMinuteOptions) {
+        return this.#set(dateFns.endOfMinute(this, options));
     }
 
-    endOfMonth() {
-        return this.#set(dateFns.endOfMonth(this));
+    endOfMonth(options?: dateFns.EndOfMonthOptions) {
+        return this.#set(dateFns.endOfMonth(this, options));
     }
 
     endOfWeek(options?: dateFns.EndOfWeekOptions) {
@@ -217,104 +217,104 @@ export class EnhancedDate extends Date {
         return dateFns.isFuture(this);
     }
 
-    isSameDay(other: dateFns.DateArg<Date>) {
-        return dateFns.isSameDay(this, other);
+    isSameDay(other: dateFns.DateArg<Date>, options?: dateFns.IsSameDayOptions) {
+        return dateFns.isSameDay(this, other, options);
     }
 
     isSameMinute(other: dateFns.DateArg<Date>) {
         return dateFns.isSameMinute(this, other);
     }
 
-    isToday() {
-        return dateFns.isToday(this);
+    isToday(options?: dateFns.IsTodayOptions) {
+        return dateFns.isToday(this, options);
     }
 
-    isTomorrow() {
-        return dateFns.isTomorrow(this);
+    isTomorrow(options?: dateFns.IsTomorrowOptions) {
+        return dateFns.isTomorrow(this, options);
     }
 
     isValid() {
         return dateFns.isValid(this);
     }
 
-    startOfDay() {
-        return this.#set(dateFns.startOfDay(this));
+    startOfDay(options?: dateFns.StartOfDayOptions) {
+        return this.#set(dateFns.startOfDay(this, options));
     }
 
-    startOfMinute() {
-        return this.#set(dateFns.startOfMinute(this));
+    startOfMinute(options?: dateFns.StartOfMinuteOptions) {
+        return this.#set(dateFns.startOfMinute(this, options));
     }
 
-    startOfMonth() {
-        return this.#set(dateFns.startOfMonth(this));
+    startOfMonth(options?: dateFns.StartOfMonthOptions<Date>) {
+        return this.#set(dateFns.startOfMonth(this, options));
     }
 
     startOfWeek(options?: dateFns.StartOfWeekOptions) {
         return this.#set(dateFns.startOfWeek(this, options));
     }
 
-    subDays(amount: number) {
-        return this.#set(dateFns.subDays(this, amount));
+    subDays(amount: number, options?: dateFns.SubDaysOptions) {
+        return this.#set(dateFns.subDays(this, amount, options));
     }
 
-    subHours(amount: number) {
-        return this.#set(dateFns.subHours(this, amount));
+    subHours(amount: number, options?: dateFns.SubHoursOptions) {
+        return this.#set(dateFns.subHours(this, amount, options));
     }
 
-    subMilliseconds(amount: number) {
-        return this.#set(dateFns.subMilliseconds(this, amount));
+    subMilliseconds(amount: number, options?: dateFns.SubMillisecondsOptions) {
+        return this.#set(dateFns.subMilliseconds(this, amount, options));
     }
 
-    subMinutes(amount: number) {
-        return this.#set(dateFns.subMinutes(this, amount));
+    subMinutes(amount: number, options?: dateFns.SubMinutesOptions) {
+        return this.#set(dateFns.subMinutes(this, amount, options));
     }
 
-    subMonths(amount: number) {
-        return this.#set(dateFns.subMonths(this, amount));
+    subMonths(amount: number, options?: dateFns.SubMonthsOptions) {
+        return this.#set(dateFns.subMonths(this, amount, options));
     }
 
-    subSeconds(amount: number) {
-        return this.#set(dateFns.subSeconds(this, amount));
+    subSeconds(amount: number, options?: dateFns.SubSecondsOptions) {
+        return this.#set(dateFns.subSeconds(this, amount, options));
     }
 
-    subWeeks(amount: number) {
-        return this.#set(dateFns.subWeeks(this, amount));
+    subWeeks(amount: number, options?: dateFns.SubWeeksOptions) {
+        return this.#set(dateFns.subWeeks(this, amount, options));
     }
 
-    subYears(amount: number) {
-        return this.#set(dateFns.subYears(this, amount));
+    subYears(amount: number, options?: dateFns.SubYearsOptions) {
+        return this.#set(dateFns.subYears(this, amount, options));
     }
 
-    toAddDays(amount: number) {
-        return this.clone().addDays(amount);
+    toAddDays(amount: number, options?: dateFns.AddDaysOptions) {
+        return this.clone().addDays(amount, options);
     }
 
-    toAddHours(amount: number) {
-        return this.clone().addHours(amount);
+    toAddHours(amount: number, options?: dateFns.AddHoursOptions) {
+        return this.clone().addHours(amount, options);
     }
 
-    toAddMilliseconds(amount: number) {
-        return this.clone().addMilliseconds(amount);
+    toAddMilliseconds(amount: number, options?: dateFns.AddMillisecondsOptions) {
+        return this.clone().addMilliseconds(amount, options);
     }
 
-    toAddMinutes(amount: number) {
-        return this.clone().addMinutes(amount);
+    toAddMinutes(amount: number, options?: dateFns.AddMinutesOptions) {
+        return this.clone().addMinutes(amount, options);
     }
 
-    toAddMonths(amount: number) {
-        return this.clone().addMonths(amount);
+    toAddMonths(amount: number, options?: dateFns.AddMonthsOptions) {
+        return this.clone().addMonths(amount, options);
     }
 
-    toAddSeconds(amount: number) {
-        return this.clone().addSeconds(amount);
+    toAddSeconds(amount: number, options?: dateFns.AddSecondsOptions) {
+        return this.clone().addSeconds(amount, options);
     }
 
-    toAddWeeks(amount: number) {
-        return this.clone().addWeeks(amount);
+    toAddWeeks(amount: number, options?: dateFns.AddWeeksOptions) {
+        return this.clone().addWeeks(amount, options);
     }
 
-    toAddYears(amount: number) {
-        return this.clone().addYears(amount);
+    toAddYears(amount: number, options?: dateFns.AddYearsOptions) {
+        return this.clone().addYears(amount, options);
     }
 
     /**
@@ -324,67 +324,67 @@ export class EnhancedDate extends Date {
         return new Date(this.getTime());
     }
 
-    toEndOfDay() {
-        return this.clone().endOfDay();
+    toEndOfDay(options?: dateFns.EndOfDayOptions) {
+        return this.clone().endOfDay(options);
     }
 
-    toEndOfMinute() {
-        return this.clone().endOfMinute();
+    toEndOfMinute(options?: dateFns.EndOfMinuteOptions) {
+        return this.clone().endOfMinute(options);
     }
 
-    toEndOfMonth() {
-        return this.clone().endOfMonth();
+    toEndOfMonth(options?: dateFns.EndOfMonthOptions) {
+        return this.clone().endOfMonth(options);
     }
 
     toEndOfWeek(options?: dateFns.EndOfWeekOptions) {
         return this.clone().endOfWeek(options);
     }
 
-    toStartOfDay() {
-        return this.clone().startOfDay();
+    toStartOfDay(options?: dateFns.StartOfDayOptions) {
+        return this.clone().startOfDay(options);
     }
 
-    toStartOfMinute() {
-        return this.clone().startOfMinute();
+    toStartOfMinute(options?: dateFns.StartOfMinuteOptions) {
+        return this.clone().startOfMinute(options);
     }
 
-    toStartOfMonth() {
-        return this.clone().startOfMonth();
+    toStartOfMonth(options?: dateFns.StartOfMonthOptions<Date>) {
+        return this.clone().startOfMonth(options);
     }
 
     toStartOfWeek(options?: dateFns.StartOfWeekOptions) {
         return this.clone().startOfWeek(options);
     }
 
-    toSubDays(amount: number) {
-        return this.clone().subDays(amount);
+    toSubDays(amount: number, options?: dateFns.SubDaysOptions) {
+        return this.clone().subDays(amount, options);
     }
 
-    toSubHours(amount: number) {
-        return this.clone().subHours(amount);
+    toSubHours(amount: number, options?: dateFns.SubHoursOptions) {
+        return this.clone().subHours(amount, options);
     }
 
-    toSubMilliseconds(amount: number) {
-        return this.clone().subMilliseconds(amount);
+    toSubMilliseconds(amount: number, options?: dateFns.SubMillisecondsOptions) {
+        return this.clone().subMilliseconds(amount, options);
     }
 
-    toSubMinutes(amount: number) {
-        return this.clone().subMinutes(amount);
+    toSubMinutes(amount: number, options?: dateFns.SubMinutesOptions) {
+        return this.clone().subMinutes(amount, options);
     }
 
-    toSubMonths(amount: number) {
-        return this.clone().subMonths(amount);
+    toSubMonths(amount: number, options?: dateFns.SubMonthsOptions) {
+        return this.clone().subMonths(amount, options);
     }
 
-    toSubSeconds(amount: number) {
-        return this.clone().subSeconds(amount);
+    toSubSeconds(amount: number, options?: dateFns.SubSecondsOptions) {
+        return this.clone().subSeconds(amount, options);
     }
 
-    toSubWeeks(amount: number) {
-        return this.clone().subWeeks(amount);
+    toSubWeeks(amount: number, options?: dateFns.SubWeeksOptions) {
+        return this.clone().subWeeks(amount, options);
     }
 
-    toSubYears(amount: number) {
-        return this.clone().subYears(amount);
+    toSubYears(amount: number, options?: dateFns.SubYearsOptions) {
+        return this.clone().subYears(amount, options);
     }
 }
