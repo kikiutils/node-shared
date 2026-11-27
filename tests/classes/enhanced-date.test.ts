@@ -221,6 +221,9 @@ describe('class EnhancedDate', () => {
             expect(date.differenceInMinutes(later)).toBe(-1);
             expect(date.differenceInMinutes(later, { roundingMethod: 'floor' })).toBe(-2);
             expect(later.differenceInMinutes(date)).toBe(1);
+            expect(later.differenceInSeconds(date)).toBe(90);
+            expect(date.toAddMilliseconds(1500).differenceInSeconds(date, { roundingMethod: 'ceil' })).toBe(2);
+            expect(date.differenceInSeconds(later.getTime())).toBe(-90);
             expect(later.differenceInCalendarDays(date)).toBe(1);
             expect(date.differenceInCalendarDays(later)).toBe(-1);
             expect(later.differenceInCalendarWeeks(date, { weekStartsOn: 0 })).toBe(1);
