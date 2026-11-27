@@ -54,7 +54,6 @@
       "default": null
     },
     "./math": "./dist/math.js",
-    "./number": "./dist/number.js",
     "./storages/redis/types": {
       "types": "./dist/storages/redis/types.d.ts",
       "default": null
