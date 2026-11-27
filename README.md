@@ -15,7 +15,7 @@
 
 ## Requirements
 
-- **Node.js** `>=22.12.0`
+- **Node.js** `>=24.15.0`
 - **ESM** package (`"type": "module"`)
 - Optional peer dependencies are installed only when you use the modules that need them.
 
