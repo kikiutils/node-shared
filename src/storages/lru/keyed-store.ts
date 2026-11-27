@@ -5,14 +5,12 @@ import type { LRUCache } from 'lru-cache';
  *
  * @remarks
  * The key resolver is called synchronously once per operation, and its exceptions propagate.
- * Reads return the cached value without copying it, or `null` for missing or nullish values.
- * `getItemTtl` exposes the underlying remaining TTL in milliseconds; `setItem` returns the underlying cache.
- * `setItemWithTtl` accepts its TTL in milliseconds before the value and key arguments and returns the cache.
- * The facade does not dispose the supplied cache, and LRU defaults remain those of the supplied instance.
- *
- * @typeParam D - The stored value type used by reads and writes.
- *
- * @param lruInstance - The shared LRU cache instance.
+ * Reads return the cached value without copying it, or `null` when missing.
+ * `getItemTtl` returns the remaining TTL in milliseconds, `Infinity` for no expiry, `0` for a missing key, and a
+ * negative value for an expired item the cache has not purged yet.
+ * Writes return whether the value was stored. The cache rejects values larger than its `maxEntrySize`, removing any
+ * previous value under the key, and writing `undefined` deletes the key.
+ * LRU defaults remain those of the supplied instance.
  *
  * @returns A factory accepting a key resolver and returning a new frozen keyed facade sharing the cache.
  *
@@ -30,25 +28,28 @@ import type { LRUCache } from 'lru-cache';
  */
 export function createLruKeyedStore<D = unknown>(lruInstance: LRUCache<any, any, any>) {
     return <P extends any[]>(keyFn: (...args: P) => string) => Object.freeze({
-        /**
-         * Returns the cached value and applies the underlying cache's read-recency policy.
-         *
-         * @returns The cached value without copying it, or `null` when absent or nullish.
-         */
-        getItem(...args: P) {
-            const rawValue = lruInstance.get(keyFn(...args));
-            return rawValue as D ?? null;
-        },
+        getItem: (...args: P) => lruInstance.get(keyFn(...args)) as D | undefined ?? null,
         getItemTtl: (...args: P) => lruInstance.getRemainingTTL(keyFn(...args)),
         hasItem: (...args: P) => lruInstance.has(keyFn(...args)),
         removeItem: (...args: P) => lruInstance.delete(keyFn(...args)),
-        /**
-         * Resolves the full cache key from the given arguments.
-         */
         resolveKey: (...args: P) => keyFn(...args),
-        setItem: (value: D, ...args: P) => lruInstance.set(keyFn(...args), value),
+        setItem: (value: D, ...args: P) => setLruItem(lruInstance, keyFn(...args), value),
         setItemWithTtl(ttlMilliseconds: number, value: D, ...args: P) {
-            return lruInstance.set(keyFn(...args), value, { ttl: ttlMilliseconds });
+            return setLruItem(lruInstance, keyFn(...args), value, ttlMilliseconds);
         },
     });
+}
+
+function setLruItem(cache: LRUCache<any, any, any>, key: string, value: unknown, ttl?: number) {
+    const status: LRUCache.Status<any, any> = {};
+    cache.set(
+        key,
+        value,
+        {
+            status,
+            ttl,
+        },
+    );
+
+    return status.set === 'add' || status.set === 'replace' || status.set === 'update';
 }

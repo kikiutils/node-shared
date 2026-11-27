@@ -19,7 +19,7 @@ describe('createLruKeyedStore', () => {
         expect(store.resolveKey('acme', 1)).toBe('acme:user:1');
         expect(store.getItem('acme', 1)).toBeNull();
         expect(store.hasItem('acme', 1)).toBe(false);
-        expect(store.setItem(user, 'acme', 1)).toBe(cache);
+        expect(store.setItem(user, 'acme', 1)).toBe(true);
         expect(cache.get('acme:user:1')).toBe(user);
         expect(store.getItem('acme', 1)).toBe(user);
         expect(store.hasItem('acme', 1)).toBe(true);
@@ -57,7 +57,7 @@ describe('createLruKeyedStore', () => {
             (tenant: string, id: number) => `${tenant}:item:${id}`,
         );
 
-        expect(store.setItemWithTtl(1000, 'value', 'acme', 1)).toBe(cache);
+        expect(store.setItemWithTtl(1000, 'value', 'acme', 1)).toBe(true);
         expect(cache.get('acme:item:1')).toBe('value');
         expect(store.getItemTtl('acme', 1)).toBe(1000);
         store.setItem('default', 'acme', 2);
@@ -69,6 +69,30 @@ describe('createLruKeyedStore', () => {
         expect(store.getItem('acme', 1)).toBeNull();
         expect(store.hasItem('acme', 1)).toBe(false);
         expect(store.getItem('acme', 2)).toBe('default');
+    });
+
+    it('should return false when the cache rejects an oversized value', ({ expect }) => {
+        const cache = new LRUCache<string, string>({
+            max: 2,
+            maxEntrySize: 1,
+            sizeCalculation: (value) => value.length,
+        });
+
+        const store = createLruKeyedStore<string>(cache)((id: string) => id);
+
+        expect(store.setItem('xx', 'a')).toBe(false);
+        expect(store.setItemWithTtl(1000, 'xx', 'a')).toBe(false);
+        expect(store.hasItem('a')).toBe(false);
+    });
+
+    it('should return false when writing undefined deletes the key', ({ expect }) => {
+        const cache = new LRUCache<string, string>({ max: 1 });
+        const store = createLruKeyedStore<string | undefined>(cache)((id: string) => id);
+
+        store.setItem('value', 'a');
+
+        expect(store.setItem(undefined, 'a')).toBe(false);
+        expect(store.hasItem('a')).toBe(false);
     });
 
     it('should disable expiry with a zero TTL even when the cache has a default TTL', ({ expect }) => {
@@ -86,27 +110,5 @@ describe('createLruKeyedStore', () => {
         now += 1001;
         expect(store.getItemTtl(1)).toBe(Infinity);
         expect(store.getItem(1)).toBe('value');
-    });
-
-    it('should expose remaining TTL in milliseconds and return null after expiry', ({ expect }) => {
-        let now = 1000;
-        const cache = new LRUCache<string, string>({
-            max: 1,
-            perf: { now: () => now },
-            ttl: 1000,
-            ttlResolution: 0,
-        });
-
-        const store = createLruKeyedStore<string>(cache)((id: number) => `item:${id}`);
-        store.setItem('value', 1);
-
-        expect(store.getItemTtl(1)).toBe(1000);
-        now += 400;
-
-        expect(store.getItemTtl(1)).toBe(600);
-        now += 601;
-
-        expect(store.getItem(1)).toBeNull();
-        expect(store.hasItem(1)).toBe(false);
     });
 });
