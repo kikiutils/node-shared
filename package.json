@@ -98,7 +98,7 @@
     "lint:fix": "eslint --cache --concurrency=auto --fix --max-warnings 0",
     "prepack": "pnpm run build",
     "release": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --clean --hideAuthorEmail --push --release && npm publish",
-    "test": "TZ=UTC vitest run --coverage && TZ='America/New_York' vitest run tests/classes/enhanced-date.test.ts",
+    "test": "TZ=UTC vitest run --coverage && TZ='America/New_York' vitest run tests/classes/enhanced-date.test.ts && TZ='America/Santiago' vitest run tests/datetime.test.ts",
     "test:watch": "TZ=UTC vitest watch --coverage",
     "typecheck": "tsc -b --noEmit"
   },

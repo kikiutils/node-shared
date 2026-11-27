@@ -5,7 +5,7 @@ import { EnhancedDate } from './classes/enhanced-date';
 export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' | 'today' | 'yesterday';
 
 /**
- * Formats a date using a date-fns pattern without changing the input.
+ * Formats a date using a date-fns pattern.
  *
  * @remarks
  * Formatting uses the system time zone unless configured through date-fns options.
@@ -64,27 +64,27 @@ export function getDateRangeFromDate(
     switch (type) {
         case 'lastMonth':
             startDate = referenceDate.subMonths(1).startOfMonth();
-            nextStartDate = startDate.toAddMonths(1);
+            nextStartDate = startDate.toAddMonths(1).startOfMonth();
             break;
         case 'lastWeek':
             startDate = referenceDate.subWeeks(1).startOfWeek(weekOptions);
-            nextStartDate = startDate.toAddWeeks(1);
+            nextStartDate = startDate.toAddWeeks(1).startOfWeek(weekOptions);
             break;
         case 'thisMonth':
             startDate = referenceDate.startOfMonth();
-            nextStartDate = startDate.toAddMonths(1);
+            nextStartDate = startDate.toAddMonths(1).startOfMonth();
             break;
         case 'thisWeek':
             startDate = referenceDate.startOfWeek(weekOptions);
-            nextStartDate = startDate.toAddWeeks(1);
+            nextStartDate = startDate.toAddWeeks(1).startOfWeek(weekOptions);
             break;
         case 'today':
             startDate = referenceDate.startOfDay();
-            nextStartDate = startDate.toAddDays(1);
+            nextStartDate = startDate.toAddDays(1).startOfDay();
             break;
         case 'yesterday':
             startDate = referenceDate.subDays(1).startOfDay();
-            nextStartDate = startDate.toAddDays(1);
+            nextStartDate = startDate.toAddDays(1).startOfDay();
             break;
         default: throw new Error(`Unsupported date range type: ${type}`);
     }

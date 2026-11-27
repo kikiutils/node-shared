@@ -145,6 +145,55 @@ describe('getDateRangeFromDate', () => {
         expect(result.endDate.getTime()).toBe(new Date(2024, 2, 1).getTime());
     });
 
+    describe.for([
+        new Date(2023, 6, 1, 12),
+        new Date(2024, 3, 6, 12),
+        new Date(2024, 3, 7, 12),
+        new Date(2024, 8, 8, 12),
+    ])(
+        'with reference date %s',
+        (referenceDate) => {
+            it.for([
+                'lastMonth',
+                'lastWeek',
+                'thisMonth',
+                'thisWeek',
+                'today',
+                'yesterday',
+            ] as const)(
+                'should end $0 one millisecond before the next period starts',
+                (type, { expect }) => {
+                    for (const weekStartsOn of [
+                        0,
+                        1,
+                    ] as const) {
+                        const { endDate, startDate } = getDateRangeFromDate(referenceDate, type, { weekStartsOn });
+                        const exclusiveRange = getDateRangeFromDate(
+                            referenceDate,
+                            type,
+                            {
+                                setEndDateToNextDayStart: true,
+                                weekStartsOn,
+                            },
+                        );
+
+                        const year = startDate.getFullYear();
+                        const month = startDate.getMonth();
+                        const day = startDate.getDate();
+                        let nextStart: Date;
+                        if (type === 'lastMonth' || type === 'thisMonth') nextStart = new Date(year, month + 1, 1);
+                        else if (type === 'lastWeek' || type === 'thisWeek') nextStart = new Date(year, month, day + 7);
+                        else nextStart = new Date(year, month, day + 1);
+
+                        expect(endDate.getTime() + 1).toBe(nextStart.getTime());
+                        expect(exclusiveRange.startDate.getTime()).toBe(startDate.getTime());
+                        expect(exclusiveRange.endDate.getTime()).toBe(nextStart.getTime());
+                    }
+                },
+            );
+        },
+    );
+
     it('should reject an unsupported range type', ({ expect }) => {
         // @ts-expect-error Exercise the runtime guard beyond the DateRangeType union.
         expect(() => getDateRangeFromDate(new Date(2023, 6, 1), 'invalid')).toThrow(
