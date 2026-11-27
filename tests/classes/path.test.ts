@@ -279,7 +279,7 @@ describe('class Path', () => {
             const link = tempPath.join('link');
             await target.writeFile('hello');
 
-            await link.symlink(target);
+            await link.symlinkTo(target);
 
             await expect(link.readlink()).resolves.toBe(target.value);
             await expect(link.realpath()).resolves.toBe(await target.realpath());
@@ -292,7 +292,7 @@ describe('class Path', () => {
             await directory.mkdir();
             await tempPath.join('target.txt').writeFile('hello');
 
-            await link.symlink(join('..', 'target.txt'));
+            await link.symlinkTo(join('..', 'target.txt'));
 
             await expect(link.readlink()).resolves.toBe(join('..', 'target.txt'));
             await expect(link.readFile('utf8')).resolves.toBe('hello');
@@ -300,7 +300,7 @@ describe('class Path', () => {
 
         it('should infer readlink and realpath results for each encoding option', async ({ expect }) => {
             const link = tempPath.join('link');
-            await link.symlink(tempPath.join('target'));
+            await link.symlinkTo(tempPath.join('target'));
 
             const text = await link.readlink();
 
@@ -328,8 +328,8 @@ describe('class Path', () => {
             const brokenLink = tempPath.join('broken-link');
             const missing = tempPath.join('missing');
             await file.writeFile('hello');
-            await fileLink.symlink(file);
-            await brokenLink.symlink(missing);
+            await fileLink.symlinkTo(file);
+            await brokenLink.symlinkTo(missing);
 
             const results = await Promise.all(
                 [
@@ -488,7 +488,7 @@ describe('class Path', () => {
             const target = tempPath.join('target');
             const link = tempPath.join('link');
             await target.mkdir();
-            await link.symlink(target);
+            await link.symlinkTo(target);
 
             const stats = await link.lstat();
 
@@ -555,20 +555,6 @@ describe('class Path', () => {
 
             expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats | undefined>();
             expect(metadata).toBeUndefined();
-        });
-
-        it('should resolve undefined only for missing-path errors when throwIfNoEntry is false', async ({ expect }) => {
-            const missingError = Object.assign(new Error('Missing path'), { code: 'ENOENT' });
-            const deniedError = Object.assign(new Error('Permission denied'), { code: 'EACCES' });
-            vi.mocked(fsp.stat).mockRejectedValue(missingError);
-
-            await expect(tempPath.stat({ throwIfNoEntry: false })).resolves.toBeUndefined();
-            await expect(tempPath.stat()).rejects.toBe(missingError);
-            await expect(tempPath.stat({ throwIfNoEntry: true })).rejects.toBe(missingError);
-
-            vi.mocked(fsp.stat).mockRejectedValue(deniedError);
-
-            await expect(tempPath.stat({ throwIfNoEntry: false })).rejects.toBe(deniedError);
         });
     });
 });

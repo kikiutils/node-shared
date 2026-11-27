@@ -227,8 +227,6 @@ export class Path {
     }
 
     /**
-     * Matches files under the stored path against glob patterns.
-     *
      * @remarks
      * The stored path is bound as `cwd`; relative patterns yield paths relative to it.
      */
@@ -285,11 +283,9 @@ export class Path {
     }
 
     /**
-     * Reads file system metadata for the stored path without following a final symbolic link.
-     *
      * @remarks
-     * If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`) resolves to `undefined` instead of
-     * rejecting.
+     * Does not follow a final symbolic link. If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`)
+     * resolves to `undefined` instead of rejecting.
      */
     lstat(
         opts?: fs.StatOptions & {
@@ -482,13 +478,12 @@ export class Path {
     }
 
     /**
-     * Creates a symbolic link at the stored path pointing to a target.
+     * Creates the stored path as a symbolic link to the target.
      *
      * @remarks
-     * The stored path is the new link; a relative target is resolved from the link's directory, and `type` only
-     * applies on Windows.
+     * A relative target is resolved from the link's directory, and `type` only applies on Windows.
      */
-    async symlink(target: PathLike, type?: 'dir' | 'file' | 'junction' | null) {
+    async symlinkTo(target: PathLike, type?: 'dir' | 'file' | 'junction' | null) {
         return await fsp.symlink(toPathString(target), this.#value, type);
     }
 
