@@ -28,8 +28,8 @@ importers:
         specifier: ^11.4.0
         version: 11.4.0(@antfu/eslint-config@10.0.0(@typescript-eslint/typescript-estree@8.74.0(supports-color@7.2.0)(typescript@6.0.3))(@typescript-eslint/utils@8.74.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(@vue/compiler-sfc@3.5.46)(eslint-plugin-format@2.0.1(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0)))(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)(vitest@5.1.2))(@stylistic/eslint-plugin@5.10.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0)))(@typescript-eslint/parser@8.74.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(tailwindcss@4.3.5)(ts-extras@3.0.0)(type-fest@6.0.3)(typescript@6.0.3)
       '@kikiutils/tsconfigs':
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^8.0.0
+        version: 8.0.0
       '@noble/hashes':
         specifier: ^2.4.0
         version: 2.4.0
@@ -468,8 +468,9 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  '@kikiutils/tsconfigs@7.0.0':
-    resolution: {integrity: sha512-9Q/6pX0zUHmqtT77fmgpbovhyJCAI+yx3merJz3oCBvy8xItYg/htrGwxCntaCiB469vJLw6XyJFftPVBEmeqQ==}
+  '@kikiutils/tsconfigs@8.0.0':
+    resolution: {integrity: sha512-ttu8uoNPY0ZyhkzfATPWOM70VqItBIyB+E1b6PdynAfXPnPf63+PhstbQWNE4DX07oAbk4BpztGHkaOZSj+yiw==}
+    engines: {node: '>=24.15.0'}
 
   '@loaderkit/resolve@1.0.6':
     resolution: {integrity: sha512-G8FdIoF5CypfwmD9rl8BXod5HDn8JqB0CCNBXDTaRZ+yRYhARrrSToX1zg1zy9jX3zLqigsELwhT4gNtkdQAUg==}
@@ -3644,7 +3645,7 @@ snapshots:
       '@stylistic/eslint-plugin': 5.10.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))
       '@typescript-eslint/parser': 8.74.0(eslint@10.15.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
 
-  '@kikiutils/tsconfigs@7.0.0': {}
+  '@kikiutils/tsconfigs@8.0.0': {}
 
   '@loaderkit/resolve@1.0.6':
     dependencies:

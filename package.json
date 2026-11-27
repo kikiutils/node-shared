@@ -157,7 +157,7 @@
     "@antfu/eslint-config": "^10.0.0",
     "@arethetypeswrong/core": "^0.18.5",
     "@kikiutils/eslint-config": "^11.4.0",
-    "@kikiutils/tsconfigs": "^7.0.0",
+    "@kikiutils/tsconfigs": "^8.0.0",
     "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.11",
     "@vitest/coverage-v8": "^5.1.2",
