@@ -1,5 +1,109 @@
 # Changelog
 
+## v22.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v21.0.0...v22.0.0)
+
+### 🚀 Enhancements
+
+- **path:** Add `lstat()` ([46a0cbb](https://github.com/kikiutils/node-shared/commit/46a0cbb))
+- **path:** ⚠️  Add file system helpers and convert file URLs ([d7edd75](https://github.com/kikiutils/node-shared/commit/d7edd75))
+- **precision-number:** ⚠️  Validate inputs and keep arithmetic exact ([de8cbb5](https://github.com/kikiutils/node-shared/commit/de8cbb5))
+- **enhanced-date:** Add `differenceInSeconds()` and drop restating docs ([9659a6d](https://github.com/kikiutils/node-shared/commit/9659a6d))
+- **enhanced-date:** Forward date-fns options on every wrapped function ([e02bbff](https://github.com/kikiutils/node-shared/commit/e02bbff))
+- **logger:** ⚠️  Harden diagnostics, console, and file output ([9c20fe8](https://github.com/kikiutils/node-shared/commit/9c20fe8))
+- **storages:** Add Bun RedisClient adapter ([fdc1bd3](https://github.com/kikiutils/node-shared/commit/fdc1bd3))
+- **storages:** ⚠️  Return whether LRU keyed store writes were stored ([4c9ace3](https://github.com/kikiutils/node-shared/commit/4c9ace3))
+- **crypto-hash:** ⚠️  Compute digests with crypto.hash and a buffer output encoding ([b8a9419](https://github.com/kikiutils/node-shared/commit/b8a9419))
+- **clipboard:** ⚠️  Resolve clipboard helpers to a boolean ([739058a](https://github.com/kikiutils/node-shared/commit/739058a))
+- ⚠️  Remove toCompactNumberString ([78937e3](https://github.com/kikiutils/node-shared/commit/78937e3))
+- **string:** ⚠️  Remove randomString ([bc75141](https://github.com/kikiutils/node-shared/commit/bc75141))
+- **logger:** ⚠️  Rename rotation options and stats fields, report error details in fallback ([338258a](https://github.com/kikiutils/node-shared/commit/338258a))
+- **crypto-hash:** Add timingSafeEqualStrings ([2737721](https://github.com/kikiutils/node-shared/commit/2737721))
+
+### 🩹 Fixes
+
+- **path:** ⚠️  Type `watch()` for Bun and reject ambiguous path inputs ([0dff450](https://github.com/kikiutils/node-shared/commit/0dff450))
+- **storages:** Declare msgpack import side effect and correct redis storage docs ([5303a4c](https://github.com/kikiutils/node-shared/commit/5303a4c))
+- **types:** Support functional components in ComponentRef ([8b3bb1d](https://github.com/kikiutils/node-shared/commit/8b3bb1d))
+- **datetime:** Keep repeated daylight saving hours in date range ends ([131a4a1](https://github.com/kikiutils/node-shared/commit/131a4a1))
+- **enum:** Detect numeric enum reverse mappings by their forward entries ([43dccf4](https://github.com/kikiutils/node-shared/commit/43dccf4))
+- **math:** Compute toPercentageString exactly and format fallbacks consistently ([55b2dfd](https://github.com/kikiutils/node-shared/commit/55b2dfd))
+- **general:** Accept readonly arrays in extractFirstValue ([5d763e7](https://github.com/kikiutils/node-shared/commit/5d763e7))
+- **env:** Keep EnvironmentNotFoundError name stable under minification ([cd2387f](https://github.com/kikiutils/node-shared/commit/cd2387f))
+- Remove stale number export ([98e1db7](https://github.com/kikiutils/node-shared/commit/98e1db7))
+- **precision-number:** Reject results beyond 1000 integer digits ([2b0c307](https://github.com/kikiutils/node-shared/commit/2b0c307))
+- **types:** Resolve ComponentRef of functional components to their element ([4edaac4](https://github.com/kikiutils/node-shared/commit/4edaac4))
+- **datetime:** Keep next-period starts at local midnight across skipped midnights ([7e1ae76](https://github.com/kikiutils/node-shared/commit/7e1ae76))
+- **web:** Collapse leading slashes of the current path before building redirects ([0916149](https://github.com/kikiutils/node-shared/commit/0916149))
+- **math:** ⚠️  Restrict toPercentageString inputs to numeric values ([a2e2dd7](https://github.com/kikiutils/node-shared/commit/a2e2dd7))
+
+### 💅 Refactors
+
+- **hash:** Generate noble SHA-3 helpers from one factory ([4ba7c34](https://github.com/kikiutils/node-shared/commit/4ba7c34))
+- **time:** Implement delay on top of delayOrThrow ([6f3f46d](https://github.com/kikiutils/node-shared/commit/6f3f46d))
+- **path:** ⚠️  Rename symlink to symlinkTo ([33589dc](https://github.com/kikiutils/node-shared/commit/33589dc))
+- **storages:** ⚠️  Name TTL units and adapter TTL writes explicitly ([04ce962](https://github.com/kikiutils/node-shared/commit/04ce962))
+- **general:** Rename the extractFirstValue fallback parameter ([c4f36a8](https://github.com/kikiutils/node-shared/commit/c4f36a8))
+
+### 📖 Documentation
+
+- Update TODO ([ce9a890](https://github.com/kikiutils/node-shared/commit/ce9a890))
+- Drop TSDoc that restates `Path` and `PrecisionNumber` members ([a24de9d](https://github.com/kikiutils/node-shared/commit/a24de9d))
+- **redis:** Drop restating script-runner TSDoc ([73e3a76](https://github.com/kikiutils/node-shared/commit/73e3a76))
+- Remove restating TSDoc from buffer and element-plus helpers ([0c483cb](https://github.com/kikiutils/node-shared/commit/0c483cb))
+- **file:** Merge getFileMimeType return contract into its summary ([be24e01](https://github.com/kikiutils/node-shared/commit/be24e01))
+- Remove restating TSDoc from url, vue, and web helpers ([eaa52c4](https://github.com/kikiutils/node-shared/commit/eaa52c4))
+- **redis:** Remove duplicated script-runner TSDoc ([1773d2b](https://github.com/kikiutils/node-shared/commit/1773d2b))
+- Remove empty todo ([1df400e](https://github.com/kikiutils/node-shared/commit/1df400e))
+
+### 📦 Build
+
+- Require Node.js 24.15.0 and target ES2025 ([5563821](https://github.com/kikiutils/node-shared/commit/5563821))
+- ⚠️  Require `rotating-file-stream` 4 for logger rotation ([f0e5836](https://github.com/kikiutils/node-shared/commit/f0e5836))
+
+### 🏡 Chore
+
+- Enable eslint cache and concurrency in lint scripts ([4398cae](https://github.com/kikiutils/node-shared/commit/4398cae))
+- Upgrade deps ([4efe4db](https://github.com/kikiutils/node-shared/commit/4efe4db))
+- Require a clean working tree for release ([3a64221](https://github.com/kikiutils/node-shared/commit/3a64221))
+- Remove cross-env and upgrade deps ([429dc79](https://github.com/kikiutils/node-shared/commit/429dc79))
+- Lint code ([4532d4a](https://github.com/kikiutils/node-shared/commit/4532d4a))
+- Upgrade deps ([5d739fd](https://github.com/kikiutils/node-shared/commit/5d739fd))
+- Upgrade deps ([1182e8c](https://github.com/kikiutils/node-shared/commit/1182e8c))
+- Exclude `@kikiutils/tsconfigs` from the minimum release age ([1c89d62](https://github.com/kikiutils/node-shared/commit/1c89d62))
+- ⚠️  Upgrade deps ([554bfce](https://github.com/kikiutils/node-shared/commit/554bfce))
+
+### ✅ Tests
+
+- **enhanced-date:** Replace option pass-through table with behavior tests ([856b21f](https://github.com/kikiutils/node-shared/commit/856b21f))
+
+### 🤖 CI
+
+- Rewrite test and coverage workflow ([c74a01e](https://github.com/kikiutils/node-shared/commit/c74a01e))
+
+#### ⚠️ Breaking Changes
+
+- **path:** ⚠️  Add file system helpers and convert file URLs ([d7edd75](https://github.com/kikiutils/node-shared/commit/d7edd75))
+- **precision-number:** ⚠️  Validate inputs and keep arithmetic exact ([de8cbb5](https://github.com/kikiutils/node-shared/commit/de8cbb5))
+- **logger:** ⚠️  Harden diagnostics, console, and file output ([9c20fe8](https://github.com/kikiutils/node-shared/commit/9c20fe8))
+- **storages:** ⚠️  Return whether LRU keyed store writes were stored ([4c9ace3](https://github.com/kikiutils/node-shared/commit/4c9ace3))
+- **crypto-hash:** ⚠️  Compute digests with crypto.hash and a buffer output encoding ([b8a9419](https://github.com/kikiutils/node-shared/commit/b8a9419))
+- **clipboard:** ⚠️  Resolve clipboard helpers to a boolean ([739058a](https://github.com/kikiutils/node-shared/commit/739058a))
+- ⚠️  Remove toCompactNumberString ([78937e3](https://github.com/kikiutils/node-shared/commit/78937e3))
+- **string:** ⚠️  Remove randomString ([bc75141](https://github.com/kikiutils/node-shared/commit/bc75141))
+- **logger:** ⚠️  Rename rotation options and stats fields, report error details in fallback ([338258a](https://github.com/kikiutils/node-shared/commit/338258a))
+- **path:** ⚠️  Type `watch()` for Bun and reject ambiguous path inputs ([0dff450](https://github.com/kikiutils/node-shared/commit/0dff450))
+- **math:** ⚠️  Restrict toPercentageString inputs to numeric values ([a2e2dd7](https://github.com/kikiutils/node-shared/commit/a2e2dd7))
+- **path:** ⚠️  Rename symlink to symlinkTo ([33589dc](https://github.com/kikiutils/node-shared/commit/33589dc))
+- **storages:** ⚠️  Name TTL units and adapter TTL writes explicitly ([04ce962](https://github.com/kikiutils/node-shared/commit/04ce962))
+- ⚠️  Require `rotating-file-stream` 4 for logger rotation ([f0e5836](https://github.com/kikiutils/node-shared/commit/f0e5836))
+- ⚠️  Upgrade deps ([554bfce](https://github.com/kikiutils/node-shared/commit/554bfce))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v21.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v20.1.3...v21.0.0)
