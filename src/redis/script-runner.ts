@@ -11,8 +11,6 @@ import { createHash } from 'node:crypto';
  *
  * @param keys - The script's Redis keys, in `KEYS` order.
  * @param args - The script's arguments, in `ARGV` order.
- *
- * @returns A promise resolving to the Redis script result after execution completes.
  */
 export type RedisScriptRunner<T = unknown> = (keys: readonly string[], args: ReadonlyArray<number | string>) => Promise<
     T
@@ -27,12 +25,6 @@ export type RedisScriptRunner<T = unknown> = (keys: readonly string[], args: Rea
  * begin with the Redis error code `NOSCRIPT`, followed by whitespace or the end of the message.
  */
 export interface RedisLikeScriptClient {
-    /**
-     * Sends a raw Redis command and resolves to its reply, or rejects on failure.
-     *
-     * @param command - The Redis command name.
-     * @param args - The command arguments in protocol order.
-     */
     send: (command: string, args: string[]) => Promise<unknown>;
 }
 
@@ -44,11 +36,11 @@ export interface RedisLikeScriptClient {
  * `SCRIPT LOAD` before another execution attempt, provided the attempt limit has not been reached.
  * Concurrent cache misses on the same runner share an in-flight load; reuse the runner to share that load.
  * Load failures and errors other than `NOSCRIPT` propagate without retries. The final execution error is
- * preserved when the attempt limit is reached. The runner does not cache results or close the client.
+ * preserved when the attempt limit is reached. Results are not cached.
  *
  * @typeParam T - The expected Lua result type, without runtime validation.
  *
- * @param client - The caller-owned client used for raw Redis commands.
+ * @param client - Used for raw Redis commands; the runner never closes it.
  * @param source - The Lua source loaded when the script is absent from the server's cache.
  * @param maxAttempts - The maximum `EVALSHA` attempts per invocation, including the initial attempt.
  * Must be a positive safe integer. Defaults to `3`; `1` disables script loading and retries.
