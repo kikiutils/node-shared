@@ -11,12 +11,6 @@ export type DateRangeType = 'lastMonth' | 'lastWeek' | 'thisMonth' | 'thisWeek' 
  * Formatting uses the system time zone unless configured through date-fns options.
  * Invalid dates and unsupported patterns propagate date-fns exceptions.
  *
- * @param date - The date, timestamp in milliseconds, or date string to format.
- * @param format - The date-fns pattern. Defaults to `yyyy-MM-dd HH:mm:ss`.
- * @param options - Formatting options passed to date-fns.
- *
- * @returns The formatted date string.
- *
  * @example
  *
  * ```ts
@@ -34,8 +28,6 @@ export function formatDate(
     return dateFns.format(date, format, options);
 }
 
-/* eslint-disable jsdoc/check-param-names -- Inline TypeScript options are documented in remarks. */
-
 /**
  * Returns new start and end dates for a calendar range in the system time zone.
  *
@@ -44,12 +36,6 @@ export function formatDate(
  * When `options.setEndDateToNextDayStart` is `true`, the end is the exclusive start of the next calendar day.
  * `options.weekStartsOn` defaults to `1` (Monday); `0` means Sunday and `6` means Saturday.
  * Calendar ranges follow local daylight saving transitions rather than fixed 24-hour durations.
- *
- * @param date - The reference date for the range.
- * @param type - The current or previous day, week, or month to select.
- * @param options - Settings for the end boundary and first day of the week.
- *
- * @returns An object containing new `EnhancedDate` boundaries; the reference date is unchanged.
  *
  * @throws Error if the range type is unsupported at runtime.
  *
@@ -72,63 +58,47 @@ export function getDateRangeFromDate(
     },
 ) {
     const referenceDate = new EnhancedDate(date);
-    let endDate: EnhancedDate;
+    const weekOptions = { weekStartsOn: options?.weekStartsOn ?? 1 };
+    let nextStartDate: EnhancedDate;
     let startDate: EnhancedDate;
     switch (type) {
         case 'lastMonth':
-            {
-                const lastMonth = referenceDate.toSubMonths(1);
-                endDate = lastMonth.toEndOfMonth();
-                startDate = lastMonth.toStartOfMonth();
-            }
-
+            startDate = referenceDate.subMonths(1).startOfMonth();
+            nextStartDate = startDate.toAddMonths(1);
             break;
         case 'lastWeek':
-            {
-                const lastWeek = referenceDate.toSubWeeks(1);
-                endDate = lastWeek.toEndOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
-                startDate = lastWeek.toStartOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
-            }
-
+            startDate = referenceDate.subWeeks(1).startOfWeek(weekOptions);
+            nextStartDate = startDate.toAddWeeks(1);
             break;
         case 'thisMonth':
-            endDate = referenceDate.toEndOfMonth();
-            startDate = referenceDate.toStartOfMonth();
+            startDate = referenceDate.startOfMonth();
+            nextStartDate = startDate.toAddMonths(1);
             break;
         case 'thisWeek':
-            endDate = referenceDate.toEndOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
-            startDate = referenceDate.toStartOfWeek({ weekStartsOn: options?.weekStartsOn ?? 1 });
+            startDate = referenceDate.startOfWeek(weekOptions);
+            nextStartDate = startDate.toAddWeeks(1);
             break;
         case 'today':
-            endDate = referenceDate.toEndOfDay();
-            startDate = referenceDate.toStartOfDay();
+            startDate = referenceDate.startOfDay();
+            nextStartDate = startDate.toAddDays(1);
             break;
         case 'yesterday':
-            {
-                const yesterday = referenceDate.toSubDays(1);
-                endDate = yesterday.toEndOfDay();
-                startDate = yesterday.toStartOfDay();
-            }
-
+            startDate = referenceDate.subDays(1).startOfDay();
+            nextStartDate = startDate.toAddDays(1);
             break;
         default: throw new Error(`Unsupported date range type: ${type}`);
     }
 
-    if (options?.setEndDateToNextDayStart) endDate.setHours(24, 0, 0, 0);
+    // Deriving the inclusive end from the next period's start keeps a repeated daylight-saving hour at the end of
+    // the range, which a local `23:59:59.999` would resolve to its first occurrence.
     return {
-        endDate,
+        endDate: options?.setEndDateToNextDayStart ? nextStartDate : nextStartDate.subMilliseconds(1),
         startDate,
     };
 }
 
-/* eslint-enable jsdoc/check-param-names */
-
 /**
- * Returns a new date at the start of the local day, with an optional calendar-day offset from today.
- *
- * @param offsetDays - The calendar days to add; negative values select earlier days.
- *
- * @returns A new `EnhancedDate` at the start of the selected local day.
+ * Returns a new date at the start of the local day, offset by `offsetDays` calendar days from today.
  */
 export function getStartOfDayFromToday(offsetDays: number = 0) {
     return new EnhancedDate().addDays(offsetDays).startOfDay();

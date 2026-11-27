@@ -1,4 +1,4 @@
-import { enUS } from 'date-fns/locale';
+import { fr } from 'date-fns/locale';
 import {
     afterEach,
     describe,
@@ -42,7 +42,7 @@ describe('formatDate', () => {
         const originalTime = input.getTime();
 
         expect(formatDate(input)).toBe('2024-07-10 12:34:56');
-        expect(formatDate(input, 'MMMM', { locale: enUS })).toBe('July');
+        expect(formatDate(input, 'MMMM', { locale: fr })).toBe('juillet');
         expect(input.getTime()).toBe(originalTime);
     });
 
