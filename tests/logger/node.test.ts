@@ -583,14 +583,13 @@ describe('createNodeLogger', () => {
                 timestamp: false,
             });
 
-            await logger.info(
-                new Path('/tmp/a'),
-                new PrecisionNumber('1.5'),
-            );
+            const filePath = new Path('/tmp/a');
+            await logger.info(filePath, new PrecisionNumber('1.5'));
 
             await logger.close();
 
-            await expect(readFile(path, 'utf8')).resolves.toBe('/tmp/a 1.50\n');
+            // Path normalizes separators per platform, so the expected text comes from the instance.
+            await expect(readFile(path, 'utf8')).resolves.toBe(`${filePath.value} 1.50\n`);
         });
 
         it('should write [uninspectable value] for a throwing custom inspect, keep other arguments, and report a format diagnostic', async ({ expect }) => {
