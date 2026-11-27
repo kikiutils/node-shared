@@ -1,241 +1,28 @@
 import { Buffer } from 'node:buffer';
-import { createHash } from 'node:crypto';
+import { hash } from 'node:crypto';
 import type { BinaryLike } from 'node:crypto';
 
 /**
- * Computes the MD5 hash of the given data.
- *
- * @param data - The input data to hash.
- * @param outputEncoding - The output encoding. Defaults to `hex`.
- *
- * @returns The hash digest in the specified encoding.
- *
- * @example
- *
- * ```ts
- * import { cryptoMd5 } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoMd5('test')); // => 098f6bcd4621d373cade4e832627b4f6
- * ```
+ * Hashes data to a hex digest by default, to another text encoding, or to raw bytes with `'buffer'`.
  */
-export function cryptoMd5(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
-    return createHash('md5').update(normalizeHashData(data)).digest(outputEncoding);
+export interface CryptoHashFunction {
+    (data: BinaryLike, outputEncoding?: BufferEncoding): string;
+    (data: BinaryLike, outputEncoding: 'buffer'): Buffer<ArrayBuffer>;
+    (data: BinaryLike, outputEncoding: 'buffer' | BufferEncoding): Buffer<ArrayBuffer> | string;
 }
 
-/**
- * Computes the MD5 hash of the given data and returns the raw buffer.
- *
- * @param data - The input data to hash.
- *
- * @returns A new `Buffer` containing the raw hash digest.
- *
- * @example
- *
- * ```ts
- * import { cryptoMd5ToBuffer } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoMd5ToBuffer('test')); // => <Buffer 09 8f 6b cd ...>
- * ```
- */
-export function cryptoMd5ToBuffer(data: BinaryLike) {
-    return createHash('md5').update(normalizeHashData(data)).digest();
-}
+// Functions
+export const cryptoMd5 = /* @__PURE__ */ createCryptoHashFunction('md5');
+export const cryptoSha256 = /* @__PURE__ */ createCryptoHashFunction('sha256');
+export const cryptoSha3224 = /* @__PURE__ */ createCryptoHashFunction('sha3-224');
+export const cryptoSha3256 = /* @__PURE__ */ createCryptoHashFunction('sha3-256');
+export const cryptoSha3384 = /* @__PURE__ */ createCryptoHashFunction('sha3-384');
+export const cryptoSha3512 = /* @__PURE__ */ createCryptoHashFunction('sha3-512');
 
-/**
- * Computes the SHA-256 hash of the given data.
- *
- * @param data - The input data to hash.
- * @param outputEncoding - The output encoding. Defaults to `hex`.
- *
- * @returns The hash digest in the specified encoding.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha256 } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha256('test')); // => 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
- * ```
- */
-export function cryptoSha256(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
-    return createHash('sha256').update(normalizeHashData(data)).digest(outputEncoding);
-}
-
-/**
- * Computes the SHA-256 hash of the given data and returns the raw buffer.
- *
- * @param data - The input data to hash.
- *
- * @returns A new `Buffer` containing the raw hash digest.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha256ToBuffer } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha256ToBuffer('test')); // => <Buffer 9f 86 d0 81 ...>
- * ```
- */
-export function cryptoSha256ToBuffer(data: BinaryLike) {
-    return createHash('sha256').update(normalizeHashData(data)).digest();
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 224-bit digest.
- *
- * @param data - The input data to hash.
- * @param outputEncoding - The output encoding. Defaults to `hex`.
- *
- * @returns The hash digest in the specified encoding.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3224 } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3224('test')); // => 3797bf0afbbfca4a7bbba7602a2b552746876517a7f9b7ce2db0ae7b
- * ```
- */
-export function cryptoSha3224(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
-    return createHash('sha3-224').update(normalizeHashData(data)).digest(outputEncoding);
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 224-bit digest and returns the raw buffer.
- *
- * @param data - The input data to hash.
- *
- * @returns A new `Buffer` containing the raw hash digest.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3224ToBuffer } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3224ToBuffer('test')); // => <Buffer 37 97 bf 0a ...>
- * ```
- */
-export function cryptoSha3224ToBuffer(data: BinaryLike) {
-    return createHash('sha3-224').update(normalizeHashData(data)).digest();
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 256-bit digest.
- *
- * @param data - The input data to hash.
- * @param outputEncoding - The output encoding. Defaults to `hex`.
- *
- * @returns The hash digest in the specified encoding.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3256('test')); // => 36f028580bb02cc8272a9a020f4200e346e276ae664e45ee80745574e2f5ab80
- * ```
- */
-export function cryptoSha3256(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
-    return createHash('sha3-256').update(normalizeHashData(data)).digest(outputEncoding);
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 256-bit digest and returns the raw buffer.
- *
- * @param data - The input data to hash.
- *
- * @returns A new `Buffer` containing the raw hash digest.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3256ToBuffer } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3256ToBuffer('test')); // => <Buffer 36 f0 28 ...>
- * ```
- */
-export function cryptoSha3256ToBuffer(data: BinaryLike) {
-    return createHash('sha3-256').update(normalizeHashData(data)).digest();
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 384-bit digest.
- *
- * @param data - The input data to hash.
- * @param outputEncoding - The output encoding. Defaults to `hex`.
- *
- * @returns The hash digest in the specified encoding.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3384 } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3384('test')); // => e516dabb23b6e30026863543282780a3ae0dccf05551cf0295178d7f...
- * ```
- */
-export function cryptoSha3384(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
-    return createHash('sha3-384').update(normalizeHashData(data)).digest(outputEncoding);
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 384-bit digest and returns the raw buffer.
- *
- * @param data - The input data to hash.
- *
- * @returns A new `Buffer` containing the raw hash digest.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3384ToBuffer } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3384ToBuffer('test')); // => <Buffer e5 16 da bb ...>
- * ```
- */
-export function cryptoSha3384ToBuffer(data: BinaryLike) {
-    return createHash('sha3-384').update(normalizeHashData(data)).digest();
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 512-bit digest.
- *
- * @param data - The input data to hash.
- * @param outputEncoding - The output encoding. Defaults to `hex`.
- *
- * @returns The hash digest in the specified encoding.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3512 } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3512('test')); // => 9ece086e9bac491fac5c1d1046ca11d737b92a2b2ebd93f005d7...
- * ```
- */
-export function cryptoSha3512(data: BinaryLike, outputEncoding: BufferEncoding = 'hex') {
-    return createHash('sha3-512').update(normalizeHashData(data)).digest(outputEncoding);
-}
-
-/**
- * Computes the SHA-3 hash of the given data using the 512-bit digest and returns the raw buffer.
- *
- * @param data - The input data to hash.
- *
- * @returns A new `Buffer` containing the raw hash digest.
- *
- * @example
- *
- * ```ts
- * import { cryptoSha3512ToBuffer } from '@kikiutils/shared/crypto-hash';
- *
- * console.log(cryptoSha3512ToBuffer('test')); // => <Buffer 9e ce 08 6e ...>
- * ```
- */
-export function cryptoSha3512ToBuffer(data: BinaryLike) {
-    return createHash('sha3-512').update(normalizeHashData(data)).digest();
-}
-
-function normalizeHashData(data: BinaryLike): NodeJS.ArrayBufferView | string {
-    return typeof data === 'string' || ArrayBuffer.isView(data) ? data : Buffer.from(data);
+function createCryptoHashFunction(algorithm: string) {
+    return ((data: BinaryLike, outputEncoding: 'buffer' | BufferEncoding = 'hex') => {
+        // `BinaryLike` admits `ArrayBuffer`, but Node's hash functions reject it at runtime.
+        const input = typeof data === 'string' || ArrayBuffer.isView(data) ? data : Buffer.from(data);
+        return hash(algorithm, input, outputEncoding);
+    }) as CryptoHashFunction;
 }
