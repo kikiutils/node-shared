@@ -3,8 +3,6 @@ import type { GlobalComponents } from 'vue';
 /**
  * A nullable reference to an instance of a globally registered Vue component.
  *
- * @typeParam K - The component name in Vue's `GlobalComponents` registry.
- *
  * @example
  *
  * ```ts
@@ -14,4 +12,6 @@ import type { GlobalComponents } from 'vue';
  * const keepAliveRef = ref<ComponentRef<'KeepAlive'>>(null);
  * ```
  */
-export type ComponentRef<K extends keyof GlobalComponents> = InstanceType<GlobalComponents[K]> | null;
+export type ComponentRef<K extends keyof GlobalComponents> = GlobalComponents[K] extends abstract new (
+    ...args: any
+) => infer Instance ? Instance | null : never;

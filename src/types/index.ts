@@ -1,43 +1,22 @@
-import type {
-    Buffer,
-    Blob as NodeBlob,
-    File as NodeFile,
-} from 'node:buffer';
+import type { Blob as NodeBlob } from 'node:buffer';
 
 /**
- * Binary-like inputs accepted by `toBuffer` across browser and Node.js runtimes.
+ * Binary inputs accepted across browser and Node.js runtimes; `Buffer` and `File` are covered by `Uint8Array` and
+ * `Blob`.
  */
-export type BinaryInput = ArrayBuffer | Blob | Buffer | File | NodeBlob | NodeFile | Uint8Array;
+export type BinaryInput = ArrayBuffer | Blob | NodeBlob | Uint8Array;
 
-/**
- * Boolean values represented either as booleans or common string literals.
- */
 export type Booleanish = 'false' | 'true' | boolean;
 
-/**
- * Accepts either a full object or a partial patch of that object.
- */
 export type MaybePartial<T> = Partial<T> | T;
 
-/**
- * Accepts either a mutable value or a readonly view of that value.
- */
 export type MaybeReadonly<T> = Readonly<T> | T;
 
-/**
- * A `Record` where every key is optional.
- */
-export type PartialRecord<K extends keyof any, T> = Partial<Record<K, T>>;
+export type PartialRecord<K extends PropertyKey, T> = Partial<Record<K, T>>;
 
-/**
- * A readonly `PartialRecord`.
- */
-export type ReadonlyPartialRecord<K extends keyof any, T> = Readonly<PartialRecord<K, T>>;
+export type ReadonlyPartialRecord<K extends PropertyKey, T> = Readonly<PartialRecord<K, T>>;
 
-/**
- * A readonly `Record`.
- */
-export type ReadonlyRecord<K extends keyof any, T> = Readonly<Record<K, T>>;
+export type ReadonlyRecord<K extends PropertyKey, T> = Readonly<Record<K, T>>;
 
 /**
  * A promise whose rejection is handled internally and can safely be left unawaited.
