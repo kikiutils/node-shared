@@ -3,7 +3,6 @@
  *
  * @remarks
  * An empty array, `null`, or `undefined` selects the fallback; omission of a fallback yields `undefined`.
- * The input and selected values are not copied or changed.
  *
  * @example
  *
@@ -22,9 +21,9 @@
  * ```
  */
 export function extractFirstValue<T>(value: readonly T[] | T): T | undefined;
-export function extractFirstValue<T, D>(value: readonly T[] | T, defaultValue: D): D | NonNullable<T>;
-export function extractFirstValue<T, D>(value: readonly T[] | T, defaultValue?: D) {
-    return (Array.isArray(value) ? value[0] : value) ?? defaultValue;
+export function extractFirstValue<T, D>(value: readonly T[] | T, fallback: D): D | NonNullable<T>;
+export function extractFirstValue<T, D>(value: readonly T[] | T, fallback?: D) {
+    return (Array.isArray(value) ? value[0] : value) ?? fallback;
 }
 
 /**

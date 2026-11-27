@@ -7,7 +7,6 @@ import type { FormItemRule } from 'element-plus';
  * Defaults to `required: true`, `trigger: 'blur'`, and `type: 'string'`.
  * Options left `undefined` use those defaults.
  * The `message` argument takes precedence over `options.message`.
- * The options object is unchanged.
  *
  * @example
  *

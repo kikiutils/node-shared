@@ -7,7 +7,6 @@
  *
  * @param blob - The blob whose MIME type identifies the clipboard format; browsers only write supported types such as
  * `text/plain` or `image/png`, so an untyped blob resolves to `false`.
- * @param options - Options passed to the `ClipboardItem` constructor.
  *
  * @example
  *
