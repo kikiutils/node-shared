@@ -53,4 +53,17 @@ describe('createRedisKeyedStore', () => {
         expect(hasItem).toHaveBeenCalledWith('acme:user:1');
         expect(removeItem).toHaveBeenCalledWith('acme:user:1');
     });
+
+    it('should surface key resolver errors as rejections without calling storage', async ({ expect }) => {
+        const error = new Error('bad key');
+        const getItem = vi.fn();
+        const store = createRedisKeyedStore({ getItem } as unknown as RedisLikeStorage)(() => {
+            throw error;
+        });
+
+        const result = store.getItem();
+
+        await expect(result).rejects.toBe(error);
+        expect(getItem).not.toHaveBeenCalled();
+    });
 });

@@ -9,6 +9,8 @@ import type {
     RedisLikeStorage,
 } from './types';
 
+// A deliberate import-time side effect, declared in package.json `sideEffects`: it flags installs missing the
+// native msgpackr addon.
 if (!isNativeAccelerationEnabled) {
     console.warn('Native acceleration not enabled for msgpackr, verify that install finished properly');
 }
@@ -17,15 +19,8 @@ if (!isNativeAccelerationEnabled) {
  * Creates a frozen Redis-like storage facade using MessagePack serialization.
  *
  * @remarks
- * Adapter rejections and MessagePack serialization errors propagate to the caller.
- * Reads resolve to `null` when no raw value exists; `getAndRemoveItem` reads and deletes in one atomic adapter call.
- * Writes resolve to `true` only when the adapter returns `OK`;
- * removal resolves to `true` only when exactly one key is deleted.
- * The adapter remains caller-owned; creating the facade does not open or close a connection.
- *
- * @param adapter - The caller-owned adapter for raw binary operations.
- *
- * @returns A new frozen facade sharing the supplied adapter.
+ * Writes resolve to `true` only when the adapter returns `OK`; removal resolves to `true` only when exactly one key
+ * is deleted.
  *
  * @example
  *
@@ -76,11 +71,11 @@ export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<R
         getItemTtl: async (key: string) => await adapter.ttl(key),
         hasItem: async (key: string) => await adapter.has(key),
         removeItem: async (key: string) => await adapter.delete(key) === 1,
-        setItem: async (key: string, value: any) => await adapter.setBuffer(key, encode(value)) === 'OK',
-        async setItemWithTtl(key: string, ttlSeconds: number, value: any) {
+        setItem: async (key: string, value: unknown) => await adapter.setBuffer(key, encode(value)) === 'OK',
+        async setItemWithTtl(key: string, ttlSeconds: number, value: unknown) {
             return await adapter.setBufferEx(key, ttlSeconds, encode(value)) === 'OK';
         },
-        async setItemWithTtlIfAbsent(key: string, ttlSeconds: number, value: any) {
+        async setItemWithTtlIfAbsent(key: string, ttlSeconds: number, value: unknown) {
             return await adapter.setBufferExNx(key, ttlSeconds, encode(value)) === 'OK';
         },
     });

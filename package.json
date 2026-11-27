@@ -29,7 +29,9 @@
     "storage",
     "logging"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/storages/redis/msgpack.js"
+  ],
   "exports": {
     "./buffer": "./dist/buffer.js",
     "./clipboard": "./dist/clipboard.js",

@@ -3,7 +3,6 @@
  *
  * @remarks
  * Each callback performs one operation and rejects its promise on backend failure.
- * TTL results use Redis conventions: `-1` means no expiry, and `-2` means the key is missing.
  */
 export interface RedisLikeAdapter {
     /**
@@ -22,9 +21,6 @@ export interface RedisLikeAdapter {
      */
     getBufferAndDelete: (key: string) => Promise<null | Uint8Array>;
 
-    /**
-     * Checks a key and resolves to whether it exists.
-     */
     has: (key: string) => Promise<boolean>;
 
     /**
@@ -34,20 +30,12 @@ export interface RedisLikeAdapter {
 
     /**
      * Writes raw bytes with an expiry and resolves to the backend acknowledgment, or no value.
-     *
-     * @param key - The storage key.
-     * @param ttlSeconds - The expiry duration in seconds.
-     * @param value - The raw bytes to store.
      */
     setBufferEx: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | void>;
 
     /**
      * Writes raw bytes with an expiry only when the key is missing, such as with Redis `SET key value EX ttl NX`,
      * and resolves to the backend acknowledgment, or `null` or no value when the key already exists.
-     *
-     * @param key - The storage key.
-     * @param ttlSeconds - The expiry duration in seconds.
-     * @param value - The raw bytes to store.
      */
     setBufferExNx: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | null | void>;
 
@@ -61,13 +49,13 @@ export interface RedisLikeAdapter {
  * An asynchronous Redis-like storage contract with typed reads and serialized writes.
  *
  * @remarks
- * Operations reject on backend or serialization failure. TTL values are in seconds;
- * `-1` means no expiry, and `-2` means the key is missing. Connection cleanup remains caller-owned.
+ * Operations reject on backend or serialization failure.
  */
 export interface RedisLikeStorage {
     /**
      * Atomically reads and removes a deserialized value and resolves to `null` when the key is missing.
-     * Concurrent callers on the same key receive the value at most once.
+     * Concurrent callers on the same key receive the value at most once. The key is removed before deserialization,
+     * so a value that fails to deserialize is still lost.
      *
      * @typeParam T - The expected value type; deserialization does not validate this type.
      */
@@ -85,9 +73,6 @@ export interface RedisLikeStorage {
      */
     getItemTtl: (key: string) => Promise<number>;
 
-    /**
-     * Checks a key and resolves to whether it exists.
-     */
     hasItem: (key: string) => Promise<boolean>;
 
     /**
@@ -98,24 +83,16 @@ export interface RedisLikeStorage {
     /**
      * Stores a value and resolves to whether the backend acknowledges the write.
      */
-    setItem: (key: string, value: any) => Promise<boolean>;
+    setItem: (key: string, value: unknown) => Promise<boolean>;
 
     /**
      * Stores a value with an expiry and resolves to whether the backend acknowledges the write.
-     *
-     * @param key - The storage key.
-     * @param ttlSeconds - The expiry duration in seconds.
-     * @param value - The value to serialize and store.
      */
-    setItemWithTtl: (key: string, ttlSeconds: number, value: any) => Promise<boolean>;
+    setItemWithTtl: (key: string, ttlSeconds: number, value: unknown) => Promise<boolean>;
 
     /**
      * Atomically stores a value with an expiry only when the key is missing
      * and resolves to whether the backend acknowledges the write.
-     *
-     * @param key - The storage key.
-     * @param ttlSeconds - The expiry duration in seconds.
-     * @param value - The value to serialize and store.
      */
-    setItemWithTtlIfAbsent: (key: string, ttlSeconds: number, value: any) => Promise<boolean>;
+    setItemWithTtlIfAbsent: (key: string, ttlSeconds: number, value: unknown) => Promise<boolean>;
 }

@@ -1,24 +1,15 @@
-import type { MaybeReadonly } from '../../types';
-
 import type { RedisLikeStorage } from './types';
 
 /**
  * Creates a keyed store factory sharing a caller-owned Redis-like storage facade.
  *
  * @remarks
- * The key resolver is called synchronously once per operation with the operation's key arguments.
- * Resolver exceptions propagate synchronously; asynchronous storage failures retain the underlying rejection.
- * `setItemWithTtl` and `setItemWithTtlIfAbsent` accept their TTL in seconds before the value and key arguments.
- * The factory does not open or close the underlying connection; cleanup remains the caller's responsibility.
- *
- * @typeParam D - The stored value type used by reads and writes.
- *
- * @param storage - The shared Redis-like storage instance.
+ * The key resolver is called once per operation with the operation's key arguments. In storage operations its
+ * exceptions and storage failures both surface as rejections; `resolveKey` throws them synchronously.
  *
  * @returns A factory accepting a key resolver and returning a new frozen keyed facade sharing the storage.
- * Reads, atomic read-and-removals, writes, removals, and TTL results retain the underlying storage contract.
  */
-export function createRedisKeyedStore<D = unknown>(storage: MaybeReadonly<RedisLikeStorage>) {
+export function createRedisKeyedStore<D = unknown>(storage: RedisLikeStorage) {
     return <P extends any[]>(keyFn: (...args: P) => string) => Object.freeze({
         getAndRemoveItem: async (...args: P) => await storage.getAndRemoveItem<D>(keyFn(...args)),
         getItem: async (...args: P) => await storage.getItem<D>(keyFn(...args)),
