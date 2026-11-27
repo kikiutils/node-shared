@@ -267,6 +267,25 @@ describe('class Path', () => {
             expect(existing).toBeUndefined();
         });
 
+        it('should read symlink metadata without following the link', async ({ expect }) => {
+            const target = tempPath.join('target');
+            const link = tempPath.join('link');
+            await target.mkdir();
+            await fsp.symlink(target.toString(), link.toString());
+
+            const stats = await link.lstat();
+
+            expectTypeOf(stats).toEqualTypeOf<Stats>();
+            expect(stats.isSymbolicLink()).toBe(true);
+            expect((await link.stat()).isDirectory()).toBe(true);
+
+            const missing = await tempPath.join('missing').lstat({ throwIfNoEntry: false });
+
+            expectTypeOf(missing).toEqualTypeOf<Stats | undefined>();
+            expect(missing).toBeUndefined();
+            await expect(tempPath.join('missing').lstat()).rejects.toMatchObject({ code: 'ENOENT' });
+        });
+
         it('should infer stat metadata types when missing paths reject', async ({ expect }) => {
             const stats = await tempPath.stat();
 

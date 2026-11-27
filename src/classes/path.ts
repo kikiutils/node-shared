@@ -297,6 +297,45 @@ export class Path {
     }
 
     /**
+     * Reads file system metadata for the stored path without following a final symbolic link.
+     *
+     * @remarks
+     * The promise resolves to `Stats`, or `BigIntStats` when `bigint` is enabled.
+     * If `throwIfNoEntry` is `false`, a missing path resolves to `undefined` instead of rejecting.
+     *
+     * @see {@link https://nodejs.org/api/fs.html | Node.js fsPromises.lstat}
+     */
+    lstat(
+        opts?: fs.StatOptions & {
+            bigint?: false;
+            throwIfNoEntry?: true;
+        },
+    ): Promise<fs.Stats>;
+    lstat(
+        opts: fs.StatOptions & {
+            bigint: true;
+            throwIfNoEntry?: true;
+        },
+    ): Promise<fs.BigIntStats>;
+    lstat(
+        opts: fs.StatOptions & {
+            bigint?: false;
+            throwIfNoEntry: false;
+        },
+    ): Promise<fs.Stats | undefined>;
+    lstat(
+        opts: fs.StatOptions & {
+            bigint: true;
+            throwIfNoEntry: false;
+        },
+    ): Promise<fs.BigIntStats | undefined>;
+    lstat(opts: fs.StatOptions & { throwIfNoEntry?: true }): Promise<fs.BigIntStats | fs.Stats>;
+    lstat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined>;
+    async lstat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined> {
+        return await readStats(fsp.lstat, this.#value, opts);
+    }
+
+    /**
      * Creates a directory at the stored path.
      *
      * @remarks
@@ -493,18 +532,7 @@ export class Path {
     stat(opts: fs.StatOptions & { throwIfNoEntry?: true }): Promise<fs.BigIntStats | fs.Stats>;
     stat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined>;
     async stat(opts?: fs.StatOptions): Promise<fs.BigIntStats | fs.Stats | undefined> {
-        try {
-            return await fsp.stat(this.#value, opts);
-        } catch (error) {
-            if (
-                opts?.throwIfNoEntry === false
-                && error instanceof Error
-                && 'code' in error
-                && error.code === 'ENOENT'
-            ) return undefined;
-
-            throw error;
-        }
+        return await readStats(fsp.stat, this.#value, opts);
     }
 
     /**
@@ -541,5 +569,24 @@ export class Path {
      */
     async writeFile(...args: DropFirstParameters<typeof fsp.writeFile>) {
         return await fsp.writeFile(this.#value, ...args);
+    }
+}
+
+async function readStats(
+    read: (path: string, opts?: fs.StatOptions) => Promise<fs.BigIntStats | fs.Stats>,
+    path: string,
+    opts?: fs.StatOptions,
+) {
+    try {
+        return await read(path, opts);
+    } catch (error) {
+        if (
+            opts?.throwIfNoEntry === false
+            && error instanceof Error
+            && 'code' in error
+            && error.code === 'ENOENT'
+        ) return undefined;
+
+        throw error;
     }
 }
