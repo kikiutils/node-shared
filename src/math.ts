@@ -1,6 +1,8 @@
 import { Decimal } from 'decimal.js';
 
-type CalculableValue = Decimal.Value | { toString: () => string };
+import type { PrecisionNumber } from './classes/precision-number';
+
+type CalculableValue = bigint | Decimal.Value | PrecisionNumber;
 
 export interface ToPercentageStringOptions {
     /**

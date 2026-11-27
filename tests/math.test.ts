@@ -4,6 +4,7 @@ import {
     it,
 } from 'vitest';
 
+import { PrecisionNumber } from '../src/classes/precision-number';
 import { toPercentageString } from '../src/math';
 
 describe('toPercentageString', () => {
@@ -24,9 +25,14 @@ describe('toPercentageString', () => {
             numerator: new Decimal(75),
         },
         {
-            denominator: { toString: () => '160' },
-            name: 'stringifiable objects',
-            numerator: { toString: () => '40' },
+            denominator: new PrecisionNumber(160),
+            name: 'PrecisionNumber instances',
+            numerator: new PrecisionNumber(40),
+        },
+        {
+            denominator: 8n,
+            name: 'bigints',
+            numerator: 2n,
         },
     ])(
         'should format $name with the default precision and symbol',
