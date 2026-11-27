@@ -1,21 +1,41 @@
 import { Decimal } from 'decimal.js';
 
+// Private constructors isolate arithmetic from `Decimal.set` calls elsewhere. Sums, differences, products, and
+// remainders have bounded digits, so they run at the maximum precision and stay exact; only division and powers,
+// whose exact results can be unbounded, round at 100 significant digits before the final `decimalPlaces` rounding.
+const ExactDecimal = Decimal.clone({
+    defaults: true,
+    precision: 1e9,
+});
+
+const BoundedDecimal = Decimal.clone({
+    defaults: true,
+    precision: 100,
+});
+
+// Plain decimal notation only: decimal.js would also accept hex, binary, octal, exponent notation, `NaN`, and
+// `Infinity`, and an unbounded exponent lets `toFixed` build an arbitrarily long string.
+const decimalStringPattern = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/;
+
 /**
  * Values accepted by `PrecisionNumber` constructors and arithmetic methods.
+ *
+ * @remarks
+ * Strings must use plain decimal notation, optionally signed and surrounded by whitespace; numbers and `Decimal`
+ * instances must be finite. Bigints are always accepted.
  */
-export type PrecisionNumberValue = Decimal.Value | PrecisionNumber | { toString: () => string };
+export type PrecisionNumberValue = Decimal.Value | PrecisionNumber;
 
 /**
  * A fixed-decimal number with mutable and immutable arithmetic operations.
  *
  * @remarks
- * `PrecisionNumber` stores values as `Decimal`, rounds every mutating operation to
- * the configured decimal places, and exposes both mutable and immutable arithmetic
- * methods. Mutable methods (`plus`, `minus`, `times`, `dividedBy`, `modulo`,
- * `pow`, `clamp`, `ceil`, `floor`, `negate`, `absoluteValue`) update the current
- * instance and return `this`; immutable methods prefixed with `to` return a new
- * `PrecisionNumber` with the same precision settings, leaving this instance unchanged.
- * Decimal.js exceptions propagate unchanged; non-finite arithmetic results are not converted into exceptions.
+ * Every operation rounds its result to the configured decimal places. Arithmetic methods update this instance and
+ * return `this`; their `to`-prefixed counterparts return a new instance with the same configuration instead.
+ * Addition, subtraction, multiplication, and remainders are exact before that rounding; division and powers keep
+ * 100 significant digits. Results ignore the global `Decimal` configuration, and negative zero is stored as zero.
+ * Invalid inputs throw `TypeError`, and operations whose result is not finite, such as division by zero, throw
+ * `RangeError` without changing the value.
  *
  * @example
  *
@@ -41,6 +61,8 @@ export class PrecisionNumber {
      * @param value - Initial value (default: `'0'`).
      * @param decimalPlaces - Decimal places retained after operations (default: `2`).
      * @param rounding - Decimal.js rounding mode (default: `Decimal.ROUND_DOWN`).
+     *
+     * @throws TypeError if the value is not a finite plain decimal.
      */
     constructor(
         value: PrecisionNumberValue = '0',
@@ -49,16 +71,44 @@ export class PrecisionNumber {
     ) {
         this.#decimalPlaces = decimalPlaces;
         this.#rounding = rounding;
-        this.#decimal = this.#decimalToFixedDecimal(new Decimal(value.toString().trim()));
+        this.#decimal = this.#round(PrecisionNumber.#toDecimal(value));
+    }
+
+    // Private static methods
+    static #parse(value: unknown): Decimal | undefined {
+        if (value instanceof PrecisionNumber) return value.#decimal;
+        if (typeof value === 'string') {
+            const text = value.trim();
+            return decimalStringPattern.test(text) ? new ExactDecimal(text) : undefined;
+        }
+
+        if (typeof value === 'bigint') return new ExactDecimal(value);
+        if (typeof value === 'number') return Number.isFinite(value) ? new ExactDecimal(value) : undefined;
+        if (!Decimal.isDecimal(value)) return;
+        try {
+            const decimal = new ExactDecimal(value);
+            return decimal.isFinite() ? decimal : undefined;
+        } catch {
+            // Objects that only imitate the Decimal brand cannot be converted.
+        }
+    }
+
+    static #toDecimal(value: PrecisionNumberValue) {
+        const decimal = PrecisionNumber.#parse(value);
+        if (!decimal) throw new TypeError('Invalid decimal value: expected a finite plain decimal');
+        return decimal;
     }
 
     // Private instance methods
-    #decimalToFixedDecimal(decimal: Decimal) {
-        return decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding);
+    #round(decimal: Decimal) {
+        const rounded = new ExactDecimal(decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding));
+        if (!rounded.isFinite()) throw new RangeError('Result is not finite');
+        return rounded.isZero() ? new ExactDecimal(0) : rounded;
     }
 
-    #valueToString(value: PrecisionNumberValue) {
-        return value.toString().trim();
+    #set(decimal: Decimal) {
+        this.#decimal = this.#round(decimal);
+        return this;
     }
 
     // Public instance accessors
@@ -87,20 +137,45 @@ export class PrecisionNumber {
     // Public static methods
 
     /**
-     * Formats a value with decimal.js without creating a reusable instance.
+     * Formats a value as an instance with the given configuration would.
      *
      * @param value - Value to format.
      * @param decimalPlaces - Decimal places to output (default: `2`).
      * @param rounding - Decimal.js rounding mode (default: `Decimal.ROUND_DOWN`).
      *
      * @returns Fixed-decimal string.
+     *
+     * @throws TypeError if the value is not a finite plain decimal.
      */
     static toFixed(
         value: PrecisionNumberValue,
         decimalPlaces: number = 2,
         rounding: Decimal.Rounding = Decimal.ROUND_DOWN,
     ) {
-        return new Decimal(value.toString().trim()).toFixed(decimalPlaces, rounding);
+        return new PrecisionNumber(value, decimalPlaces, rounding).value;
+    }
+
+    /**
+     * Creates an instance, or returns `undefined` when the value is not a finite plain decimal.
+     *
+     * @remarks
+     * Use this to validate untrusted input. Invalid `decimalPlaces` or `rounding` arguments throw regardless of the
+     * value.
+     *
+     * @example
+     *
+     * ```ts
+     * const isPositiveAmount = (input: string) => PrecisionNumber.tryFrom(input)?.gt(0) ?? false;
+     * ```
+     */
+    static tryFrom(
+        value: unknown,
+        decimalPlaces: number = 2,
+        rounding: Decimal.Rounding = Decimal.ROUND_DOWN,
+    ) {
+        const instance = new PrecisionNumber('0', decimalPlaces, rounding);
+        const decimal = PrecisionNumber.#parse(value);
+        return decimal ? instance.#set(decimal) : undefined;
     }
 
     // Public instance methods
@@ -128,39 +203,37 @@ export class PrecisionNumber {
      * @returns This instance for chaining.
      */
     absoluteValue() {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.absoluteValue());
-        return this;
+        return this.#set(this.#decimal.absoluteValue());
     }
 
     /**
      * Rounds the current value up to the nearest integer in place.
      *
-     * @remarks
-     * The stored value still uses this instance's configured decimal places for output.
-     *
      * @returns This instance for chaining.
      */
     ceil() {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.ceil());
-        return this;
+        return this.#set(this.#decimal.ceil());
     }
 
     /**
      * Restricts the current value to the inclusive range `[min, max]` in place.
+     *
+     * @remarks
+     * The bounds apply before rounding, so a bound with more decimal places than this instance can round outside
+     * the range.
      *
      * @param min - Lower bound.
      * @param max - Upper bound.
      *
      * @returns This instance for chaining.
      *
-     * @throws Error if `min` is greater than `max`.
+     * @throws RangeError if `min` is greater than `max`.
      */
     clamp(min: PrecisionNumberValue, max: PrecisionNumberValue) {
-        const minDecimal = new Decimal(this.#valueToString(min));
-        const maxDecimal = new Decimal(this.#valueToString(max));
-        if (minDecimal.gt(maxDecimal)) throw new Error('Invalid clamp range: min cannot be greater than max');
-        this.#decimal = this.#decimalToFixedDecimal(Decimal.min(Decimal.max(this.#decimal, minDecimal), maxDecimal));
-        return this;
+        const minDecimal = PrecisionNumber.#toDecimal(min);
+        const maxDecimal = PrecisionNumber.#toDecimal(max);
+        if (minDecimal.gt(maxDecimal)) throw new RangeError('Invalid clamp range: min cannot be greater than max');
+        return this.#set(ExactDecimal.min(ExactDecimal.max(this.#decimal, minDecimal), maxDecimal));
     }
 
     /**
@@ -178,8 +251,7 @@ export class PrecisionNumber {
      * @returns This instance for chaining.
      */
     dividedBy(value: PrecisionNumberValue) {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.dividedBy(this.#valueToString(value)));
-        return this;
+        return this.#set(new BoundedDecimal(this.#decimal).dividedBy(PrecisionNumber.#toDecimal(value)));
     }
 
     /**
@@ -190,41 +262,30 @@ export class PrecisionNumber {
      * @returns Whether both numeric values are equal.
      */
     equals(value: PrecisionNumberValue) {
-        return this.#decimal.equals(this.#valueToString(value));
+        return this.#decimal.equals(PrecisionNumber.#toDecimal(value));
     }
 
     /**
      * Rounds the current value down to the nearest integer in place.
      *
-     * @remarks
-     * The stored value still uses this instance's configured decimal places for output.
-     *
      * @returns This instance for chaining.
      */
     floor() {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.floor());
-        return this;
+        return this.#set(this.#decimal.floor());
     }
 
     /**
      * Checks whether the current value is greater than another value.
      */
     gt(value: PrecisionNumberValue) {
-        return this.#decimal.gt(this.#valueToString(value));
+        return this.#decimal.gt(PrecisionNumber.#toDecimal(value));
     }
 
     /**
      * Checks whether the current value is greater than or equal to another value.
      */
     gte(value: PrecisionNumberValue) {
-        return this.#decimal.gte(this.#valueToString(value));
-    }
-
-    /**
-     * Checks whether the current value is finite.
-     */
-    isFinite() {
-        return this.#decimal.isFinite();
+        return this.#decimal.gte(PrecisionNumber.#toDecimal(value));
     }
 
     /**
@@ -235,24 +296,17 @@ export class PrecisionNumber {
     }
 
     /**
-     * Checks whether the current value is `NaN`.
-     */
-    isNaN() {
-        return this.#decimal.isNaN();
-    }
-
-    /**
-     * Checks whether the current value is negative.
+     * Checks whether the current value is less than zero.
      */
     isNegative() {
-        return this.#decimal.isNegative();
+        return this.#decimal.lt(0);
     }
 
     /**
-     * Checks whether the current value is positive.
+     * Checks whether the current value is greater than zero.
      */
     isPositive() {
-        return this.#decimal.isPositive();
+        return this.#decimal.gt(0);
     }
 
     /**
@@ -266,22 +320,21 @@ export class PrecisionNumber {
      * Checks whether the current value is less than another value.
      */
     lt(value: PrecisionNumberValue) {
-        return this.#decimal.lt(this.#valueToString(value));
+        return this.#decimal.lt(PrecisionNumber.#toDecimal(value));
     }
 
     /**
      * Checks whether the current value is less than or equal to another value.
      */
     lte(value: PrecisionNumberValue) {
-        return this.#decimal.lte(this.#valueToString(value));
+        return this.#decimal.lte(PrecisionNumber.#toDecimal(value));
     }
 
     /**
      * Subtracts another value from the current value in place.
      */
     minus(value: PrecisionNumberValue) {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.minus(this.#valueToString(value)));
-        return this;
+        return this.#set(this.#decimal.minus(PrecisionNumber.#toDecimal(value)));
     }
 
     /**
@@ -292,24 +345,21 @@ export class PrecisionNumber {
      * @returns This instance for chaining.
      */
     modulo(value: PrecisionNumberValue) {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.modulo(this.#valueToString(value)));
-        return this;
+        return this.#set(this.#decimal.modulo(PrecisionNumber.#toDecimal(value)));
     }
 
     /**
      * Negates the current value in place.
      */
     negate() {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.negated());
-        return this;
+        return this.#set(this.#decimal.negated());
     }
 
     /**
      * Adds another value to the current value in place.
      */
     plus(value: PrecisionNumberValue) {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.plus(this.#valueToString(value)));
-        return this;
+        return this.#set(this.#decimal.plus(PrecisionNumber.#toDecimal(value)));
     }
 
     /**
@@ -320,30 +370,28 @@ export class PrecisionNumber {
      * @returns This instance for chaining.
      */
     pow(value: PrecisionNumberValue) {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.pow(this.#valueToString(value)));
-        return this;
+        return this.#set(new BoundedDecimal(this.#decimal).pow(PrecisionNumber.#toDecimal(value)));
     }
 
     /**
      * Multiplies the current value by another value in place.
      */
     times(value: PrecisionNumberValue) {
-        this.#decimal = this.#decimalToFixedDecimal(this.#decimal.times(this.#valueToString(value)));
-        return this;
+        return this.#set(this.#decimal.times(PrecisionNumber.#toDecimal(value)));
     }
 
     /**
      * Returns a new instance with the absolute value.
      */
     toAbsoluteValue() {
-        return new PrecisionNumber(this.#decimal.absoluteValue(), this.#decimalPlaces, this.#rounding);
+        return this.clone().absoluteValue();
     }
 
     /**
      * Returns a new instance rounded up to the nearest integer.
      */
     toCeil() {
-        return new PrecisionNumber(this.#decimal.ceil(), this.#decimalPlaces, this.#rounding);
+        return this.clone().ceil();
     }
 
     /**
@@ -352,7 +400,7 @@ export class PrecisionNumber {
      * @param min - Lower bound.
      * @param max - Upper bound.
      *
-     * @throws Error if `min` is greater than `max`.
+     * @throws RangeError if `min` is greater than `max`.
      */
     toClamped(min: PrecisionNumberValue, max: PrecisionNumberValue) {
         return this.clone().clamp(min, max);
@@ -362,18 +410,22 @@ export class PrecisionNumber {
      * Returns a new instance divided by another value.
      */
     toDividedBy(value: PrecisionNumberValue) {
-        return new PrecisionNumber(
-            this.#decimal.dividedBy(this.#valueToString(value)),
-            this.#decimalPlaces,
-            this.#rounding,
-        );
+        return this.clone().dividedBy(value);
+    }
+
+    /**
+     * Formats the current value with custom precision and rounding for this call only.
+     */
+    toFixed(decimalPlaces: number = this.#decimalPlaces, rounding: Decimal.Rounding = this.#rounding) {
+        const decimal = this.#decimal.toDecimalPlaces(decimalPlaces, rounding);
+        return (decimal.isZero() ? decimal.absoluteValue() : decimal).toFixed(decimalPlaces);
     }
 
     /**
      * Returns a new instance rounded down to the nearest integer.
      */
     toFloor() {
-        return new PrecisionNumber(this.#decimal.floor(), this.#decimalPlaces, this.#rounding);
+        return this.clone().floor();
     }
 
     /**
@@ -387,43 +439,21 @@ export class PrecisionNumber {
      * Returns a new instance with another value subtracted.
      */
     toMinus(value: PrecisionNumberValue) {
-        return new PrecisionNumber(
-            this.#decimal.minus(this.#valueToString(value)),
-            this.#decimalPlaces,
-            this.#rounding,
-        );
+        return this.clone().minus(value);
     }
 
     /**
      * Returns a new instance with the remainder after division by another value.
      */
     toModulo(value: PrecisionNumberValue) {
-        return new PrecisionNumber(
-            this.#decimal.modulo(this.#valueToString(value)),
-            this.#decimalPlaces,
-            this.#rounding,
-        );
+        return this.clone().modulo(value);
     }
 
     /**
      * Returns a new instance with the value negated.
      */
     toNegated() {
-        return new PrecisionNumber(this.#decimal.negated(), this.#decimalPlaces, this.#rounding);
-    }
-
-    /**
-     * Returns a new instance with another value added.
-     */
-    toPlus(value: PrecisionNumberValue) {
-        return new PrecisionNumber(this.#decimal.plus(this.#valueToString(value)), this.#decimalPlaces, this.#rounding);
-    }
-
-    /**
-     * Returns a new instance raised to an exponent.
-     */
-    toPow(value: PrecisionNumberValue) {
-        return new PrecisionNumber(this.#decimal.pow(this.#valueToString(value)), this.#decimalPlaces, this.#rounding);
+        return this.clone().negate();
     }
 
     /**
@@ -437,6 +467,20 @@ export class PrecisionNumber {
     }
 
     /**
+     * Returns a new instance with another value added.
+     */
+    toPlus(value: PrecisionNumberValue) {
+        return this.clone().plus(value);
+    }
+
+    /**
+     * Returns a new instance raised to an exponent.
+     */
+    toPow(value: PrecisionNumberValue) {
+        return this.clone().pow(value);
+    }
+
+    /**
      * Converts the current value to its fixed-decimal string.
      */
     toString() {
@@ -444,20 +488,9 @@ export class PrecisionNumber {
     }
 
     /**
-     * Formats the current value with custom precision and rounding for this call only.
-     */
-    toFixed(decimalPlaces: number = this.#decimalPlaces, rounding: Decimal.Rounding = this.#rounding) {
-        return this.#decimal.toFixed(decimalPlaces, rounding);
-    }
-
-    /**
      * Returns a new instance multiplied by another value.
      */
     toTimes(value: PrecisionNumberValue) {
-        return new PrecisionNumber(
-            this.#decimal.times(this.#valueToString(value)),
-            this.#decimalPlaces,
-            this.#rounding,
-        );
+        return this.clone().times(value);
     }
 }
