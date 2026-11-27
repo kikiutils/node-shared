@@ -2,11 +2,7 @@
  * Waits until a duration elapses or cancellation occurs without rejecting on cancellation.
  *
  * @remarks
- * The promise resolves without a value when the timer completes or the signal aborts.
- * An already aborted signal resolves immediately; completion removes the abort listener and clears the timer.
- *
- * @param ms - The delay duration in milliseconds, using native `setTimeout` timing rules.
- * @param signal - The signal that ends the wait early.
+ * An already aborted signal resolves immediately. Settling clears the timer and removes the abort listener.
  *
  * @example
  *
@@ -19,21 +15,8 @@
  * ```
  */
 export async function delay(ms: number, signal?: AbortSignal): Promise<void> {
-    return await new Promise((resolve) => {
-        if (signal?.aborted) {
-            resolve();
-            return;
-        }
-
-        const done = () => {
-            // eslint-disable-next-line ts/no-use-before-define
-            clearTimeout(timeout);
-            signal?.removeEventListener('abort', done);
-            resolve();
-        };
-
-        const timeout = setTimeout(done, ms);
-        signal?.addEventListener('abort', done, { once: true });
+    await delayOrThrow(ms, signal).catch(() => {
+        // Cancellation is the only rejection, and this variant resolves on it by contract.
     });
 }
 
@@ -41,11 +24,8 @@ export async function delay(ms: number, signal?: AbortSignal): Promise<void> {
  * Waits until a duration elapses and rejects on cancellation.
  *
  * @remarks
- * The promise resolves without a value when the timer completes and rejects with `signal.reason` if aborted.
- * An already aborted signal rejects immediately. Aborting clears the timer; timer completion removes the listener.
- *
- * @param ms - The delay duration in milliseconds, using native `setTimeout` timing rules.
- * @param signal - The signal that cancels the wait.
+ * Rejects with `signal.reason` when aborted, immediately for an already aborted signal. Settling clears the timer
+ * and removes the abort listener.
  *
  * @example
  *
