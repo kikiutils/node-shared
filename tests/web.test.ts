@@ -46,6 +46,24 @@ describe('appendRedirectParamFromCurrentLocationToUrl', () => {
 
         expect(result).toBe('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
     });
+
+    it.for([
+        {
+            expected: '/login?redirect=%2Forders%3Ftab%3Dsettings%23section',
+            pathname: '//orders',
+        },
+        {
+            expected: '/login?redirect=%2Fa%2Fb%3Ftab%3Dsettings%23section',
+            pathname: '///a/b',
+        },
+    ])(
+        'should collapse leading slashes of $pathname into a single slash',
+        ({ expected, pathname }, { expect }) => {
+            window.location.pathname = pathname;
+
+            expect(appendRedirectParamFromCurrentLocationToUrl('/login')).toBe(expected);
+        },
+    );
 });
 
 describe('assignUrlWithRedirectParamFromCurrentLocation', () => {

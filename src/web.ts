@@ -4,7 +4,10 @@ import { appendRedirectParamToUrl } from './url';
  * Appends the current browser path, query, and hash as the `redirect` query parameter of a URL.
  */
 export function appendRedirectParamFromCurrentLocationToUrl(url: string) {
-    const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    // Leading slashes are collapsed because a `//` prefix would form a protocol-relative URL, which redirect paths
+    // reject; this keeps 401 redirects working on malformed links such as `https://app//orders`.
+    const pathname = window.location.pathname.replace(/^\/{2,}/, '/');
+    const currentPath = `${pathname}${window.location.search}${window.location.hash}`;
     return appendRedirectParamToUrl(url, currentPath);
 }
 
@@ -14,7 +17,7 @@ export function appendRedirectParamFromCurrentLocationToUrl(url: string) {
  * @remarks
  * Omitting `delayMs` navigates immediately. Providing a delay, including `0`, schedules navigation;
  * the current location is read when the timer fires, not when the timer is created.
- * Requires a browser environment. Redirect-path validation errors propagate from the URL helper.
+ * Redirect-path validation errors propagate from the URL helper.
  *
  * @returns A timer handle when delayed, which the caller can cancel with `clearTimeout`.
  */
