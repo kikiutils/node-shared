@@ -5,7 +5,6 @@ import { createHash } from 'node:crypto';
  *
  * @remarks
  * Input arrays are unchanged, and numeric arguments are converted to strings before execution.
- * Results are not cached or validated against the declared type.
  *
  * @typeParam T - The expected Lua result type, without runtime validation.
  *
@@ -38,16 +37,10 @@ export interface RedisLikeScriptClient {
  * Load failures and errors other than `NOSCRIPT` propagate without retries. The final execution error is
  * preserved when the attempt limit is reached. Results are not cached.
  *
- * @typeParam T - The expected Lua result type, without runtime validation.
- *
  * @param client - Used for raw Redis commands; the runner never closes it.
  * @param source - The Lua source loaded when the script is absent from the server's cache.
  * @param maxAttempts - The maximum `EVALSHA` attempts per invocation, including the initial attempt.
  * Must be a positive safe integer. Defaults to `3`; `1` disables script loading and retries.
- *
- * @returns A reusable runner sharing the client and any in-flight script load.
- *
- * @throws RangeError if `maxAttempts` is not a positive safe integer.
  */
 export function createRedisScriptRunner<T = unknown>(
     client: RedisLikeScriptClient,
