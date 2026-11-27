@@ -1,18 +1,8 @@
-import {
-    objectKeys,
-    objectValues,
-} from 'ts-extras';
+import { objectKeys } from 'ts-extras';
 import type { ValueOf } from 'type-fest';
 
 /**
- * Extracts only the numeric values from an enumeration-like object.
- *
- * @typeParam T - The type of the enum object.
- *
- * @param enumObject - The enumeration-like object to extract numeric values from,
- * the object can contain numeric values, string values, or both.
- *
- * @returns An array of numeric values extracted from the enum object.
+ * Returns the numeric values of an enum or enum-like object, excluding numeric enum reverse mappings.
  *
  * @example
  *
@@ -33,14 +23,7 @@ export function getEnumNumberValues<T extends Record<string, any>>(enumObject: T
 }
 
 /**
- * Extracts only the string values from an enumeration-like object.
- *
- * @typeParam T - The type of the enum object.
- *
- * @param enumObject - The enumeration-like object to extract string values from,
- * the object can contain numeric values, string values, or both.
- *
- * @returns An array of string values extracted from the enum object.
+ * Returns the string values of an enum or enum-like object, excluding numeric enum reverse mappings.
  *
  * @example
  *
@@ -61,44 +44,17 @@ export function getEnumStringValues<T extends Record<string, any>>(enumObject: T
 }
 
 /**
- * Extracts all values from an enumeration-like object.
+ * Returns the member values of an enum or enum-like object in property order, which is declaration order for enums.
  *
  * @remarks
- * This function handles TypeScript enums correctly by accounting for the reverse mapping
- * that occurs with numeric enums. It works with pure numeric enums, pure string enums,
- * and mixed enums.
- *
- * @typeParam T - The type of the enum object.
- *
- * @param enumObject - The enumeration-like object to extract values from,
- * the object can contain numeric values, string values, or both.
- *
- * @returns An array containing all the values from the enum object.
+ * Entries that map a numeric key back to the name of a member holding that number are the reverse mappings TypeScript
+ * emits for numeric enum members and are skipped; other numeric keys are kept.
  *
  * @example
  *
  * ```ts
  * import { getEnumValues } from '@kikiutils/shared/enum';
  *
- * // Numeric enum
- * enum Status {
- *     Active = 0,
- *     Inactive = 1,
- *     Pending = 2,
- * }
- *
- * console.log(getEnumValues(Status)); // => [0, 1, 2]
- *
- * // String enum
- * enum Color {
- *     Red = 'RED',
- *     Green = 'GREEN',
- *     Blue = 'BLUE',
- * }
- *
- * console.log(getEnumValues(Color)); // => ['RED', 'GREEN', 'BLUE']
- *
- * // Mixed enum
  * enum RecordType {
  *     Receive = 0,
  *     Send = 1,
@@ -109,8 +65,10 @@ export function getEnumStringValues<T extends Record<string, any>>(enumObject: T
  * ```
  */
 export function getEnumValues<T extends Record<string, any>>(enumObject: T): Array<ValueOf<T>> {
-    const values = objectValues(enumObject);
-    const hasNumberValues = values.some((value) => typeof value === 'number');
-    if (!hasNumberValues) return values;
-    return objectKeys(enumObject).filter((key) => Number.isNaN(Number(key))).map((key) => enumObject[key]);
+    return objectKeys(enumObject)
+        .filter((key) => {
+            const value = enumObject[key];
+            return typeof value !== 'string' || enumObject[value] !== Number(key);
+        })
+        .map((key) => enumObject[key]);
 }

@@ -166,3 +166,19 @@ describe('getEnumValues', () => {
         ({ expected, input }, { expect }) => expect(getEnumValues(input)).toEqual(expected),
     );
 });
+
+describe('getEnumValues with numeric keys', () => {
+    it('should keep numeric keys that are not numeric enum reverse mappings', ({ expect }) => {
+        const statusText = {
+            404: 'not-found',
+            Ok: 200,
+        };
+
+        expect(getEnumValues(statusText)).toEqual([
+            'not-found',
+            200,
+        ]);
+
+        expect(getEnumStringValues(statusText)).toEqual(['not-found']);
+    });
+});
