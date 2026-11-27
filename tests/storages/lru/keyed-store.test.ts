@@ -59,12 +59,12 @@ describe('createLruKeyedStore', () => {
 
         expect(store.setItemWithTtl(1000, 'value', 'acme', 1)).toBe(true);
         expect(cache.get('acme:item:1')).toBe('value');
-        expect(store.getItemTtl('acme', 1)).toBe(1000);
+        expect(store.getItemTtlMilliseconds('acme', 1)).toBe(1000);
         store.setItem('default', 'acme', 2);
-        expect(store.getItemTtl('acme', 2)).toBe(5000);
+        expect(store.getItemTtlMilliseconds('acme', 2)).toBe(5000);
 
         now += 400;
-        expect(store.getItemTtl('acme', 1)).toBe(600);
+        expect(store.getItemTtlMilliseconds('acme', 1)).toBe(600);
         now += 601;
         expect(store.getItem('acme', 1)).toBeNull();
         expect(store.hasItem('acme', 1)).toBe(false);
@@ -108,7 +108,7 @@ describe('createLruKeyedStore', () => {
         store.setItemWithTtl(0, 'value', 1);
 
         now += 1001;
-        expect(store.getItemTtl(1)).toBe(Infinity);
+        expect(store.getItemTtlMilliseconds(1)).toBe(Infinity);
         expect(store.getItem(1)).toBe('value');
     });
 });

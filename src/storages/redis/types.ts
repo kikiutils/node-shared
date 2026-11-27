@@ -11,7 +11,7 @@ export interface RedisLikeAdapter {
     delete: (key: string) => Promise<number>;
 
     /**
-     * Reads a key and resolves to its raw bytes, or `null` when the key is missing.
+     * Resolves to `null` when the key is missing.
      */
     getBuffer: (key: string) => Promise<null | Uint8Array>;
 
@@ -24,23 +24,20 @@ export interface RedisLikeAdapter {
     has: (key: string) => Promise<boolean>;
 
     /**
-     * Writes raw bytes and resolves to the backend acknowledgment, or no value.
+     * Anything other than `OK` is treated as an unacknowledged write.
      */
     setBuffer: (key: string, value: Uint8Array) => Promise<'OK' | void>;
 
-    /**
-     * Writes raw bytes with an expiry and resolves to the backend acknowledgment, or no value.
-     */
-    setBufferEx: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | void>;
+    setBufferWithTtl: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | void>;
 
     /**
-     * Writes raw bytes with an expiry only when the key is missing, such as with Redis `SET key value EX ttl NX`,
-     * and resolves to the backend acknowledgment, or `null` or no value when the key already exists.
+     * Writes only when the key is missing, such as with Redis `SET key value EX ttl NX`, and resolves to `OK`,
+     * or `null` or no value when the key already exists.
      */
-    setBufferExNx: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | null | void>;
+    setBufferWithTtlIfAbsent: (key: string, ttlSeconds: number, value: Uint8Array) => Promise<'OK' | null | void>;
 
     /**
-     * Reads a key's remaining TTL in seconds, or `-1` for no expiry and `-2` for a missing key.
+     * Resolves to the remaining TTL in seconds, `-1` for no expiry, or `-2` for a missing key.
      */
     ttl: (key: string) => Promise<number>;
 }
@@ -62,22 +59,19 @@ export interface RedisLikeStorage {
     getAndRemoveItem: <T = unknown>(key: string) => Promise<null | T>;
 
     /**
-     * Reads a deserialized value and resolves to `null` when the key is missing.
+     * Resolves to `null` when the key is missing.
      *
      * @typeParam T - The expected value type; deserialization does not validate this type.
      */
     getItem: <T = unknown>(key: string) => Promise<null | T>;
 
     /**
-     * Reads a key's remaining TTL in seconds, or `-1` for no expiry and `-2` for a missing key.
+     * Resolves to `-1` for no expiry or `-2` for a missing key.
      */
-    getItemTtl: (key: string) => Promise<number>;
+    getItemTtlSeconds: (key: string) => Promise<number>;
 
     hasItem: (key: string) => Promise<boolean>;
 
-    /**
-     * Removes a key and resolves to whether a key was deleted.
-     */
     removeItem: (key: string) => Promise<boolean>;
 
     /**

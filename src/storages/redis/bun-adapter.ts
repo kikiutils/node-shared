@@ -58,10 +58,10 @@ export function createBunRedisAdapter(client: BunRedisLikeClient): Readonly<Redi
         },
         has: async (key: string) => await client.exists(key),
         setBuffer: async (key: string, value: Uint8Array) => await client.set(key, value) === 'OK' ? 'OK' : undefined,
-        async setBufferEx(key: string, ttlSeconds: number, value: Uint8Array) {
+        async setBufferWithTtl(key: string, ttlSeconds: number, value: Uint8Array) {
             return await client.setex(key, ttlSeconds, value);
         },
-        async setBufferExNx(key: string, ttlSeconds: number, value: Uint8Array) {
+        async setBufferWithTtlIfAbsent(key: string, ttlSeconds: number, value: Uint8Array) {
             return await client.set(key, value, 'EX', String(ttlSeconds), 'NX') === 'OK' ? 'OK' : null;
         },
         ttl: async (key: string) => await client.ttl(key),

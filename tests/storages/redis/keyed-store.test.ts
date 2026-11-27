@@ -12,7 +12,7 @@ describe('createRedisKeyedStore', () => {
         const user = { name: 'Alice' };
         const getAndRemoveItem = vi.fn(async () => user);
         const getItem = vi.fn(async () => user);
-        const getItemTtl = vi.fn(async () => 30);
+        const getItemTtlSeconds = vi.fn(async () => 30);
         const hasItem = vi.fn(async () => true);
         const removeItem = vi.fn(async () => true);
         const setItem = vi.fn(async () => true);
@@ -21,7 +21,7 @@ describe('createRedisKeyedStore', () => {
         const storage: RedisLikeStorage = {
             getAndRemoveItem: getAndRemoveItem as RedisLikeStorage['getAndRemoveItem'],
             getItem: getItem as RedisLikeStorage['getItem'],
-            getItemTtl,
+            getItemTtlSeconds,
             hasItem,
             removeItem,
             setItem,
@@ -40,7 +40,7 @@ describe('createRedisKeyedStore', () => {
         await expect(store.setItemWithTtlIfAbsent(60, user, 'acme', 1)).resolves.toBe(true);
         await expect(store.getItem('acme', 1)).resolves.toEqual(user);
         await expect(store.getAndRemoveItem('acme', 1)).resolves.toEqual(user);
-        await expect(store.getItemTtl('acme', 1)).resolves.toBe(30);
+        await expect(store.getItemTtlSeconds('acme', 1)).resolves.toBe(30);
         await expect(store.hasItem('acme', 1)).resolves.toBe(true);
         await expect(store.removeItem('acme', 1)).resolves.toBe(true);
 
@@ -49,7 +49,7 @@ describe('createRedisKeyedStore', () => {
         expect(setItemWithTtlIfAbsent).toHaveBeenCalledWith('acme:user:1', 60, user);
         expect(getItem).toHaveBeenCalledWith('acme:user:1');
         expect(getAndRemoveItem).toHaveBeenCalledWith('acme:user:1');
-        expect(getItemTtl).toHaveBeenCalledWith('acme:user:1');
+        expect(getItemTtlSeconds).toHaveBeenCalledWith('acme:user:1');
         expect(hasItem).toHaveBeenCalledWith('acme:user:1');
         expect(removeItem).toHaveBeenCalledWith('acme:user:1');
     });

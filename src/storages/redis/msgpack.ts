@@ -18,10 +18,6 @@ if (!isNativeAccelerationEnabled) {
 /**
  * Creates a frozen Redis-like storage facade using MessagePack serialization.
  *
- * @remarks
- * Writes resolve to `true` only when the adapter returns `OK`; removal resolves to `true` only when exactly one key
- * is deleted.
- *
  * @example
  *
  * ```ts
@@ -43,10 +39,10 @@ if (!isNativeAccelerationEnabled) {
  *         values.set(key, value);
  *         return 'OK';
  *     },
- *     setBufferEx: async () => {
+ *     setBufferWithTtl: async () => {
  *         throw new Error('TTL writes are not supported by this example adapter');
  *     },
- *     setBufferExNx: async () => {
+ *     setBufferWithTtlIfAbsent: async () => {
  *         throw new Error('TTL writes are not supported by this example adapter');
  *     },
  *     ttl: async (key) => values.has(key) ? -1 : -2,
@@ -68,15 +64,15 @@ export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<R
             const rawValue = await adapter.getBuffer(key);
             return rawValue ? decode(rawValue) as T : null;
         },
-        getItemTtl: async (key: string) => await adapter.ttl(key),
+        getItemTtlSeconds: async (key: string) => await adapter.ttl(key),
         hasItem: async (key: string) => await adapter.has(key),
         removeItem: async (key: string) => await adapter.delete(key) === 1,
         setItem: async (key: string, value: unknown) => await adapter.setBuffer(key, encode(value)) === 'OK',
         async setItemWithTtl(key: string, ttlSeconds: number, value: unknown) {
-            return await adapter.setBufferEx(key, ttlSeconds, encode(value)) === 'OK';
+            return await adapter.setBufferWithTtl(key, ttlSeconds, encode(value)) === 'OK';
         },
         async setItemWithTtlIfAbsent(key: string, ttlSeconds: number, value: unknown) {
-            return await adapter.setBufferExNx(key, ttlSeconds, encode(value)) === 'OK';
+            return await adapter.setBufferWithTtlIfAbsent(key, ttlSeconds, encode(value)) === 'OK';
         },
     });
 }

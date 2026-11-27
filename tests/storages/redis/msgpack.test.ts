@@ -31,12 +31,12 @@ describe('createRedisMsgpackStorage', () => {
                 buffers.set(key, value);
                 return ok;
             }),
-            setBufferEx: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
+            setBufferWithTtl: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
                 buffers.set(key, value);
                 ttls.set(key, ttlSeconds);
                 return ok;
             }),
-            setBufferExNx: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
+            setBufferWithTtlIfAbsent: vi.fn(async (key: string, ttlSeconds: number, value: Uint8Array) => {
                 if (buffers.has(key)) return null;
                 buffers.set(key, value);
                 ttls.set(key, ttlSeconds);
@@ -69,7 +69,7 @@ describe('createRedisMsgpackStorage', () => {
             ...adapter,
             delete: async () => 0,
             setBuffer: async () => undefined,
-            setBufferEx: async () => undefined,
+            setBufferWithTtl: async () => undefined,
         });
 
         await expect(storage.getItem('missing')).resolves.toBeNull();
@@ -82,8 +82,8 @@ describe('createRedisMsgpackStorage', () => {
         const storage = createRedisMsgpackStorage(adapter);
 
         await expect(storage.setItemWithTtl('session', 60, { ok: true })).resolves.toBe(true);
-        expect(adapter.setBufferEx).toHaveBeenCalledWith('session', 60, expect.any(Uint8Array));
-        await expect(storage.getItemTtl('session')).resolves.toBe(60);
+        expect(adapter.setBufferWithTtl).toHaveBeenCalledWith('session', 60, expect.any(Uint8Array));
+        await expect(storage.getItemTtlSeconds('session')).resolves.toBe(60);
         await expect(storage.removeItem('session')).resolves.toBe(true);
         await expect(storage.hasItem('session')).resolves.toBe(false);
     });
@@ -92,10 +92,10 @@ describe('createRedisMsgpackStorage', () => {
         const storage = createRedisMsgpackStorage(adapter);
 
         await expect(storage.setItemWithTtlIfAbsent('cooldown', 60, 1)).resolves.toBe(true);
-        expect(adapter.setBufferExNx).toHaveBeenCalledWith('cooldown', 60, expect.any(Uint8Array));
+        expect(adapter.setBufferWithTtlIfAbsent).toHaveBeenCalledWith('cooldown', 60, expect.any(Uint8Array));
         await expect(storage.setItemWithTtlIfAbsent('cooldown', 30, 2)).resolves.toBe(false);
         await expect(storage.getItem('cooldown')).resolves.toBe(1);
-        await expect(storage.getItemTtl('cooldown')).resolves.toBe(60);
+        await expect(storage.getItemTtlSeconds('cooldown')).resolves.toBe(60);
     });
 
     it('should read and remove values through a single adapter call', async ({ expect }) => {

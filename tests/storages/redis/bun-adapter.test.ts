@@ -49,8 +49,8 @@ describe('createBunRedisAdapter', () => {
         const adapter = createBunRedisAdapter(client);
         const value = Uint8Array.of(1);
 
-        await expect(adapter.setBufferExNx('key', 60, value)).resolves.toBe('OK');
-        await expect(adapter.setBufferExNx('key', 60, value)).resolves.toBeNull();
+        await expect(adapter.setBufferWithTtlIfAbsent('key', 60, value)).resolves.toBe('OK');
+        await expect(adapter.setBufferWithTtlIfAbsent('key', 60, value)).resolves.toBeNull();
         expect(client.set).toHaveBeenCalledWith('key', value, 'EX', '60', 'NX');
     });
 });
