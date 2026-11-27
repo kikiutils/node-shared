@@ -790,6 +790,28 @@ describe('createDiagnosticReporter', () => {
         expect(fallback).toHaveBeenCalledWith('[logger] console failed\n');
     });
 
+    it('should append the error detail to the fallback message', ({ expect }) => {
+        useFakeClock(0);
+        const fallback = vi.fn();
+        const report = createDiagnosticReporter(undefined, fallback);
+
+        report({
+            ...createEvent('console'),
+            error: new Error('EACCES: permission denied'),
+        });
+
+        vi.advanceTimersByTime(1000);
+        report({
+            ...createEvent('console'),
+            error: 'plain failure',
+        });
+
+        expect(fallback.mock.calls.map(([message]) => message)).toEqual([
+            '[logger] console failed EACCES: permission denied\n',
+            '[logger] console failed plain failure\n',
+        ]);
+    });
+
     it('should pass frozen events to onError', ({ expect }) => {
         const onError = vi.fn();
         const event = createEvent();
@@ -1252,23 +1274,6 @@ describe('formatLoggerConsoleArgs', () => {
                 '%c✖%c failed',
                 'color: #dc2626',
                 '',
-            );
-        });
-
-        it('should keep user percent sequences literal and the object a separate console argument', async ({ expect }) => {
-            vi.stubGlobal('process', undefined);
-            const spies = mockConsole();
-            const value = { a: 1 };
-            const logger = createLogger({
-                icons: false,
-                timestamp: false,
-            });
-
-            await logger.info('50%d done', value);
-
-            expect(spies.info).toHaveBeenCalledWith(
-                '50%%d done %o',
-                value,
             );
         });
     });

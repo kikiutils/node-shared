@@ -95,7 +95,14 @@ export function createDiagnosticReporter(
                 callContained(onError, Object.freeze({ ...event }));
             } else {
                 const summary = suppressedCount ? ` (${suppressedCount} similar diagnostics suppressed)` : '';
-                callContained(fallback, `[logger] ${event.message}${summary}\n`);
+                let detail = '';
+                if (event.error !== undefined) {
+                    // Thrown values can be anything; a best-effort string is enough for a fallback line.
+                    // eslint-disable-next-line ts/no-base-to-string
+                    detail = ` ${event.error instanceof Error ? event.error.message : String(event.error)}`;
+                }
+
+                callContained(fallback, `[logger] ${event.message}${detail}${summary}\n`);
             }
         } catch { /* Diagnostics must never escape into the logging pipeline. */ } finally {
             reporting = false;

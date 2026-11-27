@@ -415,7 +415,7 @@ describe('createNodeLogger', () => {
                 RangeError,
             ],
             [
-                'rotate without interval or maxSize',
+                'rotate without interval or maxFileSize',
                 (path) => ({
                     path,
                     rotate: {},
@@ -423,10 +423,10 @@ describe('createNodeLogger', () => {
                 TypeError,
             ],
             [
-                'rotate with only keepFiles',
+                'rotate with only maxFiles',
                 (path) => ({
                     path,
-                    rotate: { keepFiles: 3 },
+                    rotate: { maxFiles: 3 },
                 }),
                 TypeError,
             ],
@@ -447,34 +447,34 @@ describe('createNodeLogger', () => {
                 TypeError,
             ],
             [
-                'a zero keepFiles',
+                'a zero maxFiles',
                 (path) => ({
                     path,
                     rotate: {
-                        keepFiles: 0,
-                        maxSize: '1K',
+                        maxFiles: 0,
+                        maxFileSize: '1K',
                     },
                 }),
                 RangeError,
             ],
             [
-                'a fractional keepFiles',
+                'a fractional maxFiles',
                 (path) => ({
                     path,
                     rotate: {
-                        keepFiles: 1.5,
-                        maxSize: '1K',
+                        maxFiles: 1.5,
+                        maxFileSize: '1K',
                     },
                 }),
                 RangeError,
             ],
             [
-                'a string keepFiles',
+                'a string maxFiles',
                 (path) => ({
                     path,
                     rotate: {
-                        keepFiles: '3',
-                        maxSize: '1K',
+                        maxFiles: '3',
+                        maxFileSize: '1K',
                     },
                 }),
                 RangeError,
@@ -485,48 +485,48 @@ describe('createNodeLogger', () => {
                     path,
                     rotate: {
                         compress: 'gzip',
-                        maxSize: '1K',
+                        maxFileSize: '1K',
                     },
                 }),
                 TypeError,
             ],
             [
-                'a maxSize without a unit',
+                'a maxFileSize without a unit',
                 (path) => ({
                     path,
-                    rotate: { maxSize: '10' },
+                    rotate: { maxFileSize: '10' },
                 }),
                 TypeError,
             ],
             [
-                'a zero maxSize',
+                'a zero maxFileSize',
                 (path) => ({
                     path,
-                    rotate: { maxSize: '0K' },
+                    rotate: { maxFileSize: '0K' },
                 }),
                 TypeError,
             ],
             [
-                'a maxSize with an unsupported unit',
+                'a maxFileSize with an unsupported unit',
                 (path) => ({
                     path,
-                    rotate: { maxSize: '1T' },
+                    rotate: { maxFileSize: '1T' },
                 }),
                 TypeError,
             ],
             [
-                'a lowercase maxSize unit',
+                'a lowercase maxFileSize unit',
                 (path) => ({
                     path,
-                    rotate: { maxSize: '1k' },
+                    rotate: { maxFileSize: '1k' },
                 }),
                 TypeError,
             ],
             [
-                'a numeric maxSize',
+                'a numeric maxFileSize',
                 (path) => ({
                     path,
-                    rotate: { maxSize: 1024 },
+                    rotate: { maxFileSize: 1024 },
                 }),
                 TypeError,
             ],
@@ -535,17 +535,17 @@ describe('createNodeLogger', () => {
                 (path) => ({
                     path,
                     rotate: {
-                        maxSize: '1K',
+                        maxFileSize: '1K',
                         maxTotalSize: '1T',
                     },
                 }),
                 TypeError,
             ],
             [
-                'a maxSize beyond the safe integer range',
+                'a maxFileSize beyond the safe integer range',
                 (path) => ({
                     path,
-                    rotate: { maxSize: '9007199254740992B' },
+                    rotate: { maxFileSize: '9007199254740992B' },
                 }),
                 RangeError,
             ],
@@ -643,10 +643,10 @@ describe('createNodeLogger', () => {
             expect(onError).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenCalledWith(expect.objectContaining({ type: 'file' }));
             expect(logger.getStats()).toEqual({
-                droppedCount: 0,
+                errorEventCount: 1,
                 failedCount: 1,
+                overflowCount: 0,
                 pendingBytes: 0,
-                writeErrorCount: 1,
             });
 
             await expect(logger.info('second')).resolves.toBeUndefined();
@@ -654,10 +654,10 @@ describe('createNodeLogger', () => {
 
             expect(onError).toHaveBeenCalledTimes(1);
             expect(logger.getStats()).toEqual({
-                droppedCount: 0,
+                errorEventCount: 1,
                 failedCount: 3,
+                overflowCount: 0,
                 pendingBytes: 0,
-                writeErrorCount: 1,
             });
 
             expect(writtenText(streams.stdout)).toBe('first\nsecond\nthird\n');
@@ -683,10 +683,10 @@ describe('createNodeLogger', () => {
             await Promise.all(Array.from({ length: 5 }, async () => await logger.info('record')));
 
             expect(logger.getStats()).toEqual({
-                droppedCount: 0,
+                errorEventCount: 1,
                 failedCount: 5,
+                overflowCount: 0,
                 pendingBytes: 0,
-                writeErrorCount: 1,
             });
 
             expect(onError).toHaveBeenCalledTimes(1);
@@ -722,15 +722,15 @@ describe('createNodeLogger', () => {
             await expect(logger.info('x'.repeat(100))).resolves.toBeUndefined();
 
             expect(logger.getStats()).toEqual({
-                droppedCount: 1,
+                errorEventCount: 0,
                 failedCount: 0,
+                overflowCount: 1,
                 pendingBytes: 0,
-                writeErrorCount: 0,
             });
 
             expect(onError).toHaveBeenCalledTimes(1);
             expect(onError).toHaveBeenCalledWith(expect.objectContaining({
-                droppedCount: 1,
+                overflowCount: 1,
                 type: 'overflow',
             }));
 
@@ -741,10 +741,10 @@ describe('createNodeLogger', () => {
             vi.advanceTimersByTime(1500);
             await logger.info('z'.repeat(100));
 
-            expect(logger.getStats().droppedCount).toBe(3);
+            expect(logger.getStats().overflowCount).toBe(3);
             expect(onError).toHaveBeenCalledTimes(2);
             expect(onError.mock.calls[1]![0]).toMatchObject({
-                droppedCount: 3,
+                overflowCount: 3,
                 suppressedCount: 1,
                 type: 'overflow',
             });
@@ -779,10 +779,10 @@ describe('createNodeLogger', () => {
             ]);
 
             expect(logger.getStats()).toEqual({
-                droppedCount: 1,
+                errorEventCount: 0,
                 failedCount: 0,
+                overflowCount: 1,
                 pendingBytes: 0,
-                writeErrorCount: 0,
             });
 
             await logger.close();
@@ -802,10 +802,10 @@ describe('createNodeLogger', () => {
 
             expect(Object.isFrozen(snapshot)).toBe(true);
             expect(snapshot).toEqual({
-                droppedCount: 0,
+                errorEventCount: 0,
                 failedCount: 0,
+                overflowCount: 0,
                 pendingBytes: 0,
-                writeErrorCount: 0,
             });
 
             expect(withFile.getStats()).not.toBe(snapshot);
@@ -814,10 +814,10 @@ describe('createNodeLogger', () => {
 
             expect(Object.isFrozen(withoutFile.getStats())).toBe(true);
             expect(withoutFile.getStats()).toEqual({
-                droppedCount: 0,
+                errorEventCount: 0,
                 failedCount: 0,
+                overflowCount: 0,
                 pendingBytes: 0,
-                writeErrorCount: 0,
             });
         });
 
@@ -929,15 +929,15 @@ describe('createNodeLogger', () => {
     });
 
     describe('rotation', () => {
-        it('should rotate by size into gzip history files and keep at most keepFiles', async ({ expect }) => {
+        it('should rotate by size into gzip history files and keep at most maxFiles', async ({ expect }) => {
             const path = join(directory, 'app.log');
             const logger = await createTrackedLogger({
                 console: false,
                 file: {
                     path,
                     rotate: {
-                        keepFiles: 2,
-                        maxSize: '1K',
+                        maxFiles: 2,
+                        maxFileSize: '1K',
                     },
                 },
                 icons: false,
@@ -979,8 +979,8 @@ describe('createNodeLogger', () => {
 
         it('should not be affected by caller mutation of the rotate object after the factory is called', async ({ expect }) => {
             const rotate = {
-                keepFiles: 5,
-                maxSize: '1K',
+                maxFiles: 5,
+                maxFileSize: '1K',
             };
 
             const pending = createTrackedLogger({
@@ -993,8 +993,8 @@ describe('createNodeLogger', () => {
                 timestamp: false,
             });
 
-            rotate.maxSize = 'bad';
-            rotate.keepFiles = 0;
+            rotate.maxFileSize = 'bad';
+            rotate.maxFiles = 0;
             const logger = await pending;
 
             for (let index = 0; index < 20; index++) await logger.info(`${String(index).padStart(3, '0')} ${'x'.repeat(100)}`);
@@ -1008,11 +1008,11 @@ describe('createNodeLogger', () => {
 
         it('should rotate from a snapshot of rotate options supplied through prototype getters', async ({ expect }) => {
             class RotationOptions {
-                get keepFiles() {
+                get maxFiles() {
                     return 2;
                 }
 
-                get maxSize() {
+                get maxFileSize() {
                     return '1K';
                 }
             }
@@ -1054,7 +1054,7 @@ describe('createNodeLogger', () => {
                 {
                     compress: false,
                     interval: 'daily',
-                    keepFiles: 5,
+                    maxFiles: 5,
                 },
                 {
                     compress: false,
@@ -1067,9 +1067,9 @@ describe('createNodeLogger', () => {
                 ],
             ],
             [
-                'maxSize with maxTotalSize',
+                'maxFileSize with maxTotalSize',
                 {
-                    maxSize: '1K',
+                    maxFileSize: '1K',
                     maxTotalSize: '1M',
                 },
                 {
@@ -1153,7 +1153,7 @@ describe('createNodeLogger', () => {
                 console: false,
                 file: {
                     path: join(directory, 'app.log'),
-                    rotate: { maxSize: '1K' },
+                    rotate: { maxFileSize: '1K' },
                 },
                 onError,
             });
@@ -1167,15 +1167,15 @@ describe('createNodeLogger', () => {
                 type: 'rotation',
             }));
 
-            expect(logger.getStats().writeErrorCount).toBe(1);
+            expect(logger.getStats().errorEventCount).toBe(1);
 
             await logger.info('still writing');
 
             expect(logger.getStats()).toEqual({
-                droppedCount: 0,
+                errorEventCount: 1,
                 failedCount: 0,
+                overflowCount: 0,
                 pendingBytes: 0,
-                writeErrorCount: 1,
             });
         });
 
@@ -1186,7 +1186,7 @@ describe('createNodeLogger', () => {
                     path: join(directory, 'app.log'),
                     rotate: {
                         compress: false,
-                        maxSize: '1K',
+                        maxFileSize: '1K',
                     },
                 },
                 icons: false,
@@ -1222,7 +1222,7 @@ describe('createNodeLogger', () => {
             const error = await createIsolatedLogger({
                 file: {
                     path: join(directory, 'nested', 'app.log'),
-                    rotate: { maxSize: '1K' },
+                    rotate: { maxFileSize: '1K' },
                 },
             }).catch((error_: unknown) => error_);
 

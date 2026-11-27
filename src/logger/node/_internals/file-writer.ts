@@ -47,18 +47,18 @@ export async function createFileWriter(
                 ...rotate.interval === undefined ? {} : { interval: rotate.interval === 'hourly' ? '1h' : '1d' },
                 intervalBoundary: true,
                 intervalUTC: false,
-                maxFiles: rotate.keepFiles ?? 30,
+                maxFiles: rotate.maxFiles ?? 30,
                 ...rotate.maxTotalSize === undefined ? {} : { maxSize: rotate.maxTotalSize },
                 path: path.parent.value,
-                ...rotate.maxSize === undefined ? {} : { size: rotate.maxSize },
+                ...rotate.maxFileSize === undefined ? {} : { size: rotate.maxFileSize },
             },
         )
         : path.createWriteStream({ flags: 'a' });
 
     let pendingBytes = 0;
-    let droppedCount = 0;
+    let overflowCount = 0;
     let failedCount = 0;
-    let writeErrorCount = 0;
+    let errorEventCount = 0;
     let failed = false;
     let closing = false;
     let closed = false;
@@ -75,7 +75,7 @@ export async function createFileWriter(
         if (!failed) {
             failed = true;
             if (!initializing) {
-                writeErrorCount++;
+                errorEventCount++;
                 report({
                     error,
                     message: 'File output failed and has been disabled.',
@@ -92,7 +92,7 @@ export async function createFileWriter(
     stream.on(
         'warning',
         (error: unknown) => {
-            writeErrorCount++;
+            errorEventCount++;
             report({
                 error,
                 message: 'File rotation cleanup failed.',
@@ -156,10 +156,10 @@ export async function createFileWriter(
             });
         },
         getStats: () => Object.freeze({
-            droppedCount,
+            errorEventCount,
             failedCount,
+            overflowCount,
             pendingBytes,
-            writeErrorCount,
         }),
         async write(text: string) {
             // The failure itself was reported once; later records are only counted.
@@ -170,10 +170,10 @@ export async function createFileWriter(
 
             const bytes = Buffer.byteLength(text);
             if (bytes > maxPendingBytes - pendingBytes) {
-                droppedCount++;
+                overflowCount++;
                 report({
-                    droppedCount,
                     message: 'File output queue is full; the newest record was discarded.',
+                    overflowCount,
                     type: 'overflow',
                 });
 
@@ -261,8 +261,8 @@ function validateFileOptions(options: LoggerFileOptions) {
         rotate = {
             compress: options.rotate.compress,
             interval: options.rotate.interval,
-            keepFiles: options.rotate.keepFiles,
-            maxSize: options.rotate.maxSize,
+            maxFiles: options.rotate.maxFiles,
+            maxFileSize: options.rotate.maxFileSize,
             maxTotalSize: options.rotate.maxTotalSize,
         } as LoggerRotationOptions;
 
@@ -270,20 +270,20 @@ function validateFileOptions(options: LoggerFileOptions) {
             throw new TypeError('file.rotate.interval must be hourly or daily');
         }
 
-        if (rotate.interval === undefined && rotate.maxSize === undefined) {
-            throw new TypeError('file.rotate requires interval or maxSize');
+        if (rotate.interval === undefined && rotate.maxFileSize === undefined) {
+            throw new TypeError('file.rotate requires interval or maxFileSize');
         }
 
-        const keepFiles = rotate.keepFiles ?? 30;
-        if (!Number.isSafeInteger(keepFiles) || keepFiles <= 0) {
-            throw new RangeError('file.rotate.keepFiles must be a positive safe integer');
+        const maxFiles = rotate.maxFiles ?? 30;
+        if (!Number.isSafeInteger(maxFiles) || maxFiles <= 0) {
+            throw new RangeError('file.rotate.maxFiles must be a positive safe integer');
         }
 
         if (rotate.compress !== undefined && typeof rotate.compress !== 'boolean') {
             throw new TypeError('file.rotate.compress must be a boolean');
         }
 
-        validateSize(rotate.maxSize, 'file.rotate.maxSize');
+        validateSize(rotate.maxFileSize, 'file.rotate.maxFileSize');
         validateSize(rotate.maxTotalSize, 'file.rotate.maxTotalSize');
     }
 

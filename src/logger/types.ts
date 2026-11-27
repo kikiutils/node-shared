@@ -39,9 +39,9 @@ export interface Logger {
  * A shallow-frozen failure notification; nested error values retain their original ownership.
  */
 export interface LoggerDiagnostic {
-    droppedCount?: number;
     error?: unknown;
     message: string;
+    overflowCount?: number;
 
     /**
      * Same-type notifications suppressed since the previous emitted diagnostic.

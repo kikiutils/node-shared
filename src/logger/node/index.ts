@@ -96,10 +96,10 @@ export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise
             return await closePromise;
         },
         getStats: () => writer?.getStats() ?? Object.freeze({
-            droppedCount: 0,
+            errorEventCount: 0,
             failedCount: 0,
+            overflowCount: 0,
             pendingBytes: 0,
-            writeErrorCount: 0,
         }),
     });
 }

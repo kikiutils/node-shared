@@ -5,7 +5,7 @@ import type {
 } from '../types';
 
 /**
- * Specify interval and/or maxSize. Size limits use positive integers with B, K, M, or G (binary units).
+ * Specify interval and/or maxFileSize. Size limits use positive integers with B, K, M, or G (binary units).
  */
 export type LoggerRotationOptions = {
     /**
@@ -16,7 +16,7 @@ export type LoggerRotationOptions = {
     /**
      * Number of historical files, excluding the active file. Defaults to 30.
      */
-    keepFiles?: number;
+    maxFiles?: number;
 
     /**
      * Maximum combined size of historical files.
@@ -28,14 +28,14 @@ export type LoggerRotationOptions = {
        * Opt-in time rotation aligned to the system's local calendar boundary.
        */
       interval: 'daily' | 'hourly';
-      maxSize?: string;
+      maxFileSize?: string;
   }
   | {
       /**
        * Opt-in time rotation aligned to the system's local calendar boundary.
        */
       interval?: 'daily' | 'hourly';
-      maxSize: string;
+      maxFileSize: string;
   }
 );
 
@@ -52,7 +52,7 @@ export interface LoggerFileOptions {
     path: PathLike;
 
     /**
-     * Omitted or false disables rotation. An object must specify interval or maxSize.
+     * Omitted or false disables rotation. An object must specify interval or maxFileSize.
      */
     rotate?: false | LoggerRotationOptions;
 }
@@ -78,17 +78,17 @@ export interface NodeLoggerOptions extends LoggerOptions {
 }
 
 export interface NodeLoggerStats {
-    droppedCount: number;
+    /**
+     * Failure events, not records: the failure that disables file output plus rotation cleanup warnings.
+     * `rotating-file-stream` treats a short write as success, so a nearly full disk can truncate a record unnoticed.
+     */
+    errorEventCount: number;
 
     /**
      * Accepted or later records that were not written because file output failed.
      */
     failedCount: number;
-    pendingBytes: number;
+    overflowCount: number;
 
-    /**
-     * Failure events, not records: the failure that disables file output plus rotation cleanup warnings.
-     * `rotating-file-stream` treats a short write as success, so a nearly full disk can truncate a record unnoticed.
-     */
-    writeErrorCount: number;
+    pendingBytes: number;
 }
