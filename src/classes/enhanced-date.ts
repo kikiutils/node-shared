@@ -13,6 +13,7 @@ import * as dateFns from 'date-fns';
  * Hour, minute, second, and millisecond arithmetic uses elapsed durations. Month and year arithmetic clamps
  * to the last valid day of the destination month; native setters keep their overflow behavior.
  * Operations can preserve or produce `Invalid Date`.
+ * `differenceIn*` methods return this date minus the other date.
  *
  * When used in Vue state, prefer replacing the value with a `to`-prefixed result:
  * mutating a Date's internal timestamp does not trigger reactive updates.
@@ -139,29 +140,23 @@ export class EnhancedDate extends Date {
         return new EnhancedDate(this.getTime());
     }
 
-    /**
-     * Returns the signed difference in calendar days: this date minus the other date.
-     */
     differenceInCalendarDays(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInCalendarDaysOptions) {
         return dateFns.differenceInCalendarDays(this, other, options);
     }
 
-    /**
-     * Returns the signed difference in calendar weeks: this date minus the other date.
-     */
     differenceInCalendarWeeks(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInCalendarWeeksOptions) {
         return dateFns.differenceInCalendarWeeks(this, other, options);
     }
 
     /**
-     * Returns the signed difference in full minutes: this date minus the other date.
+     * Counts full minutes, truncating by default.
      */
     differenceInMinutes(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInMinutesOptions) {
         return dateFns.differenceInMinutes(this, other, options);
     }
 
     /**
-     * Returns the signed difference in full seconds: this date minus the other date.
+     * Counts full seconds, truncating by default.
      */
     differenceInSeconds(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInSecondsOptions) {
         return dateFns.differenceInSeconds(this, other, options);
@@ -183,9 +178,6 @@ export class EnhancedDate extends Date {
         return this.#set(dateFns.endOfWeek(this, options));
     }
 
-    /**
-     * Formats this date with a date-fns pattern (default: `yyyy-MM-dd HH:mm:ss`).
-     */
     format(pattern: string = 'yyyy-MM-dd HH:mm:ss', options?: dateFns.FormatOptions) {
         return dateFns.format(this, pattern, options);
     }

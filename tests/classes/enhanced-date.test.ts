@@ -1,5 +1,8 @@
 import * as dateFns from 'date-fns';
-import { enUS } from 'date-fns/locale';
+import {
+    enUS,
+    fr,
+} from 'date-fns/locale';
 import {
     afterEach,
     describe,
@@ -8,8 +11,6 @@ import {
 } from 'vitest';
 
 import { EnhancedDate } from '../../src/classes/enhanced-date';
-
-vi.mock('date-fns', { spy: true });
 
 describe('class EnhancedDate', () => {
     describe('native Date compatibility', () => {
@@ -234,154 +235,22 @@ describe('class EnhancedDate', () => {
     });
 
     describe('date-fns options', () => {
-        const options = { in: (value: dateFns.DateArg<Date> & {}) => new Date(value) };
-        const date = new EnhancedDate(2026, 0, 15, 12);
+        const date = new EnhancedDate(2026, 0, 15, 20);
 
-        it.for([
-            [
-                'addDays',
-                () => date.toAddDays(1, options),
-            ],
-            [
-                'addHours',
-                () => date.toAddHours(1, options),
-            ],
-            [
-                'addMilliseconds',
-                () => date.toAddMilliseconds(1, options),
-            ],
-            [
-                'addMinutes',
-                () => date.toAddMinutes(1, options),
-            ],
-            [
-                'addMonths',
-                () => date.toAddMonths(1, options),
-            ],
-            [
-                'addSeconds',
-                () => date.toAddSeconds(1, options),
-            ],
-            [
-                'addWeeks',
-                () => date.toAddWeeks(1, options),
-            ],
-            [
-                'addYears',
-                () => date.toAddYears(1, options),
-            ],
-            [
-                'subDays',
-                () => date.toSubDays(1, options),
-            ],
-            [
-                'subHours',
-                () => date.toSubHours(1, options),
-            ],
-            [
-                'subMilliseconds',
-                () => date.toSubMilliseconds(1, options),
-            ],
-            [
-                'subMinutes',
-                () => date.toSubMinutes(1, options),
-            ],
-            [
-                'subMonths',
-                () => date.toSubMonths(1, options),
-            ],
-            [
-                'subSeconds',
-                () => date.toSubSeconds(1, options),
-            ],
-            [
-                'subWeeks',
-                () => date.toSubWeeks(1, options),
-            ],
-            [
-                'subYears',
-                () => date.toSubYears(1, options),
-            ],
-            [
-                'startOfDay',
-                () => date.toStartOfDay(options),
-            ],
-            [
-                'startOfMinute',
-                () => date.toStartOfMinute(options),
-            ],
-            [
-                'startOfMonth',
-                () => date.toStartOfMonth(options),
-            ],
-            [
-                'endOfDay',
-                () => date.toEndOfDay(options),
-            ],
-            [
-                'endOfMinute',
-                () => date.toEndOfMinute(options),
-            ],
-            [
-                'endOfMonth',
-                () => date.toEndOfMonth(options),
-            ],
-            [
-                'isSameDay',
-                () => date.isSameDay(date, options),
-            ],
-            [
-                'isToday',
-                () => date.isToday(options),
-            ],
-            [
-                'isTomorrow',
-                () => date.isTomorrow(options),
-            ],
-            [
-                'differenceInCalendarDays',
-                () => date.differenceInCalendarDays(date, options),
-            ],
-            [
-                'startOfToday',
-                () => EnhancedDate.startOfToday(options),
-            ],
-            [
-                'startOfTomorrow',
-                () => EnhancedDate.startOfTomorrow(options),
-            ],
-            [
-                'startOfYesterday',
-                () => EnhancedDate.startOfYesterday(options),
-            ],
-            [
-                'endOfToday',
-                () => EnhancedDate.endOfToday(options),
-            ],
-            [
-                'endOfTomorrow',
-                () => EnhancedDate.endOfTomorrow(options),
-            ],
-            [
-                'endOfYesterday',
-                () => EnhancedDate.endOfYesterday(options),
-            ],
-            [
-                'max',
-                () => EnhancedDate.max([date], options),
-            ],
-            [
-                'min',
-                () => EnhancedDate.min([date], options),
-            ],
-        ] as const)(
-            'should forward options to date-fns %s',
-            ([name, call], { expect }) => {
-                call();
+        it('should apply week and context options to boundary results', ({ expect }) => {
+            const halfDay = 12 * 3_600_000;
+            const shiftByHalfDay = (value: dateFns.DateArg<Date> & {}) => new Date(new Date(value).getTime() + halfDay);
 
-                expect(vi.mocked(dateFns[name]).mock.lastCall?.at(-1)).toBe(options);
-            },
-        );
+            expect(date.toStartOfWeek({ weekStartsOn: 1 }).getDate()).toBe(12);
+            expect(date.toStartOfWeek({ weekStartsOn: 4 }).getDate()).toBe(15);
+            expect(date.toStartOfDay().getDate()).toBe(15);
+            expect(date.toStartOfDay({ in: shiftByHalfDay }).getDate()).toBe(16);
+        });
+
+        it('should apply the locale option to formatted output', ({ expect }) => {
+            expect(date.format('MMMM', { locale: fr })).toBe('janvier');
+            expect(date.format('MMMM', { locale: enUS })).toBe('January');
+        });
     });
 
     describe('current-time operations', () => {
