@@ -12,6 +12,7 @@ import {
     cryptoSha3256,
     cryptoSha3384,
     cryptoSha3512,
+    timingSafeEqualStrings,
 } from '../src/crypto-hash';
 
 describe.each([
@@ -70,5 +71,20 @@ describe('crypto hash input and output handling', () => {
 
     it('should use the requested output encoding', ({ expect }) => {
         expect(cryptoMd5('test', 'base64')).toBe(Buffer.from(expected, 'hex').toString('base64'));
+    });
+});
+
+describe('timingSafeEqualStrings', () => {
+    it('should compare strings by their UTF-8 bytes', ({ expect }) => {
+        expect(timingSafeEqualStrings('9f86d081', '9f86d081')).toBe(true);
+        expect(timingSafeEqualStrings('9f86d081', '9f86d082')).toBe(false);
+        expect(timingSafeEqualStrings('世界', '世界')).toBe(true);
+        expect(timingSafeEqualStrings('', '')).toBe(true);
+    });
+
+    it('should return false instead of throwing for inputs of different byte lengths', ({ expect }) => {
+        expect(timingSafeEqualStrings('abc', 'abcd')).toBe(false);
+        // Equal UTF-16 lengths but different UTF-8 byte lengths.
+        expect(timingSafeEqualStrings('é', 'e')).toBe(false);
     });
 });

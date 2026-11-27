@@ -1,5 +1,8 @@
 import { Buffer } from 'node:buffer';
-import { hash } from 'node:crypto';
+import {
+    hash,
+    timingSafeEqual,
+} from 'node:crypto';
 import type { BinaryLike } from 'node:crypto';
 
 /**
@@ -12,6 +15,20 @@ export interface CryptoHashFunction {
 }
 
 // Functions
+
+/**
+ * Compares two strings as UTF-8 bytes in constant time, returning `false` for different lengths.
+ *
+ * @remarks
+ * Only the comparison of equal-length inputs is constant time; a length mismatch returns early, so use it for values
+ * whose length is not secret, such as digests, MACs, and tokens of a fixed format.
+ */
+export function timingSafeEqualStrings(a: string, b: string) {
+    const aBytes = Buffer.from(a);
+    const bBytes = Buffer.from(b);
+    return aBytes.length === bBytes.length && timingSafeEqual(aBytes, bBytes);
+}
+
 export const cryptoMd5 = /* @__PURE__ */ createCryptoHashFunction('md5');
 export const cryptoSha256 = /* @__PURE__ */ createCryptoHashFunction('sha256');
 export const cryptoSha3224 = /* @__PURE__ */ createCryptoHashFunction('sha3-224');
