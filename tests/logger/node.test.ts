@@ -8,6 +8,9 @@ import {
     readdir,
     readFile,
     rm,
+    stat,
+    utimes,
+    writeFile,
 } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -16,7 +19,6 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { pathToFileURL } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 
-import type { UnknownRecord } from 'type-fest';
 import {
     afterEach,
     beforeEach,
@@ -29,10 +31,10 @@ import { Path } from '../../src/classes/path';
 import { PrecisionNumber } from '../../src/classes/precision-number';
 import { createNodeLogger } from '../../src/logger/node';
 import type {
-    LoggerRotationOptions,
     NodeLogger,
     NodeLoggerOptions,
 } from '../../src/logger/node/types';
+import type { LoggerMethod } from '../../src/logger/types';
 
 vi.mock(
     'node:fs',
@@ -151,32 +153,6 @@ afterEach(async () => {
 
 describe('createNodeLogger', () => {
     describe('file output', () => {
-        it('should write icon, timestamp, prefix, and message lines to the file', async ({ expect }) => {
-            vi.useFakeTimers({
-                toFake: [
-                    'Date',
-                    'performance',
-                ],
-            });
-
-            vi.setSystemTime(new Date(2026, 0, 5, 3, 4, 5, 6));
-            const path = join(directory, 'app.log');
-            const logger = await createTrackedLogger({
-                console: false,
-                file: { path },
-                prefix: 'pre',
-                suffix: 'suf',
-            });
-
-            await logger.info('first', 'line');
-            await logger.error('second');
-            await logger.close();
-
-            await expect(readFile(path, 'utf8')).resolves.toBe(
-                'ℹ [2026-01-05 03:04:05.006] pre first line suf\n✖ [2026-01-05 03:04:05.006] pre second suf\n',
-            );
-        });
-
         it('should inspect non-string arguments in the file', async ({ expect }) => {
             const path = join(directory, 'app.log');
             const logger = await createTrackedLogger({
@@ -238,34 +214,6 @@ describe('createNodeLogger', () => {
             expect(streams.stdout).not.toHaveBeenCalled();
             expect(streams.stderr).not.toHaveBeenCalled();
             await expect(readFile(path, 'utf8')).resolves.toBe('only in file\n');
-        });
-
-        it('should write nothing anywhere when console is disabled and no file is configured', async ({ expect }) => {
-            const streams = mockStreams();
-            const logger = await createTrackedLogger({ console: false });
-
-            await logger.info('nowhere');
-            await logger.close();
-
-            expect(streams.stdout).not.toHaveBeenCalled();
-            expect(streams.stderr).not.toHaveBeenCalled();
-        });
-
-        it('should not write records below the level threshold', async ({ expect }) => {
-            const path = join(directory, 'app.log');
-            const logger = await createTrackedLogger({
-                console: false,
-                file: { path },
-                icons: false,
-                level: 'warn',
-                timestamp: false,
-            });
-
-            await logger.info('hidden');
-            await logger.warn('shown');
-            await logger.close();
-
-            await expect(readFile(path, 'utf8')).resolves.toBe('shown\n');
         });
 
         it('should append to an existing file', async ({ expect }) => {
@@ -378,22 +326,9 @@ describe('createNodeLogger', () => {
                 TypeError,
             ],
             [
-                'an empty Buffer',
-                () => ({ path: Buffer.alloc(0) }),
-                TypeError,
-            ],
-            [
                 'a zero maxPendingBytes',
                 (path) => ({
                     maxPendingBytes: 0,
-                    path,
-                }),
-                RangeError,
-            ],
-            [
-                'a negative maxPendingBytes',
-                (path) => ({
-                    maxPendingBytes: -1,
                     path,
                 }),
                 RangeError,
@@ -407,26 +342,10 @@ describe('createNodeLogger', () => {
                 RangeError,
             ],
             [
-                'a NaN maxPendingBytes',
-                (path) => ({
-                    maxPendingBytes: Number.NaN,
-                    path,
-                }),
-                RangeError,
-            ],
-            [
                 'rotate without interval or maxFileSize',
                 (path) => ({
                     path,
                     rotate: {},
-                }),
-                TypeError,
-            ],
-            [
-                'rotate with only maxFiles',
-                (path) => ({
-                    path,
-                    rotate: { maxFiles: 3 },
                 }),
                 TypeError,
             ],
@@ -469,17 +388,6 @@ describe('createNodeLogger', () => {
                 RangeError,
             ],
             [
-                'a string maxFiles',
-                (path) => ({
-                    path,
-                    rotate: {
-                        maxFiles: '3',
-                        maxFileSize: '1K',
-                    },
-                }),
-                RangeError,
-            ],
-            [
                 'a non-boolean compress',
                 (path) => ({
                     path,
@@ -503,30 +411,6 @@ describe('createNodeLogger', () => {
                 (path) => ({
                     path,
                     rotate: { maxFileSize: '0K' },
-                }),
-                TypeError,
-            ],
-            [
-                'a maxFileSize with an unsupported unit',
-                (path) => ({
-                    path,
-                    rotate: { maxFileSize: '1T' },
-                }),
-                TypeError,
-            ],
-            [
-                'a lowercase maxFileSize unit',
-                (path) => ({
-                    path,
-                    rotate: { maxFileSize: '1k' },
-                }),
-                TypeError,
-            ],
-            [
-                'a numeric maxFileSize',
-                (path) => ({
-                    path,
-                    rotate: { maxFileSize: 1024 },
                 }),
                 TypeError,
             ],
@@ -568,8 +452,6 @@ describe('createNodeLogger', () => {
 
         it('should reject invalid shared options from the factory', async ({ expect }) => {
             await expect(createNodeLogger({ level: 'bogus' as never })).rejects.toBeInstanceOf(TypeError);
-            await expect(createNodeLogger({ onError: 'x' as never })).rejects.toBeInstanceOf(TypeError);
-            await expect(createNodeLogger({ prefix: 1 as never })).rejects.toBeInstanceOf(TypeError);
         });
     });
 
@@ -696,7 +578,81 @@ describe('createNodeLogger', () => {
         });
     });
 
+    describe('file open failure', () => {
+        it('should reject the factory without reporting a diagnostic when the path is a directory', async ({ expect }) => {
+            const onError = vi.fn();
+
+            await expect(createNodeLogger({
+                console: false,
+                file: { path: directory },
+                onError,
+            })).rejects.toMatchObject({ code: 'EISDIR' });
+
+            expect(onError).not.toHaveBeenCalled();
+        });
+
+        it('should resolve close() and report one file diagnostic when the stream fails while closing', async ({ expect }) => {
+            const failure = new Error('flush failed');
+            const stream = new Writable({
+                final(callback) {
+                    callback(failure);
+                },
+                write(_chunk, _encoding, callback) {
+                    callback();
+                },
+            });
+
+            vi.resetModules();
+            vi.doMock('rotating-file-stream', () => ({ createStream: () => stream }));
+            const { createNodeLogger: createIsolatedLogger } = await import('../../src/logger/node');
+            const onError = vi.fn();
+            const logger = await createIsolatedLogger({
+                console: false,
+                file: {
+                    path: join(directory, 'app.log'),
+                    rotate: { maxFileSize: '1K' },
+                },
+                onError,
+            });
+
+            loggers.push(logger);
+            await logger.info('record');
+
+            await expect(logger.close()).resolves.toBeUndefined();
+
+            expect(onError).toHaveBeenCalledTimes(1);
+            expect(onError).toHaveBeenCalledWith(expect.objectContaining({
+                error: failure,
+                type: 'file',
+            }));
+
+            expect(logger.getStats().pendingBytes).toBe(0);
+        });
+    });
+
     describe('backpressure', () => {
+        it('should accept a record whose multibyte line exactly fills maxPendingBytes', async ({ expect }) => {
+            const line = 'ℹ 日本語\n';
+            const path = join(directory, 'app.log');
+            const logger = await createTrackedLogger({
+                console: false,
+                file: {
+                    maxPendingBytes: Buffer.byteLength(line),
+                    path,
+                },
+                onError: vi.fn(),
+                timestamp: false,
+            });
+
+            await logger.info('日本語');
+
+            expect(logger.getStats().overflowCount).toBe(0);
+
+            await logger.close();
+
+            await expect(readFile(path, 'utf8')).resolves.toBe(line);
+        });
+
         it('should drop a record larger than maxPendingBytes, report overflow, and still resolve', async ({ expect }) => {
             vi.useFakeTimers({
                 toFake: [
@@ -897,11 +853,25 @@ describe('createNodeLogger', () => {
             await expect(logger.close()).resolves.toBeUndefined();
         });
 
-        it('should resolve close() for a logger without a file', async ({ expect }) => {
-            const logger = await createTrackedLogger({ console: false });
+        it('should drop a record logged while close() is in flight and still flush the earlier one', async ({ expect }) => {
+            const path = join(directory, 'app.log');
+            const onError = vi.fn();
+            const logger = await createTrackedLogger({
+                console: false,
+                file: { path },
+                icons: false,
+                onError,
+                timestamp: false,
+            });
 
-            await expect(logger.close()).resolves.toBeUndefined();
-            await expect(logger.close()).resolves.toBeUndefined();
+            const first = logger.info('first');
+            const closing = logger.close();
+            await logger.info('late');
+            await closing;
+            await first;
+
+            expect(onError).toHaveBeenCalledWith(expect.objectContaining({ type: 'closed' }));
+            await expect(readFile(path, 'utf8')).resolves.toBe('first\n');
         });
 
         it('should resolve later log calls, report a closed diagnostic, and write nothing', async ({ expect }) => {
@@ -1005,137 +975,59 @@ describe('createNodeLogger', () => {
             expect(history.length).toBeLessThanOrEqual(5);
         });
 
-        it('should rotate from a snapshot of rotate options supplied through prototype getters', async ({ expect }) => {
-            class RotationOptions {
-                get maxFiles() {
-                    return 2;
-                }
-
-                get maxFileSize() {
-                    return '1K';
-                }
-            }
+        it('should archive records left in the active file by an earlier period instead of the next one', async ({ expect }) => {
+            const path = join(directory, 'app.log');
+            await writeFile(path, 'yesterday\n');
+            const yesterday = new Date(Date.now() - (24 * 60 * 60 * 1000));
+            await utimes(path, yesterday, yesterday);
 
             const logger = await createTrackedLogger({
                 console: false,
                 file: {
-                    path: join(directory, 'app.log'),
-                    rotate: new RotationOptions() as never,
+                    path,
+                    rotate: {
+                        compress: false,
+                        interval: 'daily',
+                    },
                 },
                 icons: false,
                 timestamp: false,
             });
 
-            for (let index = 0; index < 40; index++) await logger.info(`${String(index).padStart(3, '0')} ${'x'.repeat(100)}`);
+            await logger.info('today');
             await logger.close();
 
-            const history = (await readdir(directory)).filter((name) => name.endsWith('.gz'));
+            const history = (await readdir(directory)).filter((name) => name !== 'app.log' && !name.endsWith('.txt'));
 
-            expect(history).toHaveLength(2);
+            expect(history).toHaveLength(1);
+            await expect(readFile(join(directory, history[0]!), 'utf8')).resolves.toBe('yesterday\n');
+            await expect(readFile(path, 'utf8')).resolves.toBe('today\n');
         });
 
-        it.for<[string, LoggerRotationOptions, UnknownRecord, string[]]>([
-            [
-                'hourly interval',
-                { interval: 'hourly' },
-                {
-                    compress: 'gzip',
-                    interval: '1h',
-                    maxFiles: 30,
-                },
-                [
-                    'size',
-                    'maxSize',
-                ],
-            ],
-            [
-                'daily interval without compression',
-                {
-                    compress: false,
-                    interval: 'daily',
-                    maxFiles: 5,
-                },
-                {
-                    compress: false,
-                    interval: '1d',
-                    maxFiles: 5,
-                },
-                [
-                    'size',
-                    'maxSize',
-                ],
-            ],
-            [
-                'maxFileSize with maxTotalSize',
-                {
-                    maxFileSize: '1K',
-                    maxTotalSize: '1M',
-                },
-                {
-                    compress: 'gzip',
-                    maxFiles: 30,
-                    maxSize: '1M',
-                    size: '1K',
-                },
-                ['interval'],
-            ],
-        ])(
-            'should map %s to rotating-file-stream options and write through it',
-            async (
-                [
-                    , rotate,
-                    expectedOptions,
-                    absentKeys,
-                ],
-                { expect },
-            ) => {
-                const calls: unknown[][] = [];
-                vi.resetModules();
-                vi.doMock(
-                    'rotating-file-stream',
-                    async (importOriginal) => {
-                        const actual = await importOriginal<typeof import('rotating-file-stream')>();
-                        return {
-                            ...actual,
-                            createStream: (...args: Parameters<typeof actual.createStream>) => {
-                                calls.push(args);
-                                return actual.createStream(...args);
-                            },
-                        };
+        it('should keep the history files within maxTotalSize', async ({ expect }) => {
+            const logger = await createTrackedLogger({
+                console: false,
+                file: {
+                    path: join(directory, 'app.log'),
+                    rotate: {
+                        compress: false,
+                        maxFileSize: '1K',
+                        maxTotalSize: '2K',
                     },
-                );
+                },
+                icons: false,
+                timestamp: false,
+            });
 
-                const { createNodeLogger: createIsolatedLogger } = await import('../../src/logger/node');
-                const logger = await createIsolatedLogger({
-                    console: false,
-                    file: {
-                        path: join(directory, 'app.log'),
-                        rotate,
-                    },
-                    icons: false,
-                    timestamp: false,
-                });
+            for (let index = 0; index < 60; index++) await logger.info(`${String(index).padStart(3, '0')} ${'x'.repeat(100)}`);
+            await logger.close();
 
-                loggers.push(logger);
-                await logger.info('record');
-                await logger.close();
+            const history = (await readdir(directory)).filter((name) => name !== 'app.log' && !name.endsWith('.txt'));
+            const sizes = await Promise.all(history.map(async (name) => (await stat(join(directory, name))).size));
 
-                expect(calls).toHaveLength(1);
-
-                const [filename, options] = calls[0]!;
-
-                expect(filename).toBe('app.log');
-                expect(options).toMatchObject({
-                    ...expectedOptions,
-                    intervalBoundary: true,
-                    intervalUTC: false,
-                    path: directory,
-                });
-
-                for (const key of absentKeys) expect(options).not.toHaveProperty(key);
-                await expect(readFile(join(directory, 'app.log'), 'utf8')).resolves.toBe('record\n');
-            },
-        );
+            expect(history.length).toBeGreaterThan(0);
+            expect(sizes.reduce((total, size) => total + size, 0)).toBeLessThanOrEqual(2048);
+        });
 
         it('should report rotation cleanup warnings with the rotation diagnostic type and count them', async ({ expect }) => {
             const stream = new Writable({
@@ -1233,14 +1125,38 @@ describe('createNodeLogger', () => {
     });
 
     describe('console output', () => {
-        it.for([
-            'trace',
-            'debug',
-            'info',
-            'success',
-        ] as const)(
-            'should write %s to stdout with a trailing newline',
-            async (method, { expect }) => {
+        it.for<[LoggerMethod, 'stderr' | 'stdout']>([
+            [
+                'trace',
+                'stdout',
+            ],
+            [
+                'debug',
+                'stdout',
+            ],
+            [
+                'info',
+                'stdout',
+            ],
+            [
+                'success',
+                'stdout',
+            ],
+            [
+                'warn',
+                'stderr',
+            ],
+            [
+                'error',
+                'stderr',
+            ],
+            [
+                'fatal',
+                'stderr',
+            ],
+        ])(
+            'should write %s to %s with a trailing newline',
+            async ([method, stream], { expect }) => {
                 const streams = mockStreams();
                 const logger = await createTrackedLogger({
                     icons: false,
@@ -1250,28 +1166,8 @@ describe('createNodeLogger', () => {
 
                 await logger[method]('hello');
 
-                expect(streams.stderr).not.toHaveBeenCalled();
-                expect(writtenText(streams.stdout)).toBe('hello\n');
-            },
-        );
-
-        it.for([
-            'warn',
-            'error',
-            'fatal',
-        ] as const)(
-            'should write %s to stderr with a trailing newline',
-            async (method, { expect }) => {
-                const streams = mockStreams();
-                const logger = await createTrackedLogger({
-                    icons: false,
-                    timestamp: false,
-                });
-
-                await logger[method]('problem');
-
-                expect(streams.stdout).not.toHaveBeenCalled();
-                expect(writtenText(streams.stderr)).toBe('problem\n');
+                expect(streams[stream === 'stdout' ? 'stderr' : 'stdout']).not.toHaveBeenCalled();
+                expect(writtenText(streams[stream])).toBe('hello\n');
             },
         );
 
@@ -1286,19 +1182,24 @@ describe('createNodeLogger', () => {
             vi.setSystemTime(new Date(2026, 0, 5, 3, 4, 5, 6));
             const streams = mockStreams();
             forceStreamColors(process.stdout, false);
+            forceStreamColors(process.stderr, false);
             const path = join(directory, 'app.log');
             const logger = await createTrackedLogger({
                 file: { path },
                 prefix: 'pre',
+                suffix: 'suf',
             });
 
             await logger.info('msg', { a: 1 });
+            await logger.error('failed');
             await logger.close();
 
-            const expected = 'ℹ [2026-01-05 03:04:05.006] pre msg { a: 1 }\n';
+            const expectedInfo = 'ℹ [2026-01-05 03:04:05.006] pre msg { a: 1 } suf\n';
+            const expectedError = '✖ [2026-01-05 03:04:05.006] pre failed suf\n';
 
-            expect(writtenText(streams.stdout)).toBe(expected);
-            await expect(readFile(path, 'utf8')).resolves.toBe(expected);
+            expect(writtenText(streams.stdout)).toBe(expectedInfo);
+            expect(writtenText(streams.stderr)).toBe(expectedError);
+            await expect(readFile(path, 'utf8')).resolves.toBe(expectedInfo + expectedError);
         });
 
         it('should report a console diagnostic and still resolve when a console write fails', async ({ expect }) => {

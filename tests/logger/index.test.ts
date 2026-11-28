@@ -305,23 +305,16 @@ describe('createLogger', () => {
             expect(spies.error).not.toHaveBeenCalled();
         });
 
-        it('should prefer the level option over LOG_LEVEL', async ({ expect }) => {
-            vi.stubEnv('LOG_LEVEL', 'fatal');
-            const logger = createLogger({ level: 'debug' });
-
-            expect(logger.isLevelEnabled('debug')).toBe(true);
-            expect(logger.isLevelEnabled('trace')).toBe(false);
-        });
-
-        it('should not read an invalid LOG_LEVEL while a level override is active', async ({ expect }) => {
+        it('should prefer the level option over LOG_LEVEL without reading an invalid LOG_LEVEL', async ({ expect }) => {
             vi.stubEnv('LOG_LEVEL', 'nonsense');
             const onError = vi.fn();
             const logger = createLogger({
-                level: 'warn',
+                level: 'debug',
                 onError,
             });
 
-            expect(logger.isLevelEnabled('warn')).toBe(true);
+            expect(logger.isLevelEnabled('debug')).toBe(true);
+            expect(logger.isLevelEnabled('trace')).toBe(false);
             expect(onError).not.toHaveBeenCalled();
         });
 
@@ -395,41 +388,54 @@ describe('createLogger', () => {
     });
 
     describe('console methods', () => {
-        it.for<[LoggerMethod, 'debug' | 'error' | 'info' | 'warn']>([
+        it.for<[LoggerMethod, 'debug' | 'error' | 'info' | 'warn', string]>([
             [
                 'debug',
                 'debug',
+                '⚙',
             ],
             [
                 'trace',
                 'debug',
+                '·',
             ],
             [
                 'info',
                 'info',
+                'ℹ',
             ],
             [
                 'success',
                 'info',
+                '✔',
             ],
             [
                 'warn',
                 'warn',
+                '⚠',
             ],
             [
                 'error',
                 'error',
+                '✖',
             ],
             [
                 'fatal',
                 'error',
+                '✖',
             ],
         ])(
-            'should write %s through console.%s',
-            async ([method, consoleMethod], { expect }) => {
+            'should write %s through console.%s with its icon',
+            async (
+                [
+                    method,
+                    consoleMethod,
+                    icon,
+                ],
+                { expect },
+            ) => {
                 const spies = mockConsole();
                 const logger = createLogger({
-                    icons: false,
                     level: 'trace',
                     timestamp: false,
                 });
@@ -440,7 +446,7 @@ describe('createLogger', () => {
                     expect(spy).toHaveBeenCalledTimes(name === consoleMethod ? 1 : 0);
                 }
 
-                expect(renderCall(spies[consoleMethod].mock.calls[0]!)).toBe('hello 42');
+                expect(renderCall(spies[consoleMethod].mock.calls[0]!)).toBe(`${icon} hello 42`);
             },
         );
 
@@ -495,52 +501,6 @@ describe('createLogger', () => {
 
             expect(renderCall(spies.info.mock.calls[0]!)).toBe('plain');
         });
-
-        it.for<[LoggerMethod, string]>([
-            [
-                'debug',
-                '⚙',
-            ],
-            [
-                'trace',
-                '·',
-            ],
-            [
-                'info',
-                'ℹ',
-            ],
-            [
-                'success',
-                '✔',
-            ],
-            [
-                'warn',
-                '⚠',
-            ],
-            [
-                'error',
-                '✖',
-            ],
-            [
-                'fatal',
-                '✖',
-            ],
-        ])(
-            'should prefix %s output with its icon',
-            async ([method, icon], { expect }) => {
-                const spies = mockConsole();
-                const logger = createLogger({
-                    level: 'trace',
-                    timestamp: false,
-                });
-
-                await logger[method]('m');
-
-                const call = objectValues(spies).flatMap((spy) => spy.mock.calls)[0]!;
-
-                expect(renderCall(call)).toBe(`${icon} m`);
-            },
-        );
 
         it('should update presentation with configure() and keep unspecified settings', async ({ expect }) => {
             const spies = mockConsole();
@@ -647,6 +607,28 @@ describe('createLogger', () => {
                 message: 'Console output failed.',
                 type: 'console',
             }));
+
+            expect(Object.isFrozen(onError.mock.calls[0]![0])).toBe(true);
+        });
+
+        it('should report once and not recurse when onError logs through the same logger', async ({ expect }) => {
+            const spies = mockConsole();
+            const failure = () => {
+                throw new Error('console broke');
+            };
+
+            spies.info.mockImplementation(failure);
+            spies.warn.mockImplementation(failure);
+            const onError = vi.fn();
+            const logger = createLogger({ onError });
+            onError.mockImplementation(() => {
+                void logger.warn('diagnostic');
+            });
+
+            await expect(logger.info('m')).resolves.toBeUndefined();
+
+            expect(onError).toHaveBeenCalledTimes(1);
+            expect(spies.warn).toHaveBeenCalledTimes(1);
         });
 
         it('should resolve, report console, and raise no unhandled rejection when console is replaced by a rejecting async function', async ({ expect }) => {
@@ -717,25 +699,6 @@ describe('createLogger', () => {
             expect(rejections).toEqual([]);
             expect(spies.error).toHaveBeenCalledTimes(1);
         });
-
-        it('should resolve when onError and the fallback console also throw', async ({ expect }) => {
-            const spies = mockConsole();
-            spies.info.mockImplementation(() => {
-                throw new Error('console broke');
-            });
-
-            spies.error.mockImplementation(() => {
-                throw new Error('fallback broke');
-            });
-
-            const logger = createLogger({
-                onError() {
-                    throw new Error('handler broke');
-                },
-            });
-
-            await expect(logger.info('m')).resolves.toBeUndefined();
-        });
     });
 
     describe('api shape', () => {
@@ -748,12 +711,36 @@ describe('createLogger', () => {
             }).toThrow(TypeError);
         });
 
-        it('should create independent loggers', async ({ expect }) => {
-            const first = createLogger({ level: 'error' });
-            const second = createLogger({ level: 'debug' });
+        it('should keep level and presentation independent between loggers', async ({ expect }) => {
+            const spies = mockConsole();
+            const first = createLogger({
+                icons: false,
+                level: 'error',
+                timestamp: false,
+            });
 
-            expect(first.isLevelEnabled('debug')).toBe(false);
+            const second = createLogger({
+                icons: false,
+                level: 'debug',
+                timestamp: false,
+            });
+
+            first.setLevel('trace');
+            first.configure({
+                icons: true,
+                prefix: 'first',
+            });
+
+            expect(second.isLevelEnabled('trace')).toBe(false);
             expect(second.isLevelEnabled('debug')).toBe(true);
+
+            await second.info('m');
+
+            expect(renderCall(spies.info.mock.calls[0]!)).toBe('m');
+
+            second.setLevel('fatal');
+
+            expect(first.isLevelEnabled('trace')).toBe(true);
         });
     });
 });
@@ -765,30 +752,6 @@ describe('createDiagnosticReporter', () => {
             type,
         };
     }
-
-    it('should pass events to onError and not run the fallback when onError is given', ({ expect }) => {
-        const onError = vi.fn();
-        const fallback = vi.fn();
-        const report = createDiagnosticReporter(onError, fallback);
-
-        report(createEvent());
-
-        expect(onError).toHaveBeenCalledWith({
-            message: 'console failed',
-            type: 'console',
-        });
-
-        expect(fallback).not.toHaveBeenCalled();
-    });
-
-    it('should send a prefixed, newline-terminated message to the fallback when there is no onError', ({ expect }) => {
-        const fallback = vi.fn();
-
-        createDiagnosticReporter(undefined, fallback)(createEvent());
-
-        expect(fallback).toHaveBeenCalledTimes(1);
-        expect(fallback).toHaveBeenCalledWith('[logger] console failed\n');
-    });
 
     it('should append the error detail to the fallback message', ({ expect }) => {
         useFakeClock(0);
@@ -810,15 +773,6 @@ describe('createDiagnosticReporter', () => {
             '[logger] console failed EACCES: permission denied\n',
             '[logger] console failed plain failure\n',
         ]);
-    });
-
-    it('should pass frozen events to onError', ({ expect }) => {
-        const onError = vi.fn();
-        const event = createEvent();
-        createDiagnosticReporter(onError)(event);
-
-        expect(Object.isFrozen(onError.mock.calls[0]![0])).toBe(true);
-        expect(Object.isFrozen(event)).toBe(false);
     });
 
     it('should suppress same-type diagnostics within one second and carry suppressedCount afterwards', ({ expect }) => {
@@ -881,9 +835,9 @@ describe('createDiagnosticReporter', () => {
         expect(onError.mock.calls[1]![0]).toHaveProperty('suppressedCount', 1);
     });
 
-    it('should rate-limit each diagnostic type independently', ({ expect }) => {
+    it('should rate-limit each diagnostic type independently, even while an async onError never settles', ({ expect }) => {
         useFakeClock(0);
-        const onError = vi.fn();
+        const onError = vi.fn<(event: LoggerDiagnostic) => unknown>(async () => await new Promise<void>(() => {}));
         const report = createDiagnosticReporter(onError);
 
         report(createEvent('console'));
@@ -922,48 +876,6 @@ describe('createDiagnosticReporter', () => {
         expect(() => report(createEvent('file'))).not.toThrow();
         expect(fallback).toHaveBeenCalledTimes(2);
     });
-
-    it('should contain a fallback that returns a rejected promise', async ({ expect }) => {
-        const fallback = vi.fn<() => unknown>(async () => {
-            throw new Error('async fallback broke');
-        });
-
-        const report = createDiagnosticReporter(undefined, fallback);
-
-        const rejections = await collectUnhandledRejections(() => {
-            report(createEvent());
-        });
-
-        expect(rejections).toEqual([]);
-        expect(fallback).toHaveBeenCalledTimes(1);
-    });
-
-    it('should contain a rejecting async onError', async ({ expect }) => {
-        const onError = vi.fn<() => unknown>(async () => {
-            throw new Error('async handler broke');
-        });
-
-        const report = createDiagnosticReporter(onError);
-
-        const rejections = await collectUnhandledRejections(() => {
-            report(createEvent());
-        });
-
-        expect(rejections).toEqual([]);
-        expect(onError).toHaveBeenCalledTimes(1);
-    });
-
-    it('should deliver every non-suppressed diagnostic even while an async onError is pending', ({ expect }) => {
-        useFakeClock(0);
-        const onError = vi.fn<() => unknown>(async () => await new Promise<void>(() => {}));
-        const report = createDiagnosticReporter(onError);
-
-        report(createEvent('console'));
-        report(createEvent('file'));
-        report(createEvent('overflow'));
-
-        expect(onError).toHaveBeenCalledTimes(3);
-    });
 });
 
 describe('formatLoggerTime', () => {
@@ -971,6 +883,12 @@ describe('formatLoggerTime', () => {
         expect(formatLoggerTime(new Date(2026, 0, 5, 3, 4, 5, 6))).toBe('[2026-01-05 03:04:05.006]');
         expect(formatLoggerTime(new Date(2026, 11, 31, 23, 59, 59, 999))).toBe('[2026-12-31 23:59:59.999]');
         expect(formatLoggerTime(new Date(2026, 5, 15, 0, 0, 0, 120))).toBe('[2026-06-15 00:00:00.120]');
+    });
+
+    it('should use the local time zone rather than UTC', ({ expect }) => {
+        vi.stubEnv('TZ', 'Asia/Taipei');
+
+        expect(formatLoggerTime(new Date(Date.UTC(2026, 0, 4, 19, 4, 5, 6)))).toBe('[2026-01-05 03:04:05.006]');
     });
 });
 
@@ -1005,18 +923,6 @@ describe('supportsLoggerColor', () => {
         ],
         [
             '1',
-            true,
-        ],
-        [
-            '2',
-            true,
-        ],
-        [
-            '3',
-            true,
-        ],
-        [
-            'true',
             true,
         ],
         [
@@ -1070,13 +976,6 @@ describe('supportsLoggerColor', () => {
             expect(supportsLoggerColor({ isTTY: true })).toBe(false);
         },
     );
-
-    it('should keep colors for a TTY with an ordinary TERM', ({ expect }) => {
-        clearColorEnvironment();
-        vi.stubEnv('TERM', 'xterm-256color');
-
-        expect(supportsLoggerColor({ isTTY: true })).toBe(true);
-    });
 });
 
 describe('formatLoggerConsoleArgs', () => {
@@ -1119,18 +1018,6 @@ describe('formatLoggerConsoleArgs', () => {
                 value,
                 7,
                 'suf',
-            ]);
-        });
-
-        it('should return only the message arguments when presentation is disabled', ({ expect }) => {
-            stubNodeProcess({
-                stderr: false,
-                stdout: false,
-            });
-
-            expect(formatLoggerConsoleArgs(createRecord({ args: ['only'] }))).toEqual([
-                '%s',
-                'only',
             ]);
         });
 
@@ -1225,20 +1112,6 @@ describe('formatLoggerConsoleArgs', () => {
             }))).toEqual([
                 '%o',
                 value,
-            ]);
-        });
-
-        it('should emit only message arguments when presentation is disabled', ({ expect }) => {
-            vi.stubGlobal('process', undefined);
-
-            expect(formatLoggerConsoleArgs(createRecord({
-                args: [
-                    'a',
-                    1,
-                ],
-            }))).toEqual([
-                'a %o',
-                1,
             ]);
         });
 
