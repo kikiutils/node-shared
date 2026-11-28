@@ -89,6 +89,8 @@ export class PrecisionNumber {
     }
 
     #round(decimal: Decimal) {
+        // decimal.js keeps the operand's constructor, so rewrapping stops `BoundedDecimal` results from rounding later
+        // arithmetic at 100 digits.
         const rounded = new ExactDecimal(decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding));
         if (!rounded.isFinite()) throw new RangeError('Result is not finite');
         if (rounded.e >= maxIntegerDigits) throw new RangeError('Result exceeds the supported magnitude');

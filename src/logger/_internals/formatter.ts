@@ -112,7 +112,7 @@ function getDecorations(record: LoggerRecord) {
     };
 }
 
-/** Use native terminal detection; redirected streams still honor FORCE_COLOR. */
+/** Prefers the stream's native `hasColors()`; without it, FORCE_COLOR applies even to redirected streams. */
 export function supportsLoggerColor(target: { hasColors?: () => boolean; isTTY?: boolean }): boolean {
     if (target.hasColors) return target.hasColors();
     const forced = process.env.FORCE_COLOR;

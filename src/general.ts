@@ -5,7 +5,6 @@ export function extractFirstValue<T, D>(value: readonly T[] | T, fallback?: D) {
     return (Array.isArray(value) ? value[0] : value) ?? fallback;
 }
 
-/** `Error` instances, including subclasses, yield their `message`; any other value is converted with `String`. */
 export function getErrorMessage(error: unknown) {
     return error instanceof Error ? error.message : String(error);
 }

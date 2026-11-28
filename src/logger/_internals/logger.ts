@@ -37,13 +37,9 @@ function callContained<T>(callback: ((value: T) => unknown) | undefined, value: 
         const result: unknown = callback?.(value);
         // A thenable check, not `instanceof Promise`, also covers promises from other realms such as `node:vm`.
         if (typeof (result as PromiseLike<unknown> | undefined)?.then === 'function') {
-            Promise.resolve(result).catch(() => {
-                // A failed diagnostic callback has nowhere safer to report to.
-            });
+            Promise.resolve(result).catch(() => { /* A failed diagnostic callback has nowhere safer to report to. */ });
         }
-    } catch {
-        // Same as the rejection handler above.
-    }
+    } catch { /* Same as the rejection handler above. */ }
 }
 
 /** A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters. */
@@ -123,6 +119,8 @@ export function createLoggerCore(options: LoggerOptions, hooks: LoggerHooks): Re
     let currentLevel: LoggerLevel = override ?? 'info';
     let environmentRead = false;
 
+    // LOG_LEVEL is re-read on every call so runtime changes apply; an unchanged value is skipped so an invalid one is
+    // reported only once.
     function refreshLevel() {
         if (override !== undefined) return;
         const input = readEnvironmentLevel();

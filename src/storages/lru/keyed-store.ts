@@ -1,12 +1,11 @@
 import type { LRUCache } from 'lru-cache';
 
 /**
- * The key resolver is called synchronously once per operation, and its exceptions propagate.
- * Reads return the cached value without copying it.
- * `getItemTtlMilliseconds` returns `Infinity` for no expiry, `0` for a missing key, and a negative value
- * for an expired item the cache has not purged yet.
- * The cache rejects values larger than its `maxEntrySize`, removing any previous value under the key, and writing
- * `undefined` deletes the key. A `ttlMilliseconds` of `0` disables expiry.
+ * The key resolver is called synchronously once per operation, and its exceptions propagate. Reads return the cached
+ * value without copying it. `getItemTtlMilliseconds` returns `Infinity` for no expiry, `0` for a missing key, and a
+ * negative value for an expired item the cache has not purged yet. The cache rejects values larger than its
+ * `maxEntrySize`, removing any previous value under the key, and writing `undefined` deletes the key. A
+ * `ttlMilliseconds` of `0` disables expiry.
  *
  * @throws RangeError from `setItemWithTtl` if `ttlMilliseconds` is negative or `NaN`, which the cache would store as
  * already expired or never expiring.

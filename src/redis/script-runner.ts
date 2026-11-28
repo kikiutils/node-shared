@@ -22,13 +22,10 @@ export interface RedisLikeScriptClient {
 }
 
 /**
- * Calls use `EVALSHA` with the SHA-1 digest of the source. A `NOSCRIPT` rejection loads the script with
- * `SCRIPT LOAD` before another execution attempt, provided the attempt limit has not been reached.
- * Concurrent cache misses on the same runner share an in-flight load; reuse the runner to share that load.
- * Load failures and errors other than `NOSCRIPT` propagate without retries. The final execution error is
- * preserved when the attempt limit is reached. Results are not cached. The runner never closes `client`.
- * `maxAttempts` counts `EVALSHA` attempts per invocation, including the initial one; `1` disables script loading
- * and retries.
+ * Calls use `EVALSHA` with the SHA-1 digest of the source; a `NOSCRIPT` rejection runs `SCRIPT LOAD` and retries.
+ * `maxAttempts` counts `EVALSHA` attempts per invocation, including the initial one, so `1` disables loading; once it
+ * is reached, the last `NOSCRIPT` error propagates. Load failures and other errors propagate without retries.
+ * Concurrent cache misses on the same runner share one in-flight load. The runner never closes `client`.
  *
  * @throws RangeError if `maxAttempts` is not a positive safe integer.
  */

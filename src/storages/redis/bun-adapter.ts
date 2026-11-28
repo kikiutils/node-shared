@@ -19,8 +19,8 @@ export interface BunRedisLikeClient extends RedisLikeScriptClient {
 }
 
 // Bun decodes `GETDEL` replies as text, which corrupts binary values, so the script returns the value hex-encoded.
-// TODO: Once a released Bun includes https://github.com/oven-sh/bun/pull/49499 (Bun 1.4.5 does not), replace this
-// script with `client.getdel(key, { buffer: true })`.
+// TODO: Replace this script with `client.getdel(key, { buffer: true })` once a released Bun includes
+// https://github.com/oven-sh/bun/pull/49499.
 // A lookup table instead of a per-byte callback, because the script blocks the server for its whole run.
 const getAndDeleteHexScript = `local value = redis.call("GETDEL", KEYS[1])
 if not value then
@@ -39,7 +39,6 @@ return (string.gsub(value, ".", hex))`;
  * `EVALSHA` and `SCRIPT LOAD` permissions. Create one adapter per client and reuse it so script loads are shared.
  *
  * @example
- *
  * ```ts
  * const storage = createRedisMsgpackStorage(createBunRedisAdapter(new RedisClient()));
  * ```

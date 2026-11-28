@@ -74,6 +74,7 @@ export async function createFileWriter(
         rejectInitialization?.(error);
         if (!failed) {
             failed = true;
+            // Initialization failures reject the factory instead.
             if (!initializing) {
                 errorEventCount++;
                 report({
@@ -217,7 +218,7 @@ async function importRotatingFileStream() {
     }
 }
 
-/** Validate before mkdir, stream creation, or other filesystem side effects. */
+/** Runs before mkdir, stream creation, or other filesystem side effects. */
 function validateFileOptions(options: LoggerFileOptions) {
     if (
         !options

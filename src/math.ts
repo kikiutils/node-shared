@@ -5,14 +5,10 @@ import type { PrecisionNumber } from './classes/precision-number';
 type CalculableValue = bigint | Decimal.Value | PrecisionNumber;
 
 export interface ToPercentageStringOptions {
-    /**
-     * @defaultValue 2
-     */
+    /** Defaults to `2`. */
     decimalPlaces?: number;
 
-    /**
-     * @defaultValue true
-     */
+    /** Defaults to `true`. */
     withSymbol?: boolean;
 }
 

@@ -4,8 +4,9 @@ import { formatLoggerParts } from '../../_internals/formatter';
 import type { LoggerRecord } from '../../_internals/types';
 
 /**
- * Preserve user ANSI for console output. Custom inspect callbacks run like `console.log`, other property getters are
- * not invoked, and an argument whose inspection throws is replaced instead of dropping the record.
+ * User ANSI sequences are preserved; the caller strips them for file output. Custom inspect callbacks run like
+ * `console.log`, other property getters are not invoked, and an argument whose inspection throws is replaced instead
+ * of dropping the record.
  */
 export function formatNodeLoggerRecord(
     record: LoggerRecord,

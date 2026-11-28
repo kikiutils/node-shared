@@ -16,11 +16,9 @@ export interface Logger {
     error: (...args: unknown[]) => SafePromise<void>;
     fatal: (...args: unknown[]) => SafePromise<void>;
     info: (...args: unknown[]) => SafePromise<void>;
-
-    /** Accepts `success` as an informational method, although it is not a configurable threshold. */
     isLevelEnabled: (level: LoggerLevel | LoggerMethod) => boolean;
 
-    /** `success` is not a threshold; `env` restores environment-driven filtering. */
+    /** `env` restores environment-driven filtering. */
     setLevel: (level: 'env' | LoggerLevel) => void;
     success: (...args: unknown[]) => SafePromise<void>;
     trace: (...args: unknown[]) => SafePromise<void>;

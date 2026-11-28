@@ -17,9 +17,8 @@ import type {
 } from './types';
 
 /**
- * Unsettled console writes, stored on each output stream so every loaded copy of this module shares them. Each stream
- * gets one permanent `error`/`close` listener on first use: a failed stream can emit `error` after its write
- * callback, so removing the listener could surface it as an uncaught exception.
+ * Unsettled console writes, stored on each output stream so every loaded copy of this module shares them. The stream
+ * listeners are never removed because a failed stream can emit `error` after its write callback.
  */
 const pendingConsoleWritesKey = Symbol.for('@kikiutils/shared/logger/node/pending-console-writes');
 
