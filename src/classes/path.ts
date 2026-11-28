@@ -166,6 +166,7 @@ export class Path {
         );
     }
 
+    /** Bun resolves `null` instead of `undefined`. */
     async access(...args: DropFirstParameters<typeof fsp.access>) {
         return await fsp.access(this.#value, ...args);
     }
@@ -322,6 +323,7 @@ export class Path {
             withFileTypes: true;
         },
     ): Promise<fs.Dirent[]>;
+    /** Bun returns entries without `name` or `isFile()`. */
     readdir(
         options: {
             encoding: 'buffer';

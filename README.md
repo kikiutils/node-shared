@@ -1,4 +1,4 @@
-# {{package}}
+# @kikiutils/shared
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -6,14 +6,14 @@
 [![codecov][codecov-src]][codecov-href]
 [![License][license-src]][license-href]
 
-{{One sentence: what the package provides and its main differentiator, plus any package-wide limit (e.g. "ESM only", "Node.js only").}}
+Modular utilities for TypeScript, including hashing, logging, dates, precise math, storage helpers, and Vue/web helpers. Each module is imported by its own subpath and needs only its own peer dependencies. ESM only.
 
 - [✨ Release Notes](./CHANGELOG.md)
 
 ## Installation
 
 ```bash
-pnpm add {{package}}
+pnpm add @kikiutils/shared
 ```
 
 <!-- Drop this section if the package has no optional peer dependencies. -->
@@ -21,24 +21,37 @@ pnpm add {{package}}
 
 | Package | Enables |
 | --- | --- |
-| `{{peer}}` | {{One line: what it adds}} |
+| `date-fns` | `datetime`, `classes/enhanced-date` |
+| `decimal.js` | `math`, `classes/precision-number` |
+| `element-plus` | `element-plus` |
+| `file-type` | `file` |
+| `lru-cache` | `storages/lru/keyed-store` |
+| `msgpackr` | `storages/redis/msgpack` |
+| `rotating-file-stream` | File rotation in `logger/node` |
+| `vue`, `vue-router` | `vue` |
+
+## Runtime Support
+
+- **Node.js and Bun only:** `buffer`, `crypto-hash`, `env`, `logger/node`, `redis/*`, `storages/redis/bun-adapter`, `classes/path`
+- **Browser only:** `clipboard`, `web`
+- Everything else works in Node.js, Bun, and browsers.
 
 ## License
 
 [MIT License](./LICENSE)
 
 <!-- Badges -->
-[npm-version-href]: https://npmjs.com/package/{{package}}
-[npm-version-src]: https://img.shields.io/npm/v/{{package}}/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
+[npm-version-href]: https://npmjs.com/package/@kikiutils/shared
+[npm-version-src]: https://img.shields.io/npm/v/@kikiutils/shared/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
 
-[npm-downloads-href]: https://npmjs.com/package/{{package}}
-[npm-downloads-src]: https://img.shields.io/npm/dm/{{package}}.svg?colorA=18181b&colorB=28cf8d&style=flat
+[npm-downloads-href]: https://npmjs.com/package/@kikiutils/shared
+[npm-downloads-src]: https://img.shields.io/npm/dm/@kikiutils/shared.svg?colorA=18181b&colorB=28cf8d&style=flat
 
 [node-href]: ./package.json
-[node-src]: https://img.shields.io/node/v/{{package}}?colorA=18181b&colorB=28cf8d&style=flat
+[node-src]: https://img.shields.io/node/v/@kikiutils/shared?colorA=18181b&colorB=28cf8d&style=flat
 
-[codecov-href]: https://codecov.io/gh/{{owner}}/{{repo}}
-[codecov-src]: https://codecov.io/gh/{{owner}}/{{repo}}/graph/badge.svg?token={{codecov_token}}
+[codecov-href]: https://codecov.io/gh/kikiutils/node-shared
+[codecov-src]: https://codecov.io/gh/kikiutils/node-shared/graph/badge.svg?token=GRSQ7JO39E
 
-[license-href]: https://github.com/{{owner}}/{{repo}}/blob/main/LICENSE
-[license-src]: https://img.shields.io/github/license/{{owner}}/{{repo}}?colorA=18181b&colorB=28cf8d&style=flat
+[license-href]: https://github.com/kikiutils/node-shared/blob/main/LICENSE
+[license-src]: https://img.shields.io/github/license/kikiutils/node-shared?colorA=18181b&colorB=28cf8d&style=flat
