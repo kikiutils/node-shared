@@ -7,14 +7,9 @@
 
 - [✨ Release Notes](./CHANGELOG.md)
 
-## Features
-
-待整理
-
 ## Requirements
 
-- **Node.js** `>=24.15.0`
-- **ESM** package (`"type": "module"`)
+- **Node.js**: see `engines` in [package.json](./package.json)
 
 ## Installation
 
