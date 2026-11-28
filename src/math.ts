@@ -29,6 +29,7 @@ const PercentageDecimal = Decimal.clone({
  * Values are read through their string form. A `NaN` or infinite quotient, such as a zero denominator, formats as
  * zero, and results that round to zero never carry a minus sign. Rounding is half up.
  *
+ * @throws TypeError if a value is not a valid decimal or `options.decimalPlaces` is not a number.
  * @throws RangeError if `options.decimalPlaces` is not an integer from 0 to 20.
  */
 export function toPercentageString(
@@ -37,12 +38,19 @@ export function toPercentageString(
     options?: ToPercentageStringOptions,
 ) {
     const decimalPlaces = options?.decimalPlaces ?? 2;
+    if (typeof decimalPlaces !== 'number') throw new TypeError(`decimalPlaces must be a number, got ${typeof decimalPlaces}.`);
     if (!Number.isInteger(decimalPlaces) || decimalPlaces < 0 || decimalPlaces > maxPercentageDecimalPlaces) {
         throw new RangeError(`decimalPlaces must be an integer from 0 to ${maxPercentageDecimalPlaces}, got ${decimalPlaces}.`);
     }
 
-    // Scaling before dividing leaves the division as the only inexact step.
-    const percentage = new PercentageDecimal(numerator.toString()).times(100).div(denominator.toString());
+    let percentage: Decimal;
+    try {
+        // Scaling before dividing leaves the division as the only inexact step.
+        percentage = new PercentageDecimal(numerator.toString()).times(100).div(denominator.toString());
+    } catch (error) {
+        throw new TypeError('Invalid decimal value', { cause: error });
+    }
+
     const rounded = percentage.isFinite() ? percentage.toDecimalPlaces(decimalPlaces) : new PercentageDecimal(0);
     const result = (rounded.isZero() ? rounded.absoluteValue() : rounded).toFixed(decimalPlaces);
 

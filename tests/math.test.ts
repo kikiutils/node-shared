@@ -117,7 +117,10 @@ describe('toPercentageString', () => {
         },
     );
 
-    it('should propagate invalid decimal input instead of returning the non-finite fallback', ({ expect }) => {
-        expect(() => toPercentageString('not-a-number', 1)).toThrow(Error);
+    it('should reject invalid decimal input as a TypeError instead of returning the non-finite fallback', ({ expect }) => {
+        expect(() => toPercentageString('not-a-number', 1)).toThrow(TypeError);
+        expect(() => toPercentageString(1, 'not-a-number')).toThrow(TypeError);
+        // @ts-expect-error Untyped callers can pass configuration strings.
+        expect(() => toPercentageString(1, 3, { decimalPlaces: '2' })).toThrow(TypeError);
     });
 });
