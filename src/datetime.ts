@@ -37,7 +37,7 @@ export function formatDate(
  * `options.weekStartsOn` defaults to `1` (Monday); `0` means Sunday and `6` means Saturday.
  * Calendar ranges follow local daylight saving transitions rather than fixed 24-hour durations.
  *
- * @throws Error if the range type is unsupported at runtime.
+ * @throws TypeError if the range type is unsupported at runtime.
  *
  * @example
  *
@@ -86,7 +86,7 @@ export function getDateRangeFromDate(
             startDate = referenceDate.subDays(1).startOfDay();
             nextStartDate = startDate.toAddDays(1).startOfDay();
             break;
-        default: throw new Error(`Unsupported date range type: ${type}`);
+        default: throw new TypeError(`Unsupported date range type: ${type}`);
     }
 
     // Deriving the inclusive end from the next period's start keeps a repeated daylight-saving hour at the end of

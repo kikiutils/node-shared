@@ -21,7 +21,7 @@ export function usePreserveScroll<T extends Element = HTMLElement>(containerRef:
     });
 
     onBeforeRouteLeave(() => {
-        scrollLeft = containerRef.value?.scrollLeft || 0;
-        scrollTop = containerRef.value?.scrollTop || 0;
+        scrollLeft = containerRef.value?.scrollLeft ?? 0;
+        scrollTop = containerRef.value?.scrollTop ?? 0;
     });
 }

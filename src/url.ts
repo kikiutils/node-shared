@@ -10,10 +10,10 @@ const redirectPathBaseOrigin = 'http://redirect-path.invalid';
  * Typically used to preserve the user's current path for post-login navigation. Existing query parameters and the
  * fragment are kept.
  *
- * @throws Error if `redirectPath` is not a safe same-origin application path.
+ * @throws TypeError if `redirectPath` is not a safe same-origin application path.
  */
 export function appendRedirectParamToUrl(url: string, redirectPath: string) {
-    if (!isSafeRedirectPath(redirectPath)) throw new Error(`Invalid redirect path: "${redirectPath}". Redirect paths must be safe same-origin paths starting with '/'.`);
+    if (!isSafeRedirectPath(redirectPath)) throw new TypeError(`Invalid redirect path: "${redirectPath}". Redirect paths must be safe same-origin paths starting with '/'.`);
 
     const hashIndex = url.indexOf('#');
     const fragment = hashIndex === -1 ? '' : url.slice(hashIndex);
@@ -44,11 +44,8 @@ export function isSafeRedirectPath(value: unknown): value is string {
     if (value.includes('\\')) return false;
     // eslint-disable-next-line no-control-regex
     if (/[\0-\x1F\x7F]/.test(value)) return false;
-    try {
-        return new URL(value, redirectPathBaseOrigin).origin === redirectPathBaseOrigin;
-    } catch {
-        return false;
-    }
+    // Parsing cannot fail here: a single-slash path relative to a valid base only reaches the path state.
+    return new URL(value, redirectPathBaseOrigin).origin === redirectPathBaseOrigin;
 }
 
 /**

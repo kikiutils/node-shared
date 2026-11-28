@@ -65,7 +65,7 @@ describe('appendRedirectParamToUrl', () => {
     ])(
         'should reject unsafe redirect destination %j',
         (redirect, { expect }) => {
-            expect(() => appendRedirectParamToUrl('/login', redirect)).toThrow('Invalid redirect path');
+            expect(() => appendRedirectParamToUrl('/login', redirect)).toThrow(TypeError);
         },
     );
 });

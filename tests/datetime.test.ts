@@ -196,9 +196,7 @@ describe('getDateRangeFromDate', () => {
 
     it('should reject an unsupported range type', ({ expect }) => {
         // @ts-expect-error Exercise the runtime guard beyond the DateRangeType union.
-        expect(() => getDateRangeFromDate(new Date(2023, 6, 1), 'invalid')).toThrow(
-            'Unsupported date range type: invalid',
-        );
+        expect(() => getDateRangeFromDate(new Date(2023, 6, 1), 'invalid')).toThrow(TypeError);
     });
 });
 
