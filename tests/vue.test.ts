@@ -46,7 +46,6 @@ describe('usePreserveScroll', () => {
         };
 
         // Only scroll offsets are consumed; shallowRef preserves the fixture identity.
-
         const containerRef = shallowRef(element as HTMLElement);
 
         usePreserveScroll(containerRef);

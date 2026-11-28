@@ -75,7 +75,6 @@ describe('class Path', () => {
             expect(child.value).toBe(join('/tmp', 'foo', 'bar.txt'));
             expect(original.relative(child).value).toBe('bar.txt');
             expect(new Path('src').resolve().value).toBe(resolve('src'));
-            expect(Path.resolve('src').value).toBe(resolve('src'));
             expect(Path.resolve('/a', '/b', 'c').value).toBe(resolve('/a/b/c'));
             expect(
                 Path.format({

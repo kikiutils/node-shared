@@ -366,6 +366,14 @@ describe('createNodeLogger', () => {
                 RangeError,
             ],
             [
+                'an infinite maxPendingBytes',
+                (path) => ({
+                    maxPendingBytes: Number.POSITIVE_INFINITY,
+                    path,
+                }),
+                RangeError,
+            ],
+            [
                 'a fractional maxPendingBytes',
                 (path) => ({
                     maxPendingBytes: 1.5,
@@ -859,28 +867,7 @@ describe('createNodeLogger', () => {
             await expect(logger.close()).resolves.toBeUndefined();
         });
 
-        it('should drop a record logged while close() is in flight and still flush the earlier one', async ({ expect }) => {
-            const path = join(directory, 'app.log');
-            const onError = vi.fn();
-            const logger = await createTrackedLogger({
-                console: false,
-                file: { path },
-                icons: false,
-                onError,
-                timestamp: false,
-            });
-
-            const first = logger.info('first');
-            const closing = logger.close();
-            await logger.info('late');
-            await closing;
-            await first;
-
-            expect(onError).toHaveBeenCalledWith(expect.objectContaining({ type: 'closed' }));
-            await expect(readFile(path, 'utf8')).resolves.toBe('first\n');
-        });
-
-        it('should resolve later log calls, report a closed diagnostic, and write nothing', async ({ expect }) => {
+        it('should drop records logged once close() starts, report a closed diagnostic, and still flush the earlier one', async ({ expect }) => {
             const streams = mockStreams();
             const path = join(directory, 'app.log');
             const onError = vi.fn();
@@ -891,15 +878,19 @@ describe('createNodeLogger', () => {
                 timestamp: false,
             });
 
-            await logger.info('before');
-            await logger.close();
-            streams.stdout.mockClear();
+            const first = logger.info('first');
+            const closing = logger.close();
+
+            await expect(logger.info('during')).resolves.toBeUndefined();
+
+            await closing;
+            await first;
 
             await expect(logger.info('after')).resolves.toBeUndefined();
 
             expect(onError).toHaveBeenCalledWith(expect.objectContaining({ type: 'closed' }));
-            expect(streams.stdout).not.toHaveBeenCalled();
-            await expect(readFile(path, 'utf8')).resolves.toBe('before\n');
+            expect(writtenText(streams.stdout)).toBe('first\n');
+            await expect(readFile(path, 'utf8')).resolves.toBe('first\n');
         });
     });
 

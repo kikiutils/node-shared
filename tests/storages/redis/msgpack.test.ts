@@ -106,6 +106,13 @@ describe('createRedisMsgpackStorage', () => {
         await expect(storage.getItemTtlSeconds('cooldown')).resolves.toBe(60);
     });
 
+    it('should accept one second as the smallest valid TTL', async ({ expect }) => {
+        const storage = createRedisMsgpackStorage(adapter);
+
+        await expect(storage.setItemWithTtl('key', 1, 'value')).resolves.toBe(true);
+        await expect(storage.setItemWithTtlIfAbsent('other', 1, 'value')).resolves.toBe(true);
+    });
+
     it('should read and remove values through a single adapter call', async ({ expect }) => {
         const storage = createRedisMsgpackStorage(adapter);
 
@@ -116,6 +123,7 @@ describe('createRedisMsgpackStorage', () => {
     });
 
     it.for([
+        -1,
         0,
         1.5,
         Number.NaN,

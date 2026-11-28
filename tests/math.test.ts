@@ -68,6 +68,16 @@ describe('toPercentageString', () => {
             name: 'infinity',
             numerator: 1,
         },
+        {
+            denominator: 1,
+            name: 'NaN input',
+            numerator: Number.NaN,
+        },
+        {
+            denominator: 1,
+            name: 'infinite input',
+            numerator: Number.POSITIVE_INFINITY,
+        },
     ])(
         'should format the $name fallback as zero with the configured precision',
         ({ denominator, numerator }, { expect }) => {
@@ -88,6 +98,11 @@ describe('toPercentageString', () => {
     it('should round negative percentages and drop the sign when they round to zero', ({ expect }) => {
         expect(toPercentageString(-1, 3)).toBe('-33.33%');
         expect(toPercentageString('-0.00001', 1)).toBe('0.00%');
+        expect(toPercentageString(-0, 1)).toBe('0.00%');
+    });
+
+    it('should keep precision beyond Number.MAX_SAFE_INTEGER', ({ expect }) => {
+        expect(toPercentageString(9_007_199_254_740_993n, 9_007_199_254_740_992n, { decimalPlaces: 15 })).toBe('100.000000000000011%');
     });
 
     it('should ignore the global Decimal rounding configuration', ({ expect }) => {

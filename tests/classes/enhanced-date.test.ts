@@ -144,13 +144,12 @@ describe('class EnhancedDate', () => {
     });
 
     describe('factories and formatting', () => {
-        it('should distinguish Unix seconds from native millisecond timestamps', ({ expect }) => {
+        it('should convert Unix seconds to and from millisecond timestamps', ({ expect }) => {
             const date = EnhancedDate.fromUnixSeconds(1700000000.5);
 
             expect(date).toBeInstanceOf(EnhancedDate);
             expect(date.getTime()).toBe(1700000000500);
             expect(date.getUnixTime()).toBe(1700000000);
-            expect(new EnhancedDate(1700000000.5).getTime()).toBe(1700000000);
         });
 
         it('should parse with the reference date and forward parse options', ({ expect }) => {

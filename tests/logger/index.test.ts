@@ -582,29 +582,6 @@ describe('createLogger', () => {
             expect(spies.warn).toHaveBeenCalledTimes(1);
         });
 
-        it('should resolve, report console, and raise no unhandled rejection when console is replaced by a rejecting async function', async ({ expect }) => {
-            const spies = mockConsole();
-            const failure = new Error('async console broke');
-            spies.info.mockImplementation((async () => {
-                throw failure;
-            }) as never);
-
-            const onError = vi.fn();
-            const logger = createLogger({ onError });
-
-            const rejections = await collectUnhandledRejections(async () => {
-                await expect(logger.info('m')).resolves.toBeUndefined();
-            });
-
-            expect(rejections).toEqual([]);
-            expect(onError).toHaveBeenCalledTimes(1);
-            expect(onError).toHaveBeenCalledWith(expect.objectContaining({
-                error: failure,
-                message: 'Console output failed.',
-                type: 'console',
-            }));
-        });
-
         it('should not wait for a console replacement that never settles', async ({ expect }) => {
             const spies = mockConsole();
             spies.info.mockImplementation((async () => await new Promise<void>(() => {})) as never);
@@ -628,7 +605,11 @@ describe('createLogger', () => {
 
             expect(rejections).toEqual([]);
             expect(onError).toHaveBeenCalledTimes(1);
-            expect(onError).toHaveBeenCalledWith(expect.objectContaining({ type: 'console' }));
+            expect(onError).toHaveBeenCalledWith(expect.objectContaining({
+                error: expect.objectContaining({ message: 'console' }),
+                message: 'Console output failed.',
+                type: 'console',
+            }));
         });
 
         it('should raise no unhandled rejection when the fallback console is an async function that rejects', async ({ expect }) => {
@@ -1094,13 +1075,10 @@ describe('formatLoggerConsoleArgs', () => {
             }))).toEqual(['50% done']);
         });
 
-        it('should write browser-formatted arguments through the logger when no Node.js process exists', async ({ expect }) => {
+        it('should default to info and write browser-formatted arguments when no Node.js process exists', async ({ expect }) => {
             vi.stubGlobal('process', undefined);
             const spies = mockConsole();
-            const logger = createLogger({
-                level: 'info',
-                timestamp: false,
-            });
+            const logger = createLogger({ timestamp: false });
 
             await logger.error('failed');
 

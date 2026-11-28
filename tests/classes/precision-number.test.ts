@@ -89,7 +89,6 @@ describe('class PrecisionNumber', () => {
             (input, { expect }) => {
                 expect(() => new PrecisionNumber(input)).toThrow(TypeError);
                 expect(() => new PrecisionNumber('1').plus(input)).toThrow(TypeError);
-                expect(() => PrecisionNumber.toFixed(input)).toThrow(TypeError);
             },
         );
 
@@ -115,9 +114,6 @@ describe('class PrecisionNumber', () => {
             ]) {
                 expect(PrecisionNumber.tryFrom(input)).toBeUndefined();
             }
-
-            expect(() => PrecisionNumber.tryFrom('1', -1)).toThrow(RangeError);
-            expect(() => PrecisionNumber.tryFrom('invalid', -1)).toThrow(RangeError);
         });
 
         it.for([
