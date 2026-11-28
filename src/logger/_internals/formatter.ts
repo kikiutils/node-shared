@@ -10,6 +10,14 @@ interface Decoration {
     text: string;
 }
 
+const forcedColorValues = new Set([
+    '',
+    '1',
+    '2',
+    '3',
+    'true',
+]);
+
 /** Native console formatting keeps user strings literal and objects expandable. */
 export function formatLoggerConsoleArgs(record: LoggerRecord): unknown[] {
     // Sandboxed runtimes such as Electron preloads expose `process.versions` without stdio streams.
@@ -117,13 +125,7 @@ export function supportsLoggerColor(target: { hasColors?: () => boolean; isTTY?:
     if (target.hasColors) return target.hasColors();
     const forced = process.env.FORCE_COLOR;
     if (forced !== undefined) {
-        return [
-            '',
-            '1',
-            '2',
-            '3',
-            'true',
-        ].includes(forced);
+        return forcedColorValues.has(forced);
     }
 
     return Boolean(target.isTTY)
