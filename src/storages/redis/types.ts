@@ -34,7 +34,6 @@ export interface RedisLikeStorage {
     /** @typeParam T - The expected value type; deserialization does not validate this type. */
     getItem: <T = unknown>(key: string) => Promise<null | T>;
 
-    /** Resolves to `-1` for no expiry or `-2` for a missing key. */
     getItemTtlSeconds: (key: string) => Promise<number>;
 
     hasItem: (key: string) => Promise<boolean>;

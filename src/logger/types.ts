@@ -37,10 +37,9 @@ export interface LoggerDiagnostic {
 }
 
 export interface LoggerOptions {
-    /** Controls record output only, not diagnostics. Defaults to `true`. */
+    /** Controls record output only, not diagnostics. */
     console?: boolean;
 
-    /** Defaults to `true`. */
     icons?: boolean;
 
     /** Overrides LOG_LEVEL; `env` restores the environment-driven threshold. */
@@ -54,6 +53,6 @@ export interface LoggerOptions {
     prefix?: string;
     suffix?: string;
 
-    /** Enables the fixed local-time millisecond prefix. Defaults to `true`. */
+    /** A local-time prefix with milliseconds. */
     timestamp?: boolean;
 }

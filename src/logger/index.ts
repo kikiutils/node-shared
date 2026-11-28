@@ -9,10 +9,7 @@ import type {
     LoggerOptions,
 } from './types';
 
-/**
- * Returns an independent, browser-safe console logger. Awaiting a log call waits for the console invocation, not
- * display. Unspecified levels follow `LOG_LEVEL` when a process environment is available, otherwise `info`.
- */
+/** Awaiting a log call waits for the console invocation, not display. */
 export function createLogger(options: LoggerOptions = {}): Readonly<Logger> {
     const target = globalThis.console;
     // Looked up per diagnostic so console wrappers installed after creation (error trackers, test spies) see it.

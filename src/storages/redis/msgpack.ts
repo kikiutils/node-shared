@@ -15,14 +15,11 @@ if (!isNativeAccelerationEnabled) {
     console.warn('Native acceleration not enabled for msgpackr, verify that install finished properly');
 }
 
+// Redis only accepts positive integer expiries.
 function assertTtlSeconds(ttlSeconds: number) {
     if (!Number.isSafeInteger(ttlSeconds) || ttlSeconds < 1) throw new RangeError(`ttlSeconds must be a positive safe integer, got ${ttlSeconds}.`);
 }
 
-/**
- * TTL writes reject with `RangeError` before reaching the adapter unless `ttlSeconds` is a positive safe integer,
- * which is what Redis accepts as an expiry.
- */
 export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
     return Object.freeze({
         async getAndRemoveItem<T = unknown>(key: string) {

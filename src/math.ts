@@ -5,10 +5,7 @@ import type { PrecisionNumber } from './classes/precision-number';
 type CalculableValue = bigint | Decimal.Value | PrecisionNumber;
 
 export interface ToPercentageStringOptions {
-    /** Defaults to `2`. */
     decimalPlaces?: number;
-
-    /** Defaults to `true`. */
     withSymbol?: boolean;
 }
 
@@ -21,13 +18,6 @@ const PercentageDecimal = Decimal.clone({
     precision: 100,
 });
 
-/**
- * Values are read through their string form. A `NaN` or infinite quotient, such as a zero denominator, formats as
- * zero, and results that round to zero never carry a minus sign. Rounding is half up.
- *
- * @throws TypeError if a value is not a valid decimal or `options.decimalPlaces` is not a number.
- * @throws RangeError if `options.decimalPlaces` is not an integer from 0 to 20.
- */
 export function toPercentageString(
     numerator: CalculableValue,
     denominator: CalculableValue,
@@ -47,6 +37,7 @@ export function toPercentageString(
         throw new TypeError('Invalid decimal value', { cause: error });
     }
 
+    // Rounds half up, the decimal.js default that `defaults: true` restores.
     const rounded = percentage.isFinite() ? percentage.toDecimalPlaces(decimalPlaces) : new PercentageDecimal(0);
     const result = (rounded.isZero() ? rounded.absoluteValue() : rounded).toFixed(decimalPlaces);
 

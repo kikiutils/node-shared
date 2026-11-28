@@ -1,17 +1,10 @@
 import * as dateFns from 'date-fns';
 
 /**
- * A mutable `Date` with chainable date-fns operations.
- *
- * @remarks
- * Inherits the native constructor, including zero-based month arguments and millisecond timestamps. Mutating
- * arithmetic and boundary methods update this instance and return `this`; their `to`-prefixed counterparts return a
- * new `EnhancedDate`. Invalid dates, parsing, rounding, week defaults, and time zones follow date-fns semantics, so
- * operations use the system time zone unless configured through options and can preserve or produce `Invalid Date`.
- * Day and week arithmetic uses calendar days, preserving local wall-clock time across daylight saving changes; hour
- * through millisecond arithmetic uses elapsed durations. Month and year arithmetic clamps to the last valid day of
- * the destination month, while native setters keep their overflow behavior. `differenceIn*` methods return this
- * date minus the other date.
+ * Follows date-fns semantics: the system time zone unless configured through options, `Invalid Date` propagation,
+ * calendar-day day and week arithmetic that keeps local wall-clock time across daylight saving changes, elapsed-time
+ * hour through millisecond arithmetic, and month and year arithmetic that clamps to the destination month's last day
+ * while native setters still overflow. `differenceIn*` methods return this date minus the other date.
  *
  * In Vue state, replace the value with a `to`-prefixed result: mutating a Date's internal timestamp does not trigger
  * reactive updates.
@@ -153,7 +146,6 @@ export class EnhancedDate extends Date {
         return dateFns.formatDistanceToNow(this, options);
     }
 
-    /** Unix seconds, unlike the millisecond `getTime()`. */
     getUnixTime() {
         return dateFns.getUnixTime(this);
     }
@@ -274,7 +266,6 @@ export class EnhancedDate extends Date {
         return this.clone().addYears(amount, options);
     }
 
-    /** Returns a plain native `Date` with the same timestamp. */
     toDate() {
         return new Date(this.getTime());
     }

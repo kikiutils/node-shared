@@ -11,10 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 type DropFirstParameters<T extends (...args: any) => any> = Parameters<T> extends [any, ...infer R] ? R : never;
 
-/**
- * Values accepted wherever `Path` takes a path; `file:` URL objects are converted to file system paths, while
- * `file:` strings are plain path text. Buffers must contain valid UTF-8.
- */
+/** `file:` URL objects are converted to file system paths, while `file:` strings are plain path text. */
 export type PathLike = fs.PathLike | Path;
 
 /** Narrowed to the options Node.js accepts at runtime. */
@@ -23,17 +20,10 @@ export type PathWatchOptions = Omit<fsp.WatchOptions, 'encoding' | 'overflow'> &
     overflow?: 'error' | 'ignore';
 };
 
-/**
- * An immutable file system path with Node.js path and file operations.
- *
- * @remarks
- * File operations act on the stored path and forward Node.js defaults and promise rejections; they never update the
- * stored path, including after a successful rename.
- */
+/** Immutable: file operations never update the stored path, including after a successful rename. */
 export class Path {
     readonly #value: string;
 
-    /** Joins and normalizes the segments. */
     constructor(...paths: PathLike[]) {
         this.#value = nodePath.join(...paths.map(toPathString));
     }
@@ -130,9 +120,6 @@ export class Path {
      * Replaces the last extension of the final path component.
      *
      * @param extension - Includes its leading dot; an empty string removes the extension.
-     *
-     * @throws TypeError if a nonempty extension is `.`, lacks a leading dot, or contains a path separator;
-     * if the resulting name is `.` or `..`; or if this path has no final component.
      */
     withExtension(extension: string) {
         if (extension && (!extension.startsWith('.') || extension === '.' || this.#hasSeparator(extension))) {
@@ -142,10 +129,6 @@ export class Path {
         return this.withName(`${this.stem}${extension}`);
     }
 
-    /**
-     * @throws TypeError if the name is empty, `.`, `..`, or contains a path separator,
-     * or if this path has no final component.
-     */
     withName(name: string) {
         if (!name || name === '.' || name === '..' || this.#hasSeparator(name)) {
             throw new TypeError(`Invalid final component: ${name}`);
@@ -199,10 +182,7 @@ export class Path {
         return createWriteStream(this.#value, ...args);
     }
 
-    /**
-     * Follows symbolic links and resolves to `false` only when the path is missing (`ENOENT` or `ENOTDIR`), including
-     * a symbolic link whose target is missing; other errors reject.
-     */
+    /** A symbolic link whose target is missing resolves to `false`. */
     async exists() {
         return await this.stat({ throwIfNoEntry: false }) !== undefined;
     }
@@ -230,25 +210,18 @@ export class Path {
         );
     }
 
-    /** Follows symbolic links and resolves to `false` when the path is missing; other errors reject. */
     async isDirectory() {
         return (await this.stat({ throwIfNoEntry: false }))?.isDirectory() ?? false;
     }
 
-    /** Follows symbolic links and resolves to `false` when the path is missing; other errors reject. */
     async isFile() {
         return (await this.stat({ throwIfNoEntry: false }))?.isFile() ?? false;
     }
 
-    /** Resolves to `false` when the path is missing; other errors reject. */
     async isSymbolicLink() {
         return (await this.lstat({ throwIfNoEntry: false }))?.isSymbolicLink() ?? false;
     }
 
-    /**
-     * Does not follow a final symbolic link. If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`)
-     * resolves to `undefined` instead of rejecting.
-     */
     lstat(
         opts?: fs.StatOptions & {
             bigint?: false;
@@ -405,10 +378,6 @@ export class Path {
         return await fsp.rmdir(this.#value, ...args);
     }
 
-    /**
-     * If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`) resolves to `undefined` instead of
-     * rejecting.
-     */
     stat(
         opts?: fs.StatOptions & {
             bigint?: false;
@@ -473,6 +442,7 @@ export class Path {
     }
 }
 
+// Bun still rejects `ENOTDIR` under `throwIfNoEntry: false`, which Node.js treats as a missing path.
 async function readStats(
     read: (path: string, opts?: fs.StatOptions) => Promise<fs.BigIntStats | fs.Stats>,
     path: string,

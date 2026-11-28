@@ -42,7 +42,6 @@ function callContained<T>(callback: ((value: T) => unknown) | undefined, value: 
     } catch { /* Same as the rejection handler above. */ }
 }
 
-/** A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters. */
 export function createDiagnosticReporter(
     onError?: (event: Readonly<LoggerDiagnostic>) => void,
     fallback?: (message: string) => unknown,

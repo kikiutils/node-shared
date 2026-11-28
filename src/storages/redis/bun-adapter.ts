@@ -37,11 +37,6 @@ return (string.gsub(value, ".", hex))`;
 /**
  * `getBufferAndDelete` runs an atomic `GETDEL` Lua script through `EVALSHA`, so the client's user needs the
  * `EVALSHA` and `SCRIPT LOAD` permissions. Create one adapter per client and reuse it so script loads are shared.
- *
- * @example
- * ```ts
- * const storage = createRedisMsgpackStorage(createBunRedisAdapter(new RedisClient()));
- * ```
  */
 export function createBunRedisAdapter(client: BunRedisLikeClient): Readonly<RedisLikeAdapter> {
     const getAndDeleteHex = createRedisScriptRunner<null | string>(client, getAndDeleteHexScript);

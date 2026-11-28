@@ -6,10 +6,10 @@ import type {
 
 /** Size limits are positive integers with a B, K, M, or G suffix in binary units. */
 export type LoggerRotationOptions = {
-    /** Gzips historical files. Defaults to `true`. */
+    /** Gzips historical files. */
     compress?: boolean;
 
-    /** Number of historical files, excluding the active file. Defaults to `30`. */
+    /** Number of historical files, excluding the active file. */
     maxFiles?: number;
 
     /** Maximum combined size of historical files. */
@@ -28,7 +28,7 @@ export type LoggerRotationOptions = {
 );
 
 export interface LoggerFileOptions {
-    /** Maximum unfinished payload bytes, including data already submitted to the stream. Defaults to 8 MiB. */
+    /** Maximum unfinished payload bytes, including data already submitted to the stream. */
     maxPendingBytes?: number;
 
     /**
@@ -52,7 +52,6 @@ export interface NodeLogger extends Logger {
 }
 
 export interface NodeLoggerOptions extends LoggerOptions {
-    /** Disabled by default. Each logger owns at most one fixed file destination. */
     file?: false | LoggerFileOptions;
 }
 

@@ -24,7 +24,7 @@ const pendingConsoleWritesKey = Symbol.for('@kikiutils/shared/logger/node/pendin
 
 /**
  * Optional file output is bounded and append-only, with optional rotation; overload drops the newest file record and
- * reports it. Factory validation and open failures reject. No process signal handlers are installed, so call `close`
+ * reports it. Open failures reject the factory. No process signal handlers are installed, so call `close`
  * explicitly.
  *
  * Console output installs one permanent `error`/`close` listener per stdio stream on first write, so stdio errors such

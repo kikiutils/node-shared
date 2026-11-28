@@ -1,9 +1,5 @@
 import type { RedisLikeStorage } from './types';
 
-/**
- * The key resolver is called once per operation with the operation's key arguments. In storage operations its
- * exceptions and storage failures both surface as rejections; `resolveKey` throws them synchronously.
- */
 export function createRedisKeyedStore<D = unknown>(storage: RedisLikeStorage) {
     return <P extends any[]>(keyFn: (...args: P) => string) => Object.freeze({
         getAndRemoveItem: async (...args: P) => await storage.getAndRemoveItem<D>(keyFn(...args)),

@@ -1,13 +1,6 @@
 import { hash } from 'node:crypto';
 
-/**
- * Numeric arguments are converted to strings before execution.
- *
- * @typeParam T - The expected Lua result type, without runtime validation.
- *
- * @param keys - The script's Redis keys, in `KEYS` order.
- * @param args - The script's arguments, in `ARGV` order.
- */
+/** @typeParam T - The expected Lua result type, without runtime validation. */
 export type RedisScriptRunner<T = unknown> = (keys: readonly string[], args: ReadonlyArray<number | string>) => Promise<
     T
 >;
@@ -21,14 +14,7 @@ export interface RedisLikeScriptClient {
     send: (command: string, args: string[]) => Promise<unknown>;
 }
 
-/**
- * Calls use `EVALSHA` with the SHA-1 digest of the source; a `NOSCRIPT` rejection runs `SCRIPT LOAD` and retries.
- * `maxAttempts` counts `EVALSHA` attempts per invocation, including the initial one, so `1` disables loading; once it
- * is reached, the last `NOSCRIPT` error propagates. Load failures and other errors propagate without retries.
- * Concurrent cache misses on the same runner share one in-flight load. The runner never closes `client`.
- *
- * @throws RangeError if `maxAttempts` is not a positive safe integer.
- */
+/** `maxAttempts` counts `EVALSHA` attempts per invocation, including the first, so `1` disables `SCRIPT LOAD`. */
 export function createRedisScriptRunner<T = unknown>(
     client: RedisLikeScriptClient,
     source: string,

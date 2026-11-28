@@ -13,7 +13,7 @@ export function formatDate(
     return dateFns.format(date, format, options);
 }
 
-/** Only `null` and `undefined` render as an empty string; an invalid date still throws. */
+/** An invalid date still throws, as date-fns `format` does. */
 export function formatOptionalDate(
     date: dateFns.DateArg<Date> | null | undefined,
     format?: string,
@@ -22,14 +22,7 @@ export function formatOptionalDate(
     return date === null || date === undefined ? '' : formatDate(date, format, options);
 }
 
-/**
- * Ranges are calendar ranges in the system time zone, following local daylight saving transitions rather than fixed
- * 24-hour durations. The reference date is unchanged. Boundaries are inclusive, ending at `23:59:59.999` of the
- * range's last day, unless `options.setEndDateToNextDayStart` is `true`, which makes the end the exclusive start of the
- * following day. `options.weekStartsOn` defaults to `1` (Monday).
- *
- * @throws TypeError if the range type is unsupported at runtime.
- */
+/** Calendar ranges in the system time zone, so days across daylight saving changes are not 24 hours long. */
 export function getDateRangeFromDate(
     date: Date,
     type: DateRangeType,
@@ -78,7 +71,6 @@ export function getDateRangeFromDate(
     };
 }
 
-/** Offsets by calendar days and returns the start of that day in the system time zone. */
 export function getStartOfDayFromToday(offsetDays: number = 0) {
     return new EnhancedDate().addDays(offsetDays).startOfDay();
 }

@@ -2,12 +2,7 @@ import { Buffer } from 'node:buffer';
 
 import type { BinaryInput } from './types';
 
-/**
- * An existing `Buffer` is returned unchanged. `ArrayBuffer` and `Uint8Array` inputs share their backing memory
- * with the result, so changes are visible through both views.
- *
- * @throws TypeError through promise rejection if the input is unsupported.
- */
+/** `ArrayBuffer` and `Uint8Array` inputs share their backing memory with the result. */
 export async function toBuffer(input: BinaryInput) {
     if (Buffer.isBuffer(input)) return input;
     if (input instanceof ArrayBuffer) return Buffer.from(input);

@@ -1,11 +1,5 @@
 const redirectPathBaseOrigin = 'http://redirect-path.invalid';
 
-/**
- * Replaces any existing `redirect` query parameter, keeping other query parameters and the fragment. The path is
- * stored in the form `normalizeRedirectPath` returns.
- *
- * @throws TypeError if `redirectPath` does not resolve to a same-origin application path.
- */
 export function appendRedirectParamToUrl(url: string, redirectPath: string) {
     const safeRedirectPath = toSafeRedirectPath(redirectPath);
     if (safeRedirectPath === undefined) {
@@ -23,9 +17,8 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
 }
 
 /**
- * Returns the browser-resolved form of a same-origin path starting with `/`, so the navigation target is exactly what
- * was checked; anything else, including protocol-relative and absolute URLs, returns `fallback` unchanged and
- * unvalidated. An array uses its first element.
+ * Returns the browser-resolved form so the navigation target is exactly what was checked. `fallback` is returned
+ * unvalidated.
  */
 export function normalizeRedirectPath(value: unknown, fallback = '/') {
     return toSafeRedirectPath(Array.isArray(value) ? value[0] : value) ?? fallback;

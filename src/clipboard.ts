@@ -1,9 +1,8 @@
 /**
- * Requires a browser environment with clipboard support, a secure context, and any user activation required
- * by the browser. Unsupported environments and Clipboard API failures resolve to `false` instead of rejecting.
+ * Requires a secure context and, in most browsers, user activation.
  *
- * @param blob - The blob whose MIME type identifies the clipboard format; browsers only write supported types such as
- * `text/plain` or `image/png`, so an untyped blob resolves to `false`.
+ * @param blob - Its MIME type is the clipboard format; browsers only write supported types such as `text/plain` or
+ * `image/png`, so an untyped blob resolves to `false`.
  */
 export async function copyBlobToClipboard(blob: Blob, options?: ClipboardItemOptions) {
     try {
@@ -14,10 +13,7 @@ export async function copyBlobToClipboard(blob: Blob, options?: ClipboardItemOpt
     }
 }
 
-/**
- * Requires a browser environment with clipboard support, a secure context, and any user activation required
- * by the browser. Unsupported environments and Clipboard API failures resolve to `false` instead of rejecting.
- */
+/** Requires a secure context and, in most browsers, user activation. */
 export async function copyTextToClipboard(text: string) {
     try {
         await navigator.clipboard.writeText(text);

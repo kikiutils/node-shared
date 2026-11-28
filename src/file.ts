@@ -6,10 +6,8 @@ import {
 import type { BinaryInput } from './types';
 
 /**
- * Detects a lowercase MIME type from binary content rather than its name or declared type. Only formats supported by
- * `file-type` binary detection are recognized; this is not a general text-file detector or a guarantee that a file is
- * safe. Blob and File inputs are read through the detector's tokenizer instead of being fully buffered up front, and
- * the amount of content inspected depends on the format, with no fixed read limit.
+ * Detects from content only, through `file-type`, so text formats are not recognized and a match does not mean the
+ * file is safe. Blobs are read incrementally, but the amount read depends on the format, with no fixed limit.
  */
 export async function getFileMimeType(input: BinaryInput) {
     // The tokenizer only uses size, slice, and arrayBuffer; Node/DOM Blob stream typings differ.
