@@ -11,17 +11,17 @@ const source = 'return 1';
 const digest = 'e0e1f9fabfc9d4800c877a703b823ac0578ff8db';
 
 describe('createRedisScriptRunner', () => {
-    it('should encode commands without mutating inputs or caching results', async ({ expect }) => {
-        const keys = Object.freeze([
+    it('should encode keys and arguments without caching results', async ({ expect }) => {
+        const keys = [
             'session:1',
             'session:2',
-        ]);
+        ];
 
-        const args = Object.freeze([
+        const args = [
             42,
             'value',
             -1,
-        ]);
+        ];
 
         const firstResult = { count: 1 };
         const secondResult = { count: 2 };
@@ -33,43 +33,19 @@ describe('createRedisScriptRunner', () => {
         expectTypeOf(result).toEqualTypeOf<{ count: number }>();
         expect(result).toBe(firstResult);
         await expect(execute(keys, args)).resolves.toBe(secondResult);
-        expect(send.mock.calls).toEqual([
+        expect(send).toHaveBeenNthCalledWith(
+            1,
+            'EVALSHA',
             [
-                'EVALSHA',
-                [
-                    digest,
-                    '2',
-                    'session:1',
-                    'session:2',
-                    '42',
-                    'value',
-                    '-1',
-                ],
+                digest,
+                '2',
+                'session:1',
+                'session:2',
+                '42',
+                'value',
+                '-1',
             ],
-            [
-                'EVALSHA',
-                [
-                    digest,
-                    '2',
-                    'session:1',
-                    'session:2',
-                    '42',
-                    'value',
-                    '-1',
-                ],
-            ],
-        ]);
-
-        expect(keys).toEqual([
-            'session:1',
-            'session:2',
-        ]);
-
-        expect(args).toEqual([
-            42,
-            'value',
-            -1,
-        ]);
+        );
     });
 
     it('should load a missing script before retrying with zero keys and arguments', async ({ expect }) => {

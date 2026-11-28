@@ -1,10 +1,10 @@
-import { createHash } from 'node:crypto';
+import { hash } from 'node:crypto';
 
 /**
  * An asynchronous Lua script runner with caller-declared results.
  *
  * @remarks
- * Input arrays are unchanged, and numeric arguments are converted to strings before execution.
+ * Numeric arguments are converted to strings before execution.
  *
  * @typeParam T - The expected Lua result type, without runtime validation.
  *
@@ -35,12 +35,11 @@ export interface RedisLikeScriptClient {
  * `SCRIPT LOAD` before another execution attempt, provided the attempt limit has not been reached.
  * Concurrent cache misses on the same runner share an in-flight load; reuse the runner to share that load.
  * Load failures and errors other than `NOSCRIPT` propagate without retries. The final execution error is
- * preserved when the attempt limit is reached. Results are not cached.
+ * preserved when the attempt limit is reached. Results are not cached. The runner never closes `client`.
+ * `maxAttempts` counts `EVALSHA` attempts per invocation, including the initial one; `1` disables script loading
+ * and retries.
  *
- * @param client - Used for raw Redis commands; the runner never closes it.
- * @param source - The Lua source loaded when the script is absent from the server's cache.
- * @param maxAttempts - The maximum `EVALSHA` attempts per invocation, including the initial attempt.
- * Must be a positive safe integer. Defaults to `3`; `1` disables script loading and retries.
+ * @throws RangeError if `maxAttempts` is not a positive safe integer.
  */
 export function createRedisScriptRunner<T = unknown>(
     client: RedisLikeScriptClient,
@@ -51,7 +50,7 @@ export function createRedisScriptRunner<T = unknown>(
         throw new RangeError('maxAttempts must be a positive safe integer');
     }
 
-    const digest = createHash('sha1').update(source).digest('hex');
+    const digest = hash('sha1', source);
     let loadingPromise: Promise<unknown> | undefined;
 
     return async (keys, args) => {
