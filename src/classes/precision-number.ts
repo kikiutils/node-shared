@@ -327,6 +327,8 @@ export class PrecisionNumber {
 }
 
 function validateFormat(decimalPlaces: number, rounding: number) {
+    if (typeof decimalPlaces !== 'number') throw new TypeError(`decimalPlaces must be a number, got ${typeof decimalPlaces}`);
+    if (typeof rounding !== 'number') throw new TypeError(`rounding must be a number, got ${typeof rounding}`);
     if (!Number.isInteger(decimalPlaces) || decimalPlaces < 0 || decimalPlaces > maxDecimalPlaces) {
         throw new RangeError(`decimalPlaces must be an integer from 0 to ${maxDecimalPlaces}, got ${decimalPlaces}`);
     }

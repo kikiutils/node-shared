@@ -162,6 +162,13 @@ describe('class PrecisionNumber', () => {
             },
         );
 
+        it('should reject non-number format arguments as a TypeError', ({ expect }) => {
+            // @ts-expect-error Untyped callers can pass configuration strings.
+            expect(() => new PrecisionNumber('1', '2')).toThrow(TypeError);
+            // @ts-expect-error Untyped callers can pass configuration strings.
+            expect(() => new PrecisionNumber('1').toFixed(2, '1')).toThrow(TypeError);
+        });
+
         it('should accept the maximum of 50 decimal places', ({ expect }) => {
             const expected = `1.${'0'.repeat(50)}`;
 
