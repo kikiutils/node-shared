@@ -9,6 +9,7 @@ import {
 import { EnhancedDate } from '../src/classes/enhanced-date';
 import {
     formatDate,
+    formatOptionalDate,
     getDateRangeFromDate,
 } from '../src/datetime';
 
@@ -48,6 +49,28 @@ describe('formatDate', () => {
 
     it('should reject an invalid date rather than substituting the current time', ({ expect }) => {
         expect(() => formatDate(new Date(Number.NaN))).toThrow(RangeError);
+    });
+});
+
+describe('formatOptionalDate', () => {
+    it.for([
+        null,
+        undefined,
+    ])(
+        'should return an empty string for %s',
+        (date, { expect }) => {
+            expect(formatOptionalDate(date)).toBe('');
+        },
+    );
+
+    it('should format a present date with the supplied pattern and options', ({ expect }) => {
+        expect(formatOptionalDate(new Date(2024, 6, 10), 'yyyy-MM-dd')).toBe('2024-07-10');
+        expect(formatOptionalDate(new Date(2024, 6, 10), 'MMMM', { locale: fr })).toBe('juillet');
+        expect(formatOptionalDate(0, 'yyyy')).toBe(new Date(0).getFullYear().toString());
+    });
+
+    it('should reject an invalid date instead of rendering it as empty', ({ expect }) => {
+        expect(() => formatOptionalDate(new Date(Number.NaN))).toThrow(RangeError);
     });
 });
 
