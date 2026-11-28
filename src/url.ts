@@ -20,7 +20,7 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
 
 /**
  * Safe redirect paths are absolute application paths such as `/dashboard`.
- * Protocol-relative URLs (`//example.com`), absolute URLs, backslash paths,
+ * Protocol-relative URLs (`//example.com`), absolute URLs, backslashes in the path,
  * paths containing control characters, and non-string values are rejected.
  *
  * URL parsers remove tabs and line breaks before parsing, so `/\n/example.com`
@@ -31,7 +31,9 @@ export function isSafeRedirectPath(value: unknown): value is string {
     if (typeof value !== 'string') return false;
     if (!value.startsWith('/')) return false;
     if (value.startsWith('//')) return false;
-    if (value.includes('\\')) return false;
+    // Browsers read `\` as `/` only in the path; the query and fragment keep it literally.
+    const pathEnd = value.search(/[?#]/);
+    if ((pathEnd === -1 ? value : value.slice(0, pathEnd)).includes('\\')) return false;
     // eslint-disable-next-line no-control-regex
     if (/[\0-\x1F\x7F]/.test(value)) return false;
     // Parsing cannot fail here: a single-slash path relative to a valid base only reaches the path state.

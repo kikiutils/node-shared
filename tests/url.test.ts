@@ -75,6 +75,8 @@ describe('isSafeRedirectPath', () => {
         '/',
         '/dashboard',
         '/dashboard?tab=home#section',
+        '/search?q=a\\b',
+        '/page#a\\b',
     ])(
         'should accept application path %j',
         (path, { expect }) => {
@@ -89,6 +91,7 @@ describe('isSafeRedirectPath', () => {
         'http://evil.com',
         '//evil.com',
         '/\\evil.com',
+        '/a\\b?q=1',
         '/\n/evil.com',
         '/\t/evil.com',
         '/\r/evil.com',

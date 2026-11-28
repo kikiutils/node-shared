@@ -47,6 +47,12 @@ describe('appendRedirectParamFromCurrentLocationToUrl', () => {
         expect(result).toBe('/login?redirect=%2Fprofile%3Ftab%3Dsettings%23section');
     });
 
+    it('should keep a backslash in the current query instead of rejecting the redirect', ({ expect }) => {
+        window.location.search = '?q=a\\b';
+
+        expect(appendRedirectParamFromCurrentLocationToUrl('/login')).toBe('/login?redirect=%2Fprofile%3Fq%3Da%5Cb%23section');
+    });
+
     it.for([
         {
             expected: '/login?redirect=%2Forders%3Ftab%3Dsettings%23section',
