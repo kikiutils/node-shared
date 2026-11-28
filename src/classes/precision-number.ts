@@ -49,7 +49,7 @@ export class PrecisionNumber {
     #decimal: Decimal;
 
     /**
-     * @throws TypeError if the value is not a finite plain decimal.
+     * @throws TypeError if the value is not a finite plain decimal, or `decimalPlaces` or `rounding` is not a number.
      * @throws RangeError if the value exceeds 1000 integer digits, or `decimalPlaces` or `rounding` is out of range.
      */
     constructor(
@@ -91,7 +91,8 @@ export class PrecisionNumber {
     #round(decimal: Decimal) {
         // decimal.js keeps the operand's constructor, so rewrapping stops `BoundedDecimal` results from rounding later
         // arithmetic at 100 digits.
-        const rounded = new ExactDecimal(decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding));
+        let rounded = decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding);
+        if (rounded.constructor !== ExactDecimal) rounded = new ExactDecimal(rounded);
         if (!rounded.isFinite()) throw new RangeError('Result is not finite');
         if (rounded.e >= maxIntegerDigits) throw new RangeError('Result exceeds the supported magnitude');
         return rounded.isZero() ? new ExactDecimal(0) : rounded;
@@ -118,7 +119,7 @@ export class PrecisionNumber {
     /**
      * Formats a value as an instance with the given configuration would.
      *
-     * @throws TypeError if the value is not a finite plain decimal.
+     * @throws TypeError if the value is not a finite plain decimal, or `decimalPlaces` or `rounding` is not a number.
      * @throws RangeError if the value exceeds 1000 integer digits, or `decimalPlaces` or `rounding` is out of range.
      */
     static toFixed(
@@ -278,6 +279,7 @@ export class PrecisionNumber {
     /**
      * Formats the current value with custom precision and rounding for this call only.
      *
+     * @throws TypeError if `decimalPlaces` or `rounding` is not a number.
      * @throws RangeError if `decimalPlaces` or `rounding` is out of range.
      */
     toFixed(decimalPlaces: number = this.#decimalPlaces, rounding: Decimal.Rounding = this.#rounding) {

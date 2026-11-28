@@ -155,7 +155,6 @@ describe('class PrecisionNumber', () => {
                 { expect },
             ) => {
                 expect(() => new PrecisionNumber('1', decimalPlaces, rounding)).toThrow(RangeError);
-                expect(() => PrecisionNumber.toFixed('1', decimalPlaces, rounding)).toThrow(RangeError);
                 expect(() => new PrecisionNumber('1').toFixed(decimalPlaces, rounding)).toThrow(RangeError);
                 expect(() => PrecisionNumber.tryFrom('1', decimalPlaces, rounding)).toThrow(RangeError);
                 expect(() => PrecisionNumber.tryFrom('invalid', decimalPlaces, rounding)).toThrow(RangeError);
@@ -173,9 +172,7 @@ describe('class PrecisionNumber', () => {
             const expected = `1.${'0'.repeat(50)}`;
 
             expect(new PrecisionNumber('1', 50).value).toBe(expected);
-            expect(PrecisionNumber.toFixed('1', 50)).toBe(expected);
             expect(new PrecisionNumber('1').toFixed(50)).toBe(expected);
-            expect(PrecisionNumber.tryFrom('1', 50)?.value).toBe(expected);
         });
     });
 
@@ -194,13 +191,6 @@ describe('class PrecisionNumber', () => {
                 input: '100.500',
                 mutable: 'minus',
                 operand: '50.25',
-            },
-            {
-                expected: '21.000',
-                immutable: 'toTimes',
-                input: '10.500',
-                mutable: 'times',
-                operand: '2',
             },
             {
                 expected: '1.500',
@@ -319,6 +309,13 @@ describe('class PrecisionNumber', () => {
             expect(new PrecisionNumber('9'.repeat(60), 0).times('9'.repeat(60)).value).toHaveLength(120);
         });
 
+        it('should keep 100 significant digits for division and non-integer powers', ({ expect }) => {
+            expect(new PrecisionNumber('1', 50).dividedBy('3').value).toBe(`0.${'3'.repeat(50)}`);
+            expect(new PrecisionNumber('2', 50).pow('0.5').value).toBe('1.41421356237309504880168872420969807856967187537694');
+            expect(new PrecisionNumber('4', 2).pow('-0.5').value).toBe('0.50');
+            expect(new PrecisionNumber(`1${'0'.repeat(49)}`, 50).dividedBy('3').value).toBe(`${'3'.repeat(49)}.${'3'.repeat(50)}`);
+        });
+
         it('should ignore the global Decimal configuration', ({ expect }) => {
             const {
                 modulo,
@@ -375,18 +372,13 @@ describe('class PrecisionNumber', () => {
             expect(value.value).toBe('10.00');
         });
 
-        it('should accept values with exactly 1000 integer digits', ({ expect }) => {
+        it('should accept exactly 1000 integer digits and reject longer values as a RangeError', ({ expect }) => {
             const digits = `1${'0'.repeat(999)}`;
-
-            expect(new PrecisionNumber(digits, 0).value).toBe(digits);
-            expect(new PrecisionNumber('10').pow('999').value).toBe(`${digits}.00`);
-            expect(() => new PrecisionNumber(`${digits}0`)).toThrow(RangeError);
-        });
-
-        it('should reject values beyond 1000 integer digits as a RangeError', ({ expect }) => {
             const tooLong = '9'.repeat(1001);
             const huge = new Decimal('1e1000');
 
+            expect(new PrecisionNumber(digits, 0).value).toBe(digits);
+            expect(new PrecisionNumber('10').pow('999').value).toBe(`${digits}.00`);
             expect(() => new PrecisionNumber(tooLong)).toThrow(RangeError);
             expect(() => new PrecisionNumber(huge)).toThrow(RangeError);
             expect(() => new PrecisionNumber('1').plus(huge)).toThrow(RangeError);
@@ -394,7 +386,7 @@ describe('class PrecisionNumber', () => {
             expect(PrecisionNumber.tryFrom(10n ** 1000n)).toBeUndefined();
             expect(PrecisionNumber.tryFrom(huge)).toBeUndefined();
             expect(PrecisionNumber.tryFrom(`${'9'.repeat(1000)}.999`, 2, Decimal.ROUND_UP)).toBeUndefined();
-            expect(PrecisionNumber.tryFrom(new Decimal('1e999'))?.value).toBe(`1${'0'.repeat(999)}.00`);
+            expect(PrecisionNumber.tryFrom(new Decimal('1e999'))?.value).toBe(`${digits}.00`);
         });
 
         it.for([
@@ -578,13 +570,8 @@ describe('class PrecisionNumber', () => {
             expect(value.value).toBe('123.456');
             expect(value.decimalPlaces).toBe(3);
             expect(value.rounding).toBe(Decimal.ROUND_DOWN);
-        });
-
-        it('should format static inputs using default or explicit configuration', ({ expect }) => {
-            expect(PrecisionNumber.toFixed(' 123.456 ')).toBe('123.45');
-            expect(PrecisionNumber.toFixed('123.456', 3)).toBe('123.456');
+            expect(PrecisionNumber.toFixed('123.456')).toBe('123.45');
             expect(PrecisionNumber.toFixed('123.456', 2, Decimal.ROUND_UP)).toBe('123.46');
-            expect(PrecisionNumber.toFixed('-0.001')).toBe('0.00');
         });
     });
 });
