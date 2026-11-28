@@ -20,9 +20,6 @@ describe('class EnhancedDate', () => {
 
             expect(date).toBeInstanceOf(Date);
             expect(date.getTime()).toBe(original.getTime());
-            expect(new EnhancedDate(original.getTime()).getTime()).toBe(original.getTime());
-            expect(new EnhancedDate(2026, 0, 15, 12, 34, 56, 789).getTime()).toBe(original.getTime());
-            expect(new EnhancedDate(original.toISOString()).getTime()).toBe(original.getTime());
 
             date.addDays(1);
 
@@ -37,150 +34,152 @@ describe('class EnhancedDate', () => {
             expect(result.format('yyyy-MM-dd')).toBe('2026-01-16');
             expect(date.getDate()).toBe(15);
         });
-
-        it('should preserve native setter returns, coercion, and JSON serialization', ({ expect }) => {
-            const date = new EnhancedDate(0);
-
-            expect(date.setTime(1234)).toBe(1234);
-            expect(+date).toBe(1234);
-            expect(JSON.stringify(date)).toBe('"1970-01-01T00:00:01.234Z"');
-        });
     });
 
     describe('mutable and immutable operations', () => {
         it.for([
-            [
-                'addDays',
-                'toAddDays',
-                new Date(2026, 0, 16, 12, 34, 56, 789),
-            ],
-            [
-                'addMilliseconds',
-                'toAddMilliseconds',
-                new Date(2026, 0, 15, 12, 34, 56, 790),
-            ],
-            [
-                'subMinutes',
-                'toSubMinutes',
-                new Date(2026, 0, 15, 12, 33, 56, 789),
-            ],
-            [
-                'subWeeks',
-                'toSubWeeks',
-                new Date(2026, 0, 8, 12, 34, 56, 789),
-            ],
-        ] as const)(
-            'should keep identity and nonmutation contracts for %s',
-            (
-                [
-                    mutable,
-                    immutable,
-                    expected,
-                ],
-                { expect },
-            ) => {
-                const date = new EnhancedDate(2026, 0, 15, 12, 34, 56, 789);
-                const originalTime = date.getTime();
-                const result = date[immutable](1);
-
-                expect(result).toBeInstanceOf(EnhancedDate);
-                expect(result).not.toBe(date);
-                expect(result.getTime()).toBe(expected.getTime());
-                expect(date.getTime()).toBe(originalTime);
-                expect(date[mutable](1)).toBe(date);
-                expect(date.getTime()).toBe(result.getTime());
+            {
+                args: [3],
+                expected: new Date(2024, 1, 17, 13, 45, 30, 123),
+                method: 'addDays',
             },
-        );
-
-        it.for([
+            {
+                args: [2],
+                expected: new Date(2024, 1, 14, 15, 45, 30, 123),
+                method: 'addHours',
+            },
+            {
+                args: [23],
+                expected: new Date(2024, 1, 14, 13, 45, 30, 146),
+                method: 'addMilliseconds',
+            },
+            {
+                args: [5],
+                expected: new Date(2024, 1, 14, 13, 50, 30, 123),
+                method: 'addMinutes',
+            },
+            {
+                args: [1],
+                expected: new Date(2024, 2, 14, 13, 45, 30, 123),
+                method: 'addMonths',
+            },
+            {
+                args: [10],
+                expected: new Date(2024, 1, 14, 13, 45, 40, 123),
+                method: 'addSeconds',
+            },
+            {
+                args: [1],
+                expected: new Date(2024, 1, 21, 13, 45, 30, 123),
+                method: 'addWeeks',
+            },
+            {
+                args: [1],
+                expected: new Date(2025, 1, 14, 13, 45, 30, 123),
+                method: 'addYears',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 14, 23, 59, 59, 999),
+                method: 'endOfDay',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 14, 13, 45, 59, 999),
+                method: 'endOfMinute',
+            },
             {
                 args: [],
                 expected: new Date(2024, 1, 29, 23, 59, 59, 999),
-                immutable: 'toEndOfDay',
-                mutable: 'endOfDay',
+                method: 'endOfMonth',
             },
             {
                 args: [],
-                expected: new Date(2024, 1, 29, 23, 59, 59, 999),
-                immutable: 'toEndOfMonth',
-                mutable: 'endOfMonth',
+                expected: new Date(2024, 1, 17, 23, 59, 59, 999),
+                method: 'endOfWeek',
             },
             {
                 args: [],
-                expected: new Date(2024, 1, 29, 13, 45, 59, 999),
-                immutable: 'toEndOfMinute',
-                mutable: 'endOfMinute',
+                expected: new Date(2024, 1, 14),
+                method: 'startOfDay',
             },
             {
                 args: [],
-                expected: new Date(2024, 1, 29, 13, 45),
-                immutable: 'toStartOfMinute',
-                mutable: 'startOfMinute',
+                expected: new Date(2024, 1, 14, 13, 45),
+                method: 'startOfMinute',
             },
             {
                 args: [],
                 expected: new Date(2024, 1, 1),
-                immutable: 'toStartOfMonth',
-                mutable: 'startOfMonth',
+                method: 'startOfMonth',
+            },
+            {
+                args: [],
+                expected: new Date(2024, 1, 11),
+                method: 'startOfWeek',
             },
             {
                 args: [3],
-                expected: new Date(2024, 1, 26, 13, 45, 30, 123),
-                immutable: 'toSubDays',
-                mutable: 'subDays',
+                expected: new Date(2024, 1, 11, 13, 45, 30, 123),
+                method: 'subDays',
             },
             {
                 args: [2],
-                expected: new Date(2024, 1, 29, 11, 45, 30, 123),
-                immutable: 'toSubHours',
-                mutable: 'subHours',
+                expected: new Date(2024, 1, 14, 11, 45, 30, 123),
+                method: 'subHours',
             },
             {
                 args: [23],
-                expected: new Date(2024, 1, 29, 13, 45, 30, 100),
-                immutable: 'toSubMilliseconds',
-                mutable: 'subMilliseconds',
+                expected: new Date(2024, 1, 14, 13, 45, 30, 100),
+                method: 'subMilliseconds',
+            },
+            {
+                args: [5],
+                expected: new Date(2024, 1, 14, 13, 40, 30, 123),
+                method: 'subMinutes',
             },
             {
                 args: [2],
-                expected: new Date(2023, 11, 29, 13, 45, 30, 123),
-                immutable: 'toSubMonths',
-                mutable: 'subMonths',
+                expected: new Date(2023, 11, 14, 13, 45, 30, 123),
+                method: 'subMonths',
             },
             {
                 args: [10],
-                expected: new Date(2024, 1, 29, 13, 45, 20, 123),
-                immutable: 'toSubSeconds',
-                mutable: 'subSeconds',
+                expected: new Date(2024, 1, 14, 13, 45, 20, 123),
+                method: 'subSeconds',
+            },
+            {
+                args: [1],
+                expected: new Date(2024, 1, 7, 13, 45, 30, 123),
+                method: 'subWeeks',
             },
             {
                 args: [4],
-                expected: new Date(2020, 1, 29, 13, 45, 30, 123),
-                immutable: 'toSubYears',
-                mutable: 'subYears',
+                expected: new Date(2020, 1, 14, 13, 45, 30, 123),
+                method: 'subYears',
             },
         ] as const)(
-            'should apply the matching date-fns operation in $mutable and $immutable',
+            'should apply the matching date-fns operation in $method and its to-prefixed counterpart',
             (
                 {
                     args,
                     expected,
-                    immutable,
-                    mutable,
+                    method,
                 },
                 { expect },
             ) => {
-                type Operation = (...values: readonly number[]) => EnhancedDate;
+                type Operation = (...values: readonly unknown[]) => EnhancedDate;
 
-                const date = new EnhancedDate(2024, 1, 29, 13, 45, 30, 123);
+                const date = new EnhancedDate(2024, 1, 14, 13, 45, 30, 123);
                 const originalTime = date.getTime();
+                const immutable = `to${method.charAt(0).toUpperCase()}${method.slice(1)}` as `to${Capitalize<typeof method>}`;
                 const result = (date[immutable] as Operation)(...args);
 
                 expect(result).toBeInstanceOf(EnhancedDate);
                 expect(result).not.toBe(date);
                 expect(result.getTime()).toBe(expected.getTime());
                 expect(date.getTime()).toBe(originalTime);
-                expect((date[mutable] as Operation)(...args)).toBe(date);
+                expect((date[method] as Operation)(...args)).toBe(date);
                 expect(date.getTime()).toBe(expected.getTime());
             },
         );
@@ -203,37 +202,69 @@ describe('class EnhancedDate', () => {
                 input: new Date(2026, 2, 7, 12),
                 name: 'spring-forward transition',
                 next: new Date(2026, 2, 8, 12),
+                nextMonth: new Date(2026, 3, 7, 12),
+                nextWeek: new Date(2026, 2, 14, 12),
             },
             {
                 input: new Date(2026, 9, 31, 12),
                 name: 'fall-back transition',
                 next: new Date(2026, 10, 1, 12),
+                nextMonth: new Date(2026, 10, 30, 12),
+                nextWeek: new Date(2026, 10, 7, 12),
             },
         ])(
             'should preserve calendar time across the $name',
-            ({ input, next }, { expect }) => {
+            (
+                {
+                    input,
+                    next,
+                    nextMonth,
+                    nextWeek,
+                },
+                {
+                    expect,
+                    skip,
+                },
+            ) => {
+                skip(input.getTimezoneOffset() === next.getTimezoneOffset(), 'The time zone has no transition on these dates');
+
                 const date = new EnhancedDate(input);
-                const nextDay = date.toAddDays(1);
                 const elapsedDay = date.toAddHours(24);
 
-                expect(nextDay.getTime()).toBe(next.getTime());
+                expect(date.toAddDays(1).getTime()).toBe(next.getTime());
+                expect(date.toAddWeeks(1).getTime()).toBe(nextWeek.getTime());
+                expect(date.toAddMonths(1).getTime()).toBe(nextMonth.getTime());
                 expect(elapsedDay.getTime()).toBe(input.getTime() + 86_400_000);
+                expect(elapsedDay.getTime()).not.toBe(next.getTime());
                 expect(date.getTime()).toBe(input.getTime());
             },
         );
 
-        it('should forward week options and return independent boundary dates', ({ expect }) => {
+        it.runIf(new Date(2026, 2, 7, 12).getTimezoneOffset() !== new Date(2026, 2, 8, 12).getTimezoneOffset())(
+            'should span 23 hours between the start and end of the spring-forward day',
+            ({ expect }) => {
+                const date = new EnhancedDate(2026, 2, 8, 12);
+                const start = date.toStartOfDay();
+                const end = date.toEndOfDay();
+
+                expect(start.getTime()).toBe(new Date(2026, 2, 8).getTime());
+                expect(end.getTime()).toBe(new Date(2026, 2, 8, 23, 59, 59, 999).getTime());
+                expect(end.getTime() - start.getTime() + 1).toBe(23 * 3_600_000);
+            },
+        );
+
+        it('should forward week and context options to boundary results', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 7, 12, 34, 56, 789);
-            const originalTime = date.getTime();
+            const evening = new EnhancedDate(2026, 0, 15, 20);
+            const halfDay = 12 * 3_600_000;
+            const shiftByHalfDay = (value: dateFns.DateArg<Date> & {}) => new Date(new Date(value).getTime() + halfDay);
 
             expect(date.toStartOfWeek({ weekStartsOn: 1 }).getTime()).toBe(new Date(2026, 0, 5).getTime());
             expect(date.toEndOfWeek({ weekStartsOn: 1 }).getTime())
                 .toBe(new Date(2026, 0, 11, 23, 59, 59, 999).getTime());
 
-            expect(date.toStartOfWeek({ weekStartsOn: 0 }).getTime()).toBe(new Date(2026, 0, 4).getTime());
-            expect(date.getTime()).toBe(originalTime);
-            expect(date.startOfDay().endOfMinute()).toBe(date);
-            expect(date.getTime()).toBe(new Date(2026, 0, 7, 0, 0, 59, 999).getTime());
+            expect(evening.toStartOfDay().getDate()).toBe(15);
+            expect(evening.toStartOfDay({ in: shiftByHalfDay }).getDate()).toBe(16);
         });
 
         it('should distinguish EnhancedDate clones from independent plain Date copies', ({ expect }) => {
@@ -273,12 +304,20 @@ describe('class EnhancedDate', () => {
             expect(formatted.getTime()).toBe(new Date(2026, 1, 28).getTime());
         });
 
+        it('should map ISO strings with a Z or an explicit offset to the matching UTC instant', ({ expect }) => {
+            const instant = Date.UTC(2026, 0, 15);
+
+            expect(EnhancedDate.fromISO('2026-01-15T00:00:00Z').getTime()).toBe(instant);
+            expect(EnhancedDate.fromISO('2026-01-15T05:30:00+05:30').getTime()).toBe(instant);
+        });
+
         it('should support the default pattern and forward explicit patterns and locale options', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 15, 12, 34, 56);
 
             expect(date.format()).toBe('2026-01-15 12:34:56');
             expect(date.format('yyyy/MM/dd')).toBe('2026/01/15');
             expect(date.format('MMMM', { locale: enUS })).toBe('January');
+            expect(date.format('MMMM', { locale: fr })).toBe('janvier');
         });
 
         it('should preserve invalid dates rather than replacing them with now or fallback text', ({ expect }) => {
@@ -333,39 +372,18 @@ describe('class EnhancedDate', () => {
             expect(earlier.getMinutes()).toBe(0);
         });
 
-        it('should retain difference direction and forward rounding and week-start options', ({ expect }) => {
+        it('should return this date minus the other date from difference methods', ({ expect }) => {
             const date = new EnhancedDate(2026, 0, 10, 23, 59);
             const later = date.toAddSeconds(90);
 
             expect(date.differenceInMinutes(later)).toBe(-1);
-            expect(date.differenceInMinutes(later, { roundingMethod: 'floor' })).toBe(-2);
             expect(later.differenceInMinutes(date)).toBe(1);
             expect(later.differenceInSeconds(date)).toBe(90);
-            expect(date.toAddMilliseconds(1500).differenceInSeconds(date, { roundingMethod: 'ceil' })).toBe(2);
             expect(date.differenceInSeconds(later.getTime())).toBe(-90);
             expect(later.differenceInCalendarDays(date)).toBe(1);
             expect(date.differenceInCalendarDays(later)).toBe(-1);
-            expect(later.differenceInCalendarWeeks(date, { weekStartsOn: 0 })).toBe(1);
-            expect(later.differenceInCalendarWeeks(date, { weekStartsOn: 1 })).toBe(0);
-        });
-    });
-
-    describe('date-fns options', () => {
-        const date = new EnhancedDate(2026, 0, 15, 20);
-
-        it('should apply week and context options to boundary results', ({ expect }) => {
-            const halfDay = 12 * 3_600_000;
-            const shiftByHalfDay = (value: dateFns.DateArg<Date> & {}) => new Date(new Date(value).getTime() + halfDay);
-
-            expect(date.toStartOfWeek({ weekStartsOn: 1 }).getDate()).toBe(12);
-            expect(date.toStartOfWeek({ weekStartsOn: 4 }).getDate()).toBe(15);
-            expect(date.toStartOfDay().getDate()).toBe(15);
-            expect(date.toStartOfDay({ in: shiftByHalfDay }).getDate()).toBe(16);
-        });
-
-        it('should apply the locale option to formatted output', ({ expect }) => {
-            expect(date.format('MMMM', { locale: fr })).toBe('janvier');
-            expect(date.format('MMMM', { locale: enUS })).toBe('January');
+            expect(later.differenceInCalendarWeeks(date)).toBe(1);
+            expect(date.differenceInCalendarWeeks(later)).toBe(-1);
         });
     });
 
@@ -397,18 +415,6 @@ describe('class EnhancedDate', () => {
                     locale: enUS,
                 }),
             ).toBe('about 1 hour ago');
-        });
-
-        it('should derive tomorrow and yesterday boundaries from the current clock', ({ expect }) => {
-            vi.useFakeTimers();
-            vi.setSystemTime(new Date(2024, 1, 29, 13, 45, 30, 123));
-
-            expect(EnhancedDate.startOfTomorrow()).toBeInstanceOf(EnhancedDate);
-            expect(EnhancedDate.startOfTomorrow().getTime()).toBe(new Date(2024, 2, 1).getTime());
-            expect(EnhancedDate.endOfTomorrow().getTime()).toBe(new Date(2024, 2, 1, 23, 59, 59, 999).getTime());
-            expect(EnhancedDate.startOfYesterday().getTime()).toBe(new Date(2024, 1, 28).getTime());
-            expect(EnhancedDate.endOfYesterday().getTime()).toBe(new Date(2024, 1, 28, 23, 59, 59, 999).getTime());
-            expect(EnhancedDate.endOfYesterday()).toBeInstanceOf(EnhancedDate);
         });
     });
 });

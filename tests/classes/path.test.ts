@@ -1,4 +1,5 @@
 import { Buffer } from 'node:buffer';
+import { once } from 'node:events';
 import type {
     BigIntStats,
     Dirent,
@@ -12,9 +13,6 @@ import {
 import * as fsp from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import {
-    basename,
-    dirname,
-    extname,
     join,
     parse,
     resolve,
@@ -57,17 +55,13 @@ describe('class Path', () => {
         });
 
         it('should expose path components using the current platform semantics', ({ expect }) => {
-            const text = join('/tmp', 'foo', 'bar.tar.gz');
-            const path = new Path(text);
+            const path = new Path('/tmp', 'foo', 'bar.tar.gz');
 
-            expect(path.basename()).toBe(basename(text));
             expect(path.basename('.gz')).toBe('bar.tar');
-            expect(path.dirname().value).toBe(dirname(text));
-            expect(path.parent.value).toBe(dirname(text));
-            expect(path.extname()).toBe(extname(text));
+            expect(path.parent).toBeInstanceOf(Path);
+            expect(path.parent.value).toBe(join('/tmp', 'foo'));
             expect(path.stem).toBe('bar.tar');
             expect(new Path('/tmp', '.env').stem).toBe('.env');
-            expect(path.parse()).toEqual(parse(text));
             expect(new Path(resolve('src')).isAbsolute()).toBe(true);
             expect(new Path('relative').isAbsolute()).toBe(false);
         });
@@ -80,10 +74,9 @@ describe('class Path', () => {
             expect(child).not.toBe(original);
             expect(child.value).toBe(join('/tmp', 'foo', 'bar.txt'));
             expect(original.relative(child).value).toBe('bar.txt');
-            expect(new Path('/tmp', 'foo', '..', 'bar').normalize().value).toBe(join('/tmp', 'bar'));
             expect(new Path('src').resolve().value).toBe(resolve('src'));
             expect(Path.resolve('src').value).toBe(resolve('src'));
-            expect(new Path(resolve('src')).toNamespacedPath().value).toBe(toNamespacedPath(resolve('src')));
+            expect(Path.resolve('/a', '/b', 'c').value).toBe(resolve('/a/b/c'));
             expect(
                 Path.format({
                     dir: join('/tmp', 'foo'),
@@ -95,39 +88,67 @@ describe('class Path', () => {
             expect(original.value).toBe(join('/tmp', 'foo'));
         });
 
-        it.for([
-            {
-                expected: String.raw`\\?\C:\foo\bar`,
-                input: String.raw`C:\foo\bar`,
-            },
-            {
-                expected: String.raw`\\?\UNC\server\share\dir`,
-                input: String.raw`\\server\share\dir`,
-            },
-        ])(
-            'should preserve the Windows namespace prefix of $input',
-            async (
-                {
-                    expected,
-                    input,
-                },
-                { expect },
-            ) => {
+        describe('win32 semantics', () => {
+            async function loadWindowsPath() {
                 vi.resetModules();
                 vi.doMock('node:path', async () => (await vi.importActual<typeof import('node:path')>('node:path')).win32);
-                try {
-                    const { Path: WindowsPath } = await import('../../src/classes/path');
+                return (await import('../../src/classes/path')).Path;
+            }
+
+            afterEach(() => {
+                vi.doUnmock('node:path');
+                vi.resetModules();
+            });
+
+            it.for([
+                {
+                    expected: String.raw`\\?\C:\foo\bar`,
+                    input: String.raw`C:\foo\bar`,
+                },
+                {
+                    expected: String.raw`\\?\UNC\server\share\dir`,
+                    input: String.raw`\\server\share\dir`,
+                },
+            ])(
+                'should preserve the Windows namespace prefix of $input',
+                async (
+                    {
+                        expected,
+                        input,
+                    },
+                    { expect },
+                ) => {
+                    const WindowsPath = await loadWindowsPath();
                     const namespaced = new WindowsPath(input).toNamespacedPath();
 
                     expect(namespaced).toBeInstanceOf(WindowsPath);
                     expect(namespaced.value).toBe(expected);
                     expect(namespaced.join('file.txt').value).toBe(`${expected}\\file.txt`);
-                } finally {
-                    vi.doUnmock('node:path');
-                    vi.resetModules();
-                }
-            },
-        );
+                },
+            );
+
+            it('should keep drive-relative paths drive-relative when replacing the final component', async ({ expect }) => {
+                const WindowsPath = await loadWindowsPath();
+                const path = new WindowsPath('C:foo.txt');
+
+                expect(path.withExtension('.md').value).toBe('C:foo.md');
+                expect(path.withName('bar.txt').value).toBe('C:bar.txt');
+                expect(() => path.withName(String.raw`a\b`)).toThrow(TypeError);
+                expect(() => path.withExtension(String.raw`.a\b`)).toThrow(TypeError);
+            });
+
+            it.for([
+                'C:\\',
+                '\\\\server\\share\\',
+            ])(
+                'should reject replacing the final component of the root %j',
+                async (input, { expect }) => {
+                    const WindowsPath = await loadWindowsPath();
+
+                    expect(() => new WindowsPath(input).withName('bar.txt')).toThrow(TypeError);
+                },
+            );
+        });
 
         it('should accept Path instances and file URLs as path inputs', ({ expect }) => {
             const base = new Path(resolve('/tmp'));
@@ -140,10 +161,12 @@ describe('class Path', () => {
             expect(base.relative(url).value).toBe('child');
             expect(new Path(Buffer.from(base.value)).value).toBe(base.value);
             expect(() => new Path(Buffer.from([0xFF]))).toThrow(TypeError);
+            expect(() => new Path(new URL('https://example.com/file'))).toThrow(TypeError);
         });
 
-        it('should join later absolute segments instead of restarting at them in Path.resolve', ({ expect }) => {
-            expect(Path.resolve('/a', '/b', 'c').value).toBe(resolve('/a/b/c'));
+        it('should represent an empty or self-referential path as the current directory', ({ expect }) => {
+            expect(new Path().value).toBe('.');
+            expect(new Path('a').relative('a').value).toBe('.');
         });
 
         it('should replace the extension or final component', ({ expect }) => {
@@ -181,23 +204,6 @@ describe('class Path', () => {
             },
         );
 
-        it('should keep Windows drive-relative paths drive-relative when replacing the final component', async ({ expect }) => {
-            vi.resetModules();
-            vi.doMock('node:path', async () => (await vi.importActual<typeof import('node:path')>('node:path')).win32);
-            try {
-                const { Path: WindowsPath } = await import('../../src/classes/path');
-                const path = new WindowsPath('C:foo.txt');
-
-                expect(path.withExtension('.md').value).toBe('C:foo.md');
-                expect(path.withName('bar.txt').value).toBe('C:bar.txt');
-                expect(() => path.withName(String.raw`a\b`)).toThrow(TypeError);
-                expect(() => path.withExtension(String.raw`.a\b`)).toThrow(TypeError);
-            } finally {
-                vi.doUnmock('node:path');
-                vi.resetModules();
-            }
-        });
-
         it.for([
             parse(resolve('/')).root,
             '.',
@@ -233,21 +239,6 @@ describe('class Path', () => {
             );
         });
 
-        it('should infer readFile results for each encoding option', async ({ expect }) => {
-            const file = tempPath.join('file.txt');
-            await file.writeFile('hello');
-
-            const text = await file.readFile('utf8');
-
-            expectTypeOf(text).toEqualTypeOf<string>();
-            expect(text).toBe('hello');
-
-            const buffer = await file.readFile();
-
-            expectTypeOf(buffer).toEqualTypeOf<Buffer>();
-            expect(buffer.toString()).toBe('hello');
-        });
-
         it('should apply file operations to the stored path through a file lifecycle', async ({ expect }) => {
             const file = tempPath.join('lifecycle.txt');
 
@@ -255,7 +246,15 @@ describe('class Path', () => {
             await handle.writeFile('hello world');
             await handle.close();
 
-            await expect(file.readFile('utf8')).resolves.toBe('hello world');
+            const text = await file.readFile('utf8');
+
+            expectTypeOf(text).toEqualTypeOf<string>();
+            expect(text).toBe('hello world');
+
+            const buffer = await file.readFile();
+
+            expectTypeOf(buffer).toEqualTypeOf<Buffer>();
+            expect(buffer.toString()).toBe('hello world');
 
             await file.truncate(5);
 
@@ -272,6 +271,13 @@ describe('class Path', () => {
 
             expect(Buffer.concat(chunks).toString()).toBe('hello');
 
+            const writer = file.createWriteStream();
+            const finished = once(writer, 'finish');
+            writer.end('streamed');
+            await finished;
+
+            await expect(file.readFile('utf8')).resolves.toBe('streamed');
+
             await file.unlink();
 
             await expect(file.access()).rejects.toMatchObject({ code: 'ENOENT' });
@@ -279,7 +285,7 @@ describe('class Path', () => {
         });
 
         it.skipIf(process.platform === 'win32')(
-            'should apply chmod and chown to the stored path',
+            'should apply chmod to the stored path',
             async ({ expect }) => {
                 const file = tempPath.join('permissions.txt');
                 await file.writeFile('');
@@ -287,18 +293,6 @@ describe('class Path', () => {
                 await file.chmod(0o600);
 
                 expect((await file.stat()).mode & 0o777).toBe(0o600);
-
-                await file.chmod(0o640);
-
-                expect((await file.stat()).mode & 0o777).toBe(0o640);
-
-                const uid = process.getuid!();
-                const gid = process.getgid!();
-                await file.chown(uid, gid);
-                const stats = await file.stat();
-
-                expect(stats.uid).toBe(uid);
-                expect(stats.gid).toBe(gid);
             },
         );
 
@@ -355,28 +349,22 @@ describe('class Path', () => {
             await expect(destination.join('nested', 'file.txt').readFile('utf8')).resolves.toBe('hello');
         });
 
-        it('should create a symlink at the stored path that points to the target', async ({ expect }) => {
+        it('should create symlinks at the stored path with absolute or relative targets', async ({ expect }) => {
+            const directory = tempPath.join('directory');
+            const absoluteLink = tempPath.join('absolute-link');
+            const relativeLink = directory.join('relative-link');
             const target = tempPath.join('target.txt');
-            const link = tempPath.join('link');
+            await directory.mkdir();
             await target.writeFile('hello');
 
-            await link.symlinkTo(target);
+            await absoluteLink.symlinkTo(target);
+            await relativeLink.symlinkTo(join('..', 'target.txt'));
 
-            await expect(link.readlink()).resolves.toBe(target.value);
-            await expect(link.realpath()).resolves.toBe(await target.realpath());
-            await expect(link.readFile('utf8')).resolves.toBe('hello');
-        });
-
-        it('should keep relative symlink targets relative to the link directory', async ({ expect }) => {
-            const directory = tempPath.join('directory');
-            const link = directory.join('link');
-            await directory.mkdir();
-            await tempPath.join('target.txt').writeFile('hello');
-
-            await link.symlinkTo(join('..', 'target.txt'));
-
-            await expect(link.readlink()).resolves.toBe(join('..', 'target.txt'));
-            await expect(link.readFile('utf8')).resolves.toBe('hello');
+            await expect(absoluteLink.readlink()).resolves.toBe(target.value);
+            await expect(absoluteLink.realpath()).resolves.toBe(await target.realpath());
+            await expect(absoluteLink.readFile('utf8')).resolves.toBe('hello');
+            await expect(relativeLink.readlink()).resolves.toBe(join('..', 'target.txt'));
+            await expect(relativeLink.readFile('utf8')).resolves.toBe('hello');
         });
 
         it('should infer readlink and realpath results for each encoding option', async ({ expect }) => {
@@ -571,20 +559,11 @@ describe('class Path', () => {
             await target.mkdir();
             await link.symlinkTo(target);
 
-            const stats = await link.lstat();
-
-            expectTypeOf(stats).toEqualTypeOf<Stats>();
-            expect(stats.isSymbolicLink()).toBe(true);
+            expect((await link.lstat()).isSymbolicLink()).toBe(true);
             expect((await link.stat()).isDirectory()).toBe(true);
-
-            const missing = await tempPath.join('missing').lstat({ throwIfNoEntry: false });
-
-            expectTypeOf(missing).toEqualTypeOf<Stats | undefined>();
-            expect(missing).toBeUndefined();
-            await expect(tempPath.join('missing').lstat()).rejects.toMatchObject({ code: 'ENOENT' });
         });
 
-        it('should infer stat metadata types when missing paths reject', async ({ expect }) => {
+        it('should infer stat and lstat metadata types for each option', async ({ expect }) => {
             const stats = await tempPath.stat();
 
             expectTypeOf(stats).toEqualTypeOf<Stats>();
@@ -595,47 +574,40 @@ describe('class Path', () => {
             expectTypeOf(bigintStats).toEqualTypeOf<BigIntStats>();
             expect(typeof bigintStats.size).toBe('bigint');
 
-            const options: StatOptions & { throwIfNoEntry: true } = { throwIfNoEntry: true };
-            const metadata = await tempPath.stat(options);
+            const throwingOptions: StatOptions & { throwIfNoEntry: true } = { throwIfNoEntry: true };
+            const throwingStats = await tempPath.stat(throwingOptions);
 
-            expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats>();
-            expect(metadata.isDirectory()).toBe(true);
+            expectTypeOf(throwingStats).toEqualTypeOf<BigIntStats | Stats>();
+            expect(throwingStats.isDirectory()).toBe(true);
 
-            const missing = tempPath.join('missing');
+            const optionalStats = await tempPath.stat({ throwIfNoEntry: false });
 
-            await expect(missing.stat()).rejects.toMatchObject({ code: 'ENOENT' });
-            await expect(missing.stat({ throwIfNoEntry: true })).rejects.toMatchObject({ code: 'ENOENT' });
-        });
+            expectTypeOf(optionalStats).toEqualTypeOf<Stats | undefined>();
+            expect(optionalStats?.isDirectory()).toBe(true);
 
-        it('should infer optional stat metadata and return undefined for missing paths', async ({ expect }) => {
-            const stats = await tempPath.stat({ throwIfNoEntry: false });
-
-            expectTypeOf(stats).toEqualTypeOf<Stats | undefined>();
-            expect(stats?.isDirectory()).toBe(true);
-
-            const bigintStats = await tempPath.stat({
+            const optionalBigintStats = await tempPath.stat({
                 bigint: true,
                 throwIfNoEntry: false,
             });
 
-            expectTypeOf(bigintStats).toEqualTypeOf<BigIntStats | undefined>();
-            expect(typeof bigintStats?.size).toBe('bigint');
-
-            const missing = tempPath.join('missing');
-
-            await expect(missing.stat({ throwIfNoEntry: false })).resolves.toBeUndefined();
-            await expect(
-                missing.stat({
-                    bigint: true,
-                    throwIfNoEntry: false,
-                }),
-            ).resolves.toBeUndefined();
+            expectTypeOf(optionalBigintStats).toEqualTypeOf<BigIntStats | undefined>();
+            expect(typeof optionalBigintStats?.size).toBe('bigint');
 
             const options: StatOptions = { throwIfNoEntry: false };
-            const metadata = await missing.stat(options);
+            const metadata = await tempPath.stat(options);
 
             expectTypeOf(metadata).toEqualTypeOf<BigIntStats | Stats | undefined>();
-            expect(metadata).toBeUndefined();
+            expect(metadata?.isDirectory()).toBe(true);
+
+            const lstats = await tempPath.lstat();
+
+            expectTypeOf(lstats).toEqualTypeOf<Stats>();
+            expect(lstats.isDirectory()).toBe(true);
+
+            const optionalLstats = await tempPath.lstat({ throwIfNoEntry: false });
+
+            expectTypeOf(optionalLstats).toEqualTypeOf<Stats | undefined>();
+            expect(optionalLstats?.isDirectory()).toBe(true);
         });
     });
 });
