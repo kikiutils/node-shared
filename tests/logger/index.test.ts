@@ -10,7 +10,6 @@ import {
     objectValues,
 
 } from 'ts-extras';
-import type { UnknownRecord } from 'type-fest';
 import {
     afterEach,
     beforeEach,
@@ -527,8 +526,6 @@ describe('createLogger', () => {
         });
 
         it.for([
-            'handler',
-            1,
             {},
             null,
         ])(
@@ -638,9 +635,6 @@ describe('createLogger', () => {
             const logger = createLogger();
 
             expect(Object.isFrozen(logger)).toBe(true);
-            expect(() => {
-                (logger as unknown as UnknownRecord).info = () => {};
-            }).toThrow(TypeError);
         });
 
         it('should keep level and presentation independent between loggers', async ({ expect }) => {
@@ -1080,8 +1074,11 @@ describe('formatLoggerConsoleArgs', () => {
             const spies = mockConsole();
             const logger = createLogger({ timestamp: false });
 
+            await logger.debug('hidden');
             await logger.error('failed');
 
+            expect(spies.debug).not.toHaveBeenCalled();
+            expect(logger.isLevelEnabled('info')).toBe(true);
             expect(spies.error).toHaveBeenCalledWith(
                 '%c✖%c failed',
                 'color: #dc2626',

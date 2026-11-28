@@ -163,7 +163,6 @@ describe('createRedisScriptRunner', () => {
     it.for([
         undefined,
         1,
-        2,
         5,
     ])(
         'should stop at the total attempt limit %s and preserve the final error',

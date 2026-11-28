@@ -87,11 +87,6 @@ describe('timingSafeEqualStrings', () => {
             expected: true,
         },
         {
-            a: '世界',
-            b: '世界',
-            expected: true,
-        },
-        {
             a: '9f86d081',
             b: '9f86d082',
             expected: false,

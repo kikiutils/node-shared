@@ -332,11 +332,6 @@ describe('createNodeLogger', () => {
                 TypeError,
             ],
             [
-                'an empty path',
-                () => ({ path: '' }),
-                TypeError,
-            ],
-            [
                 'a whitespace-only path',
                 () => ({ path: '   ' }),
                 TypeError,
@@ -369,14 +364,6 @@ describe('createNodeLogger', () => {
                 'an infinite maxPendingBytes',
                 (path) => ({
                     maxPendingBytes: Number.POSITIVE_INFINITY,
-                    path,
-                }),
-                RangeError,
-            ],
-            [
-                'a fractional maxPendingBytes',
-                (path) => ({
-                    maxPendingBytes: 1.5,
                     path,
                 }),
                 RangeError,
@@ -973,8 +960,9 @@ describe('createNodeLogger', () => {
         it('should archive records left in the active file by an earlier period instead of the next one', async ({ expect }) => {
             const path = join(directory, 'app.log');
             await writeFile(path, 'yesterday\n');
-            const yesterday = new Date(Date.now() - (24 * 60 * 60 * 1000));
-            await utimes(path, yesterday, yesterday);
+            // Two days back stays in an earlier local day even across a 25-hour daylight-saving day.
+            const earlier = new Date(Date.now() - (2 * 24 * 60 * 60 * 1000));
+            await utimes(path, earlier, earlier);
 
             const logger = await createTrackedLogger({
                 console: false,

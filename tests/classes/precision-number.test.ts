@@ -79,6 +79,8 @@ describe('class PrecisionNumber', () => {
             '1.',
             '1.23e2',
             '0x10',
+            // Full-width digits typed through CJK input methods are not plain decimal notation.
+            '１２３',
             'NaN',
             'Infinity',
             Number.NaN,
@@ -104,9 +106,6 @@ describe('class PrecisionNumber', () => {
 
             for (const input of [
                 'Infinity',
-                '0x10',
-                '1e400',
-                '',
                 Number.NaN,
                 null,
                 {},

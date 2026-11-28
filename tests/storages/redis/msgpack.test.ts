@@ -128,6 +128,7 @@ describe('createRedisMsgpackStorage', () => {
         1.5,
         Number.NaN,
         Number.POSITIVE_INFINITY,
+        Number.MAX_SAFE_INTEGER + 1,
     ])(
         'should reject TTL %s, which Redis does not accept as an expiry, without calling the adapter',
         async (ttlSeconds, { expect }) => {

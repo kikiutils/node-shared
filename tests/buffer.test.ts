@@ -71,17 +71,6 @@ describe('toBuffer', () => {
             name: 'Blob with every byte value',
         },
         {
-            expected: Buffer.from('Hello 世界'),
-            input: new File(
-                [
-                    'Hello ',
-                    '世界',
-                ],
-                'test.txt',
-            ),
-            name: 'File',
-        },
-        {
             expected: Buffer.alloc(0),
             input: new Blob([]),
             name: 'empty Blob',

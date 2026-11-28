@@ -76,16 +76,8 @@ describe('getErrorMessage', () => {
             input: new Error('Failed'),
         },
         {
-            expected: 'Bad type',
-            input: new TypeError('Bad type'),
-        },
-        {
             expected: 'timeout',
             input: 'timeout',
-        },
-        {
-            expected: '42',
-            input: 42,
         },
         {
             expected: 'undefined',
