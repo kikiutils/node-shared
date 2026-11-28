@@ -44,7 +44,14 @@ export async function createFileWriter(
             path.basename(),
             {
                 compress: rotate.compress === false ? false : 'gzip',
-                ...rotate.interval === undefined ? {} : { interval: rotate.interval === 'hourly' ? '1h' : '1d' },
+                // Without `initialRotation`, records left in the active file by a process that stopped before a
+                // boundary are archived with the next period after a restart.
+                ...rotate.interval === undefined
+                    ? {}
+                    : {
+                        initialRotation: true,
+                        interval: rotate.interval === 'hourly' ? '1h' : '1d',
+                    },
                 intervalBoundary: true,
                 intervalUTC: false,
                 maxFiles: rotate.maxFiles ?? 30,
