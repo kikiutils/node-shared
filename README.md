@@ -1,54 +1,44 @@
-# @kikiutils/shared
+# {{package}}
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![Node.js][node-src]][node-href]
 [![codecov][codecov-src]][codecov-href]
 [![License][license-src]][license-href]
 
+{{One sentence: what the package provides and its main differentiator, plus any package-wide limit (e.g. "ESM only", "Node.js only").}}
+
 - [✨ Release Notes](./CHANGELOG.md)
-
-## Requirements
-
-- **Node.js**: see `engines` in [package.json](./package.json)
 
 ## Installation
 
-Using [pnpm](https://pnpm.io):
-
 ```bash
-pnpm add @kikiutils/shared
+pnpm add {{package}}
 ```
 
-You can also use `npm`, `yarn`, or `bun`.
+<!-- Drop this section if the package has no optional peer dependencies. -->
+## Optional Peer Dependencies
 
-> [!NOTE]
-> This package is intentionally modular. Imports such as `@kikiutils/shared/datetime` or `@kikiutils/shared/vue` may require their peer dependencies (`date-fns`, `vue`, and so on). Install only the peers used by your chosen modules.
-
-## Runtime support
-
-- **Node.js and Bun only:** `buffer`, `crypto-hash`, `env`, `logger/node`, `redis/*`, `storages/redis/bun-adapter`, `classes/path`
-- **Browser only:** `clipboard`, `web`
-- **Vue with Vue Router:** `vue`
-- Everything else works in Node.js, Bun, and browsers.
-
-Known Bun differences surface through `Path`, which follows Bun's `node:fs` behavior:
-
-- `fs.promises.access()` resolves `null` instead of `undefined`.
-- `readdir` with `{ encoding: 'buffer', withFileTypes: true }` returns entries without `name` or `isFile()`.
+| Package | Enables |
+| --- | --- |
+| `{{peer}}` | {{One line: what it adds}} |
 
 ## License
 
 [MIT License](./LICENSE)
 
 <!-- Badges -->
-[npm-version-href]: https://npmjs.com/package/@kikiutils/shared
-[npm-version-src]: https://img.shields.io/npm/v/@kikiutils/shared/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
+[npm-version-href]: https://npmjs.com/package/{{package}}
+[npm-version-src]: https://img.shields.io/npm/v/{{package}}/latest.svg?colorA=18181b&colorB=28cf8d&style=flat
 
-[npm-downloads-href]: https://npmjs.com/package/@kikiutils/shared
-[npm-downloads-src]: https://img.shields.io/npm/dm/@kikiutils/shared.svg?colorA=18181b&colorB=28cf8d&style=flat
+[npm-downloads-href]: https://npmjs.com/package/{{package}}
+[npm-downloads-src]: https://img.shields.io/npm/dm/{{package}}.svg?colorA=18181b&colorB=28cf8d&style=flat
 
-[codecov-href]: https://codecov.io/gh/kikiutils/node-shared
-[codecov-src]: https://codecov.io/gh/kikiutils/node-shared/graph/badge.svg?token=GRSQ7JO39E
+[node-href]: ./package.json
+[node-src]: https://img.shields.io/node/v/{{package}}?colorA=18181b&colorB=28cf8d&style=flat
 
-[license-href]: https://github.com/kikiutils/node-shared/blob/main/LICENSE
-[license-src]: https://img.shields.io/github/license/kikiutils/node-shared?colorA=18181b&colorB=28cf8d&style=flat
+[codecov-href]: https://codecov.io/gh/{{owner}}/{{repo}}
+[codecov-src]: https://codecov.io/gh/{{owner}}/{{repo}}/graph/badge.svg?token={{codecov_token}}
+
+[license-href]: https://github.com/{{owner}}/{{repo}}/blob/main/LICENSE
+[license-src]: https://img.shields.io/github/license/{{owner}}/{{repo}}?colorA=18181b&colorB=28cf8d&style=flat
