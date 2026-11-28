@@ -150,7 +150,7 @@
     "changelogen": "^0.6.2",
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
-    "element-plus": "^2.14.8",
+    "element-plus": "^2.14.9",
     "eslint": "^10.15.0",
     "file-type": "^22.3.0",
     "jsdom": "^31.0.1",
