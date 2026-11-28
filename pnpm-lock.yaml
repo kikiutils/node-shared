@@ -30,9 +30,6 @@ importers:
       '@kikiutils/tsconfigs':
         specifier: ^8.0.0
         version: 8.0.0
-      '@noble/hashes':
-        specifier: ^2.4.0
-        version: 2.4.0
       '@types/node':
         specifier: ^26.6.11
         version: 26.6.11
@@ -3622,7 +3619,8 @@ snapshots:
       '@tybys/wasm-util': 0.10.5
     optional: true
 
-  '@noble/hashes@2.4.0': {}
+  '@noble/hashes@2.4.0':
+    optional: true
 
   '@ota-meshi/ast-token-store@0.3.0': {}
 

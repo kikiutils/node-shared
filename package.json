@@ -42,7 +42,6 @@
     "./env": "./dist/env.js",
     "./file": "./dist/file.js",
     "./general": "./dist/general.js",
-    "./hash": "./dist/hash.js",
     "./logger": "./dist/logger/index.js",
     "./logger/node": "./dist/logger/node/index.js",
     "./logger/node/types": {
@@ -103,7 +102,6 @@
     "typecheck": "tsc -b --noEmit"
   },
   "peerDependencies": {
-    "@noble/hashes": "^2.4.0",
     "date-fns": "^4.4.0",
     "decimal.js": "^10.6.0",
     "element-plus": "^2.14.7",
@@ -115,9 +113,6 @@
     "vue-router": ">= 4.6.4"
   },
   "peerDependenciesMeta": {
-    "@noble/hashes": {
-      "optional": true
-    },
     "date-fns": {
       "optional": true
     },
@@ -155,7 +150,6 @@
     "@arethetypeswrong/core": "^0.18.5",
     "@kikiutils/eslint-config": "^11.4.0",
     "@kikiutils/tsconfigs": "^8.0.0",
-    "@noble/hashes": "^2.4.0",
     "@types/node": "^26.6.11",
     "@vitest/coverage-v8": "^5.1.2",
     "changelogen": "^0.6.2",
