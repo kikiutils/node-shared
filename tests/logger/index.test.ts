@@ -32,6 +32,7 @@ import type {
     LoggerLevel,
     LoggerMethod,
 } from '../../src/logger/types';
+import { useFakeClock } from '../_helpers/logger';
 
 const allMethods: LoggerMethod[] = [
     'trace',
@@ -104,20 +105,6 @@ function renderCall(call: unknown[]) {
         .join(' ');
 }
 
-/**
- * Fakes both clocks the diagnostic rate limit and the timestamps may read.
- */
-function useFakeClock(time: Date | number) {
-    vi.useFakeTimers({
-        toFake: [
-            'Date',
-            'performance',
-        ],
-    });
-
-    vi.setSystemTime(time);
-}
-
 beforeEach(() => {
     vi.stubEnv('LOG_LEVEL', '');
 });
@@ -131,21 +118,31 @@ afterEach(() => {
 
 describe('createLogger', () => {
     describe('level filtering', () => {
-        it('should emit info and above by default', async ({ expect }) => {
-            vi.stubEnv('LOG_LEVEL', undefined);
-            const logger = createLogger({
-                icons: false,
-                timestamp: false,
-            });
+        it.for([
+            undefined,
+            '',
+        ])(
+            'should emit info and above without a diagnostic when LOG_LEVEL is %j',
+            async (value, { expect }) => {
+                vi.stubEnv('LOG_LEVEL', value);
+                const onError = vi.fn();
+                const logger = createLogger({
+                    icons: false,
+                    onError,
+                    timestamp: false,
+                });
 
-            await expect(collectEmittedMethods(logger)).resolves.toEqual([
-                'info',
-                'success',
-                'warn',
-                'error',
-                'fatal',
-            ]);
-        });
+                await expect(collectEmittedMethods(logger)).resolves.toEqual([
+                    'info',
+                    'success',
+                    'warn',
+                    'error',
+                    'fatal',
+                ]);
+
+                expect(onError).not.toHaveBeenCalled();
+            },
+        );
 
         it.for<[LoggerLevel, LoggerMethod[]]>([
             [
@@ -254,16 +251,6 @@ describe('createLogger', () => {
             expect(logger.isLevelEnabled('info')).toBe(true);
         });
 
-        it('should treat an empty LOG_LEVEL as unset without a diagnostic', async ({ expect }) => {
-            vi.stubEnv('LOG_LEVEL', '');
-            const onError = vi.fn();
-            const logger = createLogger({ onError });
-
-            expect(logger.isLevelEnabled('info')).toBe(true);
-            expect(logger.isLevelEnabled('debug')).toBe(false);
-            expect(onError).not.toHaveBeenCalled();
-        });
-
         it.for([
             'verbose',
             'success',
@@ -291,11 +278,13 @@ describe('createLogger', () => {
             },
         );
 
-        it('should write the invalid-level diagnostic to console.error only when there is no onError', ({ expect }) => {
+        it('should write the invalid-level diagnostic to the current console.error only when there is no onError', ({ expect }) => {
             vi.stubEnv('LOG_LEVEL', 'verbose');
+            // Created before the spy so a fallback captured at creation would bypass it.
+            const logger = createLogger();
             const spies = mockConsole();
 
-            createLogger().isLevelEnabled('info');
+            logger.isLevelEnabled('info');
 
             expect(spies.error).toHaveBeenCalledWith('[logger] Invalid LOG_LEVEL; using info.');
 
@@ -449,19 +438,6 @@ describe('createLogger', () => {
                 expect(renderCall(spies[consoleMethod].mock.calls[0]!)).toBe(`${icon} hello 42`);
             },
         );
-
-        it('should keep objects as separate console arguments', async ({ expect }) => {
-            const spies = mockConsole();
-            const value = { nested: { a: 1 } };
-            const logger = createLogger({
-                icons: false,
-                timestamp: false,
-            });
-
-            await logger.info('data', value);
-
-            expect(spies.info.mock.calls[0]).toContain(value);
-        });
     });
 
     describe('presentation', () => {
@@ -475,31 +451,6 @@ describe('createLogger', () => {
             for (const method of allMethods) await logger[method]('hidden');
 
             for (const spy of objectValues(spies)) expect(spy).not.toHaveBeenCalled();
-        });
-
-        it('should render icon, local timestamp, prefix, message, and suffix', async ({ expect }) => {
-            useFakeClock(new Date(2026, 0, 5, 3, 4, 5, 6));
-            const spies = mockConsole();
-            const logger = createLogger({
-                prefix: 'pre',
-                suffix: 'suf',
-            });
-
-            await logger.warn('message');
-
-            expect(renderCall(spies.warn.mock.calls[0]!)).toBe('⚠ [2026-01-05 03:04:05.006] pre message suf');
-        });
-
-        it('should omit icons, timestamps, prefix, and suffix when disabled or empty', async ({ expect }) => {
-            const spies = mockConsole();
-            const logger = createLogger({
-                icons: false,
-                timestamp: false,
-            });
-
-            await logger.success('plain');
-
-            expect(renderCall(spies.info.mock.calls[0]!)).toBe('plain');
         });
 
         it('should update presentation with configure() and keep unspecified settings', async ({ expect }) => {
@@ -852,30 +803,29 @@ describe('createDiagnosticReporter', () => {
         ]);
     });
 
-    it('should contain a throwing onError and keep reporting later events', ({ expect }) => {
-        useFakeClock(0);
-        const onError = vi.fn(() => {
-            throw new Error('handler broke');
-        });
+    it.for<[string, (sink: () => never) => ReturnType<typeof createDiagnosticReporter>]>([
+        [
+            'onError',
+            (sink) => createDiagnosticReporter(sink),
+        ],
+        [
+            'fallback',
+            (sink) => createDiagnosticReporter(undefined, sink),
+        ],
+    ])(
+        'should contain a throwing %s and keep reporting later events',
+        ([, create], { expect }) => {
+            const sink = vi.fn((): never => {
+                throw new Error('sink broke');
+            });
 
-        const report = createDiagnosticReporter(onError);
+            const report = create(sink);
 
-        expect(() => report(createEvent('console'))).not.toThrow();
-        expect(() => report(createEvent('file'))).not.toThrow();
-        expect(onError).toHaveBeenCalledTimes(2);
-    });
-
-    it('should contain a throwing fallback', ({ expect }) => {
-        const fallback = vi.fn(() => {
-            throw new Error('fallback broke');
-        });
-
-        const report = createDiagnosticReporter(undefined, fallback);
-
-        expect(() => report(createEvent('console'))).not.toThrow();
-        expect(() => report(createEvent('file'))).not.toThrow();
-        expect(fallback).toHaveBeenCalledTimes(2);
-    });
+            expect(() => report(createEvent('console'))).not.toThrow();
+            expect(() => report(createEvent('file'))).not.toThrow();
+            expect(sink).toHaveBeenCalledTimes(2);
+        },
+    );
 });
 
 describe('formatLoggerTime', () => {

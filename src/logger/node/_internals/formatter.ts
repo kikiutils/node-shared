@@ -3,6 +3,15 @@ import { inspect } from 'node:util';
 import { formatLoggerParts } from '../../_internals/formatter';
 import type { LoggerRecord } from '../../_internals/types';
 
+const inspectOptions = {
+    colors: false,
+    customInspect: true,
+    depth: 6,
+    getters: false,
+    maxArrayLength: 100,
+    maxStringLength: 10_000,
+} as const;
+
 /**
  * User ANSI sequences are preserved; the caller strips them for file output. Custom inspect callbacks run like
  * `console.log`, other property getters are not invoked, and an argument whose inspection throws is replaced instead
@@ -16,17 +25,7 @@ export function formatNodeLoggerRecord(
     const message = record.args.map((arg) => {
         if (typeof arg === 'string') return arg;
         try {
-            return inspect(
-                arg,
-                {
-                    colors: false,
-                    customInspect: true,
-                    depth: 6,
-                    getters: false,
-                    maxArrayLength: 100,
-                    maxStringLength: 10_000,
-                },
-            );
+            return inspect(arg, inspectOptions);
         } catch (error) {
             onInspectError?.(error);
             return '[uninspectable value]';

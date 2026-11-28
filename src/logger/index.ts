@@ -15,8 +15,8 @@ import type {
  */
 export function createLogger(options: LoggerOptions = {}): Readonly<Logger> {
     const target = globalThis.console;
-    const fallback = target?.error?.bind(target);
-    const report = createDiagnosticReporter(options.onError, (message) => fallback?.(message.trimEnd()));
+    // Looked up per diagnostic so console wrappers installed after creation (error trackers, test spies) see it.
+    const report = createDiagnosticReporter(options.onError, (message) => target?.error?.(message.trimEnd()));
     const reportConsoleFailure = (error: unknown) => report({
         error,
         message: 'Console output failed.',
