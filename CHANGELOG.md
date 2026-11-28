@@ -1,5 +1,28 @@
 # Changelog
 
+## v23.0.2
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v23.0.1...v23.0.2)
+
+### 🔥 Performance
+
+- **logger:** Hoist FORCE_COLOR values into a module-level Set ([508e1db](https://github.com/kikiutils/node-shared/commit/508e1db))
+
+### 📖 Documentation
+
+- Restructure README template ([225cd69](https://github.com/kikiutils/node-shared/commit/225cd69))
+- Fill in README template and note Bun differences on Path ([36c217e](https://github.com/kikiutils/node-shared/commit/36c217e))
+- Trim JSDoc and comments to what the code cannot express ([238265b](https://github.com/kikiutils/node-shared/commit/238265b))
+
+### ✅ Tests
+
+- Prune redundant cases and cover more edge inputs ([f35b978](https://github.com/kikiutils/node-shared/commit/f35b978))
+- Prune redundant cases and tighten edge coverage ([540a3e0](https://github.com/kikiutils/node-shared/commit/540a3e0))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v23.0.1
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v23.0.0...v23.0.1)
