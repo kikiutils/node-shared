@@ -1133,6 +1133,17 @@ describe('formatLoggerConsoleArgs', () => {
             ]);
         });
 
+        it('should pass undecorated text as a single literal argument, which consoles print without substitution', ({ expect }) => {
+            vi.stubGlobal('process', undefined);
+
+            expect(formatLoggerConsoleArgs(createRecord({
+                args: [
+                    '50%',
+                    'done',
+                ],
+            }))).toEqual(['50% done']);
+        });
+
         it('should write browser-formatted arguments through the logger when no Node.js process exists', async ({ expect }) => {
             vi.stubGlobal('process', undefined);
             const spies = mockConsole();

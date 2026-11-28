@@ -44,6 +44,8 @@ export function formatLoggerConsoleArgs(record: LoggerRecord): unknown[] {
     }
 
     after.forEach(decorate);
+    // A lone argument is printed without format substitution, so escaped `%%` would show up literally.
+    if (!args.length) return [record.args.join(' ')];
     return [
         format.join(' '),
         ...args,
