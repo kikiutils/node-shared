@@ -60,7 +60,7 @@
     "./string": "./dist/string.js",
     "./time": "./dist/time.js",
     "./types": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/types.d.ts",
       "default": null
     },
     "./url": "./dist/url.js",
@@ -70,15 +70,10 @@
     "./logger/*": "./dist/logger/*.js",
     "./redis/*": "./dist/redis/*.js",
     "./storages/*": "./dist/storages/*.js",
-    "./types/*": {
-      "types": "./dist/types/*.d.ts",
-      "default": null
-    },
     "./logger/_internals/*": null,
     "./logger/index": null,
     "./logger/node/_internals/*": null,
     "./logger/node/index": null,
-    "./types/index": null,
     "./package.json": "./package.json"
   },
   "files": [
