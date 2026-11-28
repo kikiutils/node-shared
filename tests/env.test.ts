@@ -43,14 +43,6 @@ describe('getRequiredEnv', () => {
     it('should reject an undefined variable with its key', ({ expect }) => {
         vi.stubEnv('KIKIUTILS_TEST_VALUE', undefined);
 
-        let thrown: unknown;
-        try {
-            getRequiredEnv('KIKIUTILS_TEST_VALUE');
-        } catch (error) {
-            thrown = error;
-        }
-
-        expect(thrown).toBeInstanceOf(EnvironmentNotFoundError);
-        expect(thrown).toHaveProperty('key', 'KIKIUTILS_TEST_VALUE');
+        expect(() => getRequiredEnv('KIKIUTILS_TEST_VALUE')).toThrow(new EnvironmentNotFoundError('KIKIUTILS_TEST_VALUE'));
     });
 });

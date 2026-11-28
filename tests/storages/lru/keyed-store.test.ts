@@ -20,6 +20,9 @@ describe('createLruKeyedStore', () => {
         expect(store.getItem('acme', 1)).toBeNull();
         expect(store.hasItem('acme', 1)).toBe(false);
         expect(store.setItem(user, 'acme', 1)).toBe(true);
+        expect(store.setItem(user, 'acme', 1)).toBe(true);
+        expect(store.setItem({ name: 'Bob' }, 'acme', 1)).toBe(true);
+        expect(store.setItem(user, 'acme', 1)).toBe(true);
         expect(cache.get('acme:user:1')).toBe(user);
         expect(store.getItem('acme', 1)).toBe(user);
         expect(store.hasItem('acme', 1)).toBe(true);
@@ -71,26 +74,21 @@ describe('createLruKeyedStore', () => {
         expect(store.getItem('acme', 2)).toBe('default');
     });
 
-    it('should return false when the cache rejects an oversized value', ({ expect }) => {
+    it('should return false when the cache does not store the value', ({ expect }) => {
         const cache = new LRUCache<string, string>({
             max: 2,
             maxEntrySize: 1,
             sizeCalculation: (value) => value.length,
         });
 
-        const store = createLruKeyedStore<string>(cache)((id: string) => id);
+        const store = createLruKeyedStore<string | undefined>(cache)((id: string) => id);
 
         expect(store.setItem('xx', 'a')).toBe(false);
         expect(store.setItemWithTtl(1000, 'xx', 'a')).toBe(false);
         expect(store.hasItem('a')).toBe(false);
-    });
 
-    it('should return false when writing undefined deletes the key', ({ expect }) => {
-        const cache = new LRUCache<string, string>({ max: 1 });
-        const store = createLruKeyedStore<string | undefined>(cache)((id: string) => id);
-
-        store.setItem('value', 'a');
-
+        // Writing `undefined` deletes the key instead of storing it.
+        expect(store.setItem('x', 'a')).toBe(true);
         expect(store.setItem(undefined, 'a')).toBe(false);
         expect(store.hasItem('a')).toBe(false);
     });

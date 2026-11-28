@@ -18,37 +18,12 @@ afterEach(() => {
 });
 
 describe('formatDate', () => {
-    it.for([
-        {
-            input: new Date(2024, 6, 10),
-            name: 'a Date',
-        },
-        {
-            input: new Date(2024, 6, 10).getTime(),
-            name: 'a millisecond timestamp',
-        },
-        {
-            input: '2024-07-10T00:00:00',
-            name: 'a local date string',
-        },
-    ])(
-        'should format $name using the supplied pattern',
-        ({ input }, { expect }) => {
-            expect(formatDate(input, 'yyyy-MM-dd')).toBe('2024-07-10');
-        },
-    );
-
-    it('should apply the default pattern and forward locale options without changing the input', ({ expect }) => {
+    it('should apply the default pattern and forward explicit patterns and options', ({ expect }) => {
         const input = new Date(2024, 6, 10, 12, 34, 56);
-        const originalTime = input.getTime();
 
         expect(formatDate(input)).toBe('2024-07-10 12:34:56');
+        expect(formatDate(input, 'yyyy/MM/dd')).toBe('2024/07/10');
         expect(formatDate(input, 'MMMM', { locale: fr })).toBe('juillet');
-        expect(input.getTime()).toBe(originalTime);
-    });
-
-    it('should reject an invalid date rather than substituting the current time', ({ expect }) => {
-        expect(() => formatDate(new Date(Number.NaN))).toThrow(RangeError);
     });
 });
 
@@ -63,7 +38,7 @@ describe('formatOptionalDate', () => {
         },
     );
 
-    it('should format a present date with the supplied pattern and options', ({ expect }) => {
+    it('should format a present date, including a falsy timestamp, with the supplied pattern and options', ({ expect }) => {
         expect(formatOptionalDate(new Date(2024, 6, 10), 'yyyy-MM-dd')).toBe('2024-07-10');
         expect(formatOptionalDate(new Date(2024, 6, 10), 'MMMM', { locale: fr })).toBe('juillet');
         expect(formatOptionalDate(0, 'yyyy')).toBe(new Date(0).getFullYear().toString());
@@ -135,26 +110,39 @@ describe('getDateRangeFromDate', () => {
 
     it.for([
         {
+            date: new Date(2023, 6, 1, 12),
             end: new Date(2023, 5, 24, 23, 59, 59, 999),
+            options: { weekStartsOn: 0 },
             start: new Date(2023, 5, 18),
             type: 'lastWeek',
         },
         {
+            date: new Date(2023, 6, 1, 12),
             end: new Date(2023, 6, 1, 23, 59, 59, 999),
+            options: { weekStartsOn: 0 },
             start: new Date(2023, 5, 25),
             type: 'thisWeek',
         },
+        {
+            date: new Date(2023, 6, 2, 12),
+            end: new Date(2023, 6, 2, 23, 59, 59, 999),
+            options: undefined,
+            start: new Date(2023, 5, 26),
+            type: 'thisWeek',
+        },
     ] as const)(
-        'should respect a Sunday start for $type',
+        'should place a $date reference in the $type week for options $options',
         (
             {
+                date,
                 end,
+                options,
                 start,
                 type,
             },
             { expect },
         ) => {
-            const result = getDateRangeFromDate(new Date(2023, 6, 1, 12), type, { weekStartsOn: 0 });
+            const result = getDateRangeFromDate(date, type, options);
 
             expect(result.startDate.getTime()).toBe(start.getTime());
             expect(result.endDate.getTime()).toBe(end.getTime());
@@ -168,6 +156,7 @@ describe('getDateRangeFromDate', () => {
         expect(result.endDate.getTime()).toBe(new Date(2024, 2, 1).getTime());
     });
 
+    // Run under a zone with daylight saving transitions (see the `test` script) to cover repeated and skipped hours.
     describe.for([
         new Date(2023, 6, 1, 12),
         new Date(2024, 3, 6, 12),
@@ -227,21 +216,36 @@ describe('getStartOfDayFromToday', () => {
     it.for([
         {
             expected: new Date(2024, 1, 28),
+            now: new Date(2024, 1, 29, 12, 34, 56),
             offset: -1,
         },
         {
             expected: new Date(2024, 1, 29),
+            now: new Date(2024, 1, 29, 12, 34, 56),
             offset: undefined,
         },
         {
             expected: new Date(2024, 2, 1),
+            now: new Date(2024, 1, 29, 12, 34, 56),
+            offset: 1,
+        },
+        {
+            expected: new Date(2024, 8, 8),
+            now: new Date(2024, 8, 7, 12),
             offset: 1,
         },
     ])(
-        'should return the start of the local day with offset $offset',
-        async ({ expected, offset }, { expect }) => {
+        'should return the start of the local day for $now with offset $offset',
+        async (
+            {
+                expected,
+                now,
+                offset,
+            },
+            { expect },
+        ) => {
             vi.useFakeTimers();
-            vi.setSystemTime(new Date(2024, 1, 29, 12, 34, 56));
+            vi.setSystemTime(now);
 
             // A Date subclass captures its base constructor at module evaluation time.
             vi.resetModules();

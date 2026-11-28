@@ -41,11 +41,35 @@ describe('joinCjkText', () => {
             ],
         },
         {
+            expected: 'ひらがな A',
+            name: 'Hiragana followed by a Latin letter',
+            parts: [
+                'ひらがな',
+                'A',
+            ],
+        },
+        {
+            expected: 'ㄅㄆ A',
+            name: 'Bopomofo followed by a Latin letter',
+            parts: [
+                'ㄅㄆ',
+                'A',
+            ],
+        },
+        {
             expected: '𠀋 A',
-            name: 'a supplementary-plane Han character',
+            name: 'a supplementary-plane Han character followed by a Latin letter',
             parts: [
                 '𠀋',
                 'A',
+            ],
+        },
+        {
+            expected: 'A 𠀋',
+            name: 'a Latin letter followed by a supplementary-plane Han character',
+            parts: [
+                'A',
+                '𠀋',
             ],
         },
         {
@@ -62,14 +86,6 @@ describe('joinCjkText', () => {
             parts: [
                 '刪除',
                 '帳號',
-            ],
-        },
-        {
-            expected: 'ab',
-            name: 'two Latin letters',
-            parts: [
-                'a',
-                'b',
             ],
         },
         {

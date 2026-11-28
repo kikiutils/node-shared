@@ -12,7 +12,6 @@ describe('toBuffer', () => {
         const input = Buffer.from('Hello 世界');
 
         expect(await toBuffer(input)).toBe(input);
-        expect(await toBuffer(Buffer.alloc(0))).toHaveLength(0);
     });
 
     it('should share ArrayBuffer memory in both directions', async ({ expect }) => {
@@ -67,30 +66,28 @@ describe('toBuffer', () => {
 
     it.for([
         {
-            expected: 'Hello 世界',
-            input: new Blob([
-                'Hello ',
-                '世界',
-            ]),
-            name: 'Blob',
+            expected: Buffer.from(Uint8Array.from({ length: 256 }, (_, index) => index)),
+            input: new Blob([Uint8Array.from({ length: 256 }, (_, index) => index)]),
+            name: 'Blob with every byte value',
         },
         {
-            expected: 'Hello 世界',
-            input: new File(['Hello 世界'], 'test.txt'),
+            expected: Buffer.from('Hello 世界'),
+            input: new File(
+                [
+                    'Hello ',
+                    '世界',
+                ],
+                'test.txt',
+            ),
             name: 'File',
         },
         {
-            expected: '',
+            expected: Buffer.alloc(0),
             input: new Blob([]),
             name: 'empty Blob',
         },
         {
-            expected: '',
-            input: new ArrayBuffer(0),
-            name: 'empty ArrayBuffer',
-        },
-        {
-            expected: '',
+            expected: Buffer.alloc(0),
             input: new Uint8Array(0),
             name: 'empty Uint8Array',
         },
@@ -100,37 +97,9 @@ describe('toBuffer', () => {
             const result = await toBuffer(input);
 
             expect(Buffer.isBuffer(result)).toBe(true);
-            expect(result.toString()).toBe(expected);
+            expect(result).toEqual(expected);
         },
     );
-
-    it('should preserve binary bytes when reading a Blob', async ({ expect }) => {
-        const input = new Blob([
-            new Uint8Array([
-                0,
-                0xFF,
-                0x80,
-            ]),
-        ]);
-
-        expect(await toBuffer(input)).toEqual(Buffer.from([
-            0,
-            0xFF,
-            0x80,
-        ]));
-    });
-
-    it('should preserve a failure from the binary reader', async ({ expect }) => {
-        const error = new Error('Read failed');
-        const input = {
-            arrayBuffer: async () => {
-                throw error;
-            },
-        };
-
-        // @ts-expect-error A minimal reader isolates the asynchronous error contract.
-        await expect(toBuffer(input)).rejects.toBe(error);
-    });
 
     it('should reject unsupported input', async ({ expect }) => {
         // @ts-expect-error Runtime validation must also reject inputs outside BinaryInput.

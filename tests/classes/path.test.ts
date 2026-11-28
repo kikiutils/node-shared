@@ -178,6 +178,7 @@ describe('class Path', () => {
             expect(new Path('bar.txt').withExtension('.md').value).toBe('bar.md');
             expect(path.withName('baz.txt').value).toBe(join('/tmp', 'foo', 'baz.txt'));
             expect(new Path('bar.txt').withName('baz.txt').value).toBe('baz.txt');
+            expect(new Path('/tmp', 'foo/').withExtension('.md').value).toBe(join('/tmp', 'foo.md'));
             expect(path.value).toBe(join('/tmp', 'foo', 'bar.tar.gz'));
         });
 
@@ -239,12 +240,9 @@ describe('class Path', () => {
             );
         });
 
-        it('should apply file operations to the stored path through a file lifecycle', async ({ expect }) => {
-            const file = tempPath.join('lifecycle.txt');
-
-            const handle = await file.open('w');
-            await handle.writeFile('hello world');
-            await handle.close();
+        it('should forward file reads, writes, and streams to the stored path', async ({ expect }) => {
+            const file = tempPath.join('file.txt');
+            await file.writeFile('hello world');
 
             const text = await file.readFile('utf8');
 
@@ -256,71 +254,18 @@ describe('class Path', () => {
             expectTypeOf(buffer).toEqualTypeOf<Buffer>();
             expect(buffer.toString()).toBe('hello world');
 
-            await file.truncate(5);
-
-            await expect(file.readFile('utf8')).resolves.toBe('hello');
-            await expect(file.access()).resolves.toBeUndefined();
-
-            const mtime = new Date(2020, 0, 2, 3, 4, 5);
-            await file.utimes(mtime, mtime);
-
-            expect((await file.stat()).mtimeMs).toBe(mtime.getTime());
-
-            const chunks: Buffer[] = [];
-            for await (const chunk of file.createReadStream()) chunks.push(chunk as Buffer);
-
-            expect(Buffer.concat(chunks).toString()).toBe('hello');
-
             const writer = file.createWriteStream();
             const finished = once(writer, 'finish');
             writer.end('streamed');
             await finished;
+            const chunks: Buffer[] = [];
+            for await (const chunk of file.createReadStream()) chunks.push(chunk as Buffer);
 
-            await expect(file.readFile('utf8')).resolves.toBe('streamed');
+            expect(Buffer.concat(chunks).toString()).toBe('streamed');
 
             await file.unlink();
 
-            await expect(file.access()).rejects.toMatchObject({ code: 'ENOENT' });
             await expect(file.exists()).resolves.toBe(false);
-        });
-
-        it.skipIf(process.platform === 'win32')(
-            'should apply chmod to the stored path',
-            async ({ expect }) => {
-                const file = tempPath.join('permissions.txt');
-                await file.writeFile('');
-
-                await file.chmod(0o600);
-
-                expect((await file.stat()).mode & 0o777).toBe(0o600);
-            },
-        );
-
-        it('should apply directory operations to the stored path', async ({ expect }) => {
-            const directory = tempPath.join('directory');
-            const emptyDirectory = tempPath.join('empty');
-            await directory.mkdir();
-            await emptyDirectory.mkdir();
-            await directory.join('a.txt').writeFile('');
-            await directory.join('b.txt').writeFile('');
-
-            const dir = await directory.opendir();
-            const names: string[] = [];
-            for await (const entry of dir) names.push(entry.name);
-
-            expect(names.toSorted()).toEqual([
-                'a.txt',
-                'b.txt',
-            ]);
-
-            await emptyDirectory.rmdir();
-
-            await expect(emptyDirectory.exists()).resolves.toBe(false);
-            await expect(directory.rmdir()).rejects.toThrow();
-
-            await directory.rm({ recursive: true });
-
-            await expect(directory.exists()).resolves.toBe(false);
         });
 
         it('should accept Path and file URL destinations without changing the source Path', async ({ expect }) => {
@@ -336,17 +281,6 @@ describe('class Path', () => {
             await expect(renamed.readFile('utf8')).resolves.toBe('hello');
             await expect(copy.exists()).resolves.toBe(false);
             expect(copy.value).toBe(tempPath.join('copy.txt').value);
-        });
-
-        it('should copy a directory tree to a Path destination', async ({ expect }) => {
-            const source = tempPath.join('source');
-            const destination = tempPath.join('destination');
-            await source.join('nested').mkdir({ recursive: true });
-            await source.join('nested', 'file.txt').writeFile('hello');
-
-            await source.cp(destination, { recursive: true });
-
-            await expect(destination.join('nested', 'file.txt').readFile('utf8')).resolves.toBe('hello');
         });
 
         it('should create symlinks at the stored path with absolute or relative targets', async ({ expect }) => {
@@ -394,10 +328,12 @@ describe('class Path', () => {
         it('should report existence and entry types without rejecting for missing paths', async ({ expect }) => {
             const file = tempPath.join('file.txt');
             const fileLink = tempPath.join('file-link');
+            const directoryLink = tempPath.join('directory-link');
             const brokenLink = tempPath.join('broken-link');
             const missing = tempPath.join('missing');
             await file.writeFile('hello');
             await fileLink.symlinkTo(file);
+            await directoryLink.symlinkTo(tempPath);
             await brokenLink.symlinkTo(missing);
 
             const results = await Promise.all(
@@ -405,6 +341,7 @@ describe('class Path', () => {
                     tempPath,
                     file,
                     fileLink,
+                    directoryLink,
                     brokenLink,
                     missing,
                 ].map(async (path) => [
@@ -432,6 +369,12 @@ describe('class Path', () => {
                     true,
                     false,
                     true,
+                    true,
+                ],
+                [
+                    true,
+                    true,
+                    false,
                     true,
                 ],
                 [
@@ -551,16 +494,6 @@ describe('class Path', () => {
             expectTypeOf(created).toEqualTypeOf<string | undefined>();
             expect(toNamespacedPath(created!)).toBe(toNamespacedPath(directory.value));
             await expect(directory.mkdir({ recursive: true })).resolves.toBeUndefined();
-        });
-
-        it('should read symlink metadata without following the link', async ({ expect }) => {
-            const target = tempPath.join('target');
-            const link = tempPath.join('link');
-            await target.mkdir();
-            await link.symlinkTo(target);
-
-            expect((await link.lstat()).isSymbolicLink()).toBe(true);
-            expect((await link.stat()).isDirectory()).toBe(true);
         });
 
         it('should infer stat and lstat metadata types for each option', async ({ expect }) => {

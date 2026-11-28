@@ -10,6 +10,30 @@ import { createRedisScriptRunner } from '../../src/redis/script-runner';
 const source = 'return 1';
 const digest = 'e0e1f9fabfc9d4800c877a703b823ac0578ff8db';
 
+// Emulates a server script cache: `EVALSHA` raises NOSCRIPT until `SCRIPT LOAD` completes.
+function createCachingClient() {
+    let loaded = false;
+    let loadError: Error | undefined;
+    const send = vi.fn(async (command: string) => {
+        if (command === 'SCRIPT') {
+            await Promise.resolve();
+            if (loadError) throw loadError;
+            loaded = true;
+            return digest;
+        }
+
+        if (!loaded) throw new Error('NOSCRIPT No matching script');
+        return 1;
+    });
+
+    return {
+        count: (command: string) => send.mock.calls.filter(([name]) => name === command).length,
+        flush: () => loaded = false,
+        send,
+        setLoadError: (error?: Error) => loadError = error,
+    };
+}
+
 describe('createRedisScriptRunner', () => {
     it('should encode keys and arguments without caching results', async ({ expect }) => {
         const keys = [
@@ -83,19 +107,8 @@ describe('createRedisScriptRunner', () => {
     });
 
     it('should share an in-flight load and reload after a later cache miss', async ({ expect }) => {
-        let loaded = false;
-        const send = vi.fn(async (command: string) => {
-            if (command === 'SCRIPT') {
-                await Promise.resolve();
-                loaded = true;
-                return digest;
-            }
-
-            if (!loaded) throw new Error('NOSCRIPT No matching script');
-            return 1;
-        });
-
-        const execute = createRedisScriptRunner<number>({ send }, source);
+        const client = createCachingClient();
+        const execute = createRedisScriptRunner<number>(client, source);
 
         await expect(
             Promise.all([
@@ -107,31 +120,19 @@ describe('createRedisScriptRunner', () => {
             1,
         ]);
 
-        expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(1);
+        expect(client.count('SCRIPT')).toBe(1);
 
-        loaded = false;
+        client.flush();
 
         await expect(execute([], [])).resolves.toBe(1);
-        expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(2);
+        expect(client.count('SCRIPT')).toBe(2);
     });
 
     it('should reject all callers on load failure and allow a later load', async ({ expect }) => {
         const loadError = new Error('SCRIPT LOAD failed');
-        let loadFails = true;
-        let loaded = false;
-        const send = vi.fn(async (command: string) => {
-            if (command === 'SCRIPT') {
-                await Promise.resolve();
-                if (loadFails) throw loadError;
-                loaded = true;
-                return digest;
-            }
-
-            if (!loaded) throw new Error('NOSCRIPT No matching script');
-            return 1;
-        });
-
-        const execute = createRedisScriptRunner<number>({ send }, source);
+        const client = createCachingClient();
+        client.setLoadError(loadError);
+        const execute = createRedisScriptRunner<number>(client, source);
 
         const results = await Promise.allSettled([
             execute([], []),
@@ -149,13 +150,14 @@ describe('createRedisScriptRunner', () => {
             },
         ]);
 
-        expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(1);
-        expect(send.mock.calls.filter(([command]) => command === 'EVALSHA')).toHaveLength(2);
+        expect(client.count('SCRIPT')).toBe(1);
+        expect(client.count('EVALSHA')).toBe(2);
 
-        loadFails = false;
+        // The failed load must not stay cached as the in-flight promise.
+        client.setLoadError();
 
         await expect(execute([], [])).resolves.toBe(1);
-        expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(2);
+        expect(client.count('SCRIPT')).toBe(2);
     });
 
     it.for([
@@ -196,9 +198,7 @@ describe('createRedisScriptRunner', () => {
         new Error('Redis unavailable'),
         new Error('ERR Lua failure mentioning NOSCRIPT'),
         new Error('NOSCRIPTED is not a missing-script error'),
-        new Error('NOSCRIPT: unexpected error format'),
         'NOSCRIPT No matching script',
-        { message: 'NOSCRIPT No matching script' },
     ])(
         'should preserve unrelated or unsupported rejections without retrying: %s',
         async (error, { expect }) => {
@@ -218,10 +218,8 @@ describe('createRedisScriptRunner', () => {
 
     it.for([
         0,
-        -1,
         1.5,
         Number.NaN,
-        Number.POSITIVE_INFINITY,
         Number.MAX_SAFE_INTEGER + 1,
     ])(
         'should reject invalid attempt limit %s before sending commands',

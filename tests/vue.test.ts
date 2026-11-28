@@ -1,5 +1,4 @@
 import {
-    afterEach,
     beforeEach,
     describe,
     it,
@@ -35,13 +34,8 @@ vi.mock(
 );
 
 beforeEach(() => {
-    vi.clearAllMocks();
     lifecycleCallbacks.activated.length = 0;
     lifecycleCallbacks.beforeRouteLeave.length = 0;
-});
-
-afterEach(() => {
-    vi.restoreAllMocks();
 });
 
 describe('usePreserveScroll', () => {

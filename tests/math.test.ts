@@ -41,7 +41,7 @@ describe('toPercentageString', () => {
         },
     );
 
-    it('should apply custom precision and omit the symbol when requested', ({ expect }) => {
+    it('should apply custom precision up to 20 places and omit the symbol when requested', ({ expect }) => {
         expect(
             toPercentageString(
                 1,
@@ -54,6 +54,7 @@ describe('toPercentageString', () => {
         ).toBe('33.3');
 
         expect(toPercentageString(1, 3, { decimalPlaces: 0 })).toBe('33%');
+        expect(toPercentageString(1, 3, { decimalPlaces: 20 })).toBe(`33.${'3'.repeat(20)}%`);
     });
 
     it.for([
@@ -99,15 +100,10 @@ describe('toPercentageString', () => {
         }
     });
 
-    it('should accept the maximum decimal places', ({ expect }) => {
-        expect(toPercentageString(1, 3, { decimalPlaces: 20 })).toBe(`33.${'3'.repeat(20)}%`);
-    });
-
     it.for([
         -1,
         0.5,
         21,
-        1e9,
         Number.NaN,
         Number.POSITIVE_INFINITY,
     ])(

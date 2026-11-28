@@ -70,12 +70,15 @@ describe('extractFirstValue', () => {
 });
 
 describe('getErrorMessage', () => {
-    it('should return the message of errors and their subclasses', ({ expect }) => {
-        expect(getErrorMessage(new Error('Failed'))).toBe('Failed');
-        expect(getErrorMessage(new TypeError('Bad type'))).toBe('Bad type');
-    });
-
     it.for([
+        {
+            expected: 'Failed',
+            input: new Error('Failed'),
+        },
+        {
+            expected: 'Bad type',
+            input: new TypeError('Bad type'),
+        },
         {
             expected: 'timeout',
             input: 'timeout',
@@ -93,7 +96,7 @@ describe('getErrorMessage', () => {
             input: { message: 'not an error' },
         },
     ])(
-        'should stringify non-error value $input',
+        'should return $expected for $input',
         (
             {
                 expected,

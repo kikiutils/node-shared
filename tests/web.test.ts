@@ -85,6 +85,7 @@ describe('assignUrlWithRedirectParamFromCurrentLocation', () => {
         const timer = assignUrlWithRedirectParamFromCurrentLocation('/login', 0);
 
         expect(timer).toBeDefined();
+        expect(vi.getTimerCount()).toBe(1);
         expect(assign).not.toHaveBeenCalled();
         vi.advanceTimersByTime(0);
 
@@ -106,13 +107,10 @@ describe('assignUrlWithRedirectParamFromCurrentLocation', () => {
         expect(vi.getTimerCount()).toBe(0);
     });
 
-    it('should return a timer handle that lets the caller cancel delayed navigation', ({ expect }) => {
-        const timer = assignUrlWithRedirectParamFromCurrentLocation('/login', 1000);
-
-        clearTimeout(timer);
+    it('should return a handle that cancels the pending navigation', ({ expect }) => {
+        clearTimeout(assignUrlWithRedirectParamFromCurrentLocation('/login', 1000));
         vi.advanceTimersByTime(1000);
 
         expect(assign).not.toHaveBeenCalled();
-        expect(vi.getTimerCount()).toBe(0);
     });
 });

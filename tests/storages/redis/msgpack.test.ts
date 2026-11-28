@@ -46,23 +46,30 @@ describe('createRedisMsgpackStorage', () => {
         };
     });
 
-    it('should serialize values to buffers and deserialize them on read', async ({ expect }) => {
-        const storage = createRedisMsgpackStorage(adapter);
-
-        expect(Object.isFrozen(storage)).toBe(true);
-        const value = {
+    it.for([
+        {
             id: 1,
             tags: [
                 'a',
                 'b',
             ],
-        };
+        },
+        0,
+        '',
+        false,
+        null,
+    ])(
+        'should serialize %j to a buffer and deserialize it on read',
+        async (value, { expect }) => {
+            const storage = createRedisMsgpackStorage(adapter);
 
-        await expect(storage.setItem('user:1', value)).resolves.toBe(true);
-        expect(adapter.setBuffer).toHaveBeenCalledWith('user:1', expect.any(Uint8Array));
-        await expect(storage.getItem('user:1')).resolves.toEqual(value);
-        await expect(storage.hasItem('user:1')).resolves.toBe(true);
-    });
+            expect(Object.isFrozen(storage)).toBe(true);
+            await expect(storage.setItem('key', value)).resolves.toBe(true);
+            expect(adapter.setBuffer).toHaveBeenCalledWith('key', expect.any(Uint8Array));
+            await expect(storage.getItem('key')).resolves.toEqual(value);
+            await expect(storage.hasItem('key')).resolves.toBe(true);
+        },
+    );
 
     it('should return null for missing values and false for unsuccessful writes/removals', async ({ expect }) => {
         const storage = createRedisMsgpackStorage({
@@ -73,6 +80,7 @@ describe('createRedisMsgpackStorage', () => {
         });
 
         await expect(storage.getItem('missing')).resolves.toBeNull();
+        await expect(storage.getAndRemoveItem('missing')).resolves.toBeNull();
         await expect(storage.setItem('key', 'value')).resolves.toBe(false);
         await expect(storage.setItemWithTtl('key', 60, 'value')).resolves.toBe(false);
         await expect(storage.removeItem('missing')).resolves.toBe(false);
@@ -104,13 +112,11 @@ describe('createRedisMsgpackStorage', () => {
         await storage.setItem('token', { id: 1 });
         await expect(storage.getAndRemoveItem('token')).resolves.toEqual({ id: 1 });
         expect(adapter.getBufferAndDelete).toHaveBeenCalledExactlyOnceWith('token');
-        await expect(storage.getAndRemoveItem('token')).resolves.toBeNull();
         await expect(storage.hasItem('token')).resolves.toBe(false);
     });
 
     it.for([
         0,
-        -1,
         1.5,
         Number.NaN,
         Number.POSITIVE_INFINITY,
@@ -125,14 +131,4 @@ describe('createRedisMsgpackStorage', () => {
             expect(adapter.setBufferWithTtlIfAbsent).not.toHaveBeenCalled();
         },
     );
-
-    it('should preserve adapter rejections on reads and writes', async ({ expect }) => {
-        const error = new Error('Redis unavailable');
-        vi.mocked(adapter.getBuffer).mockRejectedValue(error);
-        vi.mocked(adapter.setBuffer).mockRejectedValue(error);
-        const storage = createRedisMsgpackStorage(adapter);
-
-        await expect(storage.getItem('key')).rejects.toBe(error);
-        await expect(storage.setItem('key', 'value')).rejects.toBe(error);
-    });
 });

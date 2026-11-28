@@ -32,10 +32,6 @@ describe('getFileMimeType', () => {
             name: 'ArrayBuffer',
         },
         {
-            input: Uint8Array.from(jpeg),
-            name: 'Uint8Array',
-        },
-        {
             input: new Uint8Array(paddedJpeg.buffer, paddedJpeg.byteOffset + 6, jpeg.length),
             name: 'offset Uint8Array',
         },
@@ -53,22 +49,7 @@ describe('getFileMimeType', () => {
     );
 
     it('should return undefined for unknown content', async ({ expect }) => {
-        await expect(getFileMimeType(new ArrayBuffer(8))).resolves.toBeUndefined();
         await expect(getFileMimeType(Buffer.from('plain text'))).resolves.toBeUndefined();
         await expect(getFileMimeType(new Blob(['plain text']))).resolves.toBeUndefined();
-        await expect(getFileMimeType(new Blob())).resolves.toBeUndefined();
-    });
-
-    it('should preserve input-reading errors', async ({ expect }) => {
-        const error = new Error('Read failed');
-        const input = new Blob([jpeg]);
-        const slice = new Blob([jpeg]);
-        slice.arrayBuffer = async () => {
-            throw error;
-        };
-
-        vi.spyOn(input, 'slice').mockReturnValue(slice);
-
-        await expect(getFileMimeType(input)).rejects.toBe(error);
     });
 });

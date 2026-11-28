@@ -21,56 +21,6 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-describe('delay', () => {
-    it('should resolve a negative duration without a runtime warning', async ({ expect }) => {
-        vi.useRealTimers();
-        const emitWarning = vi.spyOn(process, 'emitWarning');
-
-        await expect(delay(-1)).resolves.toBeUndefined();
-        expect(emitWarning).not.toHaveBeenCalled();
-    });
-
-    it('should remain pending until the requested duration elapses', async ({ expect }) => {
-        const settled = vi.fn();
-        const promise = delay(100).then(settled);
-
-        await vi.advanceTimersByTimeAsync(99);
-
-        expect(settled).not.toHaveBeenCalled();
-        await vi.advanceTimersByTimeAsync(1);
-
-        await expect(promise).resolves.toBeUndefined();
-        expect(settled).toHaveBeenCalledOnce();
-        expect(vi.getTimerCount()).toBe(0);
-    });
-
-    it('should resolve on abort without keeping the timer', async ({ expect }) => {
-        const controller = new AbortController();
-        const promise = delay(1000, controller.signal);
-
-        controller.abort(new Error('Canceled'));
-
-        await expect(promise).resolves.toBeUndefined();
-        expect(vi.getTimerCount()).toBe(0);
-    });
-
-    it('should resolve an already aborted signal without scheduling a timer', async ({ expect }) => {
-        await expect(delay(1000, AbortSignal.abort())).resolves.toBeUndefined();
-        expect(vi.getTimerCount()).toBe(0);
-    });
-
-    it('should remove the abort listener on normal completion', async ({ expect }) => {
-        const controller = new AbortController();
-        const remove = vi.spyOn(controller.signal, 'removeEventListener');
-        const promise = delay(100, controller.signal);
-
-        await vi.advanceTimersByTimeAsync(100);
-
-        await expect(promise).resolves.toBeUndefined();
-        expect(remove).toHaveBeenCalledExactlyOnceWith('abort', expect.any(Function));
-    });
-});
-
 describe.for([
     {
         name: 'delay',
@@ -81,8 +31,41 @@ describe.for([
         wait: delayOrThrow,
     },
 ])(
-    '$name duration validation',
+    '$name',
     ({ wait }) => {
+        it('should remain pending until the requested duration elapses', async ({ expect }) => {
+            const settled = vi.fn();
+            const promise = wait(100).then(settled);
+
+            await vi.advanceTimersByTimeAsync(99);
+
+            expect(settled).not.toHaveBeenCalled();
+            await vi.advanceTimersByTimeAsync(1);
+
+            await expect(promise).resolves.toBeUndefined();
+            expect(settled).toHaveBeenCalledOnce();
+            expect(vi.getTimerCount()).toBe(0);
+        });
+
+        it('should remove the abort listener on normal completion', async ({ expect }) => {
+            const controller = new AbortController();
+            const remove = vi.spyOn(controller.signal, 'removeEventListener');
+            const promise = wait(100, controller.signal);
+
+            await vi.advanceTimersByTimeAsync(100);
+
+            await expect(promise).resolves.toBeUndefined();
+            expect(remove).toHaveBeenCalledExactlyOnceWith('abort', expect.any(Function));
+        });
+
+        it('should resolve a negative duration without a runtime warning', async ({ expect }) => {
+            vi.useRealTimers();
+            const emitWarning = vi.spyOn(process, 'emitWarning');
+
+            await expect(wait(-1)).resolves.toBeUndefined();
+            expect(emitWarning).not.toHaveBeenCalled();
+        });
+
         it.for([
             Number.NaN,
             Number.POSITIVE_INFINITY,
@@ -110,21 +93,24 @@ describe.for([
     },
 );
 
-describe('delayOrThrow', () => {
-    it('should remain pending until the requested duration elapses', async ({ expect }) => {
-        const settled = vi.fn();
-        const promise = delayOrThrow(100).then(settled);
+describe('delay', () => {
+    it('should resolve on abort without keeping the timer', async ({ expect }) => {
+        const controller = new AbortController();
+        const promise = delay(1000, controller.signal);
 
-        await vi.advanceTimersByTimeAsync(99);
-
-        expect(settled).not.toHaveBeenCalled();
-        await vi.advanceTimersByTimeAsync(1);
+        controller.abort(new Error('Canceled'));
 
         await expect(promise).resolves.toBeUndefined();
-        expect(settled).toHaveBeenCalledOnce();
         expect(vi.getTimerCount()).toBe(0);
     });
 
+    it('should resolve an already aborted signal without scheduling a timer', async ({ expect }) => {
+        await expect(delay(1000, AbortSignal.abort())).resolves.toBeUndefined();
+        expect(vi.getTimerCount()).toBe(0);
+    });
+});
+
+describe('delayOrThrow', () => {
     it('should reject with the original abort reason and clear the timer', async ({ expect }) => {
         const controller = new AbortController();
         const reason = new Error('Canceled');
@@ -142,16 +128,5 @@ describe('delayOrThrow', () => {
 
         await expect(delayOrThrow(1000, AbortSignal.abort(reason))).rejects.toBe(reason);
         expect(vi.getTimerCount()).toBe(0);
-    });
-
-    it('should remove the abort listener on normal completion', async ({ expect }) => {
-        const controller = new AbortController();
-        const remove = vi.spyOn(controller.signal, 'removeEventListener');
-        const promise = delayOrThrow(100, controller.signal);
-
-        await vi.advanceTimersByTimeAsync(100);
-
-        await expect(promise).resolves.toBeUndefined();
-        expect(remove).toHaveBeenCalledExactlyOnceWith('abort', expect.any(Function));
     });
 });

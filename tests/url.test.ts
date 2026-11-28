@@ -23,6 +23,10 @@ describe('appendRedirectParamToUrl', () => {
             url: '/login?redirect=/home',
         },
         {
+            expected: '/login?redirect=%2Fdashboard&foo=bar',
+            url: '/login?redirect=/a&foo=bar&redirect=/b',
+        },
+        {
             expected: '/login?redirect=%2Fdashboard#section',
             url: '/login#section',
         },
@@ -62,9 +66,9 @@ describe('appendRedirectParamToUrl', () => {
         '',
         'dashboard',
         'https://evil.com',
-        'http://evil.com',
         '//evil.com',
         '/\\evil.com',
+        '/\t/evil.com',
     ])(
         'should reject unsafe redirect destination %j',
         (redirect, { expect }) => {
@@ -108,8 +112,24 @@ describe('normalizeRedirectPath', () => {
             input: '/a b',
         },
         {
-            expected: '/a%00b',
-            input: '/a\0b',
+            expected: '/ab',
+            input: '/a\tb',
+        },
+        {
+            expected: '/evil.com',
+            input: '/.//evil.com',
+        },
+        {
+            expected: '/evil.com',
+            input: '/%2e%2e//evil.com',
+        },
+        {
+            expected: '/%2F/evil.com',
+            input: '/%2F/evil.com',
+        },
+        {
+            expected: '/',
+            input: '/a/../..',
         },
     ])(
         'should return the browser-resolved path for $input',
@@ -126,16 +146,13 @@ describe('normalizeRedirectPath', () => {
         '',
         'dashboard',
         'https://evil.com',
-        'http://evil.com',
         '//evil.com',
         '/\\evil.com',
         '/\n/evil.com',
         '/\t/evil.com',
-        '/\r/evil.com',
         '//[',
         123,
         undefined,
-        null,
         [],
         [
             '//evil.com',

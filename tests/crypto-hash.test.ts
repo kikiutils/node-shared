@@ -49,9 +49,8 @@ describe.each([
 ])(
     '$name',
     ({ expected, hash }) => {
-        it('should produce the known hexadecimal digest and raw bytes', ({ expect }) => {
+        it('should produce the known hexadecimal digest', ({ expect }) => {
             expect(hash('test')).toBe(expected);
-            expect(hash('test', 'buffer')).toEqual(Buffer.from(expected, 'hex'));
         });
     },
 );
@@ -71,20 +70,60 @@ describe('crypto hash input and output handling', () => {
 
     it('should use the requested output encoding', ({ expect }) => {
         expect(cryptoMd5('test', 'base64')).toBe(Buffer.from(expected, 'hex').toString('base64'));
+        expect(cryptoMd5('test', 'buffer')).toEqual(Buffer.from(expected, 'hex'));
     });
 });
 
 describe('timingSafeEqualStrings', () => {
-    it('should compare strings by their UTF-8 bytes', ({ expect }) => {
-        expect(timingSafeEqualStrings('9f86d081', '9f86d081')).toBe(true);
-        expect(timingSafeEqualStrings('9f86d081', '9f86d082')).toBe(false);
-        expect(timingSafeEqualStrings('世界', '世界')).toBe(true);
-        expect(timingSafeEqualStrings('', '')).toBe(true);
-    });
-
-    it('should return false instead of throwing for inputs of different byte lengths', ({ expect }) => {
-        expect(timingSafeEqualStrings('abc', 'abcd')).toBe(false);
-        // Equal UTF-16 lengths but different UTF-8 byte lengths.
-        expect(timingSafeEqualStrings('é', 'e')).toBe(false);
-    });
+    it.for([
+        {
+            a: '9f86d081',
+            b: '9f86d081',
+            expected: true,
+        },
+        {
+            a: '',
+            b: '',
+            expected: true,
+        },
+        {
+            a: '世界',
+            b: '世界',
+            expected: true,
+        },
+        {
+            a: '9f86d081',
+            b: '9f86d082',
+            expected: false,
+        },
+        {
+            a: 'abc',
+            b: 'abcd',
+            expected: false,
+        },
+        {
+            // Equal UTF-16 lengths but different UTF-8 byte lengths.
+            a: 'é',
+            b: 'e',
+            expected: false,
+        },
+        {
+            // Equal UTF-8 byte lengths but different UTF-16 lengths.
+            a: 'é',
+            b: 'ab',
+            expected: false,
+        },
+    ])(
+        'should compare $a and $b by their UTF-8 bytes without throwing',
+        (
+            {
+                a,
+                b,
+                expected,
+            },
+            { expect },
+        ) => {
+            expect(timingSafeEqualStrings(a, b)).toBe(expected);
+        },
+    );
 });

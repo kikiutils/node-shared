@@ -17,8 +17,9 @@ enum MixedEnum {
 }
 
 enum NumericEnum {
-    Zero,
-    One,
+    Negative = -1,
+    One = 1,
+    Zero = 0,
 }
 
 enum StringEnum {
@@ -26,99 +27,10 @@ enum StringEnum {
     Unknown = 'unknown',
 }
 
-describe('getEnumNumberValues', () => {
+describe('enum value helpers', () => {
     it.for([
         {
-            expected: [
-                0,
-                1,
-            ],
-            input: MixedEnum,
-            name: 'a mixed enum',
-        },
-        {
-            expected: [
-                0,
-                1,
-            ],
-            input: NumericEnum,
-            name: 'a numeric enum',
-        },
-        {
-            expected: [],
-            input: StringEnum,
-            name: 'a string enum',
-        },
-        {
-            expected: [
-                0,
-                1,
-            ],
-            input: {
-                A: 0,
-                B: 'text',
-                C: 1,
-            },
-            name: 'an enum-like object',
-        },
-        {
-            expected: [],
-            input: {},
-            name: 'an empty object',
-        },
-    ])(
-        'should select values from $name without numeric reverse mappings',
-        ({ expected, input }, { expect }) => expect(getEnumNumberValues(input)).toEqual(expected),
-    );
-});
-
-describe('getEnumStringValues', () => {
-    it.for([
-        {
-            expected: [
-                'Same',
-                'unknown',
-            ],
-            input: MixedEnum,
-            name: 'a mixed enum',
-        },
-        {
-            expected: [
-                'Same',
-                'unknown',
-            ],
-            input: StringEnum,
-            name: 'a string enum',
-        },
-        {
-            expected: [],
-            input: NumericEnum,
-            name: 'a numeric enum',
-        },
-        {
-            expected: ['text'],
-            input: {
-                A: 0,
-                B: 'text',
-                C: 1,
-            },
-            name: 'an enum-like object',
-        },
-        {
-            expected: [],
-            input: {},
-            name: 'an empty object',
-        },
-    ])(
-        'should select values from $name without numeric reverse mappings',
-        ({ expected, input }, { expect }) => expect(getEnumStringValues(input)).toEqual(expected),
-    );
-});
-
-describe('getEnumValues', () => {
-    it.for([
-        {
-            expected: [
+            all: [
                 0,
                 'Same',
                 1,
@@ -126,59 +38,77 @@ describe('getEnumValues', () => {
             ],
             input: MixedEnum,
             name: 'a mixed enum',
-        },
-        {
-            expected: [
+            numbers: [
                 0,
                 1,
             ],
-            input: NumericEnum,
-            name: 'a numeric enum',
+            strings: [
+                'Same',
+                'unknown',
+            ],
         },
         {
-            expected: [
+            all: [
+                -1,
+                1,
+                0,
+            ],
+            input: NumericEnum,
+            name: 'a numeric enum',
+            numbers: [
+                -1,
+                1,
+                0,
+            ],
+            strings: [],
+        },
+        {
+            all: [
                 'Same',
                 'unknown',
             ],
             input: StringEnum,
             name: 'a string enum',
+            numbers: [],
+            strings: [
+                'Same',
+                'unknown',
+            ],
         },
         {
-            expected: [
-                0,
-                'text',
-                1,
+            all: [
+                'not-found',
+                200,
             ],
             input: {
-                A: 0,
-                B: 'text',
-                C: 1,
+                404: 'not-found',
+                Ok: 200,
             },
-            name: 'an enum-like object',
+            name: 'an object with a numeric key that is not a reverse mapping',
+            numbers: [200],
+            strings: ['not-found'],
         },
         {
-            expected: [],
+            all: [],
             input: {},
             name: 'an empty object',
+            numbers: [],
+            strings: [],
         },
     ])(
         'should select values from $name without numeric reverse mappings',
-        ({ expected, input }, { expect }) => expect(getEnumValues(input)).toEqual(expected),
+        (
+            {
+                all,
+                input,
+                numbers,
+                strings,
+            },
+            { expect },
+        ) => {
+            expect(getEnumValues(input)).toEqual(all);
+            expect(getEnumNumberValues(input)).toEqual(numbers);
+            expect(getEnumStringValues(input)).toEqual(strings);
+        },
     );
-});
-
-describe('getEnumValues with numeric keys', () => {
-    it('should keep numeric keys that are not numeric enum reverse mappings', ({ expect }) => {
-        const statusText = {
-            404: 'not-found',
-            Ok: 200,
-        };
-
-        expect(getEnumValues(statusText)).toEqual([
-            'not-found',
-            200,
-        ]);
-
-        expect(getEnumStringValues(statusText)).toEqual(['not-found']);
-    });
 });
