@@ -1,8 +1,13 @@
+// Larger values overflow the 32-bit timer delay, which runtimes silently replace with 1 ms.
+const maxDelayMilliseconds = 2 ** 31 - 1;
+
 /**
  * Waits until a duration elapses or cancellation occurs without rejecting on cancellation.
  *
  * @remarks
  * An already aborted signal resolves immediately. Settling clears the timer and removes the abort listener.
+ *
+ * @throws RangeError through promise rejection if `ms` is `NaN` or greater than `2 ** 31 - 1`.
  *
  * @example
  *
@@ -15,9 +20,11 @@
  * ```
  */
 export async function delay(ms: number, signal?: AbortSignal): Promise<void> {
-    await delayOrThrow(ms, signal).catch(() => {
-        // Cancellation is the only rejection, and this variant resolves on it by contract.
-    });
+    try {
+        await delayOrThrow(ms, signal);
+    } catch (error) {
+        if (!signal?.aborted || error !== signal.reason) throw error;
+    }
 }
 
 /**
@@ -26,6 +33,8 @@ export async function delay(ms: number, signal?: AbortSignal): Promise<void> {
  * @remarks
  * Rejects with `signal.reason` when aborted, immediately for an already aborted signal. Settling clears the timer
  * and removes the abort listener.
+ *
+ * @throws RangeError through promise rejection if `ms` is `NaN` or greater than `2 ** 31 - 1`.
  *
  * @example
  *
@@ -42,6 +51,8 @@ export async function delay(ms: number, signal?: AbortSignal): Promise<void> {
  * ```
  */
 export async function delayOrThrow(ms: number, signal?: AbortSignal): Promise<void> {
+    // The negated comparison also rejects `NaN`.
+    if (!(ms <= maxDelayMilliseconds)) throw new RangeError(`Delay must be a number of milliseconds up to ${maxDelayMilliseconds}, got ${ms}.`);
     return await new Promise((resolve, reject) => {
         if (signal?.aborted) {
             reject(signal.reason);

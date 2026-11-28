@@ -63,6 +63,45 @@ describe('delay', () => {
     });
 });
 
+describe.for([
+    {
+        name: 'delay',
+        wait: delay,
+    },
+    {
+        name: 'delayOrThrow',
+        wait: delayOrThrow,
+    },
+])(
+    '$name duration validation',
+    ({ wait }) => {
+        it.for([
+            Number.NaN,
+            Number.POSITIVE_INFINITY,
+            2 ** 31,
+        ])(
+            'should reject %s instead of letting the timer fire after 1 ms',
+            async (ms, { expect }) => {
+                await expect(wait(ms)).rejects.toThrow(RangeError);
+                await expect(wait(ms, AbortSignal.abort())).rejects.toThrow(RangeError);
+                expect(vi.getTimerCount()).toBe(0);
+            },
+        );
+
+        it('should accept the largest timer delay', async ({ expect }) => {
+            const settled = vi.fn();
+            const promise = wait(2 ** 31 - 1).then(settled);
+
+            await vi.advanceTimersByTimeAsync(2 ** 31 - 2);
+
+            expect(settled).not.toHaveBeenCalled();
+            await vi.advanceTimersByTimeAsync(1);
+
+            await expect(promise).resolves.toBeUndefined();
+        });
+    },
+);
+
 describe('delayOrThrow', () => {
     it('should remain pending until the requested duration elapses', async ({ expect }) => {
         const settled = vi.fn();
