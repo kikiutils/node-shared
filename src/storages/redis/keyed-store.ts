@@ -1,9 +1,6 @@
 import type { RedisLikeStorage } from './types';
 
 /**
- * Creates a keyed store factory sharing a caller-owned Redis-like storage facade.
- *
- * @remarks
  * The key resolver is called once per operation with the operation's key arguments. In storage operations its
  * exceptions and storage failures both surface as rejections; `resolveKey` throws them synchronously.
  */

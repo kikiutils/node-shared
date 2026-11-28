@@ -26,24 +26,10 @@ const PercentageDecimal = Decimal.clone({
 });
 
 /**
- * Converts a numerator and denominator into a formatted percentage.
- *
- * @remarks
  * Values are read through their string form. A `NaN` or infinite quotient, such as a zero denominator, formats as
- * zero, and results that round to zero never carry a minus sign. Rounding is half up. Invalid decimal input
- * propagates decimal.js exceptions.
+ * zero, and results that round to zero never carry a minus sign. Rounding is half up.
  *
  * @throws RangeError if `options.decimalPlaces` is not an integer from 0 to 20.
- *
- * @example
- *
- * ```ts
- * import { toPercentageString } from '@kikiutils/shared/math';
- *
- * console.log(toPercentageString(50, 200)); // => '25.00%'
- * console.log(toPercentageString(50, 200, { withSymbol: false })); // => '25.00'
- * console.log(toPercentageString(50, 200, { decimalPlaces: 1 })); // => '25.0%'
- * ```
  */
 export function toPercentageString(
     numerator: CalculableValue,

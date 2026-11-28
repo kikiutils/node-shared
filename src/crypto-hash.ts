@@ -5,23 +5,16 @@ import {
 } from 'node:crypto';
 import type { BinaryLike } from 'node:crypto';
 
-/**
- * Hashes data to a hex digest by default, to another text encoding, or to raw bytes with `'buffer'`.
- */
+/** Output defaults to a hex digest; `'buffer'` returns raw bytes. */
 export interface CryptoHashFunction {
     (data: BinaryLike, outputEncoding?: BufferEncoding): string;
     (data: BinaryLike, outputEncoding: 'buffer'): Buffer<ArrayBuffer>;
     (data: BinaryLike, outputEncoding: 'buffer' | BufferEncoding): Buffer<ArrayBuffer> | string;
 }
 
-// Functions
-
 /**
- * Compares two strings as UTF-8 bytes in constant time, returning `false` for different lengths.
- *
- * @remarks
- * Only the comparison of equal-length inputs is constant time; a length mismatch returns early, so use it for values
- * whose length is not secret, such as digests, MACs, and tokens of a fixed format.
+ * Compares the strings as UTF-8 bytes. Only equal-length inputs compare in constant time; a length mismatch returns
+ * `false` early, so use it for values whose length is not secret, such as digests, MACs, and tokens of a fixed format.
  */
 export function timingSafeEqualStrings(a: string, b: string) {
     const aBytes = Buffer.from(a);

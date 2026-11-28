@@ -31,19 +31,12 @@ return (string.gsub(value, ".", function(char)
 end))`;
 
 /**
- * Creates a `RedisLikeAdapter` backed by a caller-owned Bun `RedisClient`.
- *
- * @remarks
  * `getBufferAndDelete` runs an atomic `GETDEL` Lua script through `EVALSHA`, so the client's user needs the
  * `EVALSHA` and `SCRIPT LOAD` permissions. Create one adapter per client and reuse it so script loads are shared.
  *
  * @example
  *
  * ```ts
- * import { RedisClient } from 'bun';
- * import { createBunRedisAdapter } from '@kikiutils/shared/storages/redis/bun-adapter';
- * import { createRedisMsgpackStorage } from '@kikiutils/shared/storages/redis/msgpack';
- *
  * const storage = createRedisMsgpackStorage(createBunRedisAdapter(new RedisClient()));
  * ```
  */

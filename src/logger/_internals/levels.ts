@@ -1,6 +1,5 @@
 import type { LoggerMethod } from '../types';
 
-// Constants/Variables
 export const loggerMethods = {
     debug: {
         ansiColor: '36',
@@ -53,7 +52,6 @@ export const loggerMethods = {
     },
 } as const;
 
-// Functions
 export function getLoggerStreamName(type: LoggerMethod): 'stderr' | 'stdout' {
     const method = loggerMethods[type].consoleMethod;
     return method === 'warn' || method === 'error' ? 'stderr' : 'stdout';

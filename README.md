@@ -5,8 +5,6 @@
 [![codecov][codecov-src]][codecov-href]
 [![License][license-src]][license-href]
 
-待整理
-
 - [✨ Release Notes](./CHANGELOG.md)
 
 ## Features
@@ -17,7 +15,6 @@
 
 - **Node.js** `>=24.15.0`
 - **ESM** package (`"type": "module"`)
-- Optional peer dependencies are installed only when you use the modules that need them.
 
 ## Installation
 
@@ -32,15 +29,17 @@ You can also use `npm`, `yarn`, or `bun`.
 > [!NOTE]
 > This package is intentionally modular. Imports such as `@kikiutils/shared/datetime` or `@kikiutils/shared/vue` may require their peer dependencies (`date-fns`, `vue`, and so on). Install only the peers used by your chosen modules.
 
-## Development
+## Runtime support
 
-```bash
-pnpm install
-pnpm run lint
-pnpm run typecheck
-pnpm test
-pnpm run build
-```
+- **Node.js and Bun only:** `buffer`, `crypto-hash`, `env`, `logger/node`, `redis/*`, `storages/redis/bun-adapter`, `classes/path`
+- **Browser only:** `clipboard`, `web`
+- **Vue with Vue Router:** `vue`
+- Everything else works in Node.js, Bun, and browsers.
+
+Known Bun differences surface through `Path`, which follows Bun's `node:fs` behavior:
+
+- `fs.promises.access()` resolves `null` instead of `undefined`.
+- `readdir` with `{ encoding: 'buffer', withFileTypes: true }` returns entries without `name` or `isFile()`.
 
 ## License
 

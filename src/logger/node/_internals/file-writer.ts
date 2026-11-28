@@ -11,22 +11,15 @@ import type {
 } from '../types';
 
 interface LoggerFileWriter {
-    /**
-     * Called once, by the memoized `NodeLogger.close()`.
-     */
+    /** Called once, by the memoized `NodeLogger.close()`. */
     close: () => Promise<void>;
     getStats: () => Readonly<NodeLoggerStats>;
     write: (text: string) => Promise<void>;
 }
 
-// Constants/Variables
 const defaultMaxPendingBytes = 8 * 1024 * 1024;
 
-// Functions
-
-/**
- * A bounded admission layer over the stream's own ordered write buffer; not a second FIFO.
- */
+/** A bounded admission layer over the stream's own ordered write buffer; not a second FIFO. */
 export async function createFileWriter(
     options: LoggerFileOptions,
     report: (event: LoggerDiagnostic) => void,
@@ -224,9 +217,7 @@ async function importRotatingFileStream() {
     }
 }
 
-/**
- * Validate before mkdir, stream creation, or other filesystem side effects.
- */
+/** Validate before mkdir, stream creation, or other filesystem side effects. */
 function validateFileOptions(options: LoggerFileOptions) {
     if (
         !options

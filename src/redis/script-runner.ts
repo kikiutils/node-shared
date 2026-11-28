@@ -1,9 +1,6 @@
 import { hash } from 'node:crypto';
 
 /**
- * An asynchronous Lua script runner with caller-declared results.
- *
- * @remarks
  * Numeric arguments are converted to strings before execution.
  *
  * @typeParam T - The expected Lua result type, without runtime validation.
@@ -16,9 +13,6 @@ export type RedisScriptRunner<T = unknown> = (keys: readonly string[], args: Rea
 >;
 
 /**
- * A caller-owned Redis client exposing raw command execution.
- *
- * @remarks
  * The client manages connections and command routing. `SCRIPT LOAD` and `EVALSHA` must target the same server
  * for script-cache recovery to succeed. Missing-script rejections must be `Error` instances whose messages
  * begin with the Redis error code `NOSCRIPT`, followed by whitespace or the end of the message.
@@ -28,9 +22,6 @@ export interface RedisLikeScriptClient {
 }
 
 /**
- * Creates a Lua script runner that reloads missing cached scripts before retrying execution.
- *
- * @remarks
  * Calls use `EVALSHA` with the SHA-1 digest of the source. A `NOSCRIPT` rejection loads the script with
  * `SCRIPT LOAD` before another execution attempt, provided the attempt limit has not been reached.
  * Concurrent cache misses on the same runner share an in-flight load; reuse the runner to share that load.

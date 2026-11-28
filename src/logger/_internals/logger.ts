@@ -15,14 +15,11 @@ import { loggerMethods } from './levels';
 import type { LoggerRecord } from './types';
 
 interface LoggerHooks {
-    /**
-     * A non-throwing reporter created by createDiagnosticReporter.
-     */
+    /** A non-throwing reporter created by createDiagnosticReporter. */
     report: (event: LoggerDiagnostic) => void;
     write: (record: LoggerRecord) => Promise<void> | void;
 }
 
-// Constants/Variables
 const booleanPresentationKeys = [
     'console',
     'icons',
@@ -34,11 +31,7 @@ const stringPresentationKeys = [
     'suffix',
 ] as const;
 
-// Functions
-
-/**
- * Contains sync throws and async rejections from diagnostic sinks; the reporter prevents synchronous re-entry.
- */
+/** Contains sync throws and async rejections from diagnostic sinks; the reporter prevents synchronous re-entry. */
 function callContained<T>(callback: ((value: T) => unknown) | undefined, value: T) {
     try {
         const result: unknown = callback?.(value);
@@ -53,9 +46,7 @@ function callContained<T>(callback: ((value: T) => unknown) | undefined, value: 
     }
 }
 
-/**
- * A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters.
- */
+/** A non-recursive, rate-limited diagnostic boundary shared by server and browser adapters. */
 export function createDiagnosticReporter(
     onError?: (event: Readonly<LoggerDiagnostic>) => void,
     fallback?: (message: string) => unknown,

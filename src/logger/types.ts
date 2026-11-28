@@ -1,18 +1,14 @@
 import type { SafePromise } from '../types';
 
-/**
- * Minimum severity to emit; `success` uses the same threshold as `info`.
- */
+/** Minimum severity to emit; `success` uses the same threshold as `info`. */
 export type LoggerLevel = 'debug' | 'error' | 'fatal' | 'info' | 'silent' | 'trace' | 'warn';
 
 export type LoggerMethod = 'success' | Exclude<LoggerLevel, 'silent'>;
 
 /**
- * A logger whose logging methods never throw or reject for recoverable failures.
- *
- * Awaiting a method waits for processing, not guaranteed successful delivery or fsync.
- * Configuration errors may throw from the factory, configure(), setLevel(), or isLevelEnabled().
- * Factories freeze the API object; settings remain adjustable through its methods.
+ * Logging methods never throw or reject for recoverable failures, and awaiting one waits for processing, not
+ * guaranteed delivery or fsync. Configuration errors can throw from the factory, `configure()`, `setLevel()`, or
+ * `isLevelEnabled()`. Factories freeze the API object; settings remain adjustable through its methods.
  */
 export interface Logger {
     configure: (options: Pick<LoggerOptions, 'console' | 'icons' | 'prefix' | 'suffix' | 'timestamp'>) => void;
@@ -21,49 +17,35 @@ export interface Logger {
     fatal: (...args: unknown[]) => SafePromise<void>;
     info: (...args: unknown[]) => SafePromise<void>;
 
-    /**
-     * Accepts success as an informational method; it is not a configurable threshold.
-     */
+    /** Accepts `success` as an informational method, although it is not a configurable threshold. */
     isLevelEnabled: (level: LoggerLevel | LoggerMethod) => boolean;
 
-    /**
-     * Sets a severity threshold (not success); env restores environment-driven filtering.
-     */
+    /** `success` is not a threshold; `env` restores environment-driven filtering. */
     setLevel: (level: 'env' | LoggerLevel) => void;
     success: (...args: unknown[]) => SafePromise<void>;
     trace: (...args: unknown[]) => SafePromise<void>;
     warn: (...args: unknown[]) => SafePromise<void>;
 }
 
-/**
- * A shallow-frozen failure notification; nested error values retain their original ownership.
- */
+/** A shallow-frozen failure notification; nested error values retain their original ownership. */
 export interface LoggerDiagnostic {
     error?: unknown;
     message: string;
     overflowCount?: number;
 
-    /**
-     * Same-type notifications suppressed since the previous emitted diagnostic.
-     */
+    /** Same-type notifications suppressed since the previous emitted diagnostic. */
     suppressedCount?: number;
     type: 'closed' | 'console' | 'file' | 'format' | 'invalid-level' | 'overflow' | 'rotation';
 }
 
 export interface LoggerOptions {
-    /**
-     * Controls record output only, not diagnostics. Defaults to `true`.
-     */
+    /** Controls record output only, not diagnostics. Defaults to `true`. */
     console?: boolean;
 
-    /**
-     * Defaults to `true`.
-     */
+    /** Defaults to `true`. */
     icons?: boolean;
 
-    /**
-     * Overrides LOG_LEVEL; `env` restores the environment-driven threshold.
-     */
+    /** Overrides LOG_LEVEL; `env` restores the environment-driven threshold. */
     level?: 'env' | LoggerLevel;
 
     /**
@@ -74,8 +56,6 @@ export interface LoggerOptions {
     prefix?: string;
     suffix?: string;
 
-    /**
-     * Enables the fixed local-time millisecond prefix. Defaults to `true`.
-     */
+    /** Enables the fixed local-time millisecond prefix. Defaults to `true`. */
     timestamp?: boolean;
 }

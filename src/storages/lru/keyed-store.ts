@@ -1,30 +1,15 @@
 import type { LRUCache } from 'lru-cache';
 
 /**
- * Creates a keyed cache factory sharing a caller-owned LRU cache.
- *
- * @remarks
  * The key resolver is called synchronously once per operation, and its exceptions propagate.
- * Reads return the cached value without copying it, or `null` when missing.
+ * Reads return the cached value without copying it.
  * `getItemTtlMilliseconds` returns `Infinity` for no expiry, `0` for a missing key, and a negative value
  * for an expired item the cache has not purged yet.
- * Writes return whether the value was stored. The cache rejects values larger than its `maxEntrySize`, removing any
- * previous value under the key, and writing `undefined` deletes the key. A `ttlMilliseconds` of `0` disables expiry.
+ * The cache rejects values larger than its `maxEntrySize`, removing any previous value under the key, and writing
+ * `undefined` deletes the key. A `ttlMilliseconds` of `0` disables expiry.
  *
  * @throws RangeError from `setItemWithTtl` if `ttlMilliseconds` is negative or `NaN`, which the cache would store as
  * already expired or never expiring.
- *
- * @example
- *
- * ```ts
- * import { createLruKeyedStore } from '@kikiutils/shared/storages/lru/keyed-store';
- * import { LRUCache } from 'lru-cache';
- *
- * const cache = new LRUCache<string, { name: string }>({ max: 100 });
- * const keyedStore = createLruKeyedStore<{ name: string }>(cache)((userId: string) => `user:${userId}`);
- * keyedStore.setItem({ name: 'Alice' }, 'user-123');
- * console.log(keyedStore.getItem('user-123')); // => { name: 'Alice' }
- * ```
  */
 export function createLruKeyedStore<D = unknown>(lruInstance: LRUCache<any, any, any>) {
     return <P extends any[]>(keyFn: (...args: P) => string) => Object.freeze({

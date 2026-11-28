@@ -1,37 +1,22 @@
 import * as dateFns from 'date-fns';
 
 /**
- * A mutable calendar date with chainable date-fns operations.
+ * A mutable `Date` with chainable date-fns operations.
  *
  * @remarks
- * Inherits the native constructor, including zero-based month arguments and millisecond timestamps.
- * Mutating arithmetic and boundary methods update this instance and return `this`;
- * their `to`-prefixed counterparts return a new `EnhancedDate` instead.
- * Invalid dates, parsing, rounding, and week defaults follow date-fns semantics.
- * Operations use the system time zone unless configured through date-fns options.
- * Day and week arithmetic uses calendar days, preserving local wall-clock time across daylight saving changes.
- * Hour, minute, second, and millisecond arithmetic uses elapsed durations. Month and year arithmetic clamps
- * to the last valid day of the destination month; native setters keep their overflow behavior.
- * Operations can preserve or produce `Invalid Date`.
- * `differenceIn*` methods return this date minus the other date.
+ * Inherits the native constructor, including zero-based month arguments and millisecond timestamps. Mutating
+ * arithmetic and boundary methods update this instance and return `this`; their `to`-prefixed counterparts return a
+ * new `EnhancedDate`. Invalid dates, parsing, rounding, week defaults, and time zones follow date-fns semantics, so
+ * operations use the system time zone unless configured through options and can preserve or produce `Invalid Date`.
+ * Day and week arithmetic uses calendar days, preserving local wall-clock time across daylight saving changes; hour
+ * through millisecond arithmetic uses elapsed durations. Month and year arithmetic clamps to the last valid day of
+ * the destination month, while native setters keep their overflow behavior. `differenceIn*` methods return this
+ * date minus the other date.
  *
- * When used in Vue state, prefer replacing the value with a `to`-prefixed result:
- * mutating a Date's internal timestamp does not trigger reactive updates.
- *
- * @example
- *
- * ```ts
- * import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
- *
- * const date = new EnhancedDate('2026-01-31T12:00:00Z');
- * const nextMonth = date.toAddMonths(1); // Original date is unchanged.
- * date.addDays(1).startOfDay(); // Mutates the original date.
- * nextMonth.isAfter(date);
- * ```
+ * In Vue state, replace the value with a `to`-prefixed result: mutating a Date's internal timestamp does not trigger
+ * reactive updates.
  */
 export class EnhancedDate extends Date {
-    // Public static methods
-
     static endOfToday(options?: dateFns.EndOfTodayOptions) {
         return new EnhancedDate(dateFns.endOfToday(options));
     }
@@ -44,9 +29,7 @@ export class EnhancedDate extends Date {
         return new EnhancedDate(dateFns.endOfYesterday(options));
     }
 
-    /**
-     * Parses a date with a date-fns pattern; `referenceDate` supplies the fields the pattern does not contain.
-     */
+    /** Parses a date with a date-fns pattern; `referenceDate` supplies the fields the pattern does not contain. */
     static fromFormat(
         value: string,
         pattern: string,
@@ -56,30 +39,21 @@ export class EnhancedDate extends Date {
         return new EnhancedDate(dateFns.parse(value, pattern, referenceDate, options));
     }
 
-    /**
-     * Parses an ISO 8601 string, including partial dates such as `2026-01`.
-     */
+    /** Parses an ISO 8601 string, including partial dates such as `2026-01`. */
     static fromISO(value: string, options?: dateFns.ParseISOOptions) {
         return new EnhancedDate(dateFns.parseISO(value, options));
     }
 
-    /**
-     * Creates a date from Unix seconds; native constructor numbers remain milliseconds.
-     */
     static fromUnixSeconds(seconds: number) {
         return new EnhancedDate(seconds * 1000);
     }
 
-    /**
-     * Returns the latest date, or `Invalid Date` if the array is empty or contains an invalid date.
-     */
+    /** Returns the latest date, or `Invalid Date` if the array is empty or contains an invalid date. */
     static max(dates: Array<Date | number>, options?: dateFns.MaxOptions) {
         return new EnhancedDate(dateFns.max(dates, options));
     }
 
-    /**
-     * Returns the earliest date, or `Invalid Date` if the array is empty or contains an invalid date.
-     */
+    /** Returns the earliest date, or `Invalid Date` if the array is empty or contains an invalid date. */
     static min(dates: Array<Date | number>, options?: dateFns.MinOptions) {
         return new EnhancedDate(dateFns.min(dates, options));
     }
@@ -96,13 +70,10 @@ export class EnhancedDate extends Date {
         return new EnhancedDate(dateFns.startOfYesterday(options));
     }
 
-    // Private instance methods
     #set(date: Date) {
         this.setTime(date.getTime());
         return this;
     }
-
-    // Public instance methods
 
     addDays(amount: number, options?: dateFns.AddDaysOptions) {
         return this.#set(dateFns.addDays(this, amount, options));
@@ -148,16 +119,12 @@ export class EnhancedDate extends Date {
         return dateFns.differenceInCalendarWeeks(this, other, options);
     }
 
-    /**
-     * Counts full minutes, truncating by default.
-     */
+    /** Counts full minutes, truncating by default. */
     differenceInMinutes(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInMinutesOptions) {
         return dateFns.differenceInMinutes(this, other, options);
     }
 
-    /**
-     * Counts full seconds, truncating by default.
-     */
+    /** Counts full seconds, truncating by default. */
     differenceInSeconds(other: dateFns.DateArg<Date>, options?: dateFns.DifferenceInSecondsOptions) {
         return dateFns.differenceInSeconds(this, other, options);
     }
@@ -186,9 +153,7 @@ export class EnhancedDate extends Date {
         return dateFns.formatDistanceToNow(this, options);
     }
 
-    /**
-     * Returns Unix seconds; `getTime()` returns milliseconds.
-     */
+    /** Unix seconds, unlike the millisecond `getTime()`. */
     getUnixTime() {
         return dateFns.getUnixTime(this);
     }
@@ -309,9 +274,7 @@ export class EnhancedDate extends Date {
         return this.clone().addYears(amount, options);
     }
 
-    /**
-     * Returns a plain native `Date` with the same timestamp.
-     */
+    /** Returns a plain native `Date` with the same timestamp. */
     toDate() {
         return new Date(this.getTime());
     }

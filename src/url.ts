@@ -1,14 +1,7 @@
-// Constants
 const redirectPathBaseOrigin = 'http://redirect-path.invalid';
 
-// Functions
-
 /**
- * Appends or updates the `redirect` query parameter on a given URL.
- *
- * @remarks
- * Typically used to preserve the user's current path for post-login navigation. Existing query parameters and the
- * fragment are kept.
+ * Replaces any existing `redirect` query parameter, keeping other query parameters and the fragment.
  *
  * @throws TypeError if `redirectPath` is not a safe same-origin application path.
  */
@@ -26,9 +19,6 @@ export function appendRedirectParamToUrl(url: string, redirectPath: string) {
 }
 
 /**
- * Returns whether a value is a safe same-origin redirect path.
- *
- * @remarks
  * Safe redirect paths are absolute application paths such as `/dashboard`.
  * Protocol-relative URLs (`//example.com`), absolute URLs, backslash paths,
  * paths containing control characters, and non-string values are rejected.
@@ -49,9 +39,6 @@ export function isSafeRedirectPath(value: unknown): value is string {
 }
 
 /**
- * Normalizes a redirect value into a safe same-origin application path.
- *
- * @remarks
  * If an array is provided, the first value is checked. Unsafe values fall back
  * to `fallback`, which is returned unchanged and not validated.
  */

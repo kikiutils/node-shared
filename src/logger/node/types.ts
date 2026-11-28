@@ -4,45 +4,31 @@ import type {
     LoggerOptions,
 } from '../types';
 
-/**
- * Specify interval and/or maxFileSize. Size limits use positive integers with B, K, M, or G (binary units).
- */
+/** Size limits are positive integers with a B, K, M, or G suffix in binary units. */
 export type LoggerRotationOptions = {
-    /**
-     * Gzip historical files. Defaults to true.
-     */
+    /** Gzips historical files. Defaults to `true`. */
     compress?: boolean;
 
-    /**
-     * Number of historical files, excluding the active file. Defaults to 30.
-     */
+    /** Number of historical files, excluding the active file. Defaults to `30`. */
     maxFiles?: number;
 
-    /**
-     * Maximum combined size of historical files.
-     */
+    /** Maximum combined size of historical files. */
     maxTotalSize?: string;
 } & (
   | {
-      /**
-       * Opt-in time rotation aligned to the system's local calendar boundary.
-       */
+      /** Opt-in time rotation aligned to the system's local calendar boundary. */
       interval: 'daily' | 'hourly';
       maxFileSize?: string;
   }
   | {
-      /**
-       * Opt-in time rotation aligned to the system's local calendar boundary.
-       */
+      /** Opt-in time rotation aligned to the system's local calendar boundary. */
       interval?: 'daily' | 'hourly';
       maxFileSize: string;
   }
 );
 
 export interface LoggerFileOptions {
-    /**
-     * Maximum unfinished payload bytes, including data already submitted to the stream. Defaults to 8 MiB.
-     */
+    /** Maximum unfinished payload bytes, including data already submitted to the stream. Defaults to 8 MiB. */
     maxPendingBytes?: number;
 
     /**
@@ -51,29 +37,22 @@ export interface LoggerFileOptions {
      */
     path: PathLike;
 
-    /**
-     * Omitted or false disables rotation. An object must specify interval or maxFileSize.
-     */
     rotate?: false | LoggerRotationOptions;
 }
 
 export interface NodeLogger extends Logger {
     /**
-     * Stop accepting records, finish accepted console and file writes, and release the file stream. Not fsync.
+     * Stops accepting records, finishes accepted console and file writes, and releases the file stream. Not fsync.
      * A stalled stdout or stderr reader delays it; the shared console stream listeners stay attached.
      */
     close: () => Promise<void>;
 
-    /**
-     * A fresh, frozen file-output snapshot.
-     */
+    /** A fresh, frozen file-output snapshot. */
     getStats: () => Readonly<NodeLoggerStats>;
 }
 
 export interface NodeLoggerOptions extends LoggerOptions {
-    /**
-     * Disabled by default. Each logger owns at most one fixed file destination.
-     */
+    /** Disabled by default. Each logger owns at most one fixed file destination. */
     file?: false | LoggerFileOptions;
 }
 
@@ -84,9 +63,7 @@ export interface NodeLoggerStats {
      */
     errorEventCount: number;
 
-    /**
-     * Accepted or later records that were not written because file output failed.
-     */
+    /** Accepted or later records that were not written because file output failed. */
     failedCount: number;
     overflowCount: number;
 

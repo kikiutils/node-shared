@@ -17,9 +17,7 @@ type DropFirstParameters<T extends (...args: any) => any> = Parameters<T> extend
  */
 export type PathLike = fs.PathLike | Path;
 
-/**
- * Options accepted by `Path.watch`, matching what Node.js validates at runtime.
- */
+/** Narrowed to the options Node.js accepts at runtime. */
 export type PathWatchOptions = Omit<fsp.WatchOptions, 'encoding' | 'overflow'> & {
     encoding?: BufferEncoding;
     overflow?: 'error' | 'ignore';
@@ -29,29 +27,21 @@ export type PathWatchOptions = Omit<fsp.WatchOptions, 'encoding' | 'overflow'> &
  * An immutable file system path with Node.js path and file operations.
  *
  * @remarks
- * Path-composition methods return new instances and leave this instance unchanged.
- * File operations act on the stored path and forward Node.js defaults and promise rejections.
- * They do not update the stored path, including after a successful rename.
+ * File operations act on the stored path and forward Node.js defaults and promise rejections; they never update the
+ * stored path, including after a successful rename.
  */
 export class Path {
-    // Private instance properties
     readonly #value: string;
 
-    // Constructor
-
-    /**
-     * Creates a normalized path value by joining the provided path segments.
-     */
+    /** Joins and normalizes the segments. */
     constructor(...paths: PathLike[]) {
         this.#value = nodePath.join(...paths.map(toPathString));
     }
 
-    // Private instance methods
     #hasSeparator(value: string) {
         return value.includes('/') || value.includes(nodePath.sep);
     }
 
-    // Public instance accessors
     get parent() {
         return this.dirname();
     }
@@ -67,23 +57,18 @@ export class Path {
         return this.#value;
     }
 
-    // Public static methods
     static format(pathObject: nodePath.FormatInputPathObject) {
         return new Path(nodePath.format(pathObject));
     }
 
     /**
-     * Resolves joined path segments to an absolute path.
-     *
-     * @remarks
-     * Inputs are joined before resolution; unlike Node.js `path.resolve`,
-     * later absolute segments do not reset the path.
+     * Joins the segments before resolving, so unlike Node.js `path.resolve`, later absolute segments do not reset the
+     * path.
      */
     static resolve(...paths: PathLike[]) {
         return new Path(...paths).resolve();
     }
 
-    // Public instance methods
     [Symbol.for('nodejs.util.inspect.custom')]() {
         return this.#value;
     }
@@ -144,7 +129,7 @@ export class Path {
     /**
      * Replaces the last extension of the final path component.
      *
-     * @param extension - The new extension including its leading dot, or an empty string to remove the extension.
+     * @param extension - Includes its leading dot; an empty string removes the extension.
      *
      * @throws TypeError if a nonempty extension is `.`, lacks a leading dot, or contains a path separator;
      * if the resulting name is `.` or `..`; or if this path has no final component.
@@ -158,8 +143,6 @@ export class Path {
     }
 
     /**
-     * Replaces the final path component.
-     *
      * @throws TypeError if the name is empty, `.`, `..`, or contains a path separator,
      * or if this path has no final component.
      */
@@ -216,20 +199,14 @@ export class Path {
     }
 
     /**
-     * Checks whether the stored path exists, following symbolic links.
-     *
-     * @remarks
-     * Resolves to `false` only when the path is missing (`ENOENT` or `ENOTDIR`), including a symbolic link whose
-     * target is missing; other errors reject.
+     * Follows symbolic links and resolves to `false` only when the path is missing (`ENOENT` or `ENOTDIR`), including
+     * a symbolic link whose target is missing; other errors reject.
      */
     async exists() {
         return await this.stat({ throwIfNoEntry: false }) !== undefined;
     }
 
-    /**
-     * @remarks
-     * The stored path is bound as `cwd`; relative patterns yield paths relative to it.
-     */
+    /** The stored path is bound as `cwd`; relative patterns yield paths relative to it. */
     glob(
         pattern: readonly string[] | string,
         options?: Omit<fs.GlobOptionsWithoutFileTypes, 'cwd'>,
@@ -252,38 +229,22 @@ export class Path {
         );
     }
 
-    /**
-     * Checks whether the stored path is a directory, following symbolic links.
-     *
-     * @remarks
-     * Resolves to `false` when the path is missing; other errors reject.
-     */
+    /** Follows symbolic links and resolves to `false` when the path is missing; other errors reject. */
     async isDirectory() {
         return (await this.stat({ throwIfNoEntry: false }))?.isDirectory() ?? false;
     }
 
-    /**
-     * Checks whether the stored path is a regular file, following symbolic links.
-     *
-     * @remarks
-     * Resolves to `false` when the path is missing; other errors reject.
-     */
+    /** Follows symbolic links and resolves to `false` when the path is missing; other errors reject. */
     async isFile() {
         return (await this.stat({ throwIfNoEntry: false }))?.isFile() ?? false;
     }
 
-    /**
-     * Checks whether the stored path itself is a symbolic link.
-     *
-     * @remarks
-     * Resolves to `false` when the path is missing; other errors reject.
-     */
+    /** Resolves to `false` when the path is missing; other errors reject. */
     async isSymbolicLink() {
         return (await this.lstat({ throwIfNoEntry: false }))?.isSymbolicLink() ?? false;
     }
 
     /**
-     * @remarks
      * Does not follow a final symbolic link. If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`)
      * resolves to `undefined` instead of rejecting.
      */
@@ -443,7 +404,6 @@ export class Path {
     }
 
     /**
-     * @remarks
      * If `throwIfNoEntry` is `false`, a missing path (`ENOENT` or `ENOTDIR`) resolves to `undefined` instead of
      * rejecting.
      */
@@ -478,10 +438,8 @@ export class Path {
     }
 
     /**
-     * Creates the stored path as a symbolic link to the target.
-     *
-     * @remarks
-     * A relative target is resolved from the link's directory, and `type` only applies on Windows.
+     * Creates the stored path as a symbolic link to `target`; a relative target resolves from the link's directory, and
+     * `type` only applies on Windows.
      */
     async symlinkTo(target: PathLike, type?: 'dir' | 'file' | 'junction' | null) {
         return await fsp.symlink(toPathString(target), this.#value, type);

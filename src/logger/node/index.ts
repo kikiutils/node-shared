@@ -16,8 +16,6 @@ import type {
     NodeLoggerOptions,
 } from './types';
 
-// Constants/Variables
-
 /**
  * Unsettled console writes, stored on each output stream so every loaded copy of this module shares them. Each stream
  * gets one permanent `error`/`close` listener on first use: a failed stream can emit `error` after its write
@@ -25,17 +23,13 @@ import type {
  */
 const pendingConsoleWritesKey = Symbol.for('@kikiutils/shared/logger/node/pending-console-writes');
 
-// Functions
-
 /**
- * Creates a Node.js/Bun logger with optional bounded, append-only file output and rotation.
+ * Optional file output is bounded and append-only, with optional rotation; overload drops the newest file record and
+ * reports it. Factory validation and open failures reject. No process signal handlers are installed, so call `close`
+ * explicitly.
  *
- * Log calls never throw or reject for recoverable failures. Awaiting them waits for processing, not proof of
- * successful persistence: overload drops the newest file record and failures are reported safely. Factory
- * validation/open failures reject. Call close explicitly; no process signal handlers are installed.
- *
- * Console output installs one permanent `error`/`close` listener per stdio stream, so stdio stream errors such as
- * EPIPE no longer become uncaught exceptions once a logger has written to that stream.
+ * Console output installs one permanent `error`/`close` listener per stdio stream on first write, so stdio errors such
+ * as EPIPE do not become uncaught exceptions.
  */
 export async function createNodeLogger(options: NodeLoggerOptions = {}): Promise<Readonly<NodeLogger>> {
     const report = createDiagnosticReporter(options.onError, (message) => writeSync(2, message));

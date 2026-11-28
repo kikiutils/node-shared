@@ -25,47 +25,30 @@ const maxDecimalPlaces = 50;
 const decimalStringPattern = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/;
 
 /**
- * Values accepted by `PrecisionNumber` constructors and arithmetic methods.
- *
- * @remarks
  * Strings must use plain decimal notation, optionally signed and surrounded by whitespace; numbers and `Decimal`
- * instances must be finite. Bigints are always accepted.
+ * instances must be finite.
  */
 export type PrecisionNumberValue = Decimal.Value | PrecisionNumber;
 
 /**
- * A fixed-decimal number with mutable and immutable arithmetic operations.
+ * Arithmetic methods update this instance and return `this`; their `to`-prefixed counterparts return a new instance
+ * with the same configuration.
  *
  * @remarks
- * Every operation rounds its result to the configured decimal places. Arithmetic methods update this instance and
- * return `this`; their `to`-prefixed counterparts return a new instance with the same configuration instead.
- * Addition, subtraction, multiplication, and remainders are exact before that rounding; division and powers keep
- * 100 significant digits. Results ignore the global `Decimal` configuration, and negative zero is stored as zero.
- * Invalid inputs throw `TypeError`, and operations whose result is not finite, such as division by zero, throw
- * `RangeError` without changing the value. Values and results are limited to 1000 integer digits. `decimalPlaces`
- * must be an integer from 0 to 50 and `rounding` a decimal.js rounding mode from 0 to 8, or `RangeError` is thrown.
+ * Every operation rounds its result to `decimalPlaces`. Addition, subtraction, multiplication, and remainders are
+ * exact before that rounding; division and powers keep 100 significant digits. The global `Decimal` configuration
+ * is ignored, and negative zero is stored as zero.
  *
- * @example
- *
- * ```ts
- * import { PrecisionNumber } from '@kikiutils/shared/classes/precision-number';
- *
- * const value = new PrecisionNumber('1.239', 2).plus('2.111');
- * value.toString(); // => '3.35'
- * value.toMinus('1').toString(); // => '2.35' (original value remains '3.35')
- * ```
+ * Invalid values throw `TypeError`. Values and results are limited to 1000 integer digits, `decimalPlaces` to
+ * integers from 0 to 50, and `rounding` to decimal.js modes 0 to 8; violations and non-finite results, such as
+ * division by zero, throw `RangeError` without changing the value.
  */
 export class PrecisionNumber {
-    // Private instance properties
     readonly #decimalPlaces: number;
     readonly #rounding: Decimal.Rounding;
     #decimal: Decimal;
 
-    // Constructor
-
     /**
-     * Creates a fixed-decimal number.
-     *
      * @throws TypeError if the value is not a finite plain decimal.
      * @throws RangeError if the value exceeds 1000 integer digits, or `decimalPlaces` or `rounding` is out of range.
      */
@@ -80,7 +63,6 @@ export class PrecisionNumber {
         this.#decimal = this.#round(PrecisionNumber.#toDecimal(value));
     }
 
-    // Private static methods
     static #parse(value: unknown): Decimal | undefined {
         if (value instanceof PrecisionNumber) return value.#decimal;
         if (typeof value === 'string') {
@@ -106,7 +88,6 @@ export class PrecisionNumber {
         return decimal;
     }
 
-    // Private instance methods
     #round(decimal: Decimal) {
         const rounded = new ExactDecimal(decimal.toDecimalPlaces(this.#decimalPlaces, this.#rounding));
         if (!rounded.isFinite()) throw new RangeError('Result is not finite');
@@ -119,7 +100,6 @@ export class PrecisionNumber {
         return this;
     }
 
-    // Public instance accessors
     get decimalPlaces() {
         return this.#decimalPlaces;
     }
@@ -128,14 +108,10 @@ export class PrecisionNumber {
         return this.#rounding;
     }
 
-    /**
-     * Fixed-decimal string using the instance precision and rounding mode.
-     */
+    /** Fixed-decimal string using the instance precision and rounding mode. */
     get value() {
         return this.#decimal.toFixed(this.#decimalPlaces, this.#rounding);
     }
-
-    // Public static methods
 
     /**
      * Formats a value as an instance with the given configuration would.
@@ -152,15 +128,10 @@ export class PrecisionNumber {
     }
 
     /**
-     * Creates an instance, or returns `undefined` when the value is not a finite plain decimal or exceeds the
-     * supported magnitude.
-     *
-     * @remarks
-     * Use this to validate untrusted input. Invalid `decimalPlaces` or `rounding` arguments throw regardless of the
-     * value.
+     * Returns `undefined` instead of throwing when the value is not a finite plain decimal or exceeds the supported
+     * magnitude; invalid `decimalPlaces` or `rounding` arguments still throw.
      *
      * @example
-     *
      * ```ts
      * const isPositiveAmount = (input: string) => PrecisionNumber.tryFrom(input)?.gt(0) ?? false;
      * ```
@@ -180,15 +151,11 @@ export class PrecisionNumber {
         }
     }
 
-    // Public instance methods
-
     [Symbol.for('nodejs.util.inspect.custom')]() {
         return this.value;
     }
 
-    /**
-     * Converts to a number for numeric coercion and to the fixed string otherwise.
-     */
+    /** Converts to a number for numeric coercion and to the fixed string otherwise. */
     [Symbol.toPrimitive](hint: string) {
         if (hint === 'number') return this.#decimal.toNumber();
         return this.value;
@@ -203,11 +170,8 @@ export class PrecisionNumber {
     }
 
     /**
-     * Restricts the current value to the inclusive range `[min, max]` in place.
-     *
-     * @remarks
-     * The bounds apply before rounding, so a bound with more decimal places than this instance can round outside
-     * the range.
+     * The inclusive bounds apply before rounding, so a bound with more decimal places than this instance can round
+     * outside the range.
      *
      * @throws RangeError if `min` is greater than `max`.
      */
@@ -246,16 +210,10 @@ export class PrecisionNumber {
         return this.#decimal.isInteger();
     }
 
-    /**
-     * Checks whether the current value is less than zero.
-     */
     isNegative() {
         return this.#decimal.lt(0);
     }
 
-    /**
-     * Checks whether the current value is greater than zero.
-     */
     isPositive() {
         return this.#decimal.gt(0);
     }
@@ -305,8 +263,6 @@ export class PrecisionNumber {
     }
 
     /**
-     * Returns a new instance restricted to the inclusive range `[min, max]`.
-     *
      * @throws RangeError if `min` is greater than `max`.
      */
     toClamped(min: PrecisionNumberValue, max: PrecisionNumberValue) {
@@ -348,9 +304,7 @@ export class PrecisionNumber {
         return this.clone().negate();
     }
 
-    /**
-     * Converts to a JavaScript number, which can lose precision; use `value` for exact output.
-     */
+    /** Can lose precision; use `value` for exact output. */
     toNumber() {
         return this.#decimal.toNumber();
     }

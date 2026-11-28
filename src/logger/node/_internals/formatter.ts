@@ -3,8 +3,6 @@ import { inspect } from 'node:util';
 import { formatLoggerParts } from '../../_internals/formatter';
 import type { LoggerRecord } from '../../_internals/types';
 
-// Functions
-
 /**
  * Preserve user ANSI for console output. Custom inspect callbacks run like `console.log`, other property getters are
  * not invoked, and an argument whose inspection throws is replaced instead of dropping the record.

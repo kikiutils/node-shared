@@ -10,11 +10,7 @@ interface Decoration {
     text: string;
 }
 
-// Functions
-
-/**
- * Native console formatting keeps user strings literal and objects expandable.
- */
+/** Native console formatting keeps user strings literal and objects expandable. */
 export function formatLoggerConsoleArgs(record: LoggerRecord): unknown[] {
     // Sandboxed runtimes such as Electron preloads expose `process.versions` without stdio streams.
     const target = typeof process === 'undefined' ? undefined : process[getLoggerStreamName(record.type)];
@@ -64,9 +60,6 @@ export function formatLoggerParts(record: LoggerRecord, colors = false): unknown
     ];
 }
 
-/**
- * Local wall-clock time with milliseconds.
- */
 export function formatLoggerTime(date: Date): string {
     const pad = (value: number, width = 2) => String(value).padStart(width, '0');
     const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -74,9 +67,7 @@ export function formatLoggerTime(date: Date): string {
     return `[${day} ${time}.${pad(date.getMilliseconds(), 3)}]`;
 }
 
-/**
- * The single source of decoration order and colors for both ANSI and browser CSS output.
- */
+/** The single source of decoration order and colors for both ANSI and browser CSS output. */
 function getDecorations(record: LoggerRecord) {
     const before: Decoration[] = [];
     const after: Decoration[] = [];
@@ -119,9 +110,7 @@ function getDecorations(record: LoggerRecord) {
     };
 }
 
-/**
- * Use native terminal detection; redirected streams still honor FORCE_COLOR.
- */
+/** Use native terminal detection; redirected streams still honor FORCE_COLOR. */
 export function supportsLoggerColor(target: { hasColors?: () => boolean; isTTY?: boolean }): boolean {
     if (target.hasColors) return target.hasColors();
     const forced = process.env.FORCE_COLOR;

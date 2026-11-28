@@ -8,21 +8,10 @@ const latinEndRegExp = /[\da-z]$/i;
 const latinStartRegExp = /^[\da-z]/i;
 
 /**
- * Joins text parts, inserting a space where a CJK character meets an ASCII letter or digit at a joint.
- *
- * @remarks
- * CJK characters are Han, Hiragana, Katakana, and Bopomofo; Hangul is excluded because Korean already separates words
- * with spaces. Only the characters on each side of a joint are checked; spacing inside each part is left unchanged.
- * Empty parts are skipped without affecting the joints around them.
- *
- * @example
- *
- * ```ts
- * import { joinCjkText } from '@kikiutils/shared/string';
- *
- * console.log(joinCjkText('新增', 'IP 存取規則')); // => '新增 IP 存取規則'
- * console.log(joinCjkText('刪除', '帳號')); // => '刪除帳號'
- * ```
+ * Inserts a space at each joint where a CJK character meets an ASCII letter or digit. CJK characters are Han,
+ * Hiragana, Katakana, and Bopomofo; Hangul is excluded because Korean already separates words with spaces. Only the
+ * characters on each side of a joint are checked; spacing inside each part is left unchanged. Empty parts are skipped
+ * without affecting the joints around them.
  */
 export function joinCjkText(...parts: string[]) {
     return parts.reduce(

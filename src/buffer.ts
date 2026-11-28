@@ -3,29 +3,10 @@ import { Buffer } from 'node:buffer';
 import type { BinaryInput } from './types';
 
 /**
- * Converts binary input to a Node.js `Buffer`.
- *
- * @remarks
  * An existing `Buffer` is returned unchanged. `ArrayBuffer` and `Uint8Array` inputs share their backing memory
- * with the result, so changes are visible through both views. `Blob` and `File` inputs are read asynchronously.
+ * with the result, so changes are visible through both views.
  *
  * @throws TypeError through promise rejection if the input is unsupported.
- *
- * @example
- *
- * ```ts
- * import { toBuffer } from '@kikiutils/shared/buffer';
- *
- * const bytes = new Uint8Array([
- *     10,
- *     20,
- *     30,
- * ]);
- *
- * const buffer = await toBuffer(bytes);
- * bytes[0] = 40;
- * console.log(buffer[0]); // => 40
- * ```
  */
 export async function toBuffer(input: BinaryInput) {
     if (Buffer.isBuffer(input)) return input;
