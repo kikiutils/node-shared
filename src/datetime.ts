@@ -24,9 +24,9 @@ export function formatOptionalDate(
 
 /**
  * Ranges are calendar ranges in the system time zone, following local daylight saving transitions rather than fixed
- * 24-hour durations. The reference date is unchanged. Boundaries are inclusive, ending at `23:59:59.999`, unless
- * `options.setEndDateToNextDayStart` is `true`, which makes the end the exclusive start of the next calendar day.
- * `options.weekStartsOn` defaults to `1` (Monday).
+ * 24-hour durations. The reference date is unchanged. Boundaries are inclusive, ending at `23:59:59.999` of the
+ * range's last day, unless `options.setEndDateToNextDayStart` is `true`, which makes the end the exclusive start of the
+ * following day. `options.weekStartsOn` defaults to `1` (Monday).
  *
  * @throws TypeError if the range type is unsupported at runtime.
  */
