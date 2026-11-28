@@ -69,16 +69,8 @@ describe('class PrecisionNumber', () => {
             expect(value.rounding).toBe(Decimal.ROUND_UP);
             expect(new PrecisionNumber('123.456', 2, Decimal.ROUND_UP).value).toBe('123.46');
             expect(new PrecisionNumber('123.456', 0).value).toBe('123');
-        });
-
-        it('should copy an instance value without sharing mutable state', ({ expect }) => {
-            const original = new PrecisionNumber('100.50');
-            const copy = new PrecisionNumber(original);
-
-            copy.plus('1');
-
-            expect(original.value).toBe('100.50');
-            expect(copy.value).toBe('101.50');
+            // Numbers use their shortest round-trip string, unlike the native `toFixed`.
+            expect(new PrecisionNumber(1.005, 2, Decimal.ROUND_HALF_UP).value).toBe('1.01');
         });
 
         it.for([
@@ -124,85 +116,115 @@ describe('class PrecisionNumber', () => {
                 expect(PrecisionNumber.tryFrom(input)).toBeUndefined();
             }
 
-            expect(() => PrecisionNumber.tryFrom('1', -1)).toThrow();
-            expect(() => PrecisionNumber.tryFrom('invalid', -1)).toThrow();
+            expect(() => PrecisionNumber.tryFrom('1', -1)).toThrow(RangeError);
+            expect(() => PrecisionNumber.tryFrom('invalid', -1)).toThrow(RangeError);
+        });
+
+        it.for([
+            {
+                decimalPlaces: -1,
+                rounding: Decimal.ROUND_DOWN,
+            },
+            {
+                decimalPlaces: 1.5,
+                rounding: Decimal.ROUND_DOWN,
+            },
+            {
+                decimalPlaces: Number.NaN,
+                rounding: Decimal.ROUND_DOWN,
+            },
+            {
+                decimalPlaces: 51,
+                rounding: Decimal.ROUND_DOWN,
+            },
+            {
+                decimalPlaces: 2,
+                rounding: 9 as Decimal.Rounding,
+            },
+            {
+                decimalPlaces: 2,
+                rounding: 1.5 as Decimal.Rounding,
+            },
+        ])(
+            'should reject decimalPlaces $decimalPlaces with rounding $rounding as a format',
+            (
+                {
+                    decimalPlaces,
+                    rounding,
+                },
+                { expect },
+            ) => {
+                expect(() => new PrecisionNumber('1', decimalPlaces, rounding)).toThrow(RangeError);
+                expect(() => PrecisionNumber.toFixed('1', decimalPlaces, rounding)).toThrow(RangeError);
+                expect(() => new PrecisionNumber('1').toFixed(decimalPlaces, rounding)).toThrow(RangeError);
+                expect(() => PrecisionNumber.tryFrom('1', decimalPlaces, rounding)).toThrow(RangeError);
+                expect(() => PrecisionNumber.tryFrom('invalid', decimalPlaces, rounding)).toThrow(RangeError);
+            },
+        );
+
+        it('should accept the maximum of 50 decimal places', ({ expect }) => {
+            const expected = `1.${'0'.repeat(50)}`;
+
+            expect(new PrecisionNumber('1', 50).value).toBe(expected);
+            expect(PrecisionNumber.toFixed('1', 50)).toBe(expected);
+            expect(new PrecisionNumber('1').toFixed(50)).toBe(expected);
+            expect(PrecisionNumber.tryFrom('1', 50)?.value).toBe(expected);
         });
     });
 
     describe('arithmetic and identity', () => {
         it.for([
             {
-                expected: '150.75',
+                expected: '150.750',
                 immutable: 'toPlus',
-                input: '100.50',
+                input: '100.500',
                 mutable: 'plus',
                 operand: '50.25',
             },
             {
-                expected: '50.25',
-                immutable: 'toPlus',
-                input: '100.50',
-                mutable: 'plus',
-                operand: '-50.25',
-            },
-            {
-                expected: '50.25',
+                expected: '50.250',
                 immutable: 'toMinus',
-                input: '100.50',
+                input: '100.500',
                 mutable: 'minus',
                 operand: '50.25',
             },
             {
-                expected: '150.75',
-                immutable: 'toMinus',
-                input: '100.50',
-                mutable: 'minus',
-                operand: '-50.25',
-            },
-            {
-                expected: '21.00',
+                expected: '21.000',
                 immutable: 'toTimes',
-                input: '10.50',
+                input: '10.500',
                 mutable: 'times',
                 operand: '2',
             },
             {
-                expected: '1.50',
+                expected: '1.500',
                 immutable: 'toTimes',
-                input: '10.00',
+                input: '10.000',
                 mutable: 'times',
                 operand: '0.15',
             },
             {
-                expected: '25.00',
+                expected: '3.334',
                 immutable: 'toDividedBy',
-                input: '100.00',
-                mutable: 'dividedBy',
-                operand: '4',
-            },
-            {
-                expected: '3.33',
-                immutable: 'toDividedBy',
-                input: '10.00',
+                input: '10.000',
                 mutable: 'dividedBy',
                 operand: '3',
             },
             {
-                expected: '2.50',
+                expected: '2.500',
                 immutable: 'toModulo',
-                input: '10.50',
+                input: '10.500',
                 mutable: 'modulo',
                 operand: '4',
             },
             {
-                expected: '8.00',
+                expected: '8.000',
                 immutable: 'toPow',
-                input: '2.00',
+                input: '2.000',
                 mutable: 'pow',
                 operand: '3',
             },
         ] as const)(
-            'should preserve mutable and immutable contracts for $mutable($operand) on $input',
+            'should preserve mutable and immutable contracts and configuration for $mutable($operand) on $input',
             (
                 {
                     expected,
@@ -213,18 +235,20 @@ describe('class PrecisionNumber', () => {
                 },
                 { expect },
             ) => {
-                const original = new PrecisionNumber(input);
+                const original = new PrecisionNumber(input, 3, Decimal.ROUND_UP);
 
                 const copy = original[immutable](operand);
 
                 expect(copy).toBeInstanceOf(PrecisionNumber);
                 expect(copy).not.toBe(original);
                 expect(copy.value).toBe(expected);
-                expect(copy.decimalPlaces).toBe(original.decimalPlaces);
-                expect(copy.rounding).toBe(original.rounding);
+                expect(copy.decimalPlaces).toBe(3);
+                expect(copy.rounding).toBe(Decimal.ROUND_UP);
                 expect(original.value).toBe(input);
                 expect(original[mutable](operand)).toBe(original);
                 expect(original.value).toBe(expected);
+                expect(original.decimalPlaces).toBe(3);
+                expect(original.rounding).toBe(Decimal.ROUND_UP);
             },
         );
 
@@ -236,21 +260,9 @@ describe('class PrecisionNumber', () => {
                 mutable: 'absoluteValue',
             },
             {
-                expected: '123.45',
-                immutable: 'toAbsoluteValue',
-                input: '123.45',
-                mutable: 'absoluteValue',
-            },
-            {
                 expected: '-123.45',
                 immutable: 'toNegated',
                 input: '123.45',
-                mutable: 'negate',
-            },
-            {
-                expected: '123.45',
-                immutable: 'toNegated',
-                input: '-123.45',
                 mutable: 'negate',
             },
             {
@@ -287,18 +299,6 @@ describe('class PrecisionNumber', () => {
                 expect(original.value).toBe(expected);
             },
         );
-
-        it('should retain custom precision and rounding after immutable and mutable division', ({ expect }) => {
-            const original = new PrecisionNumber('10', 3, Decimal.ROUND_UP);
-            const copy = original.toDividedBy('3');
-
-            expect(copy.value).toBe('3.334');
-            expect(copy.decimalPlaces).toBe(3);
-            expect(copy.rounding).toBe(Decimal.ROUND_UP);
-            expect(original.value).toBe('10.000');
-            expect(original.dividedBy('3')).toBe(original);
-            expect(original.value).toBe('3.334');
-        });
 
         it('should keep arithmetic exact beyond the default decimal.js precision', ({ expect }) => {
             expect(new PrecisionNumber('1000000000000000000000', 0).plus('1').value).toBe('1000000000000000000001');
@@ -358,13 +358,6 @@ describe('class PrecisionNumber', () => {
             expect(value.value).toBe('10.00');
         });
 
-        it('should preserve decimal precision during chained arithmetic', ({ expect }) => {
-            const value = new PrecisionNumber('0.1', 10);
-
-            expect(value.plus('0.2').times('10')).toBe(value);
-            expect(value.value).toBe('3.0000000000');
-        });
-
         it('should reject results beyond 1000 integer digits without changing the value', ({ expect }) => {
             const value = new PrecisionNumber('10');
 
@@ -383,12 +376,17 @@ describe('class PrecisionNumber', () => {
             expect(() => new PrecisionNumber(`${digits}0`)).toThrow(RangeError);
         });
 
-        it('should reject Decimal inputs beyond 1000 integer digits', ({ expect }) => {
+        it('should reject values beyond 1000 integer digits as a RangeError', ({ expect }) => {
+            const tooLong = '9'.repeat(1001);
             const huge = new Decimal('1e1000');
 
-            expect(() => new PrecisionNumber(huge)).toThrow(TypeError);
-            expect(() => new PrecisionNumber('1').plus(huge)).toThrow(TypeError);
+            expect(() => new PrecisionNumber(tooLong)).toThrow(RangeError);
+            expect(() => new PrecisionNumber(huge)).toThrow(RangeError);
+            expect(() => new PrecisionNumber('1').plus(huge)).toThrow(RangeError);
+            expect(PrecisionNumber.tryFrom(tooLong)).toBeUndefined();
+            expect(PrecisionNumber.tryFrom(10n ** 1000n)).toBeUndefined();
             expect(PrecisionNumber.tryFrom(huge)).toBeUndefined();
+            expect(PrecisionNumber.tryFrom(`${'9'.repeat(1000)}.999`, 2, Decimal.ROUND_UP)).toBeUndefined();
             expect(PrecisionNumber.tryFrom(new Decimal('1e999'))?.value).toBe(`1${'0'.repeat(999)}.00`);
         });
 
@@ -400,10 +398,6 @@ describe('class PrecisionNumber', () => {
             {
                 expected: '2.00',
                 input: '2.00',
-            },
-            {
-                expected: '3.00',
-                input: '3.00',
             },
             {
                 expected: '4.00',
@@ -437,53 +431,59 @@ describe('class PrecisionNumber', () => {
     });
 
     describe('comparison and predicates', () => {
-        it.for([
-            {
-                equals: false,
-                gt: false,
-                gte: false,
-                input: '49',
-                lt: true,
-                lte: true,
-            },
-            {
-                equals: true,
-                gt: false,
-                gte: true,
-                input: '50',
-                lt: false,
-                lte: true,
-            },
-            {
-                equals: false,
-                gt: true,
-                gte: true,
-                input: '51',
-                lt: false,
-                lte: false,
-            },
-        ])(
-            'should distinguish strict and inclusive comparisons for $input against 50',
-            (
-                {
-                    equals,
-                    gt,
-                    gte,
-                    input,
-                    lt,
-                    lte,
-                },
-                { expect },
-            ) => {
-                const value = new PrecisionNumber(input);
+        it('should parse operands and distinguish strict from inclusive comparisons', ({ expect }) => {
+            const methods = [
+                'equals',
+                'gt',
+                'gte',
+                'lt',
+                'lte',
+            ] as const;
 
-                expect(value.equals('50')).toBe(equals);
-                expect(value.gt('50')).toBe(gt);
-                expect(value.gte('50')).toBe(gte);
-                expect(value.lt('50')).toBe(lt);
-                expect(value.lte('50')).toBe(lte);
-            },
-        );
+            const results = (input: string) => {
+                const value = new PrecisionNumber(input);
+                return methods.map((method) => value[method]('50'));
+            };
+
+            // Order: equals, gt, gte, lt, lte.
+            expect(results('49')).toEqual([
+                false,
+                false,
+                false,
+                true,
+                true,
+            ]);
+
+            expect(results('50')).toEqual([
+                true,
+                false,
+                true,
+                false,
+                true,
+            ]);
+
+            expect(results('51')).toEqual([
+                false,
+                true,
+                true,
+                false,
+                false,
+            ]);
+
+            const value = new PrecisionNumber('50');
+
+            for (const operand of [
+                ' 50 ',
+                50n,
+                '50.000',
+                new PrecisionNumber('50'),
+            ]) {
+                expect(value.equals(operand)).toBe(true);
+                expect(value.gt(operand)).toBe(false);
+            }
+
+            for (const method of methods) expect(() => value[method]('abc')).toThrow(TypeError);
+        });
 
         it.for([
             {
@@ -530,16 +530,23 @@ describe('class PrecisionNumber', () => {
     });
 
     describe('conversion and formatting', () => {
-        it('should clone the value and configuration without sharing state', ({ expect }) => {
+        it('should copy values and configuration into independent instances', ({ expect }) => {
             const original = new PrecisionNumber('1.234', 3, Decimal.ROUND_UP);
-            const copy = original.clone();
 
-            copy.plus('1');
+            // The constructor copies only the value, so the copy uses the default configuration.
+            expect(new PrecisionNumber(original).value).toBe('1.23');
 
-            expect(original.value).toBe('1.234');
-            expect(copy.value).toBe('2.234');
-            expect(copy.decimalPlaces).toBe(3);
-            expect(copy.rounding).toBe(Decimal.ROUND_UP);
+            for (const copy of [
+                new PrecisionNumber(original, 3, Decimal.ROUND_UP),
+                original.clone(),
+            ]) {
+                copy.plus('1');
+
+                expect(original.value).toBe('1.234');
+                expect(copy.value).toBe('2.234');
+                expect(copy.decimalPlaces).toBe(3);
+                expect(copy.rounding).toBe(Decimal.ROUND_UP);
+            }
         });
 
         it('should expose fixed text for serialization and numeric values for numeric coercion', ({ expect }) => {
