@@ -5,7 +5,6 @@ import {
 
 import {
     appendRedirectParamToUrl,
-    isSafeRedirectPath,
     normalizeRedirectPath,
 } from '../src/url';
 
@@ -50,6 +49,10 @@ describe('appendRedirectParamToUrl', () => {
         },
     );
 
+    it('should store the normalized form of the redirect destination', ({ expect }) => {
+        expect(appendRedirectParamToUrl('/login', '/x/..//evil.com')).toBe('/login?redirect=%2Fevil.com');
+    });
+
     it('should encode query and fragment characters within the redirect destination', ({ expect }) => {
         expect(appendRedirectParamToUrl('/login', '/dashboard?tab=home#section'))
             .toBe('/login?redirect=%2Fdashboard%3Ftab%3Dhome%23section');
@@ -70,17 +73,52 @@ describe('appendRedirectParamToUrl', () => {
     );
 });
 
-describe('isSafeRedirectPath', () => {
+describe('normalizeRedirectPath', () => {
     it.for([
-        '/',
-        '/dashboard',
-        '/dashboard?tab=home#section',
-        '/search?q=a\\b',
-        '/page#a\\b',
+        {
+            expected: '/',
+            input: '/',
+        },
+        {
+            expected: '/dashboard?tab=home#section',
+            input: '/dashboard?tab=home#section',
+        },
+        {
+            expected: '/search?q=a\\b',
+            input: '/search?q=a\\b',
+        },
+        {
+            expected: '/page#a\\b',
+            input: '/page#a\\b',
+        },
+        {
+            expected: '/a/b?q=1',
+            input: '/a\\b?q=1',
+        },
+        {
+            expected: '/y',
+            input: '/x/../y',
+        },
+        {
+            expected: '/evil.com',
+            input: '/x/..//evil.com',
+        },
+        {
+            expected: '/a%20b',
+            input: '/a b',
+        },
+        {
+            expected: '/a%00b',
+            input: '/a\0b',
+        },
     ])(
-        'should accept application path %j',
-        (path, { expect }) => {
-            expect(isSafeRedirectPath(path)).toBe(true);
+        'should return the browser-resolved path for $input',
+        ({ expected, input }, { expect }) => {
+            const result = normalizeRedirectPath(input);
+
+            expect(result).toBe(expected);
+            // The returned path must stay on the current origin when navigated to.
+            expect(new URL(result, 'https://app.test').origin).toBe('https://app.test');
         },
     );
 
@@ -91,25 +129,27 @@ describe('isSafeRedirectPath', () => {
         'http://evil.com',
         '//evil.com',
         '/\\evil.com',
-        '/a\\b?q=1',
         '/\n/evil.com',
         '/\t/evil.com',
         '/\r/evil.com',
-        '/dashboard\0',
+        '//[',
         123,
         undefined,
         null,
+        [],
+        [
+            '//evil.com',
+            '/safe',
+        ],
     ])(
-        'should reject unsafe or non-string path %j',
-        (path, { expect }) => {
-            expect(isSafeRedirectPath(path)).toBe(false);
+        'should select the default or custom fallback for %j',
+        (input, { expect }) => {
+            expect(normalizeRedirectPath(input)).toBe('/');
+            expect(normalizeRedirectPath(input, '/fallback')).toBe('/fallback');
         },
     );
-});
 
-describe('normalizeRedirectPath', () => {
-    it('should return a safe string or the safe first array element unchanged', ({ expect }) => {
-        expect(normalizeRedirectPath('/dashboard')).toBe('/dashboard');
+    it('should use the first array element', ({ expect }) => {
         expect(
             normalizeRedirectPath([
                 '/dashboard',
@@ -117,42 +157,6 @@ describe('normalizeRedirectPath', () => {
             ]),
         ).toBe('/dashboard');
     });
-
-    it.for([
-        {
-            input: '//evil.com',
-            name: 'a protocol-relative URL',
-        },
-        {
-            input: 'https://evil.com',
-            name: 'an absolute URL',
-        },
-        {
-            input: '/\\evil.com',
-            name: 'a backslash path',
-        },
-        {
-            input: undefined,
-            name: 'an undefined value',
-        },
-        {
-            input: [],
-            name: 'an empty array',
-        },
-        {
-            input: [
-                '//evil.com',
-                '/safe',
-            ],
-            name: 'an unsafe first element',
-        },
-    ])(
-        'should select the default or custom fallback for $name',
-        ({ input }, { expect }) => {
-            expect(normalizeRedirectPath(input)).toBe('/');
-            expect(normalizeRedirectPath(input, '/fallback')).toBe('/fallback');
-        },
-    );
 
     it('should return the caller-supplied fallback without validating it', ({ expect }) => {
         expect(normalizeRedirectPath(undefined, 'custom')).toBe('custom');
