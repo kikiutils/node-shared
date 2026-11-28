@@ -111,4 +111,22 @@ describe('createLruKeyedStore', () => {
         expect(store.getItemTtlMilliseconds(1)).toBe(Infinity);
         expect(store.getItem(1)).toBe('value');
     });
+
+    it.for([
+        -1,
+        Number.NaN,
+    ])(
+        'should reject TTL %s instead of storing an expired or never-expiring item',
+        (ttlMilliseconds, { expect }) => {
+            const cache = new LRUCache<string, string>({
+                max: 1,
+                ttl: 1000,
+            });
+
+            const store = createLruKeyedStore<string>(cache)((id: string) => id);
+
+            expect(() => store.setItemWithTtl(ttlMilliseconds, 'value', 'a')).toThrow(RangeError);
+            expect(cache.has('a')).toBe(false);
+        },
+    );
 });

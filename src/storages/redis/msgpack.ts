@@ -15,8 +15,16 @@ if (!isNativeAccelerationEnabled) {
     console.warn('Native acceleration not enabled for msgpackr, verify that install finished properly');
 }
 
+function assertTtlSeconds(ttlSeconds: number) {
+    if (!Number.isSafeInteger(ttlSeconds) || ttlSeconds < 1) throw new RangeError(`ttlSeconds must be a positive safe integer, got ${ttlSeconds}.`);
+}
+
 /**
  * Creates a frozen Redis-like storage facade using MessagePack serialization.
+ *
+ * @remarks
+ * TTL writes reject with `RangeError` before reaching the adapter unless `ttlSeconds` is a positive safe integer,
+ * which is what Redis accepts as an expiry.
  *
  * @example
  *
@@ -69,9 +77,11 @@ export function createRedisMsgpackStorage(adapter: RedisLikeAdapter): Readonly<R
         removeItem: async (key: string) => await adapter.delete(key) === 1,
         setItem: async (key: string, value: unknown) => await adapter.setBuffer(key, encode(value)) === 'OK',
         async setItemWithTtl(key: string, ttlSeconds: number, value: unknown) {
+            assertTtlSeconds(ttlSeconds);
             return await adapter.setBufferWithTtl(key, ttlSeconds, encode(value)) === 'OK';
         },
         async setItemWithTtlIfAbsent(key: string, ttlSeconds: number, value: unknown) {
+            assertTtlSeconds(ttlSeconds);
             return await adapter.setBufferWithTtlIfAbsent(key, ttlSeconds, encode(value)) === 'OK';
         },
     });

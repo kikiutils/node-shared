@@ -108,6 +108,24 @@ describe('createRedisMsgpackStorage', () => {
         await expect(storage.hasItem('token')).resolves.toBe(false);
     });
 
+    it.for([
+        0,
+        -1,
+        1.5,
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+    ])(
+        'should reject TTL %s, which Redis does not accept as an expiry, without calling the adapter',
+        async (ttlSeconds, { expect }) => {
+            const storage = createRedisMsgpackStorage(adapter);
+
+            await expect(storage.setItemWithTtl('key', ttlSeconds, 'value')).rejects.toThrow(RangeError);
+            await expect(storage.setItemWithTtlIfAbsent('key', ttlSeconds, 'value')).rejects.toThrow(RangeError);
+            expect(adapter.setBufferWithTtl).not.toHaveBeenCalled();
+            expect(adapter.setBufferWithTtlIfAbsent).not.toHaveBeenCalled();
+        },
+    );
+
     it('should preserve adapter rejections on reads and writes', async ({ expect }) => {
         const error = new Error('Redis unavailable');
         vi.mocked(adapter.getBuffer).mockRejectedValue(error);
