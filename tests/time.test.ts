@@ -22,6 +22,14 @@ afterEach(() => {
 });
 
 describe('delay', () => {
+    it('should resolve a negative duration without a runtime warning', async ({ expect }) => {
+        vi.useRealTimers();
+        const emitWarning = vi.spyOn(process, 'emitWarning');
+
+        await expect(delay(-1)).resolves.toBeUndefined();
+        expect(emitWarning).not.toHaveBeenCalled();
+    });
+
     it('should remain pending until the requested duration elapses', async ({ expect }) => {
         const settled = vi.fn();
         const promise = delay(100).then(settled);

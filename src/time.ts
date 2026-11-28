@@ -41,7 +41,8 @@ export async function delayOrThrow(ms: number, signal?: AbortSignal): Promise<vo
                 signal?.removeEventListener('abort', onAbort);
                 resolve();
             },
-            ms,
+            // Runtimes warn on negative delays, which callers computing `deadline - Date.now()` routinely pass.
+            Math.max(ms, 0),
         );
 
         signal?.addEventListener('abort', onAbort, { once: true });
