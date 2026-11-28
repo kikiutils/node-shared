@@ -1,5 +1,67 @@
 # Changelog
 
+## v23.0.0
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v22.0.0...v23.0.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Remove the `hash` module ([2ed29a9](https://github.com/kikiutils/node-shared/commit/2ed29a9))
+- **types:** ⚠️  Keep only `BinaryInput` and `SafePromise` ([109bb58](https://github.com/kikiutils/node-shared/commit/109bb58))
+- **datetime:** Add `formatOptionalDate` ([df6cd9a](https://github.com/kikiutils/node-shared/commit/df6cd9a))
+
+### 🔥 Performance
+
+- **storages:** Hex-encode `GETDEL` values with a lookup table ([41e5467](https://github.com/kikiutils/node-shared/commit/41e5467))
+
+### 🩹 Fixes
+
+- **time:** Reject delays that overflow the timer ([6e74585](https://github.com/kikiutils/node-shared/commit/6e74585))
+- **math:** Validate `decimalPlaces` in `toPercentageString` ([bf0e2c5](https://github.com/kikiutils/node-shared/commit/bf0e2c5))
+- **storages:** Reject invalid TTLs before writing ([6383fe0](https://github.com/kikiutils/node-shared/commit/6383fe0))
+- **logger:** Rotate a previous period's file on startup ([0e23b6c](https://github.com/kikiutils/node-shared/commit/0e23b6c))
+- **precision-number:** Validate format options and keep `tryFrom` non-throwing for oversized values ([7b0bb4e](https://github.com/kikiutils/node-shared/commit/7b0bb4e))
+- **precision-number:** Reject non-number format arguments with `TypeError` ([a581ba6](https://github.com/kikiutils/node-shared/commit/a581ba6))
+- **logger:** Pass undecorated browser output as literal text ([e125ce4](https://github.com/kikiutils/node-shared/commit/e125ce4))
+- **url:** Allow backslashes in the query and fragment of redirect paths ([ca5cf5b](https://github.com/kikiutils/node-shared/commit/ca5cf5b))
+- **math:** Throw `TypeError` for invalid `toPercentageString` input ([bec5184](https://github.com/kikiutils/node-shared/commit/bec5184))
+- **time:** Clamp negative delays to avoid runtime warnings ([51f4e76](https://github.com/kikiutils/node-shared/commit/51f4e76))
+- **url:** ⚠️  Normalize redirect paths by parsing once ([a5e2f68](https://github.com/kikiutils/node-shared/commit/a5e2f68))
+
+### 💅 Refactors
+
+- Throw `TypeError` for invalid arguments and simplify helpers ([3a50c83](https://github.com/kikiutils/node-shared/commit/3a50c83))
+- **redis:** Simplify script runner digest and docs ([0b83d68](https://github.com/kikiutils/node-shared/commit/0b83d68))
+
+### 📖 Documentation
+
+- Keep only non-obvious contracts in comments and TSDoc ([5d36606](https://github.com/kikiutils/node-shared/commit/5d36606))
+- Update README ([f926201](https://github.com/kikiutils/node-shared/commit/f926201))
+- Update README ([74ca8af](https://github.com/kikiutils/node-shared/commit/74ca8af))
+
+### 🏡 Chore
+
+- ⚠️  Upgrade deps ([355053d](https://github.com/kikiutils/node-shared/commit/355053d))
+
+### ✅ Tests
+
+- **logger:** Derive the custom inspect expectation from the platform path ([2949f04](https://github.com/kikiutils/node-shared/commit/2949f04))
+- Cover remaining EnhancedDate, Path, and Bun adapter methods ([e7ec0d7](https://github.com/kikiutils/node-shared/commit/e7ec0d7))
+- **storages:** Assert keyed store behavior instead of forwarded calls ([bfd2b47](https://github.com/kikiutils/node-shared/commit/bfd2b47))
+- **logger:** Focus tests on observable behavior ([b66f13d](https://github.com/kikiutils/node-shared/commit/b66f13d))
+- **classes:** Focus Path and EnhancedDate tests on observable behavior ([7e7482e](https://github.com/kikiutils/node-shared/commit/7e7482e))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove the `hash` module ([2ed29a9](https://github.com/kikiutils/node-shared/commit/2ed29a9))
+- **types:** ⚠️  Keep only `BinaryInput` and `SafePromise` ([109bb58](https://github.com/kikiutils/node-shared/commit/109bb58))
+- **url:** ⚠️  Normalize redirect paths by parsing once ([a5e2f68](https://github.com/kikiutils/node-shared/commit/a5e2f68))
+- ⚠️  Upgrade deps ([355053d](https://github.com/kikiutils/node-shared/commit/355053d))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v22.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v21.0.0...v22.0.0)
