@@ -99,6 +99,24 @@ describe('toPercentageString', () => {
         }
     });
 
+    it('should accept the maximum decimal places', ({ expect }) => {
+        expect(toPercentageString(1, 3, { decimalPlaces: 20 })).toBe(`33.${'3'.repeat(20)}%`);
+    });
+
+    it.for([
+        -1,
+        0.5,
+        21,
+        1e9,
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+    ])(
+        'should reject decimalPlaces %s',
+        (decimalPlaces, { expect }) => {
+            expect(() => toPercentageString(1, 3, { decimalPlaces })).toThrow(RangeError);
+        },
+    );
+
     it('should propagate invalid decimal input instead of returning the non-finite fallback', ({ expect }) => {
         expect(() => toPercentageString('not-a-number', 1)).toThrow(Error);
     });
