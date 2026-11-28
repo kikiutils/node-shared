@@ -1,5 +1,34 @@
 # Changelog
 
+## v23.0.1
+
+[compare changes](https://github.com/kikiutils/node-shared/compare/v23.0.0...v23.0.1)
+
+### 🔥 Performance
+
+- **precision-number:** Skip rewrapping results already on the exact constructor ([e1651ce](https://github.com/kikiutils/node-shared/commit/e1651ce))
+
+### 🩹 Fixes
+
+- **logger:** Resolve console.error when reporting diagnostics ([fe6a3b7](https://github.com/kikiutils/node-shared/commit/fe6a3b7))
+
+### 📖 Documentation
+
+- Tidy source comments and JSDoc ([cea0250](https://github.com/kikiutils/node-shared/commit/cea0250))
+- **datetime:** Clarify the exclusive end of setEndDateToNextDayStart ranges ([ffe700a](https://github.com/kikiutils/node-shared/commit/ffe700a))
+
+### 🏡 Chore
+
+- Upgrade deps ([5c3d2c8](https://github.com/kikiutils/node-shared/commit/5c3d2c8))
+
+### ✅ Tests
+
+- Prune low-value tests and cover more edge cases ([75c26da](https://github.com/kikiutils/node-shared/commit/75c26da))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v23.0.0
 
 [compare changes](https://github.com/kikiutils/node-shared/compare/v22.0.0...v23.0.0)
