@@ -21,14 +21,18 @@ export interface BunRedisLikeClient extends RedisLikeScriptClient {
 // Bun decodes `GETDEL` replies as text, which corrupts binary values, so the script returns the value hex-encoded.
 // TODO: Once a released Bun includes https://github.com/oven-sh/bun/pull/49499 (Bun 1.4.5 does not), replace this
 // script with `client.getdel(key, { buffer: true })`.
+// A lookup table instead of a per-byte callback, because the script blocks the server for its whole run.
 const getAndDeleteHexScript = `local value = redis.call("GETDEL", KEYS[1])
 if not value then
     return false
 end
 
-return (string.gsub(value, ".", function(char)
-    return string.format("%02x", string.byte(char))
-end))`;
+local hex = {}
+for byte = 0, 255 do
+    hex[string.char(byte)] = string.format("%02x", byte)
+end
+
+return (string.gsub(value, ".", hex))`;
 
 /**
  * `getBufferAndDelete` runs an atomic `GETDEL` Lua script through `EVALSHA`, so the client's user needs the
